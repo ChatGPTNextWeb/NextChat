@@ -1,5 +1,6 @@
 import cn from "./cn";
 import en from "./en";
+import pt from "./pt";
 import tw from "./tw";
 import id from "./id";
 import fr from "./fr";
@@ -15,6 +16,7 @@ import cs from "./cs";
 import ko from "./ko";
 import ar from "./ar";
 import bn from "./bn";
+import sk from "./sk";
 import { merge } from "../utils/merge";
 
 import type { LocaleType } from "./cn";
@@ -24,6 +26,7 @@ const ALL_LANGS = {
   cn,
   en,
   tw,
+  pt,
   jp,
   ko,
   id,
@@ -38,6 +41,7 @@ const ALL_LANGS = {
   no,
   ar,
   bn,
+  sk,
 };
 
 export type Lang = keyof typeof ALL_LANGS;
@@ -47,6 +51,7 @@ export const AllLangs = Object.keys(ALL_LANGS) as Lang[];
 export const ALL_LANG_OPTIONS: Record<Lang, string> = {
   cn: "简体中文",
   en: "English",
+  pt: "Português",
   tw: "繁體中文",
   jp: "日本語",
   ko: "한국어",
@@ -62,6 +67,7 @@ export const ALL_LANG_OPTIONS: Record<Lang, string> = {
   no: "Nynorsk",
   ar: "العربية",
   bn: "বাংলা",
+  sk: "Slovensky",
 };
 
 const LANG_KEY = "lang";

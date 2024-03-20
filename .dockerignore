@@ -1,0 +1,8 @@
+# local env files
+.env*.local
+
+# docker-compose env files
+.env
+
+*.key
+*.key.pub

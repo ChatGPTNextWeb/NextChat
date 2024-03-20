@@ -26,10 +26,10 @@ export function Popover(props: {
     <div className={styles.popover}>
       {props.children}
       {props.open && (
-        <div className={styles["popover-content"]}>
-          <div className={styles["popover-mask"]} onClick={props.onClose}></div>
-          {props.content}
-        </div>
+        <div className={styles["popover-mask"]} onClick={props.onClose}></div>
+      )}
+      {props.open && (
+        <div className={styles["popover-content"]}>{props.content}</div>
       )}
     </div>
   );

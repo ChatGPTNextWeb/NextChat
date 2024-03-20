@@ -64,8 +64,17 @@ if (mode !== "export") {
 
   nextConfig.rewrites = async () => {
     const ret = [
+      // adjust for previous version directly using "/api/proxy/" as proxy base route
       {
-        source: "/api/proxy/:path*",
+        source: "/api/proxy/v1/:path*",
+        destination: "https://api.openai.com/v1/:path*",
+      },
+      {
+        source: "/api/proxy/google/:path*",
+        destination: "https://generativelanguage.googleapis.com/:path*",
+      },
+      {
+        source: "/api/proxy/openai/:path*",
         destination: "https://api.openai.com/:path*",
       },
       {

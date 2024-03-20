@@ -1,27 +1,45 @@
 [package]
-name = "chatgpt-next-web"
+name = "nextchat"
 version = "0.1.0"
 description = "A cross platform app for LLM ChatBot."
 authors = ["Yidadaa"]
 license = "mit"
 repository = ""
-default-run = "chatgpt-next-web"
+default-run = "nextchat"
 edition = "2021"
 rust-version = "1.60"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [build-dependencies]
-tauri-build = { version = "1.3.0", features = [] }
+tauri-build = { version = "1.5.1", features = [] }
 
 [dependencies]
 serde_json = "1.0"
 serde = { version = "1.0", features = ["derive"] }
-tauri = { version = "1.3.0", features = ["notification-all", "fs-all", "clipboard-all", "dialog-all", "shell-open", "updater", "window-close", "window-hide", "window-maximize", "window-minimize", "window-set-icon", "window-set-ignore-cursor-events", "window-set-resizable", "window-show", "window-start-dragging", "window-unmaximize", "window-unminimize"] }
+tauri = { version = "1.5.4", features = [
+    "notification-all",
+    "fs-all",
+    "clipboard-all",
+    "dialog-all",
+    "shell-open",
+    "updater",
+    "window-close",
+    "window-hide",
+    "window-maximize",
+    "window-minimize",
+    "window-set-icon",
+    "window-set-ignore-cursor-events",
+    "window-set-resizable",
+    "window-show",
+    "window-start-dragging",
+    "window-unmaximize",
+    "window-unminimize",
+] }
 tauri-plugin-window-state = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "v1" }
 
 [features]
 # this feature is used for production builds or when `devPath` points to the filesystem and the built-in dev server is disabled.
 # If you use cargo directly instead of tauri's cli you can use this feature flag to switch between tauri's `dev` and `build` modes.
 # DO NOT REMOVE!!
-custom-protocol = [ "tauri/custom-protocol" ]
+custom-protocol = ["tauri/custom-protocol"]

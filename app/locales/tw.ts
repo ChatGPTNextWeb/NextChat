@@ -1,16 +1,36 @@
+import { getClientConfig } from "../config/client";
 import { SubmitKey } from "../store/config";
-import type { PartialLocaleType } from "./index";
 
-const tw: PartialLocaleType = {
+const isApp = !!getClientConfig()?.isApp;
+
+const tw = {
   WIP: "該功能仍在開發中……",
   Error: {
-    Unauthorized: "目前您的狀態是未授權，請前往[設定頁面](/#/auth)輸入授權碼。",
+    Unauthorized: isApp
+      ? "檢測到無效 API Key，請前往[設定](/#/settings)頁檢查 API Key 是否設定正確。"
+      : "訪問密碼不正確或為空，請前往[登入](/#/auth)頁輸入正確的訪問密碼，或者在[設定](/#/settings)頁填入你自己的 OpenAI API Key。",
+  },
+
+  Auth: {
+    Title: "需要密碼",
+    Tips: "管理員開啟了密碼驗證，請在下方填入訪問碼",
+    SubTips: "或者輸入你的 OpenAI 或 Google API 密鑰",
+    Input: "在此處填寫訪問碼",
+    Confirm: "確認",
+    Later: "稍候再說",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} 則對話`,
   },
   Chat: {
     SubTitle: (count: number) => `您已經與 ChatGPT 進行了 ${count} 則對話`,
+    EditMessage: {
+      Title: "編輯消息記錄",
+      Topic: {
+        Title: "聊天主題",
+        SubTitle: "更改當前聊天主題",
+      },
+    },
     Actions: {
       ChatList: "檢視訊息列表",
       CompressedHistory: "檢視壓縮後的歷史 Prompt",
@@ -18,7 +38,33 @@ const tw: PartialLocaleType = {
       Copy: "複製",
       Stop: "停止",
       Retry: "重試",
+      Pin: "固定",
+      PinToastContent: "已將 1 條對話固定至預設提示詞",
+      PinToastAction: "查看",
       Delete: "刪除",
+      Edit: "編輯",
+    },
+    Commands: {
+      new: "新建聊天",
+      newm: "從面具新建聊天",
+      next: "下一個聊天",
+      prev: "上一個聊天",
+      clear: "清除上下文",
+      del: "刪除聊天",
+    },
+    InputActions: {
+      Stop: "停止回應",
+      ToBottom: "移至最新",
+      Theme: {
+        auto: "自動主題",
+        light: "亮色模式",
+        dark: "深色模式",
+      },
+      Prompt: "快捷指令",
+      Masks: "所有面具",
+      Clear: "清除聊天",
+      Settings: "對話設定",
+      UploadImage: "上傳圖片",
     },
     Rename: "重新命名對話",
     Typing: "正在輸入…",
@@ -34,13 +80,37 @@ const tw: PartialLocaleType = {
       Reset: "重設",
       SaveAs: "另存新檔",
     },
+    IsContext: "預設提示詞",
   },
   Export: {
     Title: "將聊天記錄匯出為 Markdown",
     Copy: "複製全部",
     Download: "下載檔案",
+    Share: "分享到 ShareGPT",
     MessageFromYou: "來自您的訊息",
     MessageFromChatGPT: "來自 ChatGPT 的訊息",
+    Format: {
+      Title: "導出格式",
+      SubTitle: "可以導出 Markdown 文本或者 PNG 圖片",
+    },
+    IncludeContext: {
+      Title: "包含面具上下文",
+      SubTitle: "是否在消息中展示面具上下文",
+    },
+    Steps: {
+      Select: "選取",
+      Preview: "預覽",
+    },
+    Image: {
+      Toast: "正在生成截圖",
+      Modal: "長按或右鍵保存圖片",
+    },
+  },
+  Select: {
+    Search: "查詢消息",
+    All: "選取全部",
+    Latest: "最近幾條",
+    Clear: "清除選中",
   },
   Memory: {
     Title: "上下文記憶 Prompt",
@@ -60,6 +130,20 @@ const tw: PartialLocaleType = {
     Title: "設定",
     SubTitle: "設定選項",
 
+    Danger: {
+      Reset: {
+        Title: "重置所有設定",
+        SubTitle: "重置所有設定項回預設值",
+        Action: "立即重置",
+        Confirm: "確認重置所有設定？",
+      },
+      Clear: {
+        Title: "清除所有資料",
+        SubTitle: "清除所有聊天、設定資料",
+        Action: "立即清除",
+        Confirm: "確認清除所有聊天、設定資料？",
+      },
+    },
     Lang: {
       Name: "Language", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`
       All: "所有語言",
@@ -73,6 +157,11 @@ const tw: PartialLocaleType = {
       Title: "匯入系統提示",
       SubTitle: "強制在每個請求的訊息列表開頭新增一個模擬 ChatGPT 的系統提示",
     },
+    InputTemplate: {
+      Title: "用戶輸入預處理",
+      SubTitle: "用戶最新的一條消息會填充到此模板",
+    },
+
     Update: {
       Version: (x: string) => `目前版本：${x}`,
       IsLatest: "已是最新版本",
@@ -88,10 +177,61 @@ const tw: PartialLocaleType = {
       Title: "預覽氣泡",
       SubTitle: "在預覽氣泡中預覽 Markdown 內容",
     },
+    AutoGenerateTitle: {
+      Title: "自動生成標題",
+      SubTitle: "根據對話內容生成合適的標題",
+    },
+    Sync: {
+      CloudState: "雲端資料",
+      NotSyncYet: "還沒有進行過同步",
+      Success: "同步成功",
+      Fail: "同步失敗",
+
+      Config: {
+        Modal: {
+          Title: "設定雲端同步",
+          Check: "檢查可用性",
+        },
+        SyncType: {
+          Title: "同步類型",
+          SubTitle: "選擇喜愛的同步服務器",
+        },
+        Proxy: {
+          Title: "啟用代理",
+          SubTitle: "在瀏覽器中同步時，必須啟用代理以避免跨域限制",
+        },
+        ProxyUrl: {
+          Title: "代理地址",
+          SubTitle: "僅適用於本項目自帶的跨域代理",
+        },
+
+        WebDav: {
+          Endpoint: "WebDAV 地址",
+          UserName: "用戶名",
+          Password: "密碼",
+        },
+
+        UpStash: {
+          Endpoint: "UpStash Redis REST Url",
+          UserName: "備份名稱",
+          Password: "UpStash Redis REST Token",
+        },
+      },
+
+      LocalState: "本地資料",
+      Overview: (overview: any) => {
+        return `${overview.chat} 次對話，${overview.message} 條消息，${overview.prompt} 條提示詞，${overview.mask} 個面具`;
+      },
+      ImportFailed: "導入失敗",
+    },
     Mask: {
       Splash: {
         Title: "面具啟動頁面",
         SubTitle: "新增聊天時，呈現面具啟動頁面",
+      },
+      Builtin: {
+        Title: "隱藏內置面具",
+        SubTitle: "在所有面具列表中隱藏內置面具",
       },
     },
     Prompt: {
@@ -131,10 +271,80 @@ const tw: PartialLocaleType = {
       NoAccess: "輸入 API Key 檢視餘額",
     },
 
+    Access: {
+      AccessCode: {
+        Title: "訪問密碼",
+        SubTitle: "管理員已開啟加密訪問",
+        Placeholder: "請輸入訪問密碼",
+      },
+      CustomEndpoint: {
+        Title: "自定義接口 (Endpoint)",
+        SubTitle: "是否使用自定義 Azure 或 OpenAI 服務",
+      },
+      Provider: {
+        Title: "模型服務商",
+        SubTitle: "切換不同的服務商",
+      },
+      OpenAI: {
+        ApiKey: {
+          Title: "API Key",
+          SubTitle: "使用自定義 OpenAI Key 繞過密碼訪問限制",
+          Placeholder: "OpenAI API Key",
+        },
+
+        Endpoint: {
+          Title: "接口(Endpoint) 地址",
+          SubTitle: "除默認地址外，必須包含 http(s)://",
+        },
+      },
+      Azure: {
+        ApiKey: {
+          Title: "接口密鑰",
+          SubTitle: "使用自定義 Azure Key 繞過密碼訪問限制",
+          Placeholder: "Azure API Key",
+        },
+
+        Endpoint: {
+          Title: "接口(Endpoint) 地址",
+          SubTitle: "樣例：",
+        },
+
+        ApiVerion: {
+          Title: "接口版本 (azure api version)",
+          SubTitle: "選擇指定的部分版本",
+        },
+      },
+      Google: {
+        ApiKey: {
+          Title: "API 密鑰",
+          SubTitle: "從 Google AI 獲取您的 API 密鑰",
+          Placeholder: "輸入您的 Google AI Studio API 密鑰",
+        },
+
+        Endpoint: {
+          Title: "終端地址",
+          SubTitle: "示例：",
+        },
+
+        ApiVersion: {
+          Title: "API 版本（僅適用於 gemini-pro）",
+          SubTitle: "選擇一個特定的 API 版本",
+        },
+      },
+      CustomModel: {
+        Title: "自定義模型名",
+        SubTitle: "增加自定義模型可選項，使用英文逗號隔開",
+      },
+    },
+
     Model: "模型 (model)",
     Temperature: {
       Title: "隨機性 (temperature)",
       SubTitle: "值越大，回應越隨機",
+    },
+    TopP: {
+      Title: "核采樣 (top_p)",
+      SubTitle: "與隨機性類似，但不要和隨機性一起更改",
     },
     MaxTokens: {
       Title: "單次回應限制 (max_tokens)",
@@ -166,10 +376,16 @@ const tw: PartialLocaleType = {
     Success: "已複製到剪貼簿中",
     Failed: "複製失敗，請賦予剪貼簿權限",
   },
+  Download: {
+    Success: "內容已下載到您的目錄。",
+    Failed: "下載失敗。",
+  },
   Context: {
     Toast: (x: any) => `已設定 ${x} 條前置上下文`,
     Edit: "前置上下文和歷史記憶",
     Add: "新增一條",
+    Clear: "上下文已清除",
+    Revert: "恢復上下文",
   },
   Plugin: { Name: "外掛" },
   FineTuned: { Sysmessage: "你是一個助手" },
@@ -198,16 +414,34 @@ const tw: PartialLocaleType = {
     Config: {
       Avatar: "角色頭像",
       Name: "角色名稱",
+      Sync: {
+        Title: "使用全局設定",
+        SubTitle: "當前對話是否使用全局模型設定",
+        Confirm: "當前對話的自定義設定將會被自動覆蓋，確認啟用全局設定？",
+      },
+      HideContext: {
+        Title: "隱藏預設對話",
+        SubTitle: "隱藏後預設對話不會出現在聊天界面",
+      },
+      Share: {
+        Title: "分享此面具",
+        SubTitle: "生成此面具的直達鏈接",
+        Action: "覆制鏈接",
+      },
     },
   },
   NewChat: {
     Return: "返回",
     Skip: "跳過",
+    NotShow: "不再呈現",
+    ConfirmNoShow: "確認停用？停用後可以隨時在設定中重新啟用。",
     Title: "挑選一個面具",
     SubTitle: "現在開始，與面具背後的靈魂思維碰撞",
     More: "搜尋更多",
-    NotShow: "不再呈現",
-    ConfirmNoShow: "確認停用？停用後可以隨時在設定中重新啟用。",
+  },
+  URLCommand: {
+    Code: "檢測到連結中已經包含訪問碼，是否自動填入？",
+    Settings: "檢測到連結中包含了預設設定，是否自動填入？",
   },
   UI: {
     Confirm: "確認",
@@ -215,8 +449,15 @@ const tw: PartialLocaleType = {
     Close: "關閉",
     Create: "新增",
     Edit: "編輯",
+    Export: "導出",
+    Import: "導入",
+    Sync: "同步",
+    Config: "設定",
   },
   Exporter: {
+    Description: {
+      Title: "只有清除上下文之後的消息會被展示",
+    },
     Model: "模型",
     Messages: "訊息",
     Topic: "主題",
@@ -224,4 +465,14 @@ const tw: PartialLocaleType = {
   },
 };
 
+type DeepPartial<T> = T extends object
+  ? {
+    [P in keyof T]?: DeepPartial<T[P]>;
+  }
+  : T;
+
+export type LocaleType = typeof tw;
+export type PartialLocaleType = DeepPartial<typeof tw>;
+
 export default tw;
+// Translated by @chunkiuuu, feel free the submit new pr if there are typo/incorrect translations :D

@@ -1,6 +1,5 @@
 import { STORAGE_KEY } from "@/app/constant";
 import { SyncStore } from "@/app/store/sync";
-import { corsFetch } from "../cors";
 
 export type WebDAVConfig = SyncStore["webdav"];
 export type WebDavClient = ReturnType<typeof createWebDavClient>;
@@ -15,10 +14,9 @@ export function createWebDavClient(store: SyncStore) {
   return {
     async check() {
       try {
-        const res = await corsFetch(this.path(folder), {
+        const res = await fetch(this.path(folder, proxyUrl), {
           method: "MKCOL",
           headers: this.headers(),
-          proxyUrl,
         });
         console.log("[WebDav] check", res.status, res.statusText);
         return [201, 200, 404, 301, 302, 307, 308].includes(res.status);
@@ -30,10 +28,9 @@ export function createWebDavClient(store: SyncStore) {
     },
 
     async get(key: string) {
-      const res = await corsFetch(this.path(fileName), {
+      const res = await fetch(this.path(fileName, proxyUrl), {
         method: "GET",
         headers: this.headers(),
-        proxyUrl,
       });
 
       console.log("[WebDav] get key = ", key, res.status, res.statusText);
@@ -42,11 +39,10 @@ export function createWebDavClient(store: SyncStore) {
     },
 
     async set(key: string, value: string) {
-      const res = await corsFetch(this.path(fileName), {
+      const res = await fetch(this.path(fileName, proxyUrl), {
         method: "PUT",
         headers: this.headers(),
         body: value,
-        proxyUrl,
       });
 
       console.log("[WebDav] set key = ", key, res.status, res.statusText);
@@ -59,18 +55,28 @@ export function createWebDavClient(store: SyncStore) {
         authorization: `Basic ${auth}`,
       };
     },
-    path(path: string) {
-      let url = config.endpoint;
-
-      if (!url.endsWith("/")) {
-        url += "/";
+    path(path: string, proxyUrl: string = "") {
+      if (!path.endsWith("/")) {
+        path += "/";
       }
-
       if (path.startsWith("/")) {
         path = path.slice(1);
       }
 
-      return url + path;
+      if (proxyUrl.length > 0 && !proxyUrl.endsWith("/")) {
+        proxyUrl += "/";
+      }
+
+      let url;
+      if (proxyUrl.length > 0 || proxyUrl === "/") {
+        let u = new URL(proxyUrl + "/api/webdav/" + path);
+        // add query params
+        u.searchParams.append("endpoint", config.endpoint);
+        url = u.toString();
+      } else {
+        url = "/api/upstash/" + path + "?endpoint=" + config.endpoint;
+      }
+      return url;
     },
   };
 }

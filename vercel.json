@@ -1,24 +1,5 @@
 {
     "github": {
         "silent": true
-    },
-    "headers": [
-        {
-            "source": "/(.*)",
-            "headers": [
-                {
-                    "key": "X-Real-IP",
-                    "value": "$remote_addr"
-                },
-                {
-                    "key": "X-Forwarded-For",
-                    "value": "$proxy_add_x_forwarded_for"
-                },
-                {
-                    "key": "Host",
-                    "value": "$http_host"
-                }
-            ]
-        }
-    ]
+    }
 }

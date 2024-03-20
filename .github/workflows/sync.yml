@@ -24,7 +24,7 @@ jobs:
         id: sync
         uses: aormsby/Fork-Sync-With-Upstream-action@v3.4
         with:
-          upstream_sync_repo: Yidadaa/ChatGPT-Next-Web
+          upstream_sync_repo: ChatGPTNextWeb/ChatGPT-Next-Web
           upstream_sync_branch: main
           target_sync_branch: main
           target_repo_token: ${{ secrets.GITHUB_TOKEN }} # automatically generated, no need to set

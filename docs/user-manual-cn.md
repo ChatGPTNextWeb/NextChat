@@ -2,7 +2,7 @@
 
 > No english version yet, please read this doc with ChatGPT or other translation tools.
 
-本文档用于解释 ChatGPT Next Web 的部分功能介绍和设计原则。
+本文档用于解释 NextChat 的部分功能介绍和设计原则。
 
 ## 面具 (Mask)
 
@@ -22,7 +22,7 @@
 
 编辑步骤如下：
 
-1. 在 ChatGPT Next Web 中配置好一个面具；
+1. 在 NextChat 中配置好一个面具；
 2. 使用面具编辑页面的下载按钮，将面具保存为 JSON 格式；
 3. 让 ChatGPT 帮你将 json 文件格式化为对应的 ts 代码；
 4. 放入对应的 .ts 文件。

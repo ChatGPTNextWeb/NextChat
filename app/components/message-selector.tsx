@@ -7,6 +7,7 @@ import { MaskAvatar } from "./mask";
 import Locale from "../locales";
 
 import styles from "./message-selector.module.scss";
+import { getMessageTextContent } from "../utils";
 
 function useShiftRange() {
   const [startIndex, setStartIndex] = useState<number>();
@@ -103,7 +104,9 @@ export function MessageSelector(props: {
     const searchResults = new Set<string>();
     if (text.length > 0) {
       messages.forEach((m) =>
-        m.content.includes(text) ? searchResults.add(m.id!) : null,
+        getMessageTextContent(m).includes(text)
+          ? searchResults.add(m.id!)
+          : null,
       );
     }
     setSearchIds(searchResults);
@@ -219,7 +222,7 @@ export function MessageSelector(props: {
                   {new Date(m.date).toLocaleString()}
                 </div>
                 <div className={`${styles["content"]} one-line`}>
-                  {m.content}
+                  {getMessageTextContent(m)}
                 </div>
               </div>
 

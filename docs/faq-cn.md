@@ -23,7 +23,7 @@ Docker 版本相当于稳定版，latest Docker 总是与 latest release version
 ## 如何修改 Vercel 环境变量
 
 - 进入 vercel 的控制台页面；
-- 选中你的 chatgpt next web 项目；
+- 选中你的 NextChat 项目；
 - 点击页面头部的 Settings 选项；
 - 找到侧边栏的 Environment Variables 选项；
 - 修改对应的值即可。
