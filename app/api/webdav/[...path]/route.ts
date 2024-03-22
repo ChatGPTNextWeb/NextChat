@@ -12,17 +12,28 @@ async function handle(
 
   const requestUrl = new URL(req.url);
   let endpoint = requestUrl.searchParams.get("endpoint");
-  if (!endpoint?.endsWith("/")) {
-    endpoint += "/";
+
+  // Validate the endpoint to prevent potential SSRF attacks
+  if (!endpoint || !endpoint.startsWith("/")) {
+    return NextResponse.json(
+      {
+        error: true,
+        msg: "Invalid endpoint",
+      },
+      {
+        status: 400,
+      },
+    );
   }
   const endpointPath = params.path.join("/");
+  const targetPath = `${endpoint}/${endpointPath}`;
 
   // only allow MKCOL, GET, PUT
   if (req.method !== "MKCOL" && req.method !== "GET" && req.method !== "PUT") {
     return NextResponse.json(
       {
         error: true,
-        msg: "you are not allowed to request " + params.path.join("/"),
+        msg: "you are not allowed to request " + targetPath,
       },
       {
         status: 403,
@@ -32,13 +43,13 @@ async function handle(
 
   // for MKCOL request, only allow request ${folder}
   if (
-    req.method == "MKCOL" &&
-    !new URL(endpointPath).pathname.endsWith(folder)
+    req.method === "MKCOL" &&
+     !targetPath.endsWith(folder)
   ) {
     return NextResponse.json(
       {
         error: true,
-        msg: "you are not allowed to request " + params.path.join("/"),
+        msg: "you are not allowed to request " + targetPath,
       },
       {
         status: 403,
@@ -48,13 +59,13 @@ async function handle(
 
   // for GET request, only allow request ending with fileName
   if (
-    req.method == "GET" &&
-    !new URL(endpointPath).pathname.endsWith(fileName)
+    req.method === "GET" &&
+     !targetPath.endsWith(fileName)
   ) {
     return NextResponse.json(
       {
         error: true,
-        msg: "you are not allowed to request " + params.path.join("/"),
+        msg: "you are not allowed to request " + targetPath,
       },
       {
         status: 403,
@@ -64,13 +75,13 @@ async function handle(
 
   //   for PUT request, only allow request ending with fileName
   if (
-    req.method == "PUT" &&
-    !new URL(endpointPath).pathname.endsWith(fileName)
+    req.method === "PUT" &&
+     !targetPath.endsWith(fileName)
   ) {
     return NextResponse.json(
       {
         error: true,
-        msg: "you are not allowed to request " + params.path.join("/"),
+        msg: "you are not allowed to request " + targetPath,
       },
       {
         status: 403,
@@ -78,7 +89,7 @@ async function handle(
     );
   }
 
-  const targetUrl = `${endpoint + endpointPath}`;
+  const targetUrl = `${endpoint}/${endpointPath}`;
 
   const method = req.method;
   const shouldNotHaveBody = ["get", "head"].includes(
