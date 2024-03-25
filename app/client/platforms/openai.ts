@@ -151,6 +151,9 @@ export class ChatGPTApi implements LLMApi {
           if (finished || controller.signal.aborted) {
             responseText += remainText;
             console.log("[Response Animation] finished");
+            if (responseText?.length === 0) {
+              options.onError?.(new Error("empty response from server"));
+            }
             return;
           }
 

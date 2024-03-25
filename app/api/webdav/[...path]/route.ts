@@ -101,6 +101,7 @@ async function handle(
       authorization: req.headers.get("authorization") ?? "",
     },
     body: shouldNotHaveBody ? null : req.body,
+    redirect: 'manual',
     method,
     // @ts-ignore
     duplex: "half",
