@@ -404,7 +404,16 @@ export function MaskPage() {
   const maskStore = useMaskStore();
   const chatStore = useChatStore();
 
-  const [filterLang, setFilterLang] = useState<Lang>();
+  const [filterLang, setFilterLang] = useState<Lang | undefined>(
+    localStorage.getItem("Mask-language") as Lang | undefined,
+  );
+  useEffect(() => {
+    if (filterLang) {
+      localStorage.setItem("Mask-language", filterLang);
+    } else {
+      localStorage.removeItem("Mask-language");
+    }
+  }, [filterLang]);
 
   const allMasks = maskStore
     .getAll()
