@@ -2,16 +2,17 @@ import { useEffect, useState } from "react";
 import { showToast } from "./components/ui-lib";
 import Locale from "./locales";
 import { RequestMessage } from "./client/api";
-import { DEFAULT_MODELS } from "./constant";
 
 export function trimTopic(topic: string) {
   // Fix an issue where double quotes still show in the Indonesian language
   // This will remove the specified punctuation from the end of the string
   // and also trim quotes from both the start and end if they exist.
-  return topic
-    // fix for gemini
-    .replace(/^["“”*]+|["“”*]+$/g, "")
-    .replace(/[，。！？”“"、,.!?*]*$/, "");
+  return (
+    topic
+      // fix for gemini
+      .replace(/^["“”*]+|["“”*]+$/g, "")
+      .replace(/[，。！？”“"、,.!?*]*$/, "")
+  );
 }
 
 export async function copyToClipboard(text: string) {
@@ -57,10 +58,7 @@ export async function downloadAs(text: string, filename: string) {
 
     if (result !== null) {
       try {
-        await window.__TAURI__.fs.writeTextFile(
-          result,
-          text
-        );
+        await window.__TAURI__.fs.writeTextFile(result, text);
         showToast(Locale.Download.Success);
       } catch (error) {
         showToast(Locale.Download.Failed);
@@ -293,10 +291,7 @@ export function getMessageImages(message: RequestMessage): string[] {
 
 export function isVisionModel(model: string) {
   // Note: This is a better way using the TypeScript feature instead of `&&` or `||` (ts v5.5.0-dev.20240314 I've been using)
-  const visionKeywords = [
-    "vision",
-    "claude-3",
-  ];
+  const visionKeywords = ["vision", "claude-3"];
 
-  return visionKeywords.some(keyword => model.includes(keyword));
+  return visionKeywords.some((keyword) => model.includes(keyword));
 }

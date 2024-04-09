@@ -317,6 +317,23 @@ const sk: PartialLocaleType = {
           SubTitle: "Skontrolujte svoju verziu API v Azure konzole",
         },
       },
+      Anthropic: {
+        ApiKey: {
+          Title: "API kľúč Anthropic",
+          SubTitle: "Skontrolujte svoj API kľúč v Anthropic konzole",
+          Placeholder: "API kľúč Anthropic",
+        },
+
+        Endpoint: {
+          Title: "Adresa koncového bodu",
+          SubTitle: "Príklad:",
+        },
+
+        ApiVerion: {
+          Title: "Verzia API (claude verzia API)",
+          SubTitle: "Vyberte špecifickú verziu časti",
+        },
+      },
       CustomModel: {
         Title: "Vlastné modely",
         SubTitle: "Možnosti vlastného modelu, oddelené čiarkou",

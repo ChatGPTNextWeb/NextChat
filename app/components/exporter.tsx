@@ -315,6 +315,8 @@ export function PreviewActions(props: {
     var api: ClientApi;
     if (config.modelConfig.model.startsWith("gemini")) {
       api = new ClientApi(ModelProvider.GeminiPro);
+    } else if (config.modelConfig.model.startsWith("claude")) {
+      api = new ClientApi(ModelProvider.Claude);
     } else {
       api = new ClientApi(ModelProvider.GPT);
     }

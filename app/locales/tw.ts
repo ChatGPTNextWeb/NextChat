@@ -314,6 +314,23 @@ const tw = {
           SubTitle: "選擇指定的部分版本",
         },
       },
+      Anthropic: {
+        ApiKey: {
+          Title: "API 密鑰",
+          SubTitle: "從 Anthropic AI 獲取您的 API 密鑰",
+          Placeholder: "Anthropic API Key",
+        },
+
+        Endpoint: {
+          Title: "終端地址",
+          SubTitle: "示例：",
+        },
+
+        ApiVerion: {
+          Title: "API 版本 (claude api version)",
+          SubTitle: "選擇一個特定的 API 版本输入",
+        },
+      },
       Google: {
         ApiKey: {
           Title: "API 密鑰",
@@ -467,8 +484,8 @@ const tw = {
 
 type DeepPartial<T> = T extends object
   ? {
-    [P in keyof T]?: DeepPartial<T[P]>;
-  }
+      [P in keyof T]?: DeepPartial<T[P]>;
+    }
   : T;
 
 export type LocaleType = typeof tw;

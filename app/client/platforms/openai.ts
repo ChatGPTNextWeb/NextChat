@@ -40,6 +40,20 @@ export interface OpenAIListModelResponse {
   }>;
 }
 
+interface RequestPayload {
+  messages: {
+    role: "system" | "user" | "assistant";
+    content: string | MultimodalContent[];
+  }[];
+  stream?: boolean;
+  model: string;
+  temperature: number;
+  presence_penalty: number;
+  frequency_penalty: number;
+  top_p: number;
+  max_tokens?: number;
+}
+
 export class ChatGPTApi implements LLMApi {
   private disableListModels = true;
 
@@ -98,7 +112,7 @@ export class ChatGPTApi implements LLMApi {
       },
     };
 
-    const requestPayload = {
+    const requestPayload: RequestPayload = {
       messages,
       stream: options.config.stream,
       model: modelConfig.model,
@@ -112,12 +126,7 @@ export class ChatGPTApi implements LLMApi {
 
     // add max_tokens to vision model
     if (visionModel) {
-      Object.defineProperty(requestPayload, "max_tokens", {
-        enumerable: true,
-        configurable: true,
-        writable: true,
-        value: modelConfig.max_tokens,
-      });
+      requestPayload["max_tokens"] = Math.max(modelConfig.max_tokens, 4000);
     }
 
     console.log("[Request] openai payload: ", requestPayload);
@@ -229,7 +238,9 @@ export class ChatGPTApi implements LLMApi {
             const text = msg.data;
             try {
               const json = JSON.parse(text);
-              const choices = json.choices as Array<{ delta: { content: string } }>;
+              const choices = json.choices as Array<{
+                delta: { content: string };
+              }>;
               const delta = choices[0]?.delta?.content;
               const textmoderation = json?.prompt_filter_results;
 
@@ -237,9 +248,17 @@ export class ChatGPTApi implements LLMApi {
                 remainText += delta;
               }
 
-              if (textmoderation && textmoderation.length > 0 && ServiceProvider.Azure) {
-                const contentFilterResults = textmoderation[0]?.content_filter_results;
-                console.log(`[${ServiceProvider.Azure}] [Text Moderation] flagged categories result:`, contentFilterResults);
+              if (
+                textmoderation &&
+                textmoderation.length > 0 &&
+                ServiceProvider.Azure
+              ) {
+                const contentFilterResults =
+                  textmoderation[0]?.content_filter_results;
+                console.log(
+                  `[${ServiceProvider.Azure}] [Text Moderation] flagged categories result:`,
+                  contentFilterResults,
+                );
               }
             } catch (e) {
               console.error("[Request] parse error", text, msg);
