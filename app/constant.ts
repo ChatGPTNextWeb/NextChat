@@ -118,7 +118,7 @@ You are ChatGPT, a large language model trained by {{ServiceProvider}}.
 Knowledge cutoff: {{cutoff}}
 Current model: {{model}}
 Current time: {{time}}
-Latex inline: \(x^2\) 
+Latex inline: \\(x^2\\) 
 Latex block: $$e=mc^2$$
 `;
 
@@ -366,3 +366,5 @@ export const DEFAULT_MODELS = [
 
 export const CHAT_PAGE_SIZE = 15;
 export const MAX_RENDER_MSG_COUNT = 45;
+
+export const internalWhiteWebDavEndpoints = ["https://dav.jianguoyun.com"];

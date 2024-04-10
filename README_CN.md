@@ -114,6 +114,18 @@ Google Gemini Pro 密钥.
 
 Google Gemini Pro Api Url.
 
+### `ANTHROPIC_API_KEY` (optional)
+
+anthropic claude Api Key.
+
+### `ANTHROPIC_API_VERSION` (optional)
+
+anthropic claude Api version.
+
+### `ANTHROPIC_URL` (optional)
+
+anthropic claude Api Url.
+
 ### `HIDE_USER_API_KEY` （可选）
 
 如果你不想让用户自行填入 API Key，将此环境变量设置为 1 即可。
@@ -129,6 +141,13 @@ Google Gemini Pro Api Url.
 ### `DISABLE_FAST_LINK` （可选）
 
 如果你想禁用从链接解析预制设置，将此环境变量设置为 1 即可。
+
+### `WHITE_WEBDEV_ENDPOINTS` (可选)
+
+如果你想增加允许访问的webdav服务地址，可以使用该选项，格式要求：
+- 每一个地址必须是一个完整的 endpoint
+> `https://xxxx/xxx`
+- 多个地址以`,`相连
 
 ### `CUSTOM_MODELS` （可选）
 
