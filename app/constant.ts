@@ -367,4 +367,14 @@ export const DEFAULT_MODELS = [
 export const CHAT_PAGE_SIZE = 15;
 export const MAX_RENDER_MSG_COUNT = 45;
 
-export const internalWhiteWebDavEndpoints = ["https://dav.jianguoyun.com"];
+// some famous webdav endpoints
+export const internalWhiteWebDavEndpoints = [
+  "https://dav.jianguoyun.com/dav/",
+  "https://dav.dropdav.com/",
+  "https://dav.box.com/dav",
+  "https://nanao.teracloud.jp/dav/",
+  "https://webdav.4shared.com/",
+  "https://dav.idrivesync.com",
+  "https://webdav.yandex.com",
+  "https://app.koofr.net/dav/Koofr",
+];

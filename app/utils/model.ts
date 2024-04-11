@@ -22,6 +22,12 @@ export function collectModelTable(
     };
   });
 
+  const customProvider = (modelName: string) => ({
+    id: modelName,
+    providerName: "",
+    providerType: "custom",
+  });
+
   // server custom models
   customModels
     .split(",")
@@ -34,13 +40,15 @@ export function collectModelTable(
 
       // enable or disable all models
       if (name === "all") {
-        Object.values(modelTable).forEach((model) => (model.available = available));
+        Object.values(modelTable).forEach(
+          (model) => (model.available = available),
+        );
       } else {
         modelTable[name] = {
           name,
           displayName: displayName || name,
           available,
-          provider: modelTable[name]?.provider, // Use optional chaining
+          provider: modelTable[name]?.provider ?? customProvider(name), // Use optional chaining
         };
       }
     });
