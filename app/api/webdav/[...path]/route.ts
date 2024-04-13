@@ -42,7 +42,7 @@ async function handle(
   }
 
   const endpointPath = params.path.join("/");
-  const targetPath = `${endpoint}/${endpointPath}`;
+  const targetPath = `${endpoint}${endpointPath}`;
 
   // only allow MKCOL, GET, PUT
   if (req.method !== "MKCOL" && req.method !== "GET" && req.method !== "PUT") {
@@ -96,7 +96,7 @@ async function handle(
     );
   }
 
-  const targetUrl = `${endpoint}/${endpointPath}`;
+  const targetUrl = targetPath;
 
   const method = req.method;
   const shouldNotHaveBody = ["get", "head"].includes(
@@ -114,12 +114,23 @@ async function handle(
     duplex: "half",
   };
 
-  const fetchResult = await fetch(targetUrl, fetchOptions);
+  let fetchResult;
 
-  console.log("[Any Proxy]", targetUrl, {
-    status: fetchResult.status,
-    statusText: fetchResult.statusText,
-  });
+  try {
+    fetchResult = await fetch(targetUrl, fetchOptions);
+  } finally {
+    console.log(
+      "[Any Proxy]",
+      targetUrl,
+      {
+        method: req.method,
+      },
+      {
+        status: fetchResult?.status,
+        statusText: fetchResult?.statusText,
+      },
+    );
+  }
 
   return fetchResult;
 }

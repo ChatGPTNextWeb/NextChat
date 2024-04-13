@@ -63,9 +63,9 @@ export function createWebDavClient(store: SyncStore) {
       };
     },
     path(path: string, proxyUrl: string = "") {
-      if (!path.endsWith("/")) {
-        path += "/";
-      }
+      // if (!path.endsWith("/")) {
+      //   path += "/";
+      // }
       if (path.startsWith("/")) {
         path = path.slice(1);
       }
@@ -76,7 +76,7 @@ export function createWebDavClient(store: SyncStore) {
 
       let url;
       if (proxyUrl.length > 0 || proxyUrl === "/") {
-        let u = new URL(proxyUrl + "/api/webdav/" + path);
+        let u = new URL(proxyUrl + "api/webdav/" + path);
         // add query params
         u.searchParams.append("endpoint", config.endpoint);
         url = u.toString();
