@@ -290,7 +290,15 @@ export function getMessageImages(message: RequestMessage): string[] {
 }
 
 export function isVisionModel(model: string) {
-  const visionKeywords = ["vision", "claude-3"];
+  
+  // Note: This is a better way using the TypeScript feature instead of `&&` or `||` (ts v5.5.0-dev.20240314 I've been using)
+
+  const visionKeywords = [
+    "vision",
+    "claude-3",
+    "gemini-1.5-pro",
+  ];
+
   const isGpt4Turbo = model.includes("gpt-4-turbo") && !model.includes("preview");
 
   return visionKeywords.some((keyword) => model.includes(keyword)) || isGpt4Turbo;
