@@ -63,26 +63,26 @@ export function createWebDavClient(store: SyncStore) {
       };
     },
     path(path: string, proxyUrl: string = "") {
-      // if (!path.endsWith("/")) {
-      //   path += "/";
-      // }
       if (path.startsWith("/")) {
         path = path.slice(1);
       }
 
-      if (proxyUrl.length > 0 && !proxyUrl.endsWith("/")) {
-        proxyUrl += "/";
+      if (proxyUrl.endsWith("/")) {
+        proxyUrl = proxyUrl.slice(0, -1);
       }
 
       let url;
-      if (proxyUrl.length > 0 || proxyUrl === "/") {
-        let u = new URL(proxyUrl + "api/webdav/" + path);
+      const pathPrefix = "/api/webdav/";
+
+      try {
+        let u = new URL(proxyUrl + pathPrefix + path);
         // add query params
         u.searchParams.append("endpoint", config.endpoint);
         url = u.toString();
-      } else {
-        url = "/api/upstash/" + path + "?endpoint=" + config.endpoint;
+      } catch (e) {
+        url = pathPrefix + path + "?endpoint=" + config.endpoint;
       }
+
       return url;
     },
   };

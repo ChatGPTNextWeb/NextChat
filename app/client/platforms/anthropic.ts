@@ -348,7 +348,11 @@ export class ClaudeApi implements LLMApi {
   path(path: string): string {
     const accessStore = useAccessStore.getState();
 
-    let baseUrl: string = accessStore.anthropicUrl;
+    let baseUrl: string = "";
+
+    if (accessStore.useCustomConfig) {
+      baseUrl = accessStore.anthropicUrl;
+    }
 
     // if endpoint is empty, use default endpoint
     if (baseUrl.trim().length === 0) {
