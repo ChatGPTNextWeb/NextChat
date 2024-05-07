@@ -161,6 +161,13 @@ export class ClaudeApi implements LLMApi {
         };
       });
 
+    if (prompt[0]?.role === "assistant") {
+      prompt.unshift({
+        role: "user",
+        content: ";",
+      });
+    }
+
     const requestBody: AnthropicChatRequest = {
       messages: prompt,
       stream: shouldStream,

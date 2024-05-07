@@ -21,6 +21,8 @@ import { estimateTokenLength } from "../utils/token";
 import { nanoid } from "nanoid";
 import { createPersistStore } from "../utils/store";
 import { identifyDefaultClaudeModel } from "../utils/checkers";
+import { collectModelsWithDefaultModel } from "../utils/model";
+import { useAccessStore } from "./access";
 
 export type ChatMessage = RequestMessage & {
   date: string;
@@ -87,9 +89,19 @@ function createEmptySession(): ChatSession {
 function getSummarizeModel(currentModel: string) {
   // if it is using gpt-* models, force to use 3.5 to summarize
   if (currentModel.startsWith("gpt")) {
-    return SUMMARIZE_MODEL;
+    const configStore = useAppConfig.getState();
+    const accessStore = useAccessStore.getState();
+    const allModel = collectModelsWithDefaultModel(
+      configStore.models,
+      [configStore.customModels, accessStore.customModels].join(","),
+      accessStore.defaultModel,
+    );
+    const summarizeModel = allModel.find(
+      (m) => m.name === SUMMARIZE_MODEL && m.available,
+    );
+    return summarizeModel?.name ?? currentModel;
   }
-  if (currentModel.startsWith("gemini-pro")) {
+  if (currentModel.startsWith("gemini")) {
     return GEMINI_SUMMARIZE_MODEL;
   }
   return currentModel;
