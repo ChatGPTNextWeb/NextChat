@@ -26,10 +26,8 @@ export enum Theme {
 }
 
 export const DEFAULT_CONFIG = {
-
-//   submitKey: SubmitKey.MetaEnter as SubmitKey,
+  //   submitKey: SubmitKey.MetaEnter as SubmitKey,
   lastUpdate: Date.now(), // timestamp, to merge state
-  
   submitKey: isMacOS() ? SubmitKey.MetaEnter : SubmitKey.CtrlEnter,
   avatar: "1f603",
   fontSize: 14,
@@ -93,7 +91,7 @@ export const ModalConfigValidator = {
     return limitNumber(x, -2, 2, 0);
   },
   temperature(x: number) {
-    return limitNumber(x, 0, 1, 1);
+    return limitNumber(x, 0, 2, 1);
   },
   top_p(x: number) {
     return limitNumber(x, 0, 1, 1);

@@ -14,17 +14,24 @@
 
 .popover-content {
   position: absolute;
+  width: 350px;
   animation: slide-in 0.3s ease;
   right: 0;
   top: calc(100% + 10px);
 }
-
+@media screen and (max-width: 600px) {
+  .popover-content {
+    width: auto;
+  }
+}
 .popover-mask {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
+  background-color: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(5px);
 }
 
 .list-item {

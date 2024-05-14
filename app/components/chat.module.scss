@@ -1,5 +1,47 @@
 @import "../styles/animation.scss";
 
+.attach-images {
+  position: absolute;
+  left: 30px;
+  bottom: 32px;
+  display: flex;
+}
+
+.attach-image {
+  cursor: default;
+  width: 64px;
+  height: 64px;
+  border: rgba($color: #888, $alpha: 0.2) 1px solid;
+  border-radius: 5px;
+  margin-right: 10px;
+  background-size: cover;
+  background-position: center;
+  background-color: var(--white);
+
+  .attach-image-mask {
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: all ease 0.2s;
+  }
+
+  .attach-image-mask:hover {
+    opacity: 1;
+  }
+
+  .delete-image {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    float: right;
+    background-color: var(--white);
+  }
+}
+
 .chat-input-actions {
   display: flex;
   flex-wrap: wrap;
@@ -189,12 +231,10 @@
 
   animation: slide-in ease 0.3s;
 
-  $linear: linear-gradient(
-    to right,
-    rgba(0, 0, 0, 0),
-    rgba(0, 0, 0, 1),
-    rgba(0, 0, 0, 0)
-  );
+  $linear: linear-gradient(to right,
+      rgba(0, 0, 0, 0),
+      rgba(0, 0, 0, 1),
+      rgba(0, 0, 0, 0));
   mask-image: $linear;
 
   @mixin show {
@@ -327,7 +367,7 @@
   }
 }
 
-.chat-message-user > .chat-message-container {
+.chat-message-user>.chat-message-container {
   align-items: flex-end;
 }
 
@@ -349,6 +389,7 @@
       padding: 7px;
     }
   }
+
   /* Specific styles for iOS devices */
   @media screen and (max-device-width: 812px) and (-webkit-min-device-pixel-ratio: 2) {
     @supports (-webkit-touch-callout: none) {
@@ -381,6 +422,64 @@
   transition: all ease 0.3s;
 }
 
+.chat-message-item-image {
+  width: 100%;
+  margin-top: 10px;
+}
+
+.chat-message-item-images {
+  width: 100%;
+  display: grid;
+  justify-content: left;
+  grid-gap: 10px;
+  grid-template-columns: repeat(var(--image-count), auto);
+  margin-top: 10px;
+}
+
+.chat-message-item-image-multi {
+  object-fit: cover;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.chat-message-item-image,
+.chat-message-item-image-multi {
+  box-sizing: border-box;
+  border-radius: 10px;
+  border: rgba($color: #888, $alpha: 0.2) 1px solid;
+}
+
+
+@media only screen and (max-width: 600px) {
+  $calc-image-width: calc(100vw/3*2/var(--image-count));
+
+  .chat-message-item-image-multi {
+    width: $calc-image-width;
+    height: $calc-image-width;
+  }
+  
+  .chat-message-item-image {
+    max-width: calc(100vw/3*2);
+  }
+}
+
+@media screen and (min-width: 600px) {
+  $max-image-width: calc(calc(1200px - var(--sidebar-width))/3*2/var(--image-count));
+  $image-width: calc(calc(var(--window-width) - var(--sidebar-width))/3*2/var(--image-count));
+
+  .chat-message-item-image-multi {
+    width: $image-width;
+    height: $image-width;
+    max-width: $max-image-width;
+    max-height: $max-image-width;
+  }
+
+  .chat-message-item-image {
+    max-width: calc(calc(1200px - var(--sidebar-width))/3*2);
+  }
+}
+
 .chat-message-action-date {
   font-size: 12px;
   opacity: 0.2;
@@ -395,7 +494,7 @@
   z-index: 1;
 }
 
-.chat-message-user > .chat-message-container > .chat-message-item {
+.chat-message-user>.chat-message-container>.chat-message-item {
   background-color: var(--second);
 
   &:hover {
@@ -460,6 +559,7 @@
 
       @include single-line();
     }
+
     .hint-content {
       font-size: 12px;
 
@@ -474,15 +574,26 @@
 }
 
 .chat-input-panel-inner {
+  cursor: text;
   display: flex;
   flex: 1;
+  border-radius: 10px;
+  border: var(--border-in-light);
+}
+
+.chat-input-panel-inner-attach {
+  padding-bottom: 80px;
+}
+
+.chat-input-panel-inner:has(.chat-input:focus) {
+  border: 1px solid var(--primary);
 }
 
 .chat-input {
   height: 100%;
   width: 100%;
   border-radius: 10px;
-  border: var(--border-in-light);
+  border: none;
   box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.03);
   background-color: var(--white);
   color: var(--black);
@@ -494,9 +605,7 @@
   min-height: 68px;
 }
 
-.chat-input:focus {
-  border: 1px solid var(--primary);
-}
+.chat-input:focus {}
 
 .chat-input-send {
   background-color: var(--primary);
