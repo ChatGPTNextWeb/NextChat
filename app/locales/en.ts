@@ -65,6 +65,7 @@ const en: LocaleType = {
       Masks: "Masks",
       Clear: "Clear Context",
       Settings: "Settings",
+      UploadImage: "Upload Images",
     },
     Rename: "Rename Chat",
     Typing: "Typing…",
@@ -295,7 +296,7 @@ const en: LocaleType = {
 
         Endpoint: {
           Title: "OpenAI Endpoint",
-          SubTitle: "Must starts with http(s):// or use /api/openai as default",
+          SubTitle: "Must start with http(s):// or use /api/openai as default",
         },
       },
       Azure: {
@@ -315,16 +316,12 @@ const en: LocaleType = {
           SubTitle: "Check your api version from azure console",
         },
       },
-      CustomModel: {
-        Title: "Custom Models",
-        SubTitle: "Custom model options, seperated by comma",
-      },
-      Google: {
+      Anthropic: {
         ApiKey: {
-          Title: "API Key",
+          Title: "Anthropic API Key",
           SubTitle:
-            "Bypass password access restrictions using a custom Google AI Studio API Key",
-          Placeholder: "Google AI Studio API Key",
+            "Use a custom Anthropic Key to bypass password access restrictions",
+          Placeholder: "Anthropic API Key",
         },
 
         Endpoint: {
@@ -333,8 +330,29 @@ const en: LocaleType = {
         },
 
         ApiVerion: {
-          Title: "API Version (gemini-pro api version)",
-          SubTitle: "Select a specific part version",
+          Title: "API Version (claude api version)",
+          SubTitle: "Select and input a specific API version",
+        },
+      },
+      CustomModel: {
+        Title: "Custom Models",
+        SubTitle: "Custom model options, seperated by comma",
+      },
+      Google: {
+        ApiKey: {
+          Title: "API Key",
+          SubTitle: "Obtain your API Key from Google AI",
+          Placeholder: "Enter your Google AI Studio API Key",
+        },
+
+        Endpoint: {
+          Title: "Endpoint Address",
+          SubTitle: "Example:",
+        },
+
+        ApiVersion: {
+          Title: "API Version (specific to gemini-pro)",
+          SubTitle: "Select a specific API version",
         },
       },
     },

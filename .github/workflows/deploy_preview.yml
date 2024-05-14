@@ -1,0 +1,84 @@
+name: VercelPreviewDeployment
+
+on:
+  pull_request_target:
+    types:
+      - opened
+      - synchronize
+      - reopened
+
+env:
+  VERCEL_TEAM: ${{ secrets.VERCEL_TEAM }}
+  VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+  VERCEL_PR_DOMAIN_SUFFIX: ${{ secrets.VERCEL_PR_DOMAIN_SUFFIX }}
+
+permissions:
+  contents: read
+  statuses: write
+  pull-requests: write
+
+jobs:
+  deploy-preview:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Extract branch name
+        shell: bash
+        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> "$GITHUB_OUTPUT"
+        id: extract_branch
+
+      - name: Hash branch name
+        uses: pplanel/hash-calculator-action@v1.3.1
+        id: hash_branch
+        with:
+          input: ${{ steps.extract_branch.outputs.branch }}
+          method: MD5
+
+      - name: Set Environment Variables
+        id: set_env
+        if: github.event_name == 'pull_request_target'
+        run: |
+          echo "VERCEL_ALIAS_DOMAIN=${{ github.event.pull_request.number }}-${{ github.workflow }}.${VERCEL_PR_DOMAIN_SUFFIX}" >> $GITHUB_OUTPUT
+
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        id: cache-npm
+        with:
+          path: ~/.npm
+          key: npm-${{ hashFiles('package-lock.json') }}
+          restore-keys: npm-
+
+      - name: Pull Vercel Environment Information
+        run: vercel pull --yes --environment=preview --token=${VERCEL_TOKEN}
+
+      - name: Deploy Project Artifacts to Vercel
+        id: vercel
+        env:
+          META_TAG: ${{ steps.hash_branch.outputs.digest }}-${{ github.run_number }}-${{ github.run_attempt}}
+        run: |
+          set -e
+          vercel pull --yes --environment=preview --token=${VERCEL_TOKEN}
+          vercel build --token=${VERCEL_TOKEN}
+          vercel deploy --prebuilt --archive=tgz --token=${VERCEL_TOKEN} --meta base_hash=${{ env.META_TAG }}
+
+          DEFAULT_URL=$(vercel ls --token=${VERCEL_TOKEN} --meta base_hash=${{ env.META_TAG }})
+          ALIAS_URL=$(vercel alias set ${DEFAULT_URL} ${{ steps.set_env.outputs.VERCEL_ALIAS_DOMAIN }} --token=${VERCEL_TOKEN} --scope ${VERCEL_TEAM}| awk '{print $3}')
+
+          echo "New preview URL: ${DEFAULT_URL}"
+          echo "New alias URL: ${ALIAS_URL}"
+          echo "VERCEL_URL=${ALIAS_URL}" >> "$GITHUB_OUTPUT"
+
+      - uses: mshick/add-pr-comment@v2
+        with:
+          message: |
+            Your build has completed!
+
+            [Preview deployment](${{ steps.vercel.outputs.VERCEL_URL }})

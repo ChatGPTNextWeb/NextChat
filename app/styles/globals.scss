@@ -86,6 +86,7 @@
     @include dark;
   }
 }
+
 html {
   height: var(--full-height);
 
@@ -109,6 +110,10 @@ body {
 
   @media only screen and (max-width: 600px) {
     background-color: var(--second);
+  }
+
+  *:focus-visible {
+    outline: none;
   }
 }
 

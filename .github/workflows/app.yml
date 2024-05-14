@@ -44,11 +44,8 @@ jobs:
             arch: x86_64
             rust_target: x86_64-unknown-linux-gnu
           - os: macos-latest
-            arch: x86_64
-            rust_target: x86_64-apple-darwin
-          - os: macos-latest
             arch: aarch64
-            rust_target: aarch64-apple-darwin
+            rust_target: x86_64-apple-darwin,aarch64-apple-darwin
           - os: windows-latest
             arch: x86_64
             rust_target: x86_64-pc-windows-msvc
@@ -60,13 +57,14 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18
+          cache: 'yarn'
       - name: install Rust stable
         uses: dtolnay/rust-toolchain@stable
         with:
           targets: ${{ matrix.config.rust_target }}
       - uses: Swatinem/rust-cache@v2
         with:
-          key: ${{ matrix.config.rust_target }}
+          key: ${{ matrix.config.os }}
       - name: install dependencies (ubuntu only)
         if: matrix.config.os == 'ubuntu-latest'
         run: |
@@ -79,8 +77,15 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAURI_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
           TAURI_KEY_PASSWORD: ${{ secrets.TAURI_KEY_PASSWORD }}
+          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+          APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
         with:
           releaseId: ${{ needs.create-release.outputs.release_id }}
+          args: ${{ matrix.config.os == 'macos-latest' && '--target universal-apple-darwin' || '' }}
 
   publish-release:
     permissions:

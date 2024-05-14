@@ -1,0 +1,40 @@
+name: Removedeploypreview
+
+permissions:
+  contents: read
+  statuses: write
+  pull-requests: write
+
+env:
+  VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+on:
+  pull_request_target:
+    types:
+      - closed
+
+jobs:
+  delete-deployments:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Extract branch name
+        shell: bash
+        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+        id: extract_branch
+
+      - name: Hash branch name
+        uses: pplanel/hash-calculator-action@v1.3.1
+        id: hash_branch
+        with:
+          input: ${{ steps.extract_branch.outputs.branch }}
+          method: MD5
+
+      - name: Call the delete-deployment-preview.sh script
+        env:
+          META_TAG: ${{ steps.hash_branch.outputs.digest }}
+        run: |
+          bash ./scripts/delete-deployment-preview.sh

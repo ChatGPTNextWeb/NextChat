@@ -92,7 +92,7 @@ export function ModelConfigList(props: {
         ></input>
       </ListItem>
 
-      {props.modelConfig.model === "gemini-pro" ? null : (
+      {props.modelConfig.model.startsWith("gemini") ? null : (
         <>
           <ListItem
             title={Locale.Settings.PresencePenalty.Title}

@@ -12,7 +12,12 @@ import {
   showToast,
 } from "./ui-lib";
 import { IconButton } from "./button";
-import { copyToClipboard, downloadAs, useMobileScreen } from "../utils";
+import {
+  copyToClipboard,
+  downloadAs,
+  getMessageImages,
+  useMobileScreen,
+} from "../utils";
 
 import CopyIcon from "../icons/copy.svg";
 import LoadingIcon from "../icons/three-dots.svg";
@@ -34,6 +39,8 @@ import { prettyObject } from "../utils/format";
 import { EXPORT_MESSAGE_CLASS_NAME, ModelProvider } from "../constant";
 import { getClientConfig } from "../config/client";
 import { ClientApi } from "../client/api";
+import { getMessageTextContent } from "../utils";
+import { identifyDefaultClaudeModel } from "../utils/checkers";
 
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
@@ -287,7 +294,7 @@ export function RenderExport(props: {
           id={`${m.role}:${i}`}
           className={EXPORT_MESSAGE_CLASS_NAME}
         >
-          <Markdown content={m.content} defaultShow />
+          <Markdown content={getMessageTextContent(m)} defaultShow />
         </div>
       ))}
     </div>
@@ -307,8 +314,10 @@ export function PreviewActions(props: {
     setShouldExport(false);
 
     var api: ClientApi;
-    if (config.modelConfig.model === "gemini-pro") {
+    if (config.modelConfig.model.startsWith("gemini")) {
       api = new ClientApi(ModelProvider.GeminiPro);
+    } else if (identifyDefaultClaudeModel(config.modelConfig.model)) {
+      api = new ClientApi(ModelProvider.Claude);
     } else {
       api = new ClientApi(ModelProvider.GPT);
     }
@@ -580,10 +589,37 @@ export function ImagePreviewer(props: {
 
               <div className={styles["body"]}>
                 <Markdown
-                  content={m.content}
+                  content={getMessageTextContent(m)}
                   fontSize={config.fontSize}
                   defaultShow
                 />
+                {getMessageImages(m).length == 1 && (
+                  <img
+                    key={i}
+                    src={getMessageImages(m)[0]}
+                    alt="message"
+                    className={styles["message-image"]}
+                  />
+                )}
+                {getMessageImages(m).length > 1 && (
+                  <div
+                    className={styles["message-images"]}
+                    style={
+                      {
+                        "--image-count": getMessageImages(m).length,
+                      } as React.CSSProperties
+                    }
+                  >
+                    {getMessageImages(m).map((src, i) => (
+                      <img
+                        key={i}
+                        src={src}
+                        alt="message"
+                        className={styles["message-image-multi"]}
+                      />
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           );
@@ -602,8 +638,10 @@ export function MarkdownPreviewer(props: {
     props.messages
       .map((m) => {
         return m.role === "user"
-          ? `## ${Locale.Export.MessageFromYou}:\n${m.content}`
-          : `## ${Locale.Export.MessageFromChatGPT}:\n${m.content.trim()}`;
+          ? `## ${Locale.Export.MessageFromYou}:\n${getMessageTextContent(m)}`
+          : `## ${Locale.Export.MessageFromChatGPT}:\n${getMessageTextContent(
+              m,
+            ).trim()}`;
       })
       .join("\n\n");
 
