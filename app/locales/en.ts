@@ -296,7 +296,7 @@ const en: LocaleType = {
 
         Endpoint: {
           Title: "OpenAI Endpoint",
-          SubTitle: "Must starts with http(s):// or use /api/openai as default",
+          SubTitle: "Must start with http(s):// or use /api/openai as default",
         },
       },
       Azure: {
