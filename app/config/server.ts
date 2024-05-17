@@ -34,6 +34,9 @@ declare global {
 
       // google tag manager
       GTM_ID?: string;
+
+      // custom template for preprocessing user input
+      DEFAULT_INPUT_TEMPLATE?: string;
     }
   }
 }
