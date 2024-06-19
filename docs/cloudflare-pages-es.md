@@ -12,7 +12,9 @@ Bifurca el proyecto en Github, luego inicia sesión en dash.cloudflare.com y ve 
 6.  Para "Nombre del proyecto" y "Rama de producción", puede utilizar los valores predeterminados o cambiarlos según sea necesario.
 7.  En Configuración de compilación, seleccione la opción Ajustes preestablecidos de Framework y seleccione Siguiente.js.
 8.  Debido a los errores de node:buffer, no use el "comando Construir" predeterminado por ahora. Utilice el siguiente comando:
-        npx https://prerelease-registry.devprod.cloudflare.dev/next-on-pages/runs/4930842298/npm-package-next-on-pages-230 --experimental-minify
+    ```
+    npx @cloudflare/next-on-pages --experimental-minify
+    ```
 9.  Para "Generar directorio de salida", utilice los valores predeterminados y no los modifique.
 10. No modifique el "Directorio raíz".
 11. Para "Variables de entorno", haga clic en ">" y luego haga clic en "Agregar variable". Rellene la siguiente información:
