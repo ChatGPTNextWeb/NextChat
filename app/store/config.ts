@@ -7,6 +7,7 @@ import {
   StoreKey,
 } from "../constant";
 import { createPersistStore } from "../utils/store";
+import { isMacOS } from "../utils";
 
 export type ModelType = (typeof DEFAULT_MODELS)[number]["name"];
 
