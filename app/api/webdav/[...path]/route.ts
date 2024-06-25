@@ -9,6 +9,14 @@ const mergedAllowedWebDavEndpoints = [
   ...config.allowedWebDevEndpoints,
 ].filter((domain) => Boolean(domain.trim()));
 
+const normalizeUrl = (url: string) => {
+  try {
+    return new URL(url);
+  } catch (err) {
+    return null;
+  }
+};
+
 async function handle(
   req: NextRequest,
   { params }: { params: { path: string[] } },
@@ -24,9 +32,15 @@ async function handle(
 
   // Validate the endpoint to prevent potential SSRF attacks
   if (
-    !mergedAllowedWebDavEndpoints.some(
-      (allowedEndpoint) => endpoint?.startsWith(allowedEndpoint),
-    )
+    !endpoint ||
+    !mergedAllowedWebDavEndpoints.some((allowedEndpoint) => {
+      const normalizedAllowedEndpoint = normalizeUrl(allowedEndpoint);
+      const normalizedEndpoint = normalizeUrl(endpoint as string);
+
+      return normalizedEndpoint &&
+        normalizedEndpoint.hostname === normalizedAllowedEndpoint?.hostname &&
+        normalizedEndpoint.pathname.startsWith(normalizedAllowedEndpoint.pathname);
+    })
   ) {
     return NextResponse.json(
       {
