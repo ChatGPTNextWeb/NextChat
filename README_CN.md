@@ -106,23 +106,23 @@ Azure 密钥。
 
 Azure Api 版本，你可以在这里找到：[Azure 文档](https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#chat-completions)。
 
-### `GOOGLE_API_KEY` (optional)
+### `GOOGLE_API_KEY` (可选)
 
 Google Gemini Pro 密钥.
 
-### `GOOGLE_URL` (optional)
+### `GOOGLE_URL` (可选)
 
 Google Gemini Pro Api Url.
 
-### `ANTHROPIC_API_KEY` (optional)
+### `ANTHROPIC_API_KEY` (可选)
 
 anthropic claude Api Key.
 
-### `ANTHROPIC_API_VERSION` (optional)
+### `ANTHROPIC_API_VERSION` (可选)
 
 anthropic claude Api version.
 
-### `ANTHROPIC_URL` (optional)
+### `ANTHROPIC_URL` (可选)
 
 anthropic claude Api Url.
 
@@ -156,7 +156,12 @@ anthropic claude Api Url.
 
 用来控制模型列表，使用 `+` 增加一个模型，使用 `-` 来隐藏一个模型，使用 `模型名=展示名` 来自定义模型的展示名，用英文逗号隔开。
 
+### `DEFAULT_MODEL` （可选）
+
+更改默认模型
+
 ### `DEFAULT_INPUT_TEMPLATE` （可选）
+
 自定义默认的 template，用于初始化『设置』中的『用户输入预处理』配置项
 
 ## 开发

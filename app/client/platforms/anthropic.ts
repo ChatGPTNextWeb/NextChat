@@ -1,5 +1,5 @@
 import { ACCESS_CODE_PREFIX, Anthropic, ApiPath } from "@/app/constant";
-import { ChatOptions, LLMApi, MultimodalContent } from "../api";
+import { ChatOptions, getHeaders, LLMApi, MultimodalContent,  } from "../api";
 import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
 import { getClientConfig } from "@/app/config/client";
 import { DEFAULT_API_HOST } from "@/app/constant";
@@ -190,11 +190,10 @@ export class ClaudeApi implements LLMApi {
       body: JSON.stringify(requestBody),
       signal: controller.signal,
       headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        "x-api-key": accessStore.anthropicApiKey,
+        ...getHeaders(),  // get common headers
         "anthropic-version": accessStore.anthropicApiVersion,
-        Authorization: getAuthKey(accessStore.anthropicApiKey),
+        // do not send `anthropicApiKey` in browser!!!
+        // Authorization: getAuthKey(accessStore.anthropicApiKey),
       },
     };
 
@@ -388,28 +387,4 @@ function trimEnd(s: string, end = " ") {
   }
 
   return s;
-}
-
-function bearer(value: string) {
-  return `Bearer ${value.trim()}`;
-}
-
-function getAuthKey(apiKey = "") {
-  const accessStore = useAccessStore.getState();
-  const isApp = !!getClientConfig()?.isApp;
-  let authKey = "";
-
-  if (apiKey) {
-    // use user's api key first
-    authKey = bearer(apiKey);
-  } else if (
-    accessStore.enabledAccessControl() &&
-    !isApp &&
-    !!accessStore.accessCode
-  ) {
-    // or use access code
-    authKey = bearer(ACCESS_CODE_PREFIX + accessStore.accessCode);
-  }
-
-  return authKey;
 }
