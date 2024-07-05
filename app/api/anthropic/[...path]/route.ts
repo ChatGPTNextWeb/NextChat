@@ -4,12 +4,13 @@ import {
   Anthropic,
   ApiPath,
   DEFAULT_MODELS,
+  ServiceProvider,
   ModelProvider,
 } from "@/app/constant";
 import { prettyObject } from "@/app/utils/format";
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "../../auth";
-import { collectModelTable } from "@/app/utils/model";
+import { isModelAvailableInServer } from "@/app/utils/model";
 
 const ALLOWD_PATH = new Set([Anthropic.ChatPath, Anthropic.ChatPath1]);
 
@@ -136,17 +137,19 @@ async function request(req: NextRequest) {
   // #1815 try to refuse some request to some models
   if (serverConfig.customModels && req.body) {
     try {
-      const modelTable = collectModelTable(
-        DEFAULT_MODELS,
-        serverConfig.customModels,
-      );
       const clonedBody = await req.text();
       fetchOptions.body = clonedBody;
 
       const jsonBody = JSON.parse(clonedBody) as { model?: string };
 
       // not undefined and is false
-      if (modelTable[jsonBody?.model ?? ""].available === false) {
+      if (
+        isModelAvailableInServer(
+          serverConfig.customModels,
+          jsonBody?.model as string,
+          ServiceProvider.Anthropic as string,
+        )
+      ) {
         return NextResponse.json(
           {
             error: true,
