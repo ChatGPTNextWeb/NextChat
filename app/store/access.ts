@@ -17,6 +17,11 @@ const DEFAULT_OPENAI_URL =
     ? DEFAULT_API_HOST + "/api/proxy/openai"
     : ApiPath.OpenAI;
 
+const DEFAULT_AZURE_URL =
+  getClientConfig()?.buildMode === "export"
+    ? DEFAULT_API_HOST + "/api/proxy/azure/{resource_name}"
+    : ApiPath.Azure;
+
 const DEFAULT_ACCESS_STATE = {
   accessCode: "",
   useCustomConfig: false,
@@ -28,7 +33,7 @@ const DEFAULT_ACCESS_STATE = {
   openaiApiKey: "",
 
   // azure
-  azureUrl: "",
+  azureUrl: DEFAULT_AZURE_URL,
   azureApiKey: "",
   azureApiVersion: "2023-08-01-preview",
 
