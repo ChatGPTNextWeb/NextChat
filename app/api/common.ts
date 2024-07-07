@@ -7,16 +7,17 @@ import {
   ServiceProvider,
 } from "../constant";
 import { isModelAvailableInServer } from "../utils/model";
-import { makeAzurePath } from "../azure";
 
 const serverConfig = getServerSideConfig();
 
 export async function requestOpenai(req: NextRequest) {
   const controller = new AbortController();
 
+  const isAzure = req.nextUrl.pathname.includes("azure/deployments");
+
   var authValue,
     authHeaderName = "";
-  if (serverConfig.isAzure) {
+  if (isAzure) {
     authValue =
       req.headers
         .get("Authorization")
@@ -56,14 +57,15 @@ export async function requestOpenai(req: NextRequest) {
     10 * 60 * 1000,
   );
 
-  if (serverConfig.isAzure) {
-    if (!serverConfig.azureApiVersion) {
-      return NextResponse.json({
-        error: true,
-        message: `missing AZURE_API_VERSION in server env vars`,
-      });
-    }
-    path = makeAzurePath(path, serverConfig.azureApiVersion);
+  if (isAzure) {
+    const azureApiVersion =
+      req?.nextUrl?.searchParams?.get("api-version") ||
+      serverConfig.azureApiVersion;
+    baseUrl = baseUrl.split("/deployments").shift() as string;
+    path = `${req.nextUrl.pathname.replaceAll(
+      "/api/azure/",
+      "",
+    )}?api-version=${azureApiVersion}`;
   }
 
   const fetchUrl = `${baseUrl}/${path}`;

@@ -75,7 +75,7 @@ export function auth(req: NextRequest, modelProvider: ModelProvider) {
         break;
       case ModelProvider.GPT:
       default:
-        if (serverConfig.isAzure) {
+        if (req.nextUrl.pathname.includes("azure/deployments")) {
           systemApiKey = serverConfig.azureApiKey;
         } else {
           systemApiKey = serverConfig.apiKey;
