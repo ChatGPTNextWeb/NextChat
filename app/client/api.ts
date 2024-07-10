@@ -9,6 +9,10 @@ import { ChatMessage, ModelType, useAccessStore, useChatStore } from "../store";
 import { ChatGPTApi } from "./platforms/openai";
 import { GeminiProApi } from "./platforms/google";
 import { ClaudeApi } from "./platforms/anthropic";
+import { ErnieApi } from "./platforms/baidu";
+import { DoubaoApi } from "./platforms/bytedance";
+import { QwenApi } from "./platforms/alibaba";
+
 export const ROLES = ["system", "user", "assistant"] as const;
 export type MessageRole = (typeof ROLES)[number];
 
@@ -104,6 +108,15 @@ export class ClientApi {
       case ModelProvider.Claude:
         this.llm = new ClaudeApi();
         break;
+      case ModelProvider.Ernie:
+        this.llm = new ErnieApi();
+        break;
+      case ModelProvider.Doubao:
+        this.llm = new DoubaoApi();
+        break;
+      case ModelProvider.Qwen:
+        this.llm = new QwenApi();
+        break;
       default:
         this.llm = new ChatGPTApi();
     }
@@ -170,6 +183,9 @@ export function getHeaders() {
     const isGoogle = modelConfig.providerName == ServiceProvider.Google;
     const isAzure = modelConfig.providerName === ServiceProvider.Azure;
     const isAnthropic = modelConfig.providerName === ServiceProvider.Anthropic;
+    const isBaidu = modelConfig.providerName == ServiceProvider.Baidu;
+    const isByteDance = modelConfig.providerName === ServiceProvider.ByteDance;
+    const isAlibaba = modelConfig.providerName === ServiceProvider.Alibaba;
     const isEnabledAccessControl = accessStore.enabledAccessControl();
     const apiKey = isGoogle
       ? accessStore.googleApiKey
@@ -177,8 +193,21 @@ export function getHeaders() {
       ? accessStore.azureApiKey
       : isAnthropic
       ? accessStore.anthropicApiKey
+      : isByteDance
+      ? accessStore.bytedanceApiKey
+      : isAlibaba
+      ? accessStore.alibabaApiKey
       : accessStore.openaiApiKey;
-    return { isGoogle, isAzure, isAnthropic, apiKey, isEnabledAccessControl };
+    return {
+      isGoogle,
+      isAzure,
+      isAnthropic,
+      isBaidu,
+      isByteDance,
+      isAlibaba,
+      apiKey,
+      isEnabledAccessControl,
+    };
   }
 
   function getAuthHeader(): string {
@@ -194,10 +223,18 @@ export function getHeaders() {
   function validString(x: string): boolean {
     return x?.length > 0;
   }
-  const { isGoogle, isAzure, isAnthropic, apiKey, isEnabledAccessControl } =
-    getConfig();
+  const {
+    isGoogle,
+    isAzure,
+    isAnthropic,
+    isBaidu,
+    apiKey,
+    isEnabledAccessControl,
+  } = getConfig();
   // when using google api in app, not set auth header
   if (isGoogle && clientConfig?.isApp) return headers;
+  // when using baidu api in app, not set auth header
+  if (isBaidu && clientConfig?.isApp) return headers;
 
   const authHeader = getAuthHeader();
 
@@ -220,6 +257,12 @@ export function getClientApi(provider: ServiceProvider): ClientApi {
       return new ClientApi(ModelProvider.GeminiPro);
     case ServiceProvider.Anthropic:
       return new ClientApi(ModelProvider.Claude);
+    case ServiceProvider.Baidu:
+      return new ClientApi(ModelProvider.Ernie);
+    case ServiceProvider.ByteDance:
+      return new ClientApi(ModelProvider.Doubao);
+    case ServiceProvider.Alibaba:
+      return new ClientApi(ModelProvider.Qwen);
     default:
       return new ClientApi(ModelProvider.GPT);
   }
