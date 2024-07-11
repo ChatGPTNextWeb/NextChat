@@ -154,8 +154,10 @@ export class GeminiProApi implements LLMApi {
         let finished = false;
 
         const finish = () => {
-          finished = true;
-          options.onFinish(responseText + remainText);
+          if (!finished) {
+            finished = true;
+            options.onFinish(responseText + remainText);
+          }
         };
 
         // animate response to make it looks smooth
