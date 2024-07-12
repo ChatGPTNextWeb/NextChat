@@ -32,18 +32,24 @@ export interface OpenAIListModelResponse {
   }>;
 }
 
-interface RequestPayload {
+interface RequestInput {
   messages: {
     role: "system" | "user" | "assistant";
     content: string | MultimodalContent[];
   }[];
-  stream?: boolean;
-  model: string;
+}
+interface RequestParam {
+  result_format: string;
+  incremental_output?: boolean;
   temperature: number;
-  presence_penalty: number;
-  frequency_penalty: number;
+  repetition_penalty?: number;
   top_p: number;
   max_tokens?: number;
+}
+interface RequestPayload {
+  model: string;
+  input: RequestInput;
+  parameters: RequestParam;
 }
 
 export class QwenApi implements LLMApi {
@@ -91,17 +97,21 @@ export class QwenApi implements LLMApi {
       },
     };
 
+    const shouldStream = !!options.config.stream;
     const requestPayload: RequestPayload = {
-      messages,
-      stream: options.config.stream,
       model: modelConfig.model,
-      temperature: modelConfig.temperature,
-      presence_penalty: modelConfig.presence_penalty,
-      frequency_penalty: modelConfig.frequency_penalty,
-      top_p: modelConfig.top_p,
+      input: {
+        messages,
+      },
+      parameters: {
+        result_format: "message",
+        incremental_output: shouldStream,
+        temperature: modelConfig.temperature,
+        // max_tokens: modelConfig.max_tokens,
+        top_p: modelConfig.top_p === 1 ? 0.99 : modelConfig.top_p, // qwen top_p is should be < 1
+      },
     };
 
-    const shouldStream = !!options.config.stream;
     const controller = new AbortController();
     options.onController?.(controller);
 
@@ -111,7 +121,10 @@ export class QwenApi implements LLMApi {
         method: "POST",
         body: JSON.stringify(requestPayload),
         signal: controller.signal,
-        headers: getHeaders(),
+        headers: {
+          ...getHeaders(),
+          "X-DashScope-SSE": shouldStream ? "enable" : "disable",
+        },
       };
 
       // make a fetch request

@@ -61,7 +61,7 @@ export function collectModelTable(
             modelTable[fullName]["available"] = available;
             // swap name and displayName for bytedance
             if (providerName === "bytedance") {
-              [name, displayName] = [displayName, name];
+              [name, displayName] = [displayName, modelName];
               modelTable[fullName]["name"] = name;
             }
             if (displayName) {
