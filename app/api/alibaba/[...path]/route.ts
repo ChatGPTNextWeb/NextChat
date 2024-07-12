@@ -91,34 +91,14 @@ async function request(req: NextRequest) {
   );
 
   const fetchUrl = `${baseUrl}${path}`;
-
-  const clonedBody = await req.text();
-
-  const { messages, model, stream, top_p, ...rest } = JSON.parse(
-    clonedBody,
-  ) as RequestPayload;
-
-  const requestBody = {
-    model,
-    input: {
-      messages,
-    },
-    parameters: {
-      ...rest,
-      top_p: top_p === 1 ? 0.99 : top_p, // qwen top_p is should be < 1
-      result_format: "message",
-      incremental_output: true,
-    },
-  };
-
   const fetchOptions: RequestInit = {
     headers: {
       "Content-Type": "application/json",
       Authorization: req.headers.get("Authorization") ?? "",
-      "X-DashScope-SSE": stream ? "enable" : "disable",
+      "X-DashScope-SSE": req.headers.get("X-DashScope-SSE") ?? "disable",
     },
     method: req.method,
-    body: JSON.stringify(requestBody),
+    body: req.body,
     redirect: "manual",
     // @ts-ignore
     duplex: "half",
@@ -128,18 +108,23 @@ async function request(req: NextRequest) {
   // #1815 try to refuse some request to some models
   if (serverConfig.customModels && req.body) {
     try {
+      const clonedBody = await req.text();
+      fetchOptions.body = clonedBody;
+
+      const jsonBody = JSON.parse(clonedBody) as { model?: string };
+
       // not undefined and is false
       if (
         isModelAvailableInServer(
           serverConfig.customModels,
-          model as string,
+          jsonBody?.model as string,
           ServiceProvider.Alibaba as string,
         )
       ) {
         return NextResponse.json(
           {
             error: true,
-            message: `you are not allowed to use ${model} model`,
+            message: `you are not allowed to use ${jsonBody?.model} model`,
           },
           {
             status: 403,
