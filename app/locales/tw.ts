@@ -4,11 +4,11 @@ import { SubmitKey } from "../store/config";
 const isApp = !!getClientConfig()?.isApp;
 
 const tw = {
-  WIP: "該功能仍在開發中……",
+  WIP: "此功能仍在開發中……",
   Error: {
     Unauthorized: isApp
-      ? "檢測到無效 API Key，請前往[設定](/#/settings)頁檢查 API Key 是否設定正確。"
-      : "存取密碼不正確或未填寫，請前往[登入](/#/auth)頁輸入正確的存取密碼，或者在[設定](/#/settings)頁填入你自己的 OpenAI API Key。",
+      ? "偵測到無效的 API Key，請前往[設定](/#/settings)頁面檢查 API Key 是否設定正確。"
+      : "存取密碼不正確或尚未填寫，請前往[登入](/#/auth)頁面輸入正確的存取密碼，或者在[設定](/#/settings)頁面填入你自己的 OpenAI API Key。",
   },
 
   Auth: {
@@ -159,7 +159,7 @@ const tw = {
     },
     InputTemplate: {
       Title: "使用者輸入預處理",
-      SubTitle: "使用者最新的一條訊息會填充到此範本",
+      SubTitle: "使用者最新的一則訊息會填充到此範本",
     },
 
     Update: {
@@ -194,19 +194,19 @@ const tw = {
         },
         SyncType: {
           Title: "同步類型",
-          SubTitle: "選擇喜愛的同步伺服器",
+          SubTitle: "選擇偏好的同步伺服器",
         },
         Proxy: {
-          Title: "啟用代理",
-          SubTitle: "在瀏覽器中同步時，必須啟用代理以避免跨域限制",
+          Title: "啟用代理伺服器",
+          SubTitle: "在瀏覽器中同步時，啟用代理伺服器以避免跨域限制",
         },
         ProxyUrl: {
-          Title: "代理地址",
-          SubTitle: "僅適用於本專案自帶的跨域代理",
+          Title: "代理伺服器位置",
+          SubTitle: "僅適用於本專案內建的跨域代理",
         },
 
         WebDav: {
-          Endpoint: "WebDAV 地址",
+          Endpoint: "WebDAV 位置",
           UserName: "使用者名稱",
           Password: "密碼",
         },
@@ -218,9 +218,9 @@ const tw = {
         },
       },
 
-      LocalState: "本地資料",
+      LocalState: "本機資料",
       Overview: (overview: any) => {
-        return `${overview.chat} 次對話，${overview.message} 條訊息，${overview.prompt} 條提示詞，${overview.mask} 個角色範本`;
+        return `${overview.chat} 次對話，${overview.message} 則訊息，${overview.prompt} 條提示詞，${overview.mask} 個角色範本`;
       },
       ImportFailed: "匯入失敗",
     },
@@ -239,13 +239,13 @@ const tw = {
         Title: "停用提示詞自動補齊",
         SubTitle: "在輸入框開頭輸入 / 即可觸發自動補齊",
       },
-      List: "自定義提示詞列表",
+      List: "自訂提示詞列表",
       ListCount: (builtin: number, custom: number) =>
-        `內建 ${builtin} 條，使用者定義 ${custom} 條`,
+      `內建 ${builtin} 條，使用者自訂 ${custom} 條`,
       Edit: "編輯",
       Modal: {
         Title: "提示詞列表",
-        Add: "新增一條",
+        Add: "新增一則",
         Search: "搜尋提示詞",
       },
       EditModal: {
@@ -278,40 +278,40 @@ const tw = {
         Placeholder: "請輸入存取密碼",
       },
       CustomEndpoint: {
-        Title: "自定義介面 (Endpoint)",
-        SubTitle: "是否使用自定義 Azure 或 OpenAI 服務",
+        Title: "自訂 API 端點 (Endpoint)",
+        SubTitle: "是否使用自訂 Azure 或 OpenAI 服務",
       },
       Provider: {
-        Title: "模型服務商",
-        SubTitle: "切換不同的服務商",
+        Title: "模型供應商",
+        SubTitle: "切換不同的服務供應商",
       },
       OpenAI: {
         ApiKey: {
           Title: "API Key",
-          SubTitle: "使用自定義 OpenAI Key 繞過密碼存取限制",
+          SubTitle: "使用自訂 OpenAI Key 繞過密碼存取限制",
           Placeholder: "OpenAI API Key",
         },
 
         Endpoint: {
-          Title: "介面(Endpoint) 地址",
-          SubTitle: "除預設地址外，必須包含 http(s)://",
+          Title: "API 端點 (Endpoint) 位址",
+          SubTitle: "除預設位址外，必須包含 http(s)://",
         },
       },
       Azure: {
         ApiKey: {
-          Title: "介面金鑰",
-          SubTitle: "使用自定義 Azure Key 繞過密碼存取限制",
+          Title: "API 金鑰",
+          SubTitle: "使用自訂 Azure Key 繞過密碼存取限制",
           Placeholder: "Azure API Key",
         },
 
         Endpoint: {
-          Title: "介面(Endpoint) 地址",
-          SubTitle: "樣例：",
+          Title: "API 端點 (Endpoint) 位址",
+          SubTitle: "範例：",
         },
 
         ApiVerion: {
-          Title: "介面版本 (azure api version)",
-          SubTitle: "選擇指定的部分版本",
+          Title: "API 版本 (azure api version)",
+          SubTitle: "指定一個特定的 API 版本",
         },
       },
       Anthropic: {
@@ -322,13 +322,13 @@ const tw = {
         },
 
         Endpoint: {
-          Title: "終端地址",
+          Title: "端點位址",
           SubTitle: "範例：",
         },
 
         ApiVerion: {
           Title: "API 版本 (claude api version)",
-          SubTitle: "選擇一個特定的 API 版本輸入",
+          SubTitle: "指定一個特定的 API 版本",
         },
       },
       Google: {
@@ -339,7 +339,7 @@ const tw = {
         },
 
         Endpoint: {
-          Title: "終端地址",
+          Title: "端點位址",
           SubTitle: "範例：",
         },
 
@@ -349,8 +349,8 @@ const tw = {
         },
       },
       CustomModel: {
-        Title: "自定義模型名",
-        SubTitle: "增加自定義模型可選項，使用英文逗號隔開",
+        Title: "自訂模型名稱",
+        SubTitle: "增加自訂模型可選擇項目，使用英文逗號隔開",
       },
     },
 
@@ -400,7 +400,7 @@ const tw = {
   Context: {
     Toast: (x: any) => `已設定 ${x} 條前置上下文`,
     Edit: "前置上下文和歷史記憶",
-    Add: "新增一條",
+    Add: "新增一則",
     Clear: "上下文已清除",
     Revert: "恢復上下文",
   },
@@ -425,16 +425,16 @@ const tw = {
     EditModal: {
       Title: (readonly: boolean) =>
         `編輯預設角色範本 ${readonly ? "（唯讀）" : ""}`,
-      Download: "下載預設",
-      Clone: "複製預設",
+      Download: "下載預設值",
+      Clone: "以此預設值建立副本",
     },
     Config: {
       Avatar: "角色頭像",
       Name: "角色名稱",
       Sync: {
-        Title: "使用全域性設定",
-        SubTitle: "目前對話是否使用全域性模型設定",
-        Confirm: "目前對話的自定義設定將會被自動覆蓋，確認啟用全域性設定？",
+        Title: "使用全域設定",
+        SubTitle: "目前對話是否使用全域模型設定",
+        Confirm: "目前對話的自訂設定將會被自動覆蓋，確認啟用全域設定？",
       },
       HideContext: {
         Title: "隱藏預設對話",
@@ -450,15 +450,15 @@ const tw = {
   NewChat: {
     Return: "返回",
     Skip: "跳過",
-    NotShow: "不再呈現",
+    NotShow: "不再顯示",
     ConfirmNoShow: "確認停用？停用後可以隨時在設定中重新啟用。",
     Title: "挑選一個角色範本",
     SubTitle: "現在開始，與角色範本背後的靈魂思維碰撞",
     More: "搜尋更多",
   },
   URLCommand: {
-    Code: "檢測到連結中已經包含存取密碼，是否自動填入？",
-    Settings: "檢測到連結中包含了預設設定，是否自動填入？",
+    Code: "偵測到連結中已經包含存取密碼，是否自動填入？",
+    Settings: "偵測到連結中包含了預設設定，是否自動填入？",
   },
   UI: {
     Confirm: "確認",
