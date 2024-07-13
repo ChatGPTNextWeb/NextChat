@@ -11,6 +11,7 @@ import {
 } from "@/app/constant";
 import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
 import { collectModelsWithDefaultModel } from "@/app/utils/model";
+import { cloudflareAIGatewayUrl } from "@/app/utils/cloudflare";
 
 import {
   ChatOptions,
@@ -94,7 +95,8 @@ export class ChatGPTApi implements LLMApi {
 
     console.log("[Proxy Endpoint] ", baseUrl, path);
 
-    return [baseUrl, path].join("/");
+    // try rebuild url, when using cloudflare ai gateway in client
+    return cloudflareAIGatewayUrl([baseUrl, path].join("/"));
   }
 
   extractMessage(res: any) {

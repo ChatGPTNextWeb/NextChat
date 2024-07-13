@@ -1,5 +1,5 @@
 import { ACCESS_CODE_PREFIX, Anthropic, ApiPath } from "@/app/constant";
-import { ChatOptions, getHeaders, LLMApi, MultimodalContent,  } from "../api";
+import { ChatOptions, getHeaders, LLMApi, MultimodalContent } from "../api";
 import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
 import { getClientConfig } from "@/app/config/client";
 import { DEFAULT_API_HOST } from "@/app/constant";
@@ -12,6 +12,7 @@ import {
 import Locale from "../../locales";
 import { prettyObject } from "@/app/utils/format";
 import { getMessageTextContent, isVisionModel } from "@/app/utils";
+import { cloudflareAIGatewayUrl } from "@/app/utils/cloudflare";
 
 export type MultiBlockContent = {
   type: "image" | "text";
@@ -190,7 +191,7 @@ export class ClaudeApi implements LLMApi {
       body: JSON.stringify(requestBody),
       signal: controller.signal,
       headers: {
-        ...getHeaders(),  // get common headers
+        ...getHeaders(), // get common headers
         "anthropic-version": accessStore.anthropicApiVersion,
         // do not send `anthropicApiKey` in browser!!!
         // Authorization: getAuthKey(accessStore.anthropicApiKey),
@@ -375,7 +376,8 @@ export class ClaudeApi implements LLMApi {
 
     baseUrl = trimEnd(baseUrl, "/");
 
-    return `${baseUrl}/${path}`;
+    // try rebuild url, when using cloudflare ai gateway in client
+    return cloudflareAIGatewayUrl(`${baseUrl}/${path}`);
   }
 }
 

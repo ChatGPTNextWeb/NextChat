@@ -349,18 +349,18 @@ const cn = {
       },
       Baidu: {
         ApiKey: {
-          Title: "接口密钥",
+          Title: "API Key",
           SubTitle: "使用自定义 Baidu API Key",
           Placeholder: "Baidu API Key",
         },
         SecretKey: {
-          Title: "接口密钥",
+          Title: "Secret Key",
           SubTitle: "使用自定义 Baidu Secret Key",
           Placeholder: "Baidu Secret Key",
         },
         Endpoint: {
           Title: "接口地址",
-          SubTitle: "样例：",
+          SubTitle: "不支持自定义前往.env配置",
         },
       },
       ByteDance: {
