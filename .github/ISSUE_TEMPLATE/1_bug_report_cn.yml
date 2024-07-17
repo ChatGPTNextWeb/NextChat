@@ -1,0 +1,80 @@
+name: '🐛 反馈缺陷'
+description: '反馈一个问题/缺陷'
+title: '[Bug] '
+labels: ['bug']
+body:
+  - type: dropdown
+    attributes:
+      label: '📦 部署方式'
+      multiple: true
+      options:
+        - '官方安装包'
+        - 'Vercel'
+        - 'Zeabur'
+        - 'Sealos'
+        - 'Netlify'
+        - 'Docker'
+        - 'Other'
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: '📌 软件版本'
+    validations:
+      required: true
+
+  - type: dropdown
+    attributes:
+      label: '💻 系统环境'
+      multiple: true
+      options:
+        - 'Windows'
+        - 'macOS'
+        - 'Ubuntu'
+        - 'Other Linux'
+        - 'iOS'
+        - 'iPad OS'
+        - 'Android'
+        - 'Other'
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: '📌 系统版本'
+    validations:
+      required: true
+  - type: dropdown
+    attributes:
+      label: '🌐 浏览器'
+      multiple: true
+      options:
+        - 'Chrome'
+        - 'Edge'
+        - 'Safari'
+        - 'Firefox'
+        - 'Other'
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: '📌 浏览器版本'
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: '🐛 问题描述'
+      description: 请提供一个清晰且简洁的问题描述，若上述选项为`Other`，也请详细说明。
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: '📷 复现步骤'
+      description: 请提供一个清晰且简洁的描述，说明如何复现问题。
+  - type: textarea
+    attributes:
+      label: '🚦 期望结果'
+      description: 请提供一个清晰且简洁的描述，说明您期望发生什么。
+  - type: textarea
+    attributes:
+      label: '📝 补充信息'
+      description: 如果您的问题需要进一步说明，或者您遇到的问题无法在一个简单的示例中复现，请在这里添加更多信息。

@@ -1,0 +1,80 @@
+name: '🐛 Bug Report'
+description: 'Report an bug'
+title: '[Bug] '
+labels: ['bug']
+body:
+  - type: dropdown
+    attributes:
+      label: '📦 Deployment Method'
+      multiple: true
+      options:
+        - 'Official installation package'
+        - 'Vercel'
+        - 'Zeabur'
+        - 'Sealos'
+        - 'Netlify'
+        - 'Docker'
+        - 'Other'
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: '📌 Version'
+    validations:
+      required: true
+  
+  - type: dropdown
+    attributes:
+      label: '💻 Operating System'
+      multiple: true
+      options:
+        - 'Windows'
+        - 'macOS'
+        - 'Ubuntu'
+        - 'Other Linux'
+        - 'iOS'
+        - 'iPad OS'
+        - 'Android'
+        - 'Other'
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: '📌 System Version'
+    validations:
+      required: true
+  - type: dropdown
+    attributes:
+      label: '🌐 Browser'
+      multiple: true
+      options:
+        - 'Chrome'
+        - 'Edge'
+        - 'Safari'
+        - 'Firefox'
+        - 'Other'
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: '📌 Browser Version'
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: '🐛 Bug Description'
+      description: A clear and concise description of the bug, if the above option is `Other`, please also explain in detail.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: '📷 Recurrence Steps'
+      description: A clear and concise description of how to recurrence.
+  - type: textarea
+    attributes:
+      label: '🚦 Expected Behavior'
+      description: A clear and concise description of what you expected to happen.
+  - type: textarea
+    attributes:
+      label: '📝 Additional Information'
+      description: If your problem needs further explanation, or if the issue you're seeing cannot be reproduced in a gist, please add more information here.
