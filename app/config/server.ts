@@ -21,7 +21,7 @@ declare global {
       ENABLE_BALANCE_QUERY?: string; // allow user to query balance or not
       DISABLE_FAST_LINK?: string; // disallow parse settings from url or not
       CUSTOM_MODELS?: string; // to control custom models
-      DEFAULT_MODEL?: string; // to cnntrol default model in every new chat window
+      DEFAULT_MODEL?: string; // to control default model in every new chat window
 
       // azure only
       AZURE_URL?: string; // https://{azure-url}/openai/deployments/{deploy-name}
