@@ -392,6 +392,10 @@ const en: LocaleType = {
           Title: "API Version (specific to gemini-pro)",
           SubTitle: "Select a specific API version",
         },
+        GoogleSafetySettings: {
+          Title: "Google Safety Settings",
+          SubTitle: "Select a safety filtering level",
+        },
       },
     },
 
