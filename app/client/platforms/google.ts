@@ -1,4 +1,4 @@
-import { Google, REQUEST_TIMEOUT_MS } from "@/app/constant";
+import { ApiPath, Google, REQUEST_TIMEOUT_MS } from "@/app/constant";
 import { ChatOptions, getHeaders, LLMApi, LLMModel, LLMUsage } from "../api";
 import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
 import { getClientConfig } from "@/app/config/client";
@@ -14,8 +14,37 @@ import {
   getMessageImages,
   isVisionModel,
 } from "@/app/utils";
+import { preProcessImageContent } from "@/app/utils/chat";
 
 export class GeminiProApi implements LLMApi {
+  path(path: string): string {
+    const accessStore = useAccessStore.getState();
+
+    let baseUrl = "";
+    if (accessStore.useCustomConfig) {
+      baseUrl = accessStore.googleUrl;
+    }
+
+    if (baseUrl.length === 0) {
+      const isApp = !!getClientConfig()?.isApp;
+      baseUrl = isApp
+        ? DEFAULT_API_HOST + `/api/proxy/google?key=${accessStore.googleApiKey}`
+        : ApiPath.Google;
+    }
+    if (baseUrl.endsWith("/")) {
+      baseUrl = baseUrl.slice(0, baseUrl.length - 1);
+    }
+    if (!baseUrl.startsWith("http") && !baseUrl.startsWith(ApiPath.Google)) {
+      baseUrl = "https://" + baseUrl;
+    }
+
+    console.log("[Proxy Endpoint] ", baseUrl, path);
+
+    let chatPath = [baseUrl, path].join("/");
+
+    chatPath += chatPath.includes("?") ? "&alt=sse" : "?alt=sse";
+    return chatPath;
+  }
   extractMessage(res: any) {
     console.log("[Response] gemini-pro response: ", res);
 
@@ -28,7 +57,14 @@ export class GeminiProApi implements LLMApi {
   async chat(options: ChatOptions): Promise<void> {
     const apiClient = this;
     let multimodal = false;
-    const messages = options.messages.map((v) => {
+
+    // try get base64image from local cache image_url
+    const _messages: ChatOptions["messages"] = [];
+    for (const v of options.messages) {
+      const content = await preProcessImageContent(v.content);
+      _messages.push({ role: v.role, content });
+    }
+    const messages = _messages.map((v) => {
       let parts: any[] = [{ text: getMessageTextContent(v) }];
       if (isVisionModel(options.config.model)) {
         const images = getMessageImages(v);
@@ -70,6 +106,9 @@ export class GeminiProApi implements LLMApi {
     // if (visionModel && messages.length > 1) {
     //   options.onError?.(new Error("Multiturn chat is not enabled for models/gemini-pro-vision"));
     // }
+
+    const accessStore = useAccessStore.getState();
+
     const modelConfig = {
       ...useAppConfig.getState().modelConfig,
       ...useChatStore.getState().currentSession().mask.modelConfig,
@@ -91,47 +130,30 @@ export class GeminiProApi implements LLMApi {
       safetySettings: [
         {
           category: "HARM_CATEGORY_HARASSMENT",
-          threshold: "BLOCK_ONLY_HIGH",
+          threshold: accessStore.googleSafetySettings,
         },
         {
           category: "HARM_CATEGORY_HATE_SPEECH",
-          threshold: "BLOCK_ONLY_HIGH",
+          threshold: accessStore.googleSafetySettings,
         },
         {
           category: "HARM_CATEGORY_SEXUALLY_EXPLICIT",
-          threshold: "BLOCK_ONLY_HIGH",
+          threshold: accessStore.googleSafetySettings,
         },
         {
           category: "HARM_CATEGORY_DANGEROUS_CONTENT",
-          threshold: "BLOCK_ONLY_HIGH",
+          threshold: accessStore.googleSafetySettings,
         },
       ],
     };
-
-    const accessStore = useAccessStore.getState();
-
-    let baseUrl = "";
-
-    if (accessStore.useCustomConfig) {
-      baseUrl = accessStore.googleUrl;
-    }
-
-    const isApp = !!getClientConfig()?.isApp;
 
     let shouldStream = !!options.config.stream;
     const controller = new AbortController();
     options.onController?.(controller);
     try {
-      if (!baseUrl && isApp) {
-        baseUrl = DEFAULT_API_HOST + "/api/proxy/google/";
-      }
-      baseUrl = `${baseUrl}/${Google.ChatPath(modelConfig.model)}`.replaceAll(
-        "//",
-        "/",
-      );
-      if (isApp) {
-        baseUrl += `?key=${accessStore.googleApiKey}`;
-      }
+      // https://github.com/google-gemini/cookbook/blob/main/quickstarts/rest/Streaming_REST.ipynb
+      const chatPath = this.path(Google.ChatPath(modelConfig.model));
+
       const chatPayload = {
         method: "POST",
         body: JSON.stringify(requestPayload),
@@ -181,10 +203,6 @@ export class GeminiProApi implements LLMApi {
 
         controller.signal.onabort = finish;
 
-        // https://github.com/google-gemini/cookbook/blob/main/quickstarts/rest/Streaming_REST.ipynb
-        const chatPath =
-          baseUrl.replace("generateContent", "streamGenerateContent") +
-          (baseUrl.indexOf("?") > -1 ? "&alt=sse" : "?alt=sse");
         fetchEventSource(chatPath, {
           ...chatPayload,
           async onopen(res) {
@@ -259,7 +277,7 @@ export class GeminiProApi implements LLMApi {
           openWhenHidden: true,
         });
       } else {
-        const res = await fetch(baseUrl, chatPayload);
+        const res = await fetch(chatPath, chatPayload);
         clearTimeout(requestTimeoutId);
         const resJson = await res.json();
         if (resJson?.promptFeedback?.blockReason) {
@@ -285,14 +303,4 @@ export class GeminiProApi implements LLMApi {
   async models(): Promise<LLMModel[]> {
     return [];
   }
-  path(path: string): string {
-    return "/api/google/" + path;
-  }
-}
-
-function ensureProperEnding(str: string) {
-  if (str.startsWith("[") && !str.endsWith("]")) {
-    return str + "]";
-  }
-  return str;
 }

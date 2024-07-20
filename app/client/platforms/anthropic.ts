@@ -3,7 +3,6 @@ import { ChatOptions, getHeaders, LLMApi, MultimodalContent } from "../api";
 import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
 import { getClientConfig } from "@/app/config/client";
 import { DEFAULT_API_HOST } from "@/app/constant";
-import { RequestMessage } from "@/app/typing";
 import {
   EventStreamContentType,
   fetchEventSource,
@@ -12,6 +11,7 @@ import {
 import Locale from "../../locales";
 import { prettyObject } from "@/app/utils/format";
 import { getMessageTextContent, isVisionModel } from "@/app/utils";
+import { preProcessImageContent } from "@/app/utils/chat";
 import { cloudflareAIGatewayUrl } from "@/app/utils/cloudflare";
 
 export type MultiBlockContent = {
@@ -93,7 +93,12 @@ export class ClaudeApi implements LLMApi {
       },
     };
 
-    const messages = [...options.messages];
+    // try get base64image from local cache image_url
+    const messages: ChatOptions["messages"] = [];
+    for (const v of options.messages) {
+      const content = await preProcessImageContent(v.content);
+      messages.push({ role: v.role, content });
+    }
 
     const keys = ["system", "user"];
 

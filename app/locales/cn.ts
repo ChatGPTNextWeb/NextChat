@@ -346,6 +346,10 @@ const cn = {
           Title: "API 版本（仅适用于 gemini-pro）",
           SubTitle: "选择一个特定的 API 版本",
         },
+        GoogleSafetySettings: {
+          Title: "Google 安全过滤级别",
+          SubTitle: "设置内容过滤级别",
+        },
       },
       Baidu: {
         ApiKey: {
