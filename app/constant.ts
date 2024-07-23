@@ -147,9 +147,6 @@ export const Baidu = {
     if (modelName === "ernie-3.5-8k") {
       endpoint = "completions";
     }
-    if (modelName === "ernie-speed-128k") {
-      endpoint = "ernie-speed-128k";
-    }
     if (modelName === "ernie-speed-8k") {
       endpoint = "ernie_speed";
     }
