@@ -241,7 +241,7 @@ const tw = {
       },
       List: "自訂提示詞列表",
       ListCount: (builtin: number, custom: number) =>
-      `內建 ${builtin} 條，使用者自訂 ${custom} 條`,
+        `內建 ${builtin} 條，使用者自訂 ${custom} 條`,
       Edit: "編輯",
       Modal: {
         Title: "提示詞列表",

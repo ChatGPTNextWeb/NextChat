@@ -168,6 +168,19 @@ export class ClientApi {
   }
 }
 
+export function getBearerToken(
+  apiKey: string,
+  noBearer: boolean = false,
+): string {
+  return validString(apiKey)
+    ? `${noBearer ? "" : "Bearer "}${apiKey.trim()}`
+    : "";
+}
+
+export function validString(x: string): boolean {
+  return x?.length > 0;
+}
+
 export function getHeaders() {
   const accessStore = useAccessStore.getState();
   const chatStore = useChatStore.getState();
@@ -214,15 +227,6 @@ export function getHeaders() {
     return isAzure ? "api-key" : isAnthropic ? "x-api-key" : "Authorization";
   }
 
-  function getBearerToken(apiKey: string, noBearer: boolean = false): string {
-    return validString(apiKey)
-      ? `${noBearer ? "" : "Bearer "}${apiKey.trim()}`
-      : "";
-  }
-
-  function validString(x: string): boolean {
-    return x?.length > 0;
-  }
   const {
     isGoogle,
     isAzure,

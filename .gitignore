@@ -44,3 +44,5 @@ dev
 
 *.key
 *.key.pub
+
+masks.json

@@ -99,12 +99,18 @@ export function collectModelTableWithDefaultModel(
 ) {
   let modelTable = collectModelTable(models, customModels);
   if (defaultModel && defaultModel !== "") {
-    modelTable[defaultModel] = {
-      ...modelTable[defaultModel],
-      name: defaultModel,
-      available: true,
-      isDefault: true,
-    };
+    if (defaultModel.includes('@')) {
+      if (defaultModel in modelTable) {
+        modelTable[defaultModel].isDefault = true;
+      }
+    } else {
+      for (const key of Object.keys(modelTable)) {
+        if (modelTable[key].available && key.split('@').shift() == defaultModel) {
+          modelTable[key].isDefault = true;
+          break;
+        }
+      }
+    }
   }
   return modelTable;
 }

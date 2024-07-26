@@ -326,6 +326,14 @@ You can use this option if you want to increase the number of webdav service add
 
 Customize the default template used to initialize the User Input Preprocessing configuration item in Settings.
 
+### `STABILITY_API_KEY` (optional)
+
+Stability API key.
+
+### `STABILITY_URL` (optional)
+
+Customize Stability API url.
+
 ## Requirements
 
 NodeJS >= 18, Docker >= 20

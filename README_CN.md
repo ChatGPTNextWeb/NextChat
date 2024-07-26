@@ -218,6 +218,15 @@ ByteDance Api Url.
 
 自定义默认的 template，用于初始化『设置』中的『用户输入预处理』配置项
 
+### `STABILITY_API_KEY` (optional)
+
+Stability API密钥
+
+### `STABILITY_URL` (optional)
+
+自定义的Stability API请求地址
+
+
 ## 开发
 
 点击下方按钮，开始二次开发：

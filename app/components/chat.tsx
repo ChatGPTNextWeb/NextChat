@@ -37,6 +37,7 @@ import AutoIcon from "../icons/auto.svg";
 import BottomIcon from "../icons/bottom.svg";
 import StopIcon from "../icons/pause.svg";
 import RobotIcon from "../icons/robot.svg";
+import PluginIcon from "../icons/plugin.svg";
 
 import {
   ChatMessage,
@@ -338,7 +339,7 @@ function ClearContextDivider() {
   );
 }
 
-function ChatAction(props: {
+export function ChatAction(props: {
   text: string;
   icon: JSX.Element;
   onClick: () => void;
@@ -585,6 +586,12 @@ export function ChatActions(props: {
         onClick={() => setShowModelSelector(true)}
         text={currentModelName}
         icon={<RobotIcon />}
+      />
+
+      <ChatAction
+        onClick={() => showToast(Locale.WIP)}
+        text={Locale.Plugin.Name}
+        icon={<PluginIcon />}
       />
 
       {showModelSelector && (
