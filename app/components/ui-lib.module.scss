@@ -309,6 +309,7 @@
   }
 
   &-content {
+    min-width: 300px;
     .list {
       max-height: 90vh;
       overflow-x: hidden;

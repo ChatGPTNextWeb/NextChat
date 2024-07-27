@@ -1,0 +1,31 @@
+.artifacts {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+  &-header {
+    display: flex;
+    align-items: center;
+    height: 36px;
+    padding: 20px;
+    background: var(--second);
+  }
+  &-title {
+    flex: 1;
+    text-align: center;
+    font-weight: bold;
+    font-size: 24px;
+  }
+  &-content {
+    flex-grow: 1;
+    padding: 0 20px 20px 20px;
+    background-color: var(--second);
+  }
+}
+
+.artifacts-iframe {
+  width: 100%;
+  border: var(--border-in-light);
+  border-radius: 6px;
+  background-color: var(--gray);
+}
