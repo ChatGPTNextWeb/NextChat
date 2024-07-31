@@ -25,11 +25,9 @@ export class GeminiProApi implements LLMApi {
       baseUrl = accessStore.googleUrl;
     }
 
+    const isApp = !!getClientConfig()?.isApp;
     if (baseUrl.length === 0) {
-      const isApp = !!getClientConfig()?.isApp;
-      baseUrl = isApp
-        ? DEFAULT_API_HOST + `/api/proxy/google?key=${accessStore.googleApiKey}`
-        : ApiPath.Google;
+      baseUrl = isApp ? DEFAULT_API_HOST + `/api/proxy/google` : ApiPath.Google;
     }
     if (baseUrl.endsWith("/")) {
       baseUrl = baseUrl.slice(0, baseUrl.length - 1);
@@ -43,6 +41,10 @@ export class GeminiProApi implements LLMApi {
     let chatPath = [baseUrl, path].join("/");
 
     chatPath += chatPath.includes("?") ? "&alt=sse" : "?alt=sse";
+    // if chatPath.startsWith('http') then add key in query string
+    if (chatPath.startsWith("http") && accessStore.googleApiKey) {
+      chatPath += `&key=${accessStore.googleApiKey}`;
+    }
     return chatPath;
   }
   extractMessage(res: any) {
