@@ -54,8 +54,10 @@ import {
   Anthropic,
   Azure,
   Baidu,
+  Tencent,
   ByteDance,
   Alibaba,
+  Moonshot,
   Google,
   GoogleSafetySettingsThreshold,
   OPENAI_BASE_URL,
@@ -964,6 +966,57 @@ export function Settings() {
     </>
   );
 
+  const tencentConfigComponent = accessStore.provider ===
+    ServiceProvider.Tencent && (
+    <>
+      <ListItem
+        title={Locale.Settings.Access.Tencent.Endpoint.Title}
+        subTitle={Locale.Settings.Access.Tencent.Endpoint.SubTitle}
+      >
+        <input
+          type="text"
+          value={accessStore.tencentUrl}
+          placeholder={Tencent.ExampleEndpoint}
+          onChange={(e) =>
+            accessStore.update(
+              (access) => (access.tencentUrl = e.currentTarget.value),
+            )
+          }
+        ></input>
+      </ListItem>
+      <ListItem
+        title={Locale.Settings.Access.Tencent.ApiKey.Title}
+        subTitle={Locale.Settings.Access.Tencent.ApiKey.SubTitle}
+      >
+        <PasswordInput
+          value={accessStore.tencentSecretId}
+          type="text"
+          placeholder={Locale.Settings.Access.Tencent.ApiKey.Placeholder}
+          onChange={(e) => {
+            accessStore.update(
+              (access) => (access.tencentSecretId = e.currentTarget.value),
+            );
+          }}
+        />
+      </ListItem>
+      <ListItem
+        title={Locale.Settings.Access.Tencent.SecretKey.Title}
+        subTitle={Locale.Settings.Access.Tencent.SecretKey.SubTitle}
+      >
+        <PasswordInput
+          value={accessStore.tencentSecretKey}
+          type="text"
+          placeholder={Locale.Settings.Access.Tencent.SecretKey.Placeholder}
+          onChange={(e) => {
+            accessStore.update(
+              (access) => (access.tencentSecretKey = e.currentTarget.value),
+            );
+          }}
+        />
+      </ListItem>
+    </>
+  );
+
   const byteDanceConfigComponent = accessStore.provider ===
     ServiceProvider.ByteDance && (
     <>
@@ -1035,6 +1088,45 @@ export function Settings() {
           onChange={(e) => {
             accessStore.update(
               (access) => (access.alibabaApiKey = e.currentTarget.value),
+            );
+          }}
+        />
+      </ListItem>
+    </>
+  );
+
+  const moonshotConfigComponent = accessStore.provider ===
+    ServiceProvider.Moonshot && (
+    <>
+      <ListItem
+        title={Locale.Settings.Access.Moonshot.Endpoint.Title}
+        subTitle={
+          Locale.Settings.Access.Moonshot.Endpoint.SubTitle +
+          Moonshot.ExampleEndpoint
+        }
+      >
+        <input
+          type="text"
+          value={accessStore.moonshotUrl}
+          placeholder={Moonshot.ExampleEndpoint}
+          onChange={(e) =>
+            accessStore.update(
+              (access) => (access.moonshotUrl = e.currentTarget.value),
+            )
+          }
+        ></input>
+      </ListItem>
+      <ListItem
+        title={Locale.Settings.Access.Moonshot.ApiKey.Title}
+        subTitle={Locale.Settings.Access.Moonshot.ApiKey.SubTitle}
+      >
+        <PasswordInput
+          value={accessStore.moonshotApiKey}
+          type="text"
+          placeholder={Locale.Settings.Access.Moonshot.ApiKey.Placeholder}
+          onChange={(e) => {
+            accessStore.update(
+              (access) => (access.moonshotApiKey = e.currentTarget.value),
             );
           }}
         />
@@ -1364,6 +1456,8 @@ export function Settings() {
                   {baiduConfigComponent}
                   {byteDanceConfigComponent}
                   {alibabaConfigComponent}
+                  {tencentConfigComponent}
+                  {moonshotConfigComponent}
                   {stabilityConfigComponent}
                 </>
               )}

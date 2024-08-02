@@ -371,6 +371,22 @@ const cn = {
           SubTitle: "不支持自定义前往.env配置",
         },
       },
+      Tencent: {
+        ApiKey: {
+          Title: "API Key",
+          SubTitle: "使用自定义腾讯云API Key",
+          Placeholder: "Tencent API Key",
+        },
+        SecretKey: {
+          Title: "Secret Key",
+          SubTitle: "使用自定义腾讯云Secret Key",
+          Placeholder: "Tencent Secret Key",
+        },
+        Endpoint: {
+          Title: "接口地址",
+          SubTitle: "不支持自定义前往.env配置",
+        },
+      },
       ByteDance: {
         ApiKey: {
           Title: "接口密钥",
@@ -387,6 +403,17 @@ const cn = {
           Title: "接口密钥",
           SubTitle: "使用自定义阿里云API Key",
           Placeholder: "Alibaba Cloud API Key",
+        },
+        Endpoint: {
+          Title: "接口地址",
+          SubTitle: "样例：",
+        },
+      },
+      Moonshot: {
+        ApiKey: {
+          Title: "接口密钥",
+          SubTitle: "使用自定义月之暗面API Key",
+          Placeholder: "Moonshot API Key",
         },
         Endpoint: {
           Title: "接口地址",
