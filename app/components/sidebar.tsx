@@ -171,10 +171,12 @@ export function SideBarHeader(props: {
   return (
     <Fragment>
       <div className={styles["sidebar-header"]} data-tauri-drag-region>
-        <div className={styles["sidebar-title"]} data-tauri-drag-region>
-          {title}
+        <div className={styles["sidebar-title-container"]}>
+          <div className={styles["sidebar-title"]} data-tauri-drag-region>
+            {title}
+          </div>
+          <div className={styles["sidebar-sub-title"]}>{subTitle}</div>
         </div>
-        <div className={styles["sidebar-sub-title"]}>{subTitle}</div>
         <div className={styles["sidebar-logo"] + " no-dark"}>{logo}</div>
       </div>
       {children}
