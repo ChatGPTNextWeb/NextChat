@@ -71,6 +71,12 @@ const cs: PartialLocaleType = {
       Title: "Velikost písma",
       SubTitle: "Nastavení velikosti písma obsahu chatu",
     },
+    FontFamily: {
+      Title: "Chatové Písmo",
+      SubTitle:
+        "Písmo obsahu chatu, ponechejte prázdné pro použití globálního výchozího písma",
+      Placeholder: "Název Písma",
+    },
     InjectSystemPrompts: {
       Title: "Vložit systémové prompty",
       SubTitle:

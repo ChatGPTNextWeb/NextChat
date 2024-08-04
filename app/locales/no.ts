@@ -66,6 +66,12 @@ const no: PartialLocaleType = {
       Title: "Fontstørrelsen",
       SubTitle: "Juster fontstørrelsen for samtaleinnholdet.",
     },
+    FontFamily: {
+      Title: "Chat-skrifttype",
+      SubTitle:
+        "Skrifttypen for chatinnhold, la stå tom for å bruke global standardskrifttype",
+      Placeholder: "Skriftnavn",
+    },
     InjectSystemPrompts: {
       Title: "Sett inn systemprompter",
       SubTitle:

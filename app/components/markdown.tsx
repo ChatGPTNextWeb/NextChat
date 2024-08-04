@@ -232,6 +232,7 @@ export function Markdown(
     content: string;
     loading?: boolean;
     fontSize?: number;
+    fontFamily?: string;
     parentRef?: RefObject<HTMLDivElement>;
     defaultShow?: boolean;
   } & React.DOMAttributes<HTMLDivElement>,
@@ -243,6 +244,7 @@ export function Markdown(
       className="markdown-body"
       style={{
         fontSize: `${props.fontSize ?? 14}px`,
+        fontFamily: props.fontFamily || "inherit",
       }}
       ref={mdRef}
       onContextMenu={props.onContextMenu}

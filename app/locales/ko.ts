@@ -72,6 +72,11 @@ const ko: PartialLocaleType = {
       Title: "글꼴 크기",
       SubTitle: "채팅 내용의 글꼴 크기 조정",
     },
+    FontFamily: {
+      Title: "채팅 폰트",
+      SubTitle: "채팅 내용의 폰트, 비워 두면 글로벌 기본 폰트를 적용",
+      Placeholder: "폰트 이름",
+    },
     InjectSystemPrompts: {
       Title: "시스템 프롬프트 주입",
       SubTitle:

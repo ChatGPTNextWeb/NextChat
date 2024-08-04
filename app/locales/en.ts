@@ -158,6 +158,12 @@ const en: LocaleType = {
       Title: "Font Size",
       SubTitle: "Adjust font size of chat content",
     },
+    FontFamily: {
+      Title: "Chat Font Family",
+      SubTitle:
+        "Font Family of the chat content, leave empty to apply global default font",
+      Placeholder: "Font Family Name",
+    },
     InjectSystemPrompts: {
       Title: "Inject System Prompts",
       SubTitle: "Inject a global system prompt for every request",

@@ -583,6 +583,7 @@ export function ImagePreviewer(props: {
                 <Markdown
                   content={getMessageTextContent(m)}
                   fontSize={config.fontSize}
+                  fontFamily={config.fontFamily}
                   defaultShow
                 />
                 {getMessageImages(m).length == 1 && (

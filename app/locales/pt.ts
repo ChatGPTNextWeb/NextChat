@@ -153,6 +153,12 @@ const pt: PartialLocaleType = {
       Title: "Tamanho da Fonte",
       SubTitle: "Ajustar o tamanho da fonte do conteúdo do chat",
     },
+    FontFamily: {
+      Title: "Fonte do Chat",
+      SubTitle:
+        "Fonte do conteúdo do chat, deixe vazio para aplicar a fonte padrão global",
+      Placeholder: "Nome da Fonte",
+    },
     InjectSystemPrompts: {
       Title: "Inserir Prompts de Sistema",
       SubTitle: "Inserir um prompt de sistema global para cada requisição",

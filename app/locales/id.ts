@@ -140,6 +140,12 @@ const id: PartialLocaleType = {
       Title: "Ukuran Font",
       SubTitle: "Ubah ukuran font konten chat",
     },
+    FontFamily: {
+      Title: "Font Obrolan",
+      SubTitle:
+        "Font dari konten obrolan, biarkan kosong untuk menerapkan font default global",
+      Placeholder: "Nama Font",
+    },
     InjectSystemPrompts: {
       Title: "Suntikkan Petunjuk Sistem",
       SubTitle:
@@ -369,8 +375,8 @@ const id: PartialLocaleType = {
   },
   Exporter: {
     Description: {
-      Title: "Hanya pesan setelah menghapus konteks yang akan ditampilkan"
-    },  
+      Title: "Hanya pesan setelah menghapus konteks yang akan ditampilkan",
+    },
     Model: "Model",
     Messages: "Pesan",
     Topic: "Topik",

@@ -136,6 +136,12 @@ const bn: PartialLocaleType = {
       Title: "ফন্ট সাইজ",
       SubTitle: "চ্যাট সামগ্রীর ফন্ট সাইজ সংশোধন করুন",
     },
+    FontFamily: {
+      Title: "চ্যাট ফন্ট",
+      SubTitle:
+        "চ্যাট সামগ্রীর ফন্ট, বিশ্বব্যাপী ডিফল্ট ফন্ট প্রয়োগ করতে খালি রাখুন",
+      Placeholder: "ফন্টের নাম",
+    },
     InjectSystemPrompts: {
       Title: "حقن تلميحات النظام",
       SubTitle:

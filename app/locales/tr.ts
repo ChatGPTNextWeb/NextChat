@@ -71,6 +71,12 @@ const tr: PartialLocaleType = {
       Title: "Yazı Boyutu",
       SubTitle: "Sohbet içeriğinin yazı boyutunu ayarlayın",
     },
+    FontFamily: {
+      Title: "Sohbet Yazı Tipi",
+      SubTitle:
+        "Sohbet içeriğinin yazı tipi, boş bırakıldığında küresel varsayılan yazı tipi uygulanır",
+      Placeholder: "Yazı Tipi Adı",
+    },
     InjectSystemPrompts: {
       Title: "Sistem İpucu Ekleyin",
       SubTitle:

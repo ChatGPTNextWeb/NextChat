@@ -155,6 +155,12 @@ const sk: PartialLocaleType = {
       Title: "Veľkosť písma",
       SubTitle: "Nastaviť veľkosť písma obsahu chatu",
     },
+    FontFamily: {
+      Title: "Chatové Písmo",
+      SubTitle:
+        "Písmo obsahu chatu, ponechajte prázdne pre použitie globálneho predvoleného písma",
+      Placeholder: "Názov Písma",
+    },
     InjectSystemPrompts: {
       Title: "Vložiť systémové výzvy",
       SubTitle: "Vložiť globálnu systémovú výzvu pre každú požiadavku",

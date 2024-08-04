@@ -118,6 +118,12 @@ const jp: PartialLocaleType = {
       Title: "フォントサイズ",
       SubTitle: "チャット内容のフォントサイズ",
     },
+    FontFamily: {
+      Title: "チャットフォント",
+      SubTitle:
+        "チャットコンテンツのフォント、空白の場合はグローバルデフォルトフォントを適用します",
+      Placeholder: "フォント名",
+    },
     InjectSystemPrompts: {
       Title: "システムプロンプトの挿入",
       SubTitle:
