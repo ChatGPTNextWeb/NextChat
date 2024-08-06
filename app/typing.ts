@@ -7,3 +7,5 @@ export interface RequestMessage {
   role: MessageRole;
   content: string;
 }
+
+export type DalleSize = "1024x1024" | "1792x1024" | "1024x1792";

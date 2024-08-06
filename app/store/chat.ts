@@ -26,6 +26,7 @@ import { nanoid } from "nanoid";
 import { createPersistStore } from "../utils/store";
 import { collectModelsWithDefaultModel } from "../utils/model";
 import { useAccessStore } from "./access";
+import { isDalle3 } from "../utils";
 
 export type ChatMessage = RequestMessage & {
   date: string;
@@ -541,6 +542,10 @@ export const useChatStore = createPersistStore(
         const config = useAppConfig.getState();
         const session = get().currentSession();
         const modelConfig = session.mask.modelConfig;
+        // skip summarize when using dalle3?
+        if (isDalle3(modelConfig.model)) {
+          return;
+        }
 
         const api: ClientApi = getClientApi(modelConfig.providerName);
 

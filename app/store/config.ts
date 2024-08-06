@@ -1,4 +1,5 @@
 import { LLMModel } from "../client/api";
+import { DalleSize } from "../typing";
 import { getClientConfig } from "../config/client";
 import {
   DEFAULT_INPUT_TEMPLATE,
@@ -61,6 +62,7 @@ export const DEFAULT_CONFIG = {
     compressMessageLengthThreshold: 1000,
     enableInjectSystemPrompts: true,
     template: config?.template ?? DEFAULT_INPUT_TEMPLATE,
+    size: "1024x1024" as DalleSize,
   },
 };
 

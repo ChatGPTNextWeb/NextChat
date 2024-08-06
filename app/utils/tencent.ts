@@ -1,19 +1,9 @@
-import hash from "hash.js";
+import { sign, hash as getHash, hex } from "./hmac";
 
 // 使用 SHA-256 和 secret 进行 HMAC 加密
-function sha256(message: any, secret = "", encoding?: string) {
-  return hash
-    .hmac(hash.sha256 as any, secret)
-    .update(message)
-    .digest(encoding as any);
-}
-
-// 使用 SHA-256 进行哈希
-function getHash(message: any, encoding = "hex") {
-  return hash
-    .sha256()
-    .update(message)
-    .digest(encoding as any);
+function sha256(message: any, secret: any, encoding?: string) {
+  const result = sign(secret, message);
+  return encoding == "hex" ? hex(result).toString() : result;
 }
 
 function getDate(timestamp: number) {

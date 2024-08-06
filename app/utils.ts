@@ -266,3 +266,7 @@ export function isVisionModel(model: string) {
     visionKeywords.some((keyword) => model.includes(keyword)) || isGpt4Turbo
   );
 }
+
+export function isDalle3(model: string) {
+  return "dall-e-3" === model;
+}

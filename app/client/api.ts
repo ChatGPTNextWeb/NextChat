@@ -6,7 +6,7 @@ import {
   ServiceProvider,
 } from "../constant";
 import { ChatMessage, ModelType, useAccessStore, useChatStore } from "../store";
-import { ChatGPTApi } from "./platforms/openai";
+import { ChatGPTApi, DalleRequestPayload } from "./platforms/openai";
 import { GeminiProApi } from "./platforms/google";
 import { ClaudeApi } from "./platforms/anthropic";
 import { ErnieApi } from "./platforms/baidu";
@@ -42,6 +42,7 @@ export interface LLMConfig {
   stream?: boolean;
   presence_penalty?: number;
   frequency_penalty?: number;
+  size?: DalleRequestPayload["size"];
 }
 
 export interface ChatOptions {
@@ -64,12 +65,14 @@ export interface LLMModel {
   displayName?: string;
   available: boolean;
   provider: LLMModelProvider;
+  sorted: number;
 }
 
 export interface LLMModelProvider {
   id: string;
   providerName: string;
   providerType: string;
+  sorted: number;
 }
 
 export abstract class LLMApi {
@@ -118,6 +121,7 @@ export class ClientApi {
         break;
       case ModelProvider.Qwen:
         this.llm = new QwenApi();
+        break;
       case ModelProvider.Hunyuan:
         this.llm = new HunyuanApi();
         break;

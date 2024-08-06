@@ -3,7 +3,7 @@ import { getServerSideConfig } from "@/app/config/server";
 import { ModelProvider, STABILITY_BASE_URL } from "@/app/constant";
 import { auth } from "@/app/api/auth";
 
-async function handle(
+export async function handle(
   req: NextRequest,
   { params }: { params: { path: string[] } },
 ) {
@@ -97,8 +97,3 @@ async function handle(
     clearTimeout(timeoutId);
   }
 }
-
-export const GET = handle;
-export const POST = handle;
-
-export const runtime = "edge";

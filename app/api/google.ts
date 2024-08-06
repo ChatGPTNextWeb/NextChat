@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "../../auth";
+import { auth } from "./auth";
 import { getServerSideConfig } from "@/app/config/server";
 import {
   ApiPath,
@@ -11,9 +11,9 @@ import { prettyObject } from "@/app/utils/format";
 
 const serverConfig = getServerSideConfig();
 
-async function handle(
+export async function handle(
   req: NextRequest,
-  { params }: { params: { path: string[] } },
+  { params }: { params: { provider: string; path: string[] } },
 ) {
   console.log("[Google Route] params ", params);
 
