@@ -420,6 +420,22 @@ const en: LocaleType = {
           SubTitle: "Example: ",
         },
       },
+      Iflytek: {
+        ApiKey: {
+          Title: "Iflytek API Key",
+          SubTitle: "Use a Iflytek API Key",
+          Placeholder: "Iflytek API Key",
+        },
+        ApiSecret: {
+          Title: "Iflytek API Secret",
+          SubTitle: "Use a Iflytek API Secret",
+          Placeholder: "Iflytek API Secret",
+        },
+        Endpoint: {
+          Title: "Endpoint Address",
+          SubTitle: "Example: ",
+        },
+      },
       CustomModel: {
         Title: "Custom Models",
         SubTitle: "Custom model options, seperated by comma",

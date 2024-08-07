@@ -9,7 +9,7 @@ import { handle as bytedanceHandler } from "../../bytedance";
 import { handle as alibabaHandler } from "../../alibaba";
 import { handle as moonshotHandler } from "../../moonshot";
 import { handle as stabilityHandler } from "../../stability";
-
+import { handle as iflytekHandler } from "../../iflytek";
 async function handle(
   req: NextRequest,
   { params }: { params: { provider: string; path: string[] } },
@@ -34,6 +34,8 @@ async function handle(
       return moonshotHandler(req, { params });
     case ApiPath.Stability:
       return stabilityHandler(req, { params });
+    case ApiPath.Iflytek:
+      return iflytekHandler(req, { params });
     default:
       return openaiHandler(req, { params });
   }

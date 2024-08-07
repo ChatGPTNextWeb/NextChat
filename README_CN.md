@@ -172,6 +172,20 @@ ByteDance Api Url.
 
 阿里云（千问）Api Url.
 
+### `IFLYTEK_URL` (可选)
+
+讯飞星火Api Url.
+
+### `IFLYTEK_API_KEY` (可选)
+
+讯飞星火Api Key.
+
+### `IFLYTEK_API_SECRET` (可选)
+
+讯飞星火Api Secret.
+
+
+
 ### `HIDE_USER_API_KEY` （可选）
 
 如果你不想让用户自行填入 API Key，将此环境变量设置为 1 即可。

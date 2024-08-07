@@ -436,6 +436,22 @@ const cn = {
           SubTitle: "样例：",
         },
       },
+      Iflytek: {
+        ApiKey: {
+          Title: "ApiKey",
+          SubTitle: "从讯飞星火控制台获取的 APIKey",
+          Placeholder: "APIKey",
+        },
+        ApiSecret: {
+          Title: "ApiSecret",
+          SubTitle: "从讯飞星火控制台获取的 APISecret",
+          Placeholder: "APISecret",
+        },
+        Endpoint: {
+          Title: "接口地址",
+          SubTitle: "样例：",
+        },
+      },
       CustomModel: {
         Title: "自定义模型名",
         SubTitle: "增加自定义模型可选项，使用英文逗号隔开",

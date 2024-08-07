@@ -14,8 +14,8 @@ export function createWebDavClient(store: SyncStore) {
   return {
     async check() {
       try {
-        const res = await fetch(this.path(folder, proxyUrl), {
-          method: "MKCOL",
+        const res = await fetch(this.path(folder, proxyUrl, "MKCOL"), {
+          method: "GET",
           headers: this.headers(),
         });
         const success = [201, 200, 404, 405, 301, 302, 307, 308].includes(
@@ -42,6 +42,10 @@ export function createWebDavClient(store: SyncStore) {
 
       console.log("[WebDav] get key = ", key, res.status, res.statusText);
 
+      if (404 == res.status) {
+        return "";
+      }
+
       return await res.text();
     },
 
@@ -62,7 +66,7 @@ export function createWebDavClient(store: SyncStore) {
         authorization: `Basic ${auth}`,
       };
     },
-    path(path: string, proxyUrl: string = "") {
+    path(path: string, proxyUrl: string = "", proxyMethod: string = "") {
       if (path.startsWith("/")) {
         path = path.slice(1);
       }
@@ -78,9 +82,13 @@ export function createWebDavClient(store: SyncStore) {
         let u = new URL(proxyUrl + pathPrefix + path);
         // add query params
         u.searchParams.append("endpoint", config.endpoint);
+        proxyMethod && u.searchParams.append("proxy_method", proxyMethod);
         url = u.toString();
       } catch (e) {
         url = pathPrefix + path + "?endpoint=" + config.endpoint;
+        if (proxyMethod) {
+          url += "&proxy_method=" + proxyMethod;
+        }
       }
 
       return url;

@@ -1,20 +1,13 @@
 "use client";
 import {
   ApiPath,
-  Baidu,
-  BAIDU_BASE_URL,
+  DEFAULT_API_HOST,
+  Iflytek,
   REQUEST_TIMEOUT_MS,
 } from "@/app/constant";
 import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
-import { getAccessToken } from "@/app/utils/baidu";
 
-import {
-  ChatOptions,
-  getHeaders,
-  LLMApi,
-  LLMModel,
-  MultimodalContent,
-} from "../api";
+import { ChatOptions, getHeaders, LLMApi, LLMModel } from "../api";
 import Locale from "../../locales";
 import {
   EventStreamContentType,
@@ -24,49 +17,30 @@ import { prettyObject } from "@/app/utils/format";
 import { getClientConfig } from "@/app/config/client";
 import { getMessageTextContent } from "@/app/utils";
 
-export interface OpenAIListModelResponse {
-  object: string;
-  data: Array<{
-    id: string;
-    object: string;
-    root: string;
-  }>;
-}
+import { OpenAIListModelResponse, RequestPayload } from "./openai";
 
-interface RequestPayload {
-  messages: {
-    role: "system" | "user" | "assistant";
-    content: string | MultimodalContent[];
-  }[];
-  stream?: boolean;
-  model: string;
-  temperature: number;
-  presence_penalty: number;
-  frequency_penalty: number;
-  top_p: number;
-  max_tokens?: number;
-}
+export class SparkApi implements LLMApi {
+  private disableListModels = true;
 
-export class ErnieApi implements LLMApi {
   path(path: string): string {
     const accessStore = useAccessStore.getState();
 
     let baseUrl = "";
 
     if (accessStore.useCustomConfig) {
-      baseUrl = accessStore.baiduUrl;
+      baseUrl = accessStore.iflytekUrl;
     }
 
     if (baseUrl.length === 0) {
       const isApp = !!getClientConfig()?.isApp;
-      // do not use proxy for baidubce api
-      baseUrl = isApp ? BAIDU_BASE_URL : ApiPath.Baidu;
+      const apiPath = ApiPath.Iflytek;
+      baseUrl = isApp ? DEFAULT_API_HOST + "/proxy" + apiPath : apiPath;
     }
 
     if (baseUrl.endsWith("/")) {
       baseUrl = baseUrl.slice(0, baseUrl.length - 1);
     }
-    if (!baseUrl.startsWith("http") && !baseUrl.startsWith(ApiPath.Baidu)) {
+    if (!baseUrl.startsWith("http") && !baseUrl.startsWith(ApiPath.Iflytek)) {
       baseUrl = "https://" + baseUrl;
     }
 
@@ -75,26 +49,15 @@ export class ErnieApi implements LLMApi {
     return [baseUrl, path].join("/");
   }
 
-  async chat(options: ChatOptions) {
-    const messages = options.messages.map((v) => ({
-      // "error_code": 336006, "error_msg": "the role of message with even index in the messages must be user or function",
-      role: v.role === "system" ? "user" : v.role,
-      content: getMessageTextContent(v),
-    }));
+  extractMessage(res: any) {
+    return res.choices?.at(0)?.message?.content ?? "";
+  }
 
-    // "error_code": 336006, "error_msg": "the length of messages must be an odd number",
-    if (messages.length % 2 === 0) {
-      if (messages.at(0)?.role === "user") {
-        messages.splice(1, 0, {
-          role: "assistant",
-          content: " ",
-        });
-      } else {
-        messages.unshift({
-          role: "user",
-          content: " ",
-        });
-      }
+  async chat(options: ChatOptions) {
+    const messages: ChatOptions["messages"] = [];
+    for (const v of options.messages) {
+      const content = getMessageTextContent(v);
+      messages.push({ role: v.role, content });
     }
 
     const modelConfig = {
@@ -102,43 +65,30 @@ export class ErnieApi implements LLMApi {
       ...useChatStore.getState().currentSession().mask.modelConfig,
       ...{
         model: options.config.model,
+        providerName: options.config.providerName,
       },
     };
 
-    const shouldStream = !!options.config.stream;
     const requestPayload: RequestPayload = {
       messages,
-      stream: shouldStream,
+      stream: options.config.stream,
       model: modelConfig.model,
       temperature: modelConfig.temperature,
       presence_penalty: modelConfig.presence_penalty,
       frequency_penalty: modelConfig.frequency_penalty,
       top_p: modelConfig.top_p,
+      // max_tokens: Math.max(modelConfig.max_tokens, 1024),
+      // Please do not ask me why not send max_tokens, no reason, this param is just shit, I dont want to explain anymore.
     };
 
-    console.log("[Request] Baidu payload: ", requestPayload);
+    console.log("[Request] Spark payload: ", requestPayload);
 
+    const shouldStream = !!options.config.stream;
     const controller = new AbortController();
     options.onController?.(controller);
 
     try {
-      let chatPath = this.path(Baidu.ChatPath(modelConfig.model));
-
-      // getAccessToken can not run in browser, because cors error
-      if (!!getClientConfig()?.isApp) {
-        const accessStore = useAccessStore.getState();
-        if (accessStore.useCustomConfig) {
-          if (accessStore.isValidBaidu()) {
-            const { access_token } = await getAccessToken(
-              accessStore.baiduApiKey,
-              accessStore.baiduSecretKey,
-            );
-            chatPath = `${chatPath}${
-              chatPath.includes("?") ? "&" : "?"
-            }access_token=${access_token}`;
-          }
-        }
-      }
+      const chatPath = this.path(Iflytek.ChatPath);
       const chatPayload = {
         method: "POST",
         body: JSON.stringify(requestPayload),
@@ -146,7 +96,7 @@ export class ErnieApi implements LLMApi {
         headers: getHeaders(),
       };
 
-      // make a fetch request
+      // Make a fetch request
       const requestTimeoutId = setTimeout(
         () => controller.abort(),
         REQUEST_TIMEOUT_MS,
@@ -157,14 +107,11 @@ export class ErnieApi implements LLMApi {
         let remainText = "";
         let finished = false;
 
-        // animate response to make it looks smooth
+        // Animate response text to make it look smooth
         function animateResponseText() {
           if (finished || controller.signal.aborted) {
             responseText += remainText;
             console.log("[Response Animation] finished");
-            if (responseText?.length === 0) {
-              options.onError?.(new Error("empty response from server"));
-            }
             return;
           }
 
@@ -179,7 +126,7 @@ export class ErnieApi implements LLMApi {
           requestAnimationFrame(animateResponseText);
         }
 
-        // start animaion
+        // Start animation
         animateResponseText();
 
         const finish = () => {
@@ -196,13 +143,14 @@ export class ErnieApi implements LLMApi {
           async onopen(res) {
             clearTimeout(requestTimeoutId);
             const contentType = res.headers.get("content-type");
-            console.log("[Baidu] request response content type: ", contentType);
+            console.log("[Spark] request response content type: ", contentType);
 
             if (contentType?.startsWith("text/plain")) {
               responseText = await res.clone().text();
               return finish();
             }
 
+            // Handle different error scenarios
             if (
               !res.ok ||
               !res.headers
@@ -210,7 +158,6 @@ export class ErnieApi implements LLMApi {
                 ?.startsWith(EventStreamContentType) ||
               res.status !== 200
             ) {
-              const responseTexts = [responseText];
               let extraInfo = await res.clone().text();
               try {
                 const resJson = await res.clone().json();
@@ -218,15 +165,14 @@ export class ErnieApi implements LLMApi {
               } catch {}
 
               if (res.status === 401) {
-                responseTexts.push(Locale.Error.Unauthorized);
+                extraInfo = Locale.Error.Unauthorized;
               }
 
-              if (extraInfo) {
-                responseTexts.push(extraInfo);
-              }
-
-              responseText = responseTexts.join("\n\n");
-
+              options.onError?.(
+                new Error(
+                  `Request failed with status ${res.status}: ${extraInfo}`,
+                ),
+              );
               return finish();
             }
           },
@@ -237,12 +183,17 @@ export class ErnieApi implements LLMApi {
             const text = msg.data;
             try {
               const json = JSON.parse(text);
-              const delta = json?.result;
+              const choices = json.choices as Array<{
+                delta: { content: string };
+              }>;
+              const delta = choices[0]?.delta?.content;
+
               if (delta) {
                 remainText += delta;
               }
             } catch (e) {
-              console.error("[Request] parse error", text, msg);
+              console.error("[Request] parse error", text);
+              options.onError?.(new Error(`Failed to parse response: ${text}`));
             }
           },
           onclose() {
@@ -258,8 +209,16 @@ export class ErnieApi implements LLMApi {
         const res = await fetch(chatPath, chatPayload);
         clearTimeout(requestTimeoutId);
 
+        if (!res.ok) {
+          const errorText = await res.text();
+          options.onError?.(
+            new Error(`Request failed with status ${res.status}: ${errorText}`),
+          );
+          return;
+        }
+
         const resJson = await res.json();
-        const message = resJson?.result;
+        const message = this.extractMessage(resJson);
         options.onFinish(message);
       }
     } catch (e) {
@@ -267,6 +226,7 @@ export class ErnieApi implements LLMApi {
       options.onError?.(e as Error);
     }
   }
+
   async usage() {
     return {
       used: 0,
@@ -278,4 +238,3 @@ export class ErnieApi implements LLMApi {
     return [];
   }
 }
-export { Baidu };

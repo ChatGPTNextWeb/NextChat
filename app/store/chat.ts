@@ -547,7 +547,8 @@ export const useChatStore = createPersistStore(
           return;
         }
 
-        const api: ClientApi = getClientApi(modelConfig.providerName);
+        const providerName = modelConfig.providerName;
+        const api: ClientApi = getClientApi(providerName);
 
         // remove error messages if any
         const messages = session.messages;
@@ -570,6 +571,7 @@ export const useChatStore = createPersistStore(
             config: {
               model: getSummarizeModel(session.mask.modelConfig.model),
               stream: false,
+              providerName,
             },
             onFinish(message) {
               get().updateCurrentSession(

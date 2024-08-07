@@ -280,6 +280,18 @@ Alibaba Cloud Api Key.
 
 Alibaba Cloud Api Url.
 
+### `IFLYTEK_URL` (Optional)
+
+iflytek Api Url.
+
+### `IFLYTEK_API_KEY` (Optional)
+
+iflytek Api Key.
+
+### `IFLYTEK_API_SECRET` (Optional)
+
+iflytek Api Secret.
+
 ### `HIDE_USER_API_KEY` (optional)
 
 > Default: Empty

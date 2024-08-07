@@ -66,6 +66,11 @@ declare global {
       MOONSHOT_URL?: string;
       MOONSHOT_API_KEY?: string;
 
+      // iflytek only
+      IFLYTEK_URL?: string;
+      IFLYTEK_API_KEY?: string;
+      IFLYTEK_API_SECRET?: string;
+
       // custom template for preprocessing user input
       DEFAULT_INPUT_TEMPLATE?: string;
     }
@@ -131,6 +136,7 @@ export const getServerSideConfig = () => {
   const isBytedance = !!process.env.BYTEDANCE_API_KEY;
   const isAlibaba = !!process.env.ALIBABA_API_KEY;
   const isMoonshot = !!process.env.MOONSHOT_API_KEY;
+  const isIflytek = !!process.env.IFLYTEK_API_KEY;
   // const apiKeyEnvVar = process.env.OPENAI_API_KEY ?? "";
   // const apiKeys = apiKeyEnvVar.split(",").map((v) => v.trim());
   // const randomIndex = Math.floor(Math.random() * apiKeys.length);
@@ -187,6 +193,11 @@ export const getServerSideConfig = () => {
     isMoonshot,
     moonshotUrl: process.env.MOONSHOT_URL,
     moonshotApiKey: getApiKey(process.env.MOONSHOT_API_KEY),
+
+    isIflytek,
+    iflytekUrl: process.env.IFLYTEK_URL,
+    iflytekApiKey: process.env.IFLYTEK_API_KEY,
+    iflytekApiSecret: process.env.IFLYTEK_API_SECRET,
 
     cloudflareAccountId: process.env.CLOUDFLARE_ACCOUNT_ID,
     cloudflareKVNamespaceId: process.env.CLOUDFLARE_KV_NAMESPACE_ID,
