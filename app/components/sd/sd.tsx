@@ -133,6 +133,7 @@ export function Sd() {
               {showMaxIcon && (
                 <div className="window-action-button">
                   <IconButton
+                    aria={Locale.Chat.Actions.FullScreen}
                     icon={config.tightBorder ? <MinIcon /> : <MaxIcon />}
                     bordered
                     onClick={() => {

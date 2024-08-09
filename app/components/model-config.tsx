@@ -17,6 +17,7 @@ export function ModelConfigList(props: {
     <>
       <ListItem title={Locale.Settings.Model}>
         <Select
+          aria-label={Locale.Settings.Model}
           value={value}
           onChange={(e) => {
             const [model, providerName] = e.currentTarget.value.split("@");
@@ -40,6 +41,7 @@ export function ModelConfigList(props: {
         subTitle={Locale.Settings.Temperature.SubTitle}
       >
         <InputRange
+          aria={Locale.Settings.Temperature.Title}
           value={props.modelConfig.temperature?.toFixed(1)}
           min="0"
           max="1" // lets limit it to 0-1
@@ -59,6 +61,7 @@ export function ModelConfigList(props: {
         subTitle={Locale.Settings.TopP.SubTitle}
       >
         <InputRange
+          aria={Locale.Settings.TopP.Title}
           value={(props.modelConfig.top_p ?? 1).toFixed(1)}
           min="0"
           max="1"
@@ -78,6 +81,7 @@ export function ModelConfigList(props: {
         subTitle={Locale.Settings.MaxTokens.SubTitle}
       >
         <input
+          aria-label={Locale.Settings.MaxTokens.Title}
           type="number"
           min={1024}
           max={512000}
@@ -100,6 +104,7 @@ export function ModelConfigList(props: {
             subTitle={Locale.Settings.PresencePenalty.SubTitle}
           >
             <InputRange
+              aria={Locale.Settings.PresencePenalty.Title}
               value={props.modelConfig.presence_penalty?.toFixed(1)}
               min="-2"
               max="2"
@@ -121,6 +126,7 @@ export function ModelConfigList(props: {
             subTitle={Locale.Settings.FrequencyPenalty.SubTitle}
           >
             <InputRange
+              aria={Locale.Settings.FrequencyPenalty.Title}
               value={props.modelConfig.frequency_penalty?.toFixed(1)}
               min="-2"
               max="2"
@@ -142,6 +148,7 @@ export function ModelConfigList(props: {
             subTitle={Locale.Settings.InjectSystemPrompts.SubTitle}
           >
             <input
+              aria-label={Locale.Settings.InjectSystemPrompts.Title}
               type="checkbox"
               checked={props.modelConfig.enableInjectSystemPrompts}
               onChange={(e) =>
@@ -159,6 +166,7 @@ export function ModelConfigList(props: {
             subTitle={Locale.Settings.InputTemplate.SubTitle}
           >
             <input
+              aria-label={Locale.Settings.InputTemplate.Title}
               type="text"
               value={props.modelConfig.template}
               onChange={(e) =>
@@ -175,6 +183,7 @@ export function ModelConfigList(props: {
         subTitle={Locale.Settings.HistoryCount.SubTitle}
       >
         <InputRange
+          aria={Locale.Settings.HistoryCount.Title}
           title={props.modelConfig.historyMessageCount.toString()}
           value={props.modelConfig.historyMessageCount}
           min="0"
@@ -193,6 +202,7 @@ export function ModelConfigList(props: {
         subTitle={Locale.Settings.CompressThreshold.SubTitle}
       >
         <input
+          aria-label={Locale.Settings.CompressThreshold.Title}
           type="number"
           min={500}
           max={4000}
@@ -208,6 +218,7 @@ export function ModelConfigList(props: {
       </ListItem>
       <ListItem title={Locale.Memory.Title} subTitle={Locale.Memory.Send}>
         <input
+          aria-label={Locale.Memory.Title}
           type="checkbox"
           checked={props.modelConfig.sendMemory}
           onChange={(e) =>

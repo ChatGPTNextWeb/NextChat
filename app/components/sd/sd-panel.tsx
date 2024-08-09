@@ -192,6 +192,7 @@ export function ControlParam(props: {
                 required={item.required}
               >
                 <Select
+                  aria-label={item.name}
                   value={props.data[item.value]}
                   onChange={(e) => {
                     props.onChange(item.value, e.currentTarget.value);
@@ -216,6 +217,7 @@ export function ControlParam(props: {
                 required={item.required}
               >
                 <input
+                  aria-label={item.name}
                   type="number"
                   min={item.min}
                   max={item.max}
@@ -235,6 +237,7 @@ export function ControlParam(props: {
                 required={item.required}
               >
                 <input
+                  aria-label={item.name}
                   type="text"
                   value={props.data[item.value]}
                   style={{ maxWidth: "100%", width: "100%" }}
