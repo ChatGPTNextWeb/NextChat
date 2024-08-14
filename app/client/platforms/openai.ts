@@ -17,7 +17,7 @@ import {
   base64Image2Blob,
 } from "@/app/utils/chat";
 import { cloudflareAIGatewayUrl } from "@/app/utils/cloudflare";
-import { DalleSize } from "@/app/typing";
+import { DalleSize, DalleQuality, DalleStyle } from "@/app/typing";
 
 import {
   ChatOptions,
@@ -70,6 +70,8 @@ export interface DalleRequestPayload {
   response_format: "url" | "b64_json";
   n: number;
   size: DalleSize;
+  quality: DalleQuality;
+  style: DalleStyle;
 }
 
 export class ChatGPTApi implements LLMApi {
@@ -162,6 +164,8 @@ export class ChatGPTApi implements LLMApi {
         response_format: "b64_json", // using b64_json, and save image in CacheStorage
         n: 1,
         size: options.config?.size ?? "1024x1024",
+        quality: options.config?.quality ?? "standard",
+        style: options.config?.style ?? "vivid",
       };
     } else {
       const visionModel = isVisionModel(options.config.model);
