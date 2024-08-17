@@ -156,6 +156,46 @@ export function PreCode(props: { children: any }) {
   );
 }
 
+function CustomCode(props: { children: any }) {
+  const ref = useRef<HTMLPreElement>(null);
+  const [collapsed, setCollapsed] = useState(true);
+  const [showToggle, setShowToggle] = useState(false);
+
+  useEffect(() => {
+    if (ref.current) {
+      const codeHeight = ref.current.scrollHeight;
+      setShowToggle(codeHeight > 400);
+      ref.current.scrollTop = ref.current.scrollHeight;
+    }
+  }, [props.children]);
+
+  const toggleCollapsed = () => {
+    setCollapsed((collapsed) => !collapsed);
+  };
+  return (
+    <>
+      <code
+        ref={ref}
+        style={{
+          maxHeight: collapsed ? "400px" : "none",
+          overflowY: "hidden",
+        }}
+      >
+        {props.children}
+        {showToggle && collapsed && (
+          <div
+            className={`show-hide-button ${
+              collapsed ? "collapsed" : "expanded"
+            }`}
+          >
+            <button onClick={toggleCollapsed}>查看全部</button>
+          </div>
+        )}
+      </code>
+    </>
+  );
+}
+
 function escapeDollarNumber(text: string) {
   let escapedText = "";
 
@@ -211,6 +251,7 @@ function _MarkDownContent(props: { content: string }) {
       ]}
       components={{
         pre: PreCode,
+        code: CustomCode,
         p: (pProps) => <p {...pProps} dir="auto" />,
         a: (aProps) => {
           const href = aProps.href || "";

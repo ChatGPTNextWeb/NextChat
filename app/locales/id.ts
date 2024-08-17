@@ -1,144 +1,158 @@
 import { SubmitKey } from "../store/config";
-import { PartialLocaleType } from "./index";
+import type { PartialLocaleType } from "./index";
+import { getClientConfig } from "../config/client";
+
+const isApp = !!getClientConfig()?.isApp;
 
 const id: PartialLocaleType = {
   WIP: "Coming Soon...",
   Error: {
-    Unauthorized:
-      "Akses tidak diizinkan, silakan masukkan kode akses atau masukkan kunci API OpenAI Anda. di halaman [autentikasi](/#/auth) atau di halaman [Pengaturan](/#/settings).",
+    Unauthorized: isApp
+      ? "API Key tidak valid terdeteksi, silakan periksa apakah API Key telah dikonfigurasi dengan benar di halaman [Pengaturan](/#/settings)."
+      : "Kata sandi akses tidak benar atau kosong, silakan masukkan kata sandi akses yang benar di halaman [Masuk](/#/auth), atau masukkan OpenAI API Key Anda di halaman [Pengaturan](/#/settings).",
   },
   Auth: {
-    Title: "Diperlukan Kode Akses",
-    Tips: "Masukkan kode akses di bawah",
-    SubTips: "Atau masukkan kunci API OpenAI Anda",
-    Input: "Kode Akses",
+    Title: "Kebutuhan Kata Sandi",
+    Tips: "Administrator telah mengaktifkan verifikasi kata sandi, silakan masukkan kode akses di bawah ini",
+    SubTips: "Atau masukkan kunci API OpenAI atau Google Anda",
+    Input: "Masukkan kode akses di sini",
     Confirm: "Konfirmasi",
     Later: "Nanti",
   },
   ChatItem: {
-    ChatItemCount: (count: number) => `${count} pesan`,
+    ChatItemCount: (count: number) => `${count} percakapan`,
   },
   Chat: {
-    SubTitle: (count: number) => `${count} pesan`,
+    SubTitle: (count: number) => `Total ${count} percakapan`,
+    EditMessage: {
+      Title: "Edit Riwayat Pesan",
+      Topic: {
+        Title: "Topik Obrolan",
+        SubTitle: "Ubah topik obrolan saat ini",
+      },
+    },
     Actions: {
-      ChatList: "Buka Daftar Chat",
-      CompressedHistory: "Ekspor Riwayat Terkompresi",
-      Export: "Ekspor Semua Pesan sebagai Markdown",
+      ChatList: "Lihat daftar pesan",
+      CompressedHistory: "Lihat riwayat Prompt yang dikompresi",
+      Export: "Ekspor riwayat obrolan",
       Copy: "Salin",
       Stop: "Berhenti",
-      Retry: "Coba Lagi",
-      Pin: "Pin",
-      PinToastContent: "2 pesan telah ditandai",
+      Retry: "Coba lagi",
+      Pin: "Sematkan",
+      PinToastContent: "1 percakapan telah disematkan ke prompt default",
       PinToastAction: "Lihat",
       Delete: "Hapus",
       Edit: "Edit",
     },
     Commands: {
-      new: "Mulai Chat Baru",
-      newm: "Mulai Chat Baru dengan Masks",
-      next: "Chat Selanjutnya",
-      prev: "Chat Sebelumnya",
-      clear: "Bersihkan Percakapan",
-      del: "Hapus Chat",
+      new: "Obrolan Baru",
+      newm: "Buat Obrolan Baru dari Masker",
+      next: "Obrolan Berikutnya",
+      prev: "Obrolan Sebelumnya",
+      clear: "Hapus Konteks",
+      del: "Hapus Obrolan",
     },
     InputActions: {
-      Stop: "Berhenti",
-      ToBottom: "Ke Bagian Bawah",
+      Stop: "Hentikan Respons",
+      ToBottom: "Gulir ke bawah",
       Theme: {
-        auto: "Otomatis",
-        light: "Tema Terang",
-        dark: "Tema Gelap",
+        auto: "Tema Otomatis",
+        light: "Mode Terang",
+        dark: "Mode Gelap",
       },
-      Prompt: "Prompts",
-      Masks: "Masks",
-      Clear: "Bersihkan Percakapan",
-      Settings: "Pengaturan",
+      Prompt: "Perintah Cepat",
+      Masks: "Semua Masker",
+      Clear: "Hapus Obrolan",
+      Settings: "Pengaturan Obrolan",
+      UploadImage: "Unggah Gambar",
     },
-    Rename: "Ubah Nama Chat",
-    Typing: "Mengetik...",
+    Rename: "Ganti Nama Obrolan",
+    Typing: "Sedang Mengetik…",
     Input: (submitKey: string) => {
-      var inputHints = `${submitKey} untuk mengirim`;
+      var inputHints = `${submitKey} kirim`;
       if (submitKey === String(SubmitKey.Enter)) {
-        inputHints += ", Shift + Enter untuk membalut";
+        inputHints += "，Shift + Enter untuk baris baru";
       }
-      return (
-        inputHints + ", / untuk mencari prompt, : untuk menggunakan perintah"
-      );
+      return inputHints + "，/ untuk melengkapi, : untuk memicu perintah";
     },
     Send: "Kirim",
     Config: {
-      Reset: "Reset ke Default",
-      SaveAs: "Simpan sebagai Masks",
+      Reset: "Hapus Memori",
+      SaveAs: "Simpan sebagai Masker",
     },
+    IsContext: "Prompt Default",
   },
   Export: {
-    Title: "Ekspor Pesan",
+    Title: "Bagikan Riwayat Obrolan",
     Copy: "Salin Semua",
-    Download: "Unduh",
-    MessageFromYou: "Pesan dari Anda",
-    MessageFromChatGPT: "Pesan dari ChatGPT",
+    Download: "Unduh File",
     Share: "Bagikan ke ShareGPT",
+    MessageFromYou: "Pengguna",
+    MessageFromChatGPT: "ChatGPT",
     Format: {
       Title: "Format Ekspor",
-      SubTitle: "Markdown atau Gambar PNG",
+      SubTitle: "Dapat mengekspor teks Markdown atau gambar PNG",
     },
     IncludeContext: {
-      Title: "Sertakan Konteks",
-      SubTitle: "Apakah akan menyertakan masks",
+      Title: "Sertakan Konteks Masker",
+      SubTitle: "Apakah akan menampilkan konteks masker dalam pesan",
     },
     Steps: {
       Select: "Pilih",
-      Preview: "Pratinjau",
+      Preview: "Prabaca",
+    },
+    Image: {
+      Toast: "Sedang Membuat Screenshot",
+      Modal: "Tekan lama atau klik kanan untuk menyimpan gambar",
     },
   },
   Select: {
-    Search: "Cari",
+    Search: "Cari Pesan",
     All: "Pilih Semua",
-    Latest: "Pilih Terbaru",
-    Clear: "Bersihkan",
+    Latest: "Beberapa Terbaru",
+    Clear: "Hapus Pilihan",
   },
   Memory: {
-    Title: "Prompt Memori",
-    EmptyContent: "Belum ada yang tersedia.",
-    Send: "Kirim Memori",
-    Copy: "Salin Memori",
-    Reset: "Reset",
-    ResetConfirm:
-      "Jika Anda mereset, riwayat obrolan saat ini dan memori historis akan dihapus. Apakah Anda yakin ingin melakukan reset?",
+    Title: "Ringkasan Sejarah",
+    EmptyContent: "Isi percakapan terlalu pendek, tidak perlu dirangkum",
+    Send: "Otomatis kompres riwayat obrolan dan kirim sebagai konteks",
+    Copy: "Salin Ringkasan",
+    Reset: "[unused]",
+    ResetConfirm: "Konfirmasi untuk menghapus ringkasan sejarah?",
   },
   Home: {
     NewChat: "Obrolan Baru",
-    DeleteChat: "Anda yakin ingin menghapus percakapan yang dipilih?",
+    DeleteChat: "Konfirmasi untuk menghapus percakapan yang dipilih?",
     DeleteToast: "Percakapan telah dihapus",
-    Revert: "Kembali",
+    Revert: "Batalkan",
   },
   Settings: {
     Title: "Pengaturan",
-    SubTitle: "Semua Pengaturan",
+    SubTitle: "Semua opsi pengaturan",
+
     Danger: {
       Reset: {
-        Title: "Setel Ulang Semua Pengaturan",
-        SubTitle: "Mengembalikan semua pengaturan ke nilai default",
-        Action: "Setel Ulang",
-        Confirm:
-          "Anda yakin ingin mengembalikan semua pengaturan ke nilai default?",
+        Title: "Atur Ulang Semua Pengaturan",
+        SubTitle: "Atur ulang semua opsi pengaturan ke nilai default",
+        Action: "Atur Ulang Sekarang",
+        Confirm: "Konfirmasi untuk mengatur ulang semua pengaturan?",
       },
       Clear: {
         Title: "Hapus Semua Data",
-        SubTitle: "Semua data yang tersimpan secara lokal akan dihapus",
-        Action: "Hapus",
+        SubTitle: "Hapus semua data obrolan dan pengaturan",
+        Action: "Hapus Sekarang",
         Confirm:
-          "Apakah Anda yakin ingin menghapus semua data yang tersimpan secara lokal?",
+          "Konfirmasi untuk menghapus semua data obrolan dan pengaturan?",
       },
     },
     Lang: {
-      Name: "Bahasa", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`
+      Name: "Language", // PERHATIAN: jika Anda ingin menambahkan terjemahan baru, harap jangan terjemahkan nilai ini, biarkan sebagai `Language`
       All: "Semua Bahasa",
     },
     Avatar: "Avatar",
     FontSize: {
       Title: "Ukuran Font",
-      SubTitle: "Ubah ukuran font konten chat",
+      SubTitle: "Ukuran font untuk konten obrolan",
     },
     FontFamily: {
       Title: "Font Obrolan",
@@ -147,88 +161,101 @@ const id: PartialLocaleType = {
       Placeholder: "Nama Font",
     },
     InjectSystemPrompts: {
-      Title: "Suntikkan Petunjuk Sistem",
+      Title: "Suntikkan Pesan Sistem",
       SubTitle:
-        "Tambahkan petunjuk simulasi sistem ChatGPT di awal daftar pesan yang diminta dalam setiap permintaan",
+        "Memaksa menambahkan pesan sistem simulasi ChatGPT di awal daftar pesan setiap permintaan",
     },
     InputTemplate: {
-      Title: "Template Input",
-      SubTitle: "Pesan baru akan diisi menggunakan template ini",
+      Title: "Pra-pemrosesan Input Pengguna",
+      SubTitle: "Pesan terbaru pengguna akan diisi ke template ini",
     },
 
     Update: {
-      Version: (x: string) => `Version: ${x}`,
-      IsLatest: "Versi terbaru",
+      Version: (x: string) => `Versi Saat Ini: ${x}`,
+      IsLatest: "Sudah versi terbaru",
       CheckUpdate: "Periksa Pembaruan",
-      IsChecking: "Memeriksa pembaruan...",
-      FoundUpdate: (x: string) => `Versi terbaru ditemukan: ${x}`,
-      GoToUpdate: "Perbarui Sekarang",
+      IsChecking: "Sedang memeriksa pembaruan...",
+      FoundUpdate: (x: string) => `Versi Baru Ditemukan: ${x}`,
+      GoToUpdate: "Pergi ke Pembaruan",
+    },
+    SendKey: "Kunci Kirim",
+    Theme: "Tema",
+    TightBorder: "Mode Tanpa Border",
+    SendPreviewBubble: {
+      Title: "Preview Bubble",
+      SubTitle: "Pratinjau konten Markdown di bubble pratinjau",
     },
     AutoGenerateTitle: {
-      Title: "Hasilkan Judul Otomatis",
-      SubTitle: "Hasilkan judul yang sesuai berdasarkan konten percakapan",
+      Title: "Otomatis Membuat Judul",
+      SubTitle: "Membuat judul yang sesuai berdasarkan konten obrolan",
     },
     Sync: {
-      CloudState: "Pembaruan Terakhir",
+      CloudState: "Data Cloud",
       NotSyncYet: "Belum disinkronkan",
       Success: "Sinkronisasi Berhasil",
       Fail: "Sinkronisasi Gagal",
 
       Config: {
         Modal: {
-          Title: "Konfigurasi Sinkronisasi",
+          Title: "Konfigurasi Sinkronisasi Cloud",
+          Check: "Periksa Ketersediaan",
         },
         SyncType: {
-          Title: "Tipe Sinkronisasi",
-          SubTitle: "Pilih layanan sinkronisasi favorit Anda",
+          Title: "Jenis Sinkronisasi",
+          SubTitle: "Pilih server sinkronisasi favorit",
         },
         Proxy: {
-          Title: "Aktifkan Proxy CORS",
+          Title: "Aktifkan Proxy",
           SubTitle:
-            "Aktifkan Proxy untuk menghindari pembatasan atau pemblokiran lintas sumber",
+            "Saat menyinkronkan di browser, proxy harus diaktifkan untuk menghindari pembatasan lintas domain",
         },
         ProxyUrl: {
-          Title: "Lokasi Titik Akhir Proxy CORS",
-          SubTitle: "Hanya berlaku untuk Proxy CORS bawaan untuk proyek ini",
+          Title: "Alamat Proxy",
+          SubTitle: "Hanya berlaku untuk proxy lintas domain bawaan proyek ini",
         },
 
         WebDav: {
-          Endpoint: "Lokasi Titik Akhir WebDAV",
-          UserName: "User Pengguna",
+          Endpoint: "Alamat WebDAV",
+          UserName: "Nama Pengguna",
           Password: "Kata Sandi",
         },
+
+        UpStash: {
+          Endpoint: "Url REST Redis UpStash",
+          UserName: "Nama Cadangan",
+          Password: "Token REST Redis UpStash",
+        },
       },
-    },
-    SendKey: "Kirim",
-    Theme: "Tema",
-    TightBorder: "Batas Ketat",
-    SendPreviewBubble: {
-      Title: "Pratinjau Obrolan",
-      SubTitle: "Pratinjau Obrolan dengan markdown",
+
+      LocalState: "Data Lokal",
+      Overview: (overview: any) => {
+        return `${overview.chat} percakapan, ${overview.message} pesan, ${overview.prompt} prompt, ${overview.mask} masker`;
+      },
+      ImportFailed: "Impor Gagal",
     },
     Mask: {
       Splash: {
-        Title: "Layar Pembuka Masks",
-        SubTitle:
-          "Tampilkan layar pembuka masks sebelum memulai percakapan baru",
+        Title: "Halaman Awal Masker",
+        SubTitle: "Tampilkan halaman awal masker saat memulai obrolan baru",
       },
       Builtin: {
-        Title: "Sembunyikan Masks Bawaan",
-        SubTitle: "Sembunyikan Masks bawaan dari daftar masks",
+        Title: "Sembunyikan Masker Bawaan",
+        SubTitle: "Sembunyikan masker bawaan dari semua daftar masker",
       },
     },
     Prompt: {
       Disable: {
-        Title: "Nonaktifkan Otomatisasi",
-        SubTitle: "Aktifkan/Matikan otomatisasi",
+        Title: "Nonaktifkan Pelengkapan Prompt Otomatis",
+        SubTitle:
+          "Ketik / di awal kotak input untuk memicu pelengkapan otomatis",
       },
-      List: "Daftar Prompt",
+      List: "Daftar Prompt Kustom",
       ListCount: (builtin: number, custom: number) =>
-        `${builtin} bawaan, ${custom} penggunaan khusus`,
+        `Bawaan ${builtin} item, pengguna ${custom} item`,
       Edit: "Edit",
       Modal: {
         Title: "Daftar Prompt",
-        Add: "Tambahkan",
+        Add: "Baru",
         Search: "Cari Prompt",
       },
       EditModal: {
@@ -236,142 +263,284 @@ const id: PartialLocaleType = {
       },
     },
     HistoryCount: {
-      Title: "Jumlah Pesan Riwayat",
-      SubTitle: "Jumlah pesan yang akan dikirim setiap permintaan",
+      Title: "Jumlah Pesan Sejarah",
+      SubTitle: "Jumlah pesan sejarah yang dibawa setiap permintaan",
     },
     CompressThreshold: {
-      Title: "Batas Kompresi Riwayat",
+      Title: "Ambang Batas Kompresi Pesan Sejarah",
       SubTitle:
-        "Jika panjang pesan melebihi batas yang ditentukan, pesan tersebut akan dikompresi",
+        "Ketika pesan sejarah yang tidak terkompresi melebihi nilai ini, akan dikompresi",
     },
 
     Usage: {
-      Title: "Saldo Akun",
+      Title: "Cek Saldo",
       SubTitle(used: any, total: any) {
-        return `Digunakan bulan ini: ${used}, total langganan: ${total}`;
+        return `Digunakan bulan ini $${used}, total langganan $${total}`;
       },
-      IsChecking: "Memeriksa...",
-      Check: "Periksa",
-      NoAccess: "Masukkan kunci API untuk memeriksa saldo",
+      IsChecking: "Sedang memeriksa…",
+      Check: "Periksa Lagi",
+      NoAccess: "Masukkan API Key atau kata sandi akses untuk melihat saldo",
+    },
+
+    Access: {
+      AccessCode: {
+        Title: "Kata Sandi Akses",
+        SubTitle: "Administrator telah mengaktifkan akses terenkripsi",
+        Placeholder: "Masukkan kata sandi akses",
+      },
+      CustomEndpoint: {
+        Title: "Antarmuka Kustom",
+        SubTitle: "Apakah akan menggunakan layanan Azure atau OpenAI kustom",
+      },
+      Provider: {
+        Title: "Penyedia Layanan Model",
+        SubTitle: "Ganti penyedia layanan yang berbeda",
+      },
+      OpenAI: {
+        ApiKey: {
+          Title: "API Key",
+          SubTitle:
+            "Gunakan OpenAI Key kustom untuk menghindari batasan akses kata sandi",
+          Placeholder: "OpenAI API Key",
+        },
+
+        Endpoint: {
+          Title: "Alamat Antarmuka",
+          SubTitle: "Selain alamat default, harus menyertakan http(s)://",
+        },
+      },
+      Azure: {
+        ApiKey: {
+          Title: "Kunci Antarmuka",
+          SubTitle:
+            "Gunakan Azure Key kustom untuk menghindari batasan akses kata sandi",
+          Placeholder: "Azure API Key",
+        },
+
+        Endpoint: {
+          Title: "Alamat Antarmuka",
+          SubTitle: "Contoh:",
+        },
+
+        ApiVerion: {
+          Title: "Versi Antarmuka (azure api version)",
+          SubTitle: "Pilih versi parsial tertentu",
+        },
+      },
+      Anthropic: {
+        ApiKey: {
+          Title: "Kunci Antarmuka",
+          SubTitle:
+            "Gunakan Anthropic Key kustom untuk menghindari batasan akses kata sandi",
+          Placeholder: "Anthropic API Key",
+        },
+
+        Endpoint: {
+          Title: "Alamat Antarmuka",
+          SubTitle: "Contoh:",
+        },
+
+        ApiVerion: {
+          Title: "Versi Antarmuka (claude api version)",
+          SubTitle: "Pilih versi API tertentu",
+        },
+      },
+      Google: {
+        ApiKey: {
+          Title: "Kunci API",
+          SubTitle: "Dapatkan kunci API Anda dari Google AI",
+          Placeholder: "Masukkan kunci API Studio Google AI Anda",
+        },
+
+        Endpoint: {
+          Title: "Alamat Akhir",
+          SubTitle: "Contoh:",
+        },
+
+        ApiVersion: {
+          Title: "Versi API (hanya untuk gemini-pro)",
+          SubTitle: "Pilih versi API tertentu",
+        },
+        GoogleSafetySettings: {
+          Title: "Tingkat Filter Keamanan Google",
+          SubTitle: "Atur tingkat filter konten",
+        },
+      },
+      Baidu: {
+        ApiKey: {
+          Title: "API Key",
+          SubTitle: "Gunakan Baidu API Key kustom",
+          Placeholder: "Baidu API Key",
+        },
+        SecretKey: {
+          Title: "Secret Key",
+          SubTitle: "Gunakan Baidu Secret Key kustom",
+          Placeholder: "Baidu Secret Key",
+        },
+        Endpoint: {
+          Title: "Alamat Antarmuka",
+          SubTitle: "Tidak mendukung kustom, pergi ke .env untuk konfigurasi",
+        },
+      },
+      ByteDance: {
+        ApiKey: {
+          Title: "Kunci Antarmuka",
+          SubTitle: "Gunakan ByteDance API Key kustom",
+          Placeholder: "ByteDance API Key",
+        },
+        Endpoint: {
+          Title: "Alamat Antarmuka",
+          SubTitle: "Contoh:",
+        },
+      },
+      Alibaba: {
+        ApiKey: {
+          Title: "Kunci Antarmuka",
+          SubTitle: "Gunakan Alibaba Cloud API Key kustom",
+          Placeholder: "Alibaba Cloud API Key",
+        },
+        Endpoint: {
+          Title: "Alamat Antarmuka",
+          SubTitle: "Contoh:",
+        },
+      },
+      CustomModel: {
+        Title: "Nama Model Kustom",
+        SubTitle: "Tambahkan opsi model kustom, pisahkan dengan koma",
+      },
     },
 
     Model: "Model",
     Temperature: {
-      Title: "Suhu",
-      SubTitle: "Semakin tinggi nilainya, semakin acak keluarannya",
+      Title: "Randomness (temperature)",
+      SubTitle: "Semakin tinggi nilainya, semakin acak responsnya",
     },
     TopP: {
-      Title: "Top P",
-      SubTitle: "Tidak mengubah nilai dengan suhu",
+      Title: "Sampling Inti (top_p)",
+      SubTitle:
+        "Mirip dengan randomness, tetapi jangan ubah bersama randomness",
     },
     MaxTokens: {
-      Title: "Token Maksimum",
-      SubTitle: "Panjang maksimum token input dan output",
+      Title: "Batas Token Per Respons",
+      SubTitle: "Jumlah token maksimum yang digunakan per interaksi",
     },
     PresencePenalty: {
-      Title: "Penalti Kehadiran",
-      SubTitle: "Semakin tinggi nilai, semakin mungkin topik baru muncul",
+      Title: "Kedekatan Topik (presence_penalty)",
+      SubTitle:
+        "Semakin tinggi nilainya, semakin besar kemungkinan memperluas ke topik baru",
     },
     FrequencyPenalty: {
-      Title: "Penalti Frekuensi",
+      Title: "Hukuman Frekuensi (frequency_penalty)",
       SubTitle:
-        "Semakin tinggi nilai, semakin rendah kemungkinan penggunaan ulang baris yang sama",
+        "Semakin tinggi nilainya, semakin besar kemungkinan mengurangi kata-kata yang berulang",
     },
   },
   Store: {
-    DefaultTopic: "Percakapan Baru",
-    BotHello: "Halo! Bagaimana saya bisa membantu Anda hari ini?",
-    Error: "Terjadi kesalahan, silakan coba lagi nanti.",
+    DefaultTopic: "Obrolan Baru",
+    BotHello: "Ada yang bisa saya bantu?",
+    Error: "Terjadi kesalahan, coba lagi nanti",
     Prompt: {
       History: (content: string) =>
-        "Ini adalah ringkasan singkat dari riwayat percakapan: " + content,
+        "Ini adalah ringkasan obrolan sebelumnya sebagai latar belakang: " +
+        content,
       Topic:
-        "Buat judul berisi empat hingga lima kata untuk percakapan kita yang tidak akan disertakan dalam ringkasan percakapan, seperti instruksi, format, kutipan, tanda baca awal, tanda kutip pendahuluan, atau karakter tambahan. Silakan coba dengan kutipan berakhir.",
+        "Gunakan empat hingga lima kata untuk langsung memberikan ringkasan topik kalimat ini, tanpa penjelasan, tanpa tanda baca, tanpa kata pengisi, tanpa teks tambahan, tanpa menebalkan. Jika tidak ada topik, langsung jawab 'Obrolan Santai'",
       Summarize:
-        "Buat ringkasan percakapan dalam 200 kata yang akan digunakan sebagai promp di masa depan.",
+        "Berikan ringkasan singkat tentang konten obrolan, untuk digunakan sebagai prompt konteks selanjutnya, dalam 200 kata atau kurang",
     },
   },
   Copy: {
-    Success: "Tersalin ke clipboard",
-    Failed:
-      "Gagal menyalin, mohon berikan izin untuk mengakses clipboard atau Clipboard API tidak didukung (Tauri)",
+    Success: "Telah disalin ke clipboard",
+    Failed: "Gagal menyalin, mohon berikan izin clipboard",
   },
   Download: {
-    Success: "Konten berhasil diunduh ke direktori Anda.",
+    Success: "Konten telah diunduh ke direktori Anda.",
     Failed: "Unduhan gagal.",
   },
   Context: {
-    Toast: (x: any) => `Dengan ${x} promp kontekstual`,
+    Toast: (x: any) => `Berisi ${x} prompt preset`,
     Edit: "Pengaturan Obrolan Saat Ini",
-    Add: "Tambahkan Promp",
-    Clear: "Bersihkan Konteks",
-    Revert: "Kembali ke Posisi Sebelumnya",
+    Add: "Tambah Obrolan",
+    Clear: "Konteks telah dihapus",
+    Revert: "Kembalikan Konteks",
   },
   Plugin: {
     Name: "Plugin",
   },
   FineTuned: {
-    Sysmessage: "Anda adalah asisten yang",
+    Sysmessage: "Anda adalah seorang asisten",
   },
   Mask: {
-    Name: "Masks",
+    Name: "Masker",
     Page: {
-      Title: "Template Promp",
-      SubTitle: (count: number) => `${count} template prompt`,
-      Search: "Cari template",
-      Create: "Buat",
+      Title: "Preset Karakter Masker",
+      SubTitle: (count: number) => `${count} definisi karakter preset`,
+      Search: "Cari Masker Karakter",
+      Create: "Buat Baru",
     },
     Item: {
-      Info: (count: number) => `${count} prompt`,
+      Info: (count: number) => `Berisi ${count} obrolan preset`,
       Chat: "Obrolan",
       View: "Lihat",
       Edit: "Edit",
       Delete: "Hapus",
-      DeleteConfirm: "Anda yakin ingin menghapus?",
+      DeleteConfirm: "Konfirmasi penghapusan?",
     },
     EditModal: {
       Title: (readonly: boolean) =>
-        `Edit Template Prompt ${readonly ? "(hanya baca)" : ""}`,
-      Download: "Unduh",
-      Clone: "Duplikat",
+        `Edit Masker Preset ${readonly ? "(Hanya Baca)" : ""}`,
+      Download: "Unduh Preset",
+      Clone: "Klon Preset",
     },
     Config: {
-      Avatar: "Avatar Bot",
-      Name: "Nama Bot",
+      Avatar: "Avatar Karakter",
+      Name: "Nama Karakter",
       Sync: {
-        Title: "Gunakan Konfigurasi Global",
-        SubTitle: "Gunakan konfigurasi global dalam percakapan ini",
+        Title: "Gunakan Pengaturan Global",
+        SubTitle:
+          "Apakah obrolan saat ini akan menggunakan pengaturan model global?",
         Confirm:
-          "Pastikan untuk mengganti konfigurasi kustom dengan konfigurasi global?",
+          "Pengaturan kustom obrolan saat ini akan ditimpa secara otomatis, konfirmasi untuk mengaktifkan pengaturan global?",
       },
       HideContext: {
-        Title: "Sembunyikan Prompt Konteks",
-        SubTitle: "Tidak menampilkan prompt konteks dalam obrolan",
+        Title: "Sembunyikan Obrolan Preset",
+        SubTitle:
+          "Setelah disembunyikan, obrolan preset tidak akan muncul di antarmuka obrolan",
       },
       Share: {
-        Title: "Bagikan Masks Ini",
-        SubTitle: "Buat tautan untuk masks ini",
+        Title: "Bagikan Masker Ini",
+        SubTitle: "Hasilkan tautan langsung ke masker ini",
         Action: "Salin Tautan",
       },
     },
   },
   NewChat: {
     Return: "Kembali",
-    Skip: "Lewati",
-    Title: "Pilih Masks",
-    SubTitle: "Berkonversasilah dengan diri Anda di balik masks",
-    More: "Lebih Lanjut",
-    NotShow: "Jangan Tampilkan Sekarang",
+    Skip: "Mulai Sekarang",
+    NotShow: "Jangan Tampilkan Lagi",
     ConfirmNoShow:
-      "Pastikan untuk menonaktifkannya? Anda dapat mengaktifkannya nanti melalui pengaturan.",
+      "Konfirmasi untuk menonaktifkan? Setelah dinonaktifkan, Anda dapat mengaktifkannya kembali kapan saja di pengaturan.",
+    Title: "Pilih Masker",
+    SubTitle: "Mulai sekarang, berinteraksi dengan pemikiran di balik masker",
+    More: "Lihat Semua",
+  },
+
+  URLCommand: {
+    Code: "Terdeteksi bahwa tautan sudah mengandung kode akses, apakah akan diisi secara otomatis?",
+    Settings:
+      "Terdeteksi bahwa tautan mengandung pengaturan preset, apakah akan diisi secara otomatis?",
   },
 
   UI: {
     Confirm: "Konfirmasi",
     Cancel: "Batal",
     Close: "Tutup",
-    Create: "Buat",
+    Create: "Buat Baru",
     Edit: "Edit",
+    Export: "Ekspor",
+    Import: "Impor",
+    Sync: "Sinkronkan",
+    Config: "Konfigurasi",
   },
   Exporter: {
     Description: {
@@ -380,11 +549,7 @@ const id: PartialLocaleType = {
     Model: "Model",
     Messages: "Pesan",
     Topic: "Topik",
-    Time: "Tanggal & Waktu",
-  },
-  URLCommand: {
-    Code: "Kode akses terdeteksi dari url, konfirmasi untuk mendaftar ? ",
-    Settings: "Pengaturan terdeteksi dari url, konfirmasi untuk diterapkan ?",
+    Time: "Waktu",
   },
 };
 

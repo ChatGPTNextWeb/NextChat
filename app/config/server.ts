@@ -1,5 +1,5 @@
 import md5 from "spark-md5";
-import { DEFAULT_MODELS } from "../constant";
+import { DEFAULT_MODELS, DEFAULT_GA_ID } from "../constant";
 
 declare global {
   namespace NodeJS {
@@ -211,6 +211,7 @@ export const getServerSideConfig = () => {
     cloudflareKVTTL: process.env.CLOUDFLARE_KV_TTL,
 
     gtmId: process.env.GTM_ID,
+    gaId: process.env.GA_ID || DEFAULT_GA_ID,
 
     needCode: ACCESS_CODES.size > 0,
     code: process.env.CODE,

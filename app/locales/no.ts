@@ -1,70 +1,161 @@
 import { SubmitKey } from "../store/config";
 import type { PartialLocaleType } from "./index";
+import { getClientConfig } from "../config/client";
+
+const isApp = !!getClientConfig()?.isApp;
 
 const no: PartialLocaleType = {
   WIP: "Arbeid pågår ...",
   Error: {
-    Unauthorized:
-      "Du har ikke tilgang. [Vennlig oppgi tildelt adgangskode](/#/auth).",
+    Unauthorized: isApp
+      ? "Ugyldig API-nøkkel oppdaget. Gå til [innstillinger](/#/settings) for å sjekke om API-nøkkelen er riktig konfigurert."
+      : "Adgangskoden er feil eller tom. Gå til [innlogging](/#/auth) for å oppgi riktig adgangskode, eller fyll inn din egen OpenAI API-nøkkel på [innstillinger](/#/settings) siden.",
+  },
+  Auth: {
+    Title: "Passord påkrevd",
+    Tips: "Administrator har aktivert passordbeskyttelse. Vennligst skriv inn tilgangskoden nedenfor",
+    SubTips: "Eller skriv inn din OpenAI eller Google API-nøkkel",
+    Input: "Skriv tilgangskoden her",
+    Confirm: "Bekreft",
+    Later: "Kom tilbake senere",
   },
   ChatItem: {
-    ChatItemCount: (count: number) => `${count} meldinger`,
+    ChatItemCount: (count: number) => `${count} samtaler`,
   },
   Chat: {
-    SubTitle: (count: number) => `${count} meldinger med ChatGPT`,
+    SubTitle: (count: number) => `Totalt ${count} samtaler`,
+    EditMessage: {
+      Title: "Rediger meldingshistorikk",
+      Topic: {
+        Title: "Samtaleemne",
+        SubTitle: "Endre nåværende samtaleemne",
+      },
+    },
     Actions: {
-      ChatList: "Gå til chatlisten",
-      CompressedHistory: "Komprimert historikk for instrukser",
-      Export: "Eksporter alle meldinger i markdown-format",
+      ChatList: "Vis meldingsliste",
+      CompressedHistory: "Vis komprimert historikk",
+      Export: "Eksporter samtaler",
       Copy: "Kopier",
       Stop: "Stopp",
       Retry: "Prøv igjen",
+      Pin: "Fest",
+      PinToastContent:
+        "1 samtale er festet til forhåndsdefinerte oppfordringer",
+      PinToastAction: "Se",
       Delete: "Slett",
+      Edit: "Rediger",
     },
-    Rename: "Gi nytt navn",
-    Typing: "Skriver …",
+    Commands: {
+      new: "Ny samtale",
+      newm: "Start samtale fra maske",
+      next: "Neste samtale",
+      prev: "Forrige samtale",
+      clear: "Rydd kontekst",
+      del: "Slett samtale",
+    },
+    InputActions: {
+      Stop: "Stopp respons",
+      ToBottom: "Rull til nyeste",
+      Theme: {
+        auto: "Automatisk tema",
+        light: "Lyst tema",
+        dark: "Mørkt tema",
+      },
+      Prompt: "Hurtigkommando",
+      Masks: "Alle masker",
+      Clear: "Rydd samtale",
+      Settings: "Samtaleinnstillinger",
+      UploadImage: "Last opp bilde",
+    },
+    Rename: "Gi nytt navn til samtale",
+    Typing: "Skriver…",
     Input: (submitKey: string) => {
-      var inputHints = `${submitKey} for å sende`;
+      var inputHints = `${submitKey} send`;
       if (submitKey === String(SubmitKey.Enter)) {
-        inputHints += ", Shift + Enter for å omgi";
+        inputHints += "，Shift + Enter for linjeskift";
       }
-      return inputHints + ", / for å søke instrukser";
+      return (
+        inputHints + "，/ for å utløse autoutfylling, : for å utløse kommando"
+      );
     },
     Send: "Send",
+    Config: {
+      Reset: "Fjern minne",
+      SaveAs: "Lagre som maske",
+    },
+    IsContext: "Forhåndsdefinerte oppfordringer",
   },
   Export: {
-    Title: "Alle meldinger",
-    Copy: "Kopiere alle",
-    Download: "Last ned",
-    MessageFromYou: "Melding fra deg",
-    MessageFromChatGPT: "Melding fra ChatGPT",
+    Title: "Del samtalehistorikk",
+    Copy: "Kopier alt",
+    Download: "Last ned fil",
+    Share: "Del til ShareGPT",
+    MessageFromYou: "Bruker",
+    MessageFromChatGPT: "ChatGPT",
+    Format: {
+      Title: "Eksporterformat",
+      SubTitle: "Kan eksporteres som Markdown-tekst eller PNG-bilde",
+    },
+    IncludeContext: {
+      Title: "Inkluder maske kontekst",
+      SubTitle: "Skal maske kontekst vises i meldinger",
+    },
+    Steps: {
+      Select: "Velg",
+      Preview: "Forhåndsvis",
+    },
+    Image: {
+      Toast: "Genererer skjermbilde",
+      Modal: "Langtrykk eller høyreklikk for å lagre bilde",
+    },
+  },
+  Select: {
+    Search: "Søk meldinger",
+    All: "Velg alle",
+    Latest: "Siste meldinger",
+    Clear: "Fjern valg",
   },
   Memory: {
-    Title: "Minneinstruks",
-    EmptyContent: "Ingen sålant.",
-    Send: "Send minne",
-    Copy: "Kopiere minne",
-    Reset: "Nulstill sesjon",
-    ResetConfirm:
-      "Om du nillstiller vil du slette hele historikken. Er du sikker på at du vil nullstille?",
+    Title: "Historisk sammendrag",
+    EmptyContent: "Samtaleinnholdet er for kort, ingen oppsummering nødvendig",
+    Send: "Automatisk komprimere samtalehistorikk og sende som kontekst",
+    Copy: "Kopier sammendrag",
+    Reset: "[unused]",
+    ResetConfirm: "Er du sikker på at du vil tømme historisk sammendrag?",
   },
   Home: {
-    NewChat: "Ny chat",
-    DeleteChat: "Bekreft for å slette det valgte dialogen",
+    NewChat: "Ny samtale",
+    DeleteChat: "Er du sikker på at du vil slette den valgte samtalen?",
     DeleteToast: "Samtale slettet",
-    Revert: "Tilbakestill",
+    Revert: "Angre",
   },
   Settings: {
     Title: "Innstillinger",
-    SubTitle: "Alle innstillinger",
+    SubTitle: "Alle innstillingsalternativer",
 
+    Danger: {
+      Reset: {
+        Title: "Tilbakestill alle innstillinger",
+        SubTitle:
+          "Tilbakestill alle innstillingsalternativer til standardverdier",
+        Action: "Tilbakestill nå",
+        Confirm: "Bekreft tilbakestilling av alle innstillinger?",
+      },
+      Clear: {
+        Title: "Slett alle data",
+        SubTitle: "Slett alle samtaler og innstillingsdata",
+        Action: "Slett nå",
+        Confirm: "Bekreft sletting av alle samtaler og innstillingsdata?",
+      },
+    },
     Lang: {
       Name: "Language", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`
+      All: "Alle språk",
     },
-    Avatar: "Avatar",
+    Avatar: "Profilbilde",
     FontSize: {
-      Title: "Fontstørrelsen",
-      SubTitle: "Juster fontstørrelsen for samtaleinnholdet.",
+      Title: "Skriftstørrelse",
+      SubTitle: "Skriftstørrelse for samtaleinnhold",
     },
     FontFamily: {
       Title: "Chat-skrifttype",
@@ -73,92 +164,394 @@ const no: PartialLocaleType = {
       Placeholder: "Skriftnavn",
     },
     InjectSystemPrompts: {
-      Title: "Sett inn systemprompter",
+      Title: "Injiser systemprompter",
       SubTitle:
-        "Tving tillegg av en simulert ChatGPT-systemprompt i begynnelsen av meldingslisten for hver forespørsel",
+        "Tving inn et systemprompt som simulerer ChatGPT i starten av hver forespørsel",
     },
+    InputTemplate: {
+      Title: "Forhåndsbehandling av brukerinput",
+      SubTitle:
+        "Den nyeste meldingen fra brukeren vil bli fylt ut i denne malen",
+    },
+
     Update: {
-      Version: (x: string) => `Versjon: ${x}`,
-      IsLatest: "Siste versjon",
-      CheckUpdate: "Se etter oppdatering",
-      IsChecking: "Ser etter oppdatering ...",
-      FoundUpdate: (x: string) => `Fant ny versjon: ${x}`,
-      GoToUpdate: "Oppdater",
+      Version: (x: string) => `Nåværende versjon: ${x}`,
+      IsLatest: "Er den nyeste versjonen",
+      CheckUpdate: "Sjekk oppdateringer",
+      IsChecking: "Sjekker oppdateringer...",
+      FoundUpdate: (x: string) => `Ny versjon oppdaget: ${x}`,
+      GoToUpdate: "Gå til oppdatering",
     },
-    SendKey: "Send nøkkel",
+    SendKey: "Send-knapp",
     Theme: "Tema",
-    TightBorder: "Stram innramming",
+    TightBorder: "Ingen ramme-modus",
+    SendPreviewBubble: {
+      Title: "Forhåndsvisningsboble",
+      SubTitle: "Forhåndsvis Markdown-innhold i en forhåndsvisningsboble",
+    },
+    AutoGenerateTitle: {
+      Title: "Automatisk generere tittel",
+      SubTitle: "Generer en passende tittel basert på samtaleinnholdet",
+    },
+    Sync: {
+      CloudState: "Skydatasynkronisering",
+      NotSyncYet: "Har ikke blitt synkronisert ennå",
+      Success: "Synkronisering vellykket",
+      Fail: "Synkronisering mislyktes",
+
+      Config: {
+        Modal: {
+          Title: "Konfigurer sky-synkronisering",
+          Check: "Sjekk tilgjengelighet",
+        },
+        SyncType: {
+          Title: "Synkroniseringstype",
+          SubTitle: "Velg ønsket synkroniseringsserver",
+        },
+        Proxy: {
+          Title: "Aktiver proxy",
+          SubTitle:
+            "Når du synkroniserer i nettleseren, må proxy være aktivert for å unngå CORS-restriksjoner",
+        },
+        ProxyUrl: {
+          Title: "Proxy-URL",
+          SubTitle: "Kun for prosjektets innebygde CORS-proxy",
+        },
+
+        WebDav: {
+          Endpoint: "WebDAV-adresse",
+          UserName: "Brukernavn",
+          Password: "Passord",
+        },
+
+        UpStash: {
+          Endpoint: "UpStash Redis REST-URL",
+          UserName: "Sikkerhetskopinavn",
+          Password: "UpStash Redis REST-token",
+        },
+      },
+
+      LocalState: "Lokal data",
+      Overview: (overview: any) => {
+        return `${overview.chat} samtaler, ${overview.message} meldinger, ${overview.prompt} oppfordringer, ${overview.mask} masker`;
+      },
+      ImportFailed: "Import mislyktes",
+    },
+    Mask: {
+      Splash: {
+        Title: "Maskestartside",
+        SubTitle: "Vis maskestartside når du oppretter en ny samtale",
+      },
+      Builtin: {
+        Title: "Skjul innebygde masker",
+        SubTitle: "Skjul innebygde masker i alle maskelister",
+      },
+    },
     Prompt: {
       Disable: {
-        Title: "Skru av autofullfør",
-        SubTitle: "Skriv / for å trigge autofullfør",
+        Title: "Deaktiver automatisk fullføring av oppfordringer",
+        SubTitle: "Skriv / i tekstboksen for å utløse automatisk fullføring",
       },
-      List: "Instruksliste",
+      List: "Egendefinerte oppfordringer",
       ListCount: (builtin: number, custom: number) =>
-        `${builtin} innebygde, ${custom} brukerdefinerte`,
-      Edit: "Endre",
+        `Innebygde ${builtin}, brukerdedefinerte ${custom}`,
+      Edit: "Rediger",
       Modal: {
-        Title: "Instruksliste",
-        Add: "Legg til",
-        Search: "Søk instrukser",
+        Title: "Oppfordringsliste",
+        Add: "Ny",
+        Search: "Søk oppfordringer",
+      },
+      EditModal: {
+        Title: "Rediger oppfordring",
       },
     },
     HistoryCount: {
-      Title: "Tall på tilhørende meldinger",
-      SubTitle: "Antall sendte meldinger tilknyttet hver spørring",
+      Title: "Antall historiske meldinger",
+      SubTitle: "Antall historiske meldinger som sendes med hver forespørsel",
     },
     CompressThreshold: {
-      Title: "Terskeverdi for komprimering av historikk",
+      Title: "Kompressterskel for historiske meldinger",
       SubTitle:
-        "Komprimer dersom ikke-komprimert lengde på meldinger overskrider denne verdien",
+        "Når ukomprimerte historiske meldinger overskrider denne verdien, vil de bli komprimert",
     },
 
     Usage: {
-      Title: "Saldo for konto",
+      Title: "Saldoforespørsel",
       SubTitle(used: any, total: any) {
-        return `Brukt denne måneden $${used}, abonnement $${total}`;
+        return `Brukt denne måneden $${used}, total abonnementsbeløp $${total}`;
       },
-      IsChecking: "Sjekker ...",
-      Check: "Sjekk",
-      NoAccess: "Skriv inn API-nøkkelen for å sjekke saldo",
+      IsChecking: "Sjekker...",
+      Check: "Sjekk på nytt",
+      NoAccess: "Skriv inn API-nøkkel eller tilgangspassord for å se saldo",
     },
 
-    Model: "Model",
+    Access: {
+      AccessCode: {
+        Title: "Adgangskode",
+        SubTitle: "Administrator har aktivert kryptert tilgang",
+        Placeholder: "Skriv inn tilgangskoden",
+      },
+      CustomEndpoint: {
+        Title: "Egendefinert API",
+        SubTitle: "Bruk egendefinerte Azure- eller OpenAI-tjenester",
+      },
+      Provider: {
+        Title: "Modelltilbyder",
+        SubTitle: "Bytt til forskjellige tilbydere",
+      },
+      OpenAI: {
+        ApiKey: {
+          Title: "API-nøkkel",
+          SubTitle:
+            "Bruk egendefinert OpenAI-nøkkel for å omgå passordtilgangsbegrensninger",
+          Placeholder: "OpenAI API-nøkkel",
+        },
+
+        Endpoint: {
+          Title: "API-adresse",
+          SubTitle: "Må inkludere http(s):// utenom standardadresse",
+        },
+      },
+      Azure: {
+        ApiKey: {
+          Title: "API-nøkkel",
+          SubTitle:
+            "Bruk egendefinert Azure-nøkkel for å omgå passordtilgangsbegrensninger",
+          Placeholder: "Azure API-nøkkel",
+        },
+
+        Endpoint: {
+          Title: "API-adresse",
+          SubTitle: "Eksempel:",
+        },
+
+        ApiVerion: {
+          Title: "API-versjon (azure api versjon)",
+          SubTitle: "Velg en spesifikk delversjon",
+        },
+      },
+      Anthropic: {
+        ApiKey: {
+          Title: "API-nøkkel",
+          SubTitle:
+            "Bruk egendefinert Anthropic-nøkkel for å omgå passordtilgangsbegrensninger",
+          Placeholder: "Anthropic API-nøkkel",
+        },
+
+        Endpoint: {
+          Title: "API-adresse",
+          SubTitle: "Eksempel:",
+        },
+
+        ApiVerion: {
+          Title: "API-versjon (claude api versjon)",
+          SubTitle: "Velg en spesifikk API-versjon",
+        },
+      },
+      Google: {
+        ApiKey: {
+          Title: "API-nøkkel",
+          SubTitle: "Hent din API-nøkkel fra Google AI",
+          Placeholder: "Skriv inn din Google AI Studio API-nøkkel",
+        },
+
+        Endpoint: {
+          Title: "Endepunktadresse",
+          SubTitle: "Eksempel:",
+        },
+
+        ApiVersion: {
+          Title: "API-versjon (kun for gemini-pro)",
+          SubTitle: "Velg en spesifikk API-versjon",
+        },
+        GoogleSafetySettings: {
+          Title: "Google sikkerhetsfiltreringsnivå",
+          SubTitle: "Sett innholdsfiltreringsnivå",
+        },
+      },
+      Baidu: {
+        ApiKey: {
+          Title: "API-nøkkel",
+          SubTitle: "Bruk egendefinert Baidu API-nøkkel",
+          Placeholder: "Baidu API-nøkkel",
+        },
+        SecretKey: {
+          Title: "Hemmelig nøkkel",
+          SubTitle: "Bruk egendefinert Baidu hemmelig nøkkel",
+          Placeholder: "Baidu hemmelig nøkkel",
+        },
+        Endpoint: {
+          Title: "API-adresse",
+          SubTitle:
+            "Støtter ikke egendefinerte konfigurasjoner. Se .env-konfigurasjon.",
+        },
+      },
+      ByteDance: {
+        ApiKey: {
+          Title: "API-nøkkel",
+          SubTitle: "Bruk egendefinert ByteDance API-nøkkel",
+          Placeholder: "ByteDance API-nøkkel",
+        },
+        Endpoint: {
+          Title: "API-adresse",
+          SubTitle: "Eksempel:",
+        },
+      },
+      Alibaba: {
+        ApiKey: {
+          Title: "API-nøkkel",
+          SubTitle: "Bruk egendefinert Alibaba Cloud API-nøkkel",
+          Placeholder: "Alibaba Cloud API-nøkkel",
+        },
+        Endpoint: {
+          Title: "API-adresse",
+          SubTitle: "Eksempel:",
+        },
+      },
+      CustomModel: {
+        Title: "Egendefinert modellnavn",
+        SubTitle: "Legg til egendefinerte modellalternativer, skill med komma",
+      },
+    },
+
+    Model: "Modell",
     Temperature: {
-      Title: "Temperatur",
-      SubTitle: "Høyere verdi gir mer kreative svar",
+      Title: "Tilfeldighet (temperature)",
+      SubTitle: "Høyere verdi gir mer tilfeldige svar",
+    },
+    TopP: {
+      Title: "Kjerneprøvetaking (top_p)",
+      SubTitle:
+        "Ligner på tilfeldighet, men endre ikke sammen med tilfeldighet",
     },
     MaxTokens: {
-      Title: "Maks tokens",
-      SubTitle: "Maksimum lengde på tokens for instrukser og svar",
+      Title: "Maksimalt antall tokens per svar (max_tokens)",
+      SubTitle: "Maksimalt antall tokens brukt i en enkelt interaksjon",
+    },
+    PresencePenalty: {
+      Title: "Emnens ferskhet (presence_penalty)",
+      SubTitle:
+        "Høyere verdi gir større sannsynlighet for å utvide til nye emner",
+    },
+    FrequencyPenalty: {
+      Title: "Frekvensstraff (frequency_penalty)",
+      SubTitle:
+        "Høyere verdi gir større sannsynlighet for å redusere gjentakende ord",
     },
   },
   Store: {
     DefaultTopic: "Ny samtale",
-    BotHello: "Hei! Hva kan jeg hjelpe deg med i dag?",
-    Error: "Noe gikk galt, vennligst prøv igjen senere.",
+    BotHello: "Hva kan jeg hjelpe deg med?",
+    Error: "Noe gikk galt, prøv igjen senere",
     Prompt: {
       History: (content: string) =>
-        "Dette er et sammendrag av chatthistorikken mellom AI-en og brukeren som en oppsummering: " +
+        "Dette er oppsummeringen av historiske samtaler som bakgrunn:" +
         content,
       Topic:
-        "Vennligst lag en fire til fem ords tittel som oppsummerer samtalen vår uten innledning, punktsetting, anførselstegn, punktum, symboler eller tillegg tekst. Fjern innrammende anførselstegn.",
+        'Bruk fire til fem ord for å returnere en kort oppsummering av temaet, uten forklaring, uten tegnsetting, uten fyllord, uten ekstra tekst, uten fet skrift. Hvis det ikke er noe tema, returner bare "sladder".',
       Summarize:
-        "Oppsummer diskusjonen vår kort i 200 ord eller mindre for å bruke som en oppfordring til fremtidig sammenheng.",
+        "Oppsummer samtalen kort som en kontekstuell prompt for fremtidige referanser, hold det innen 200 tegn",
     },
   },
   Copy: {
-    Success: "Kopiert til utklippstavle",
-    Failed: "Kopiering feilet. Vennligst gi tilgang til utklippstavlen.",
+    Success: "Kopiert til utklippstavlen",
+    Failed: "Kopiering mislyktes, vennligst gi tillatelse til utklippstavlen",
+  },
+  Download: {
+    Success: "Innholdet er lastet ned til katalogen din.",
+    Failed: "Nedlasting mislyktes.",
   },
   Context: {
-    Toast: (x: any) => `Med ${x} kontekstuelle instrukser`,
-    Edit: "Kontekstuelle -og minneinstrukser",
-    Add: "Legg til",
+    Toast: (x: any) => `Inneholder ${x} forhåndsinnstilte oppfordringer`,
+    Edit: "Nåværende samtaleinnstillinger",
+    Add: "Legg til en ny samtale",
+    Clear: "Konteksten er tømt",
+    Revert: "Gjenopprett konteksten",
+  },
+  Plugin: {
+    Name: "Plugin",
+  },
+  FineTuned: {
+    Sysmessage: "Du er en assistent",
+  },
+  Mask: {
+    Name: "Maske",
+    Page: {
+      Title: "Forhåndsdefinerte rollemasker",
+      SubTitle: (count: number) =>
+        `${count} forhåndsdefinerte rolledefinisjoner`,
+      Search: "Søk etter rollemasker",
+      Create: "Opprett ny",
+    },
+    Item: {
+      Info: (count: number) => `Inneholder ${count} forhåndsdefinerte samtaler`,
+      Chat: "Samtale",
+      View: "Vis",
+      Edit: "Rediger",
+      Delete: "Slett",
+      DeleteConfirm: "Bekreft sletting?",
+    },
+    EditModal: {
+      Title: (readonly: boolean) =>
+        `Rediger forhåndsdefinert maske ${readonly ? "（kun lesing）" : ""}`,
+      Download: "Last ned forhåndsdefinert",
+      Clone: "Kopier forhåndsdefinert",
+    },
+    Config: {
+      Avatar: "Rollebilde",
+      Name: "Rolle navn",
+      Sync: {
+        Title: "Bruk globale innstillinger",
+        SubTitle: "Bruker nåværende samtale globale modellinnstillinger",
+        Confirm:
+          "De tilpassede innstillingene for den nåværende samtalen vil bli overskrevet automatisk. Bekreft at du vil bruke globale innstillinger?",
+      },
+      HideContext: {
+        Title: "Skjul forhåndsdefinerte samtaler",
+        SubTitle:
+          "Når skjult, vil forhåndsdefinerte samtaler ikke vises i chat-grensesnittet",
+      },
+      Share: {
+        Title: "Del denne masken",
+        SubTitle: "Generer en direkte lenke til denne masken",
+        Action: "Kopier lenke",
+      },
+    },
+  },
+  NewChat: {
+    Return: "Tilbake",
+    Skip: "Start direkte",
+    NotShow: "Vis ikke igjen",
+    ConfirmNoShow:
+      "Bekreft deaktivering? Du kan aktivere det igjen i innstillingene når som helst.",
+    Title: "Velg en maske",
+    SubTitle: "Start nå, og få tanker som kolliderer med sjelen bak masken",
+    More: "Se alle",
+  },
+
+  URLCommand: {
+    Code: "Oppdaget at lenken allerede inneholder tilgangskode. Ønsker du å fylle den ut automatisk?",
+    Settings:
+      "Oppdaget at lenken inneholder forhåndsinnstillinger. Ønsker du å fylle dem ut automatisk?",
+  },
+
+  UI: {
+    Confirm: "Bekreft",
+    Cancel: "Avbryt",
+    Close: "Lukk",
+    Create: "Opprett",
+    Edit: "Rediger",
+    Export: "Eksporter",
+    Import: "Importer",
+    Sync: "Synkroniser",
+    Config: "Konfigurer",
   },
   Exporter: {
-    Model: "Model",
-    Messages: "Meldingar",
+    Description: {
+      Title: "Bare meldinger etter at konteksten er ryddet vil bli vist",
+    },
+    Model: "Modell",
+    Messages: "Meldinger",
     Topic: "Emne",
     Time: "Tid",
   },
