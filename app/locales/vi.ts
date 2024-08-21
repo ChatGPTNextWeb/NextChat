@@ -466,6 +466,21 @@ const vi: PartialLocaleType = {
   FineTuned: {
     Sysmessage: "Bạn là một trợ lý",
   },
+  SearchChat: {
+    Name: "Tìm kiếm",
+    Page: {
+      Title: "Tìm kiếm lịch sử trò chuyện",
+      Search: "Nhập từ khóa tìm kiếm",
+      NoResult: "Không tìm thấy kết quả",
+      NoData: "Không có dữ liệu",
+      Loading: "Đang tải",
+
+      SubTitle: (count: number) => `Tìm thấy ${count} kết quả`,
+    },
+    Item: {
+      View: "Xem",
+    },
+  },
   Mask: {
     Name: "Mặt nạ",
     Page: {

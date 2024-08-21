@@ -480,6 +480,21 @@ const fr: PartialLocaleType = {
   FineTuned: {
     Sysmessage: "Vous êtes un assistant",
   },
+  SearchChat: {
+    Name: "Recherche",
+    Page: {
+      Title: "Rechercher dans l'historique des discussions",
+      Search: "Entrez le mot-clé de recherche",
+      NoResult: "Aucun résultat trouvé",
+      NoData: "Aucune donnée",
+      Loading: "Chargement",
+
+      SubTitle: (count: number) => `${count} résultats trouvés`,
+    },
+    Item: {
+      View: "Voir",
+    },
+  },
   Mask: {
     Name: "Masque",
     Page: {

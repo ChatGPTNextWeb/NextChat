@@ -467,6 +467,21 @@ const cs: PartialLocaleType = {
   FineTuned: {
     Sysmessage: "Jste asistent",
   },
+  SearchChat: {
+    Name: "Hledat",
+    Page: {
+      Title: "Hledat v historii chatu",
+      Search: "Zadejte hledané klíčové slovo",
+      NoResult: "Nebyly nalezeny žádné výsledky",
+      NoData: "Žádná data",
+      Loading: "Načítání",
+
+      SubTitle: (count: number) => `Nalezeno ${count} výsledků`,
+    },
+    Item: {
+      View: "Zobrazit",
+    },
+  },
   Mask: {
     Name: "Maska",
     Page: {

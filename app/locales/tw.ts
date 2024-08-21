@@ -452,6 +452,21 @@ const tw = {
       },
     },
   },
+  SearchChat: {
+    Name: "搜索",
+    Page: {
+      Title: "搜索聊天記錄",
+      Search: "輸入搜索關鍵詞",
+      NoResult: "沒有找到結果",
+      NoData: "沒有數據",
+      Loading: "加載中",
+
+      SubTitle: (count: number) => `找到 ${count} 條結果`,
+    },
+    Item: {
+      View: "查看",
+    },
+  },
   NewChat: {
     Return: "返回",
     Skip: "跳過",

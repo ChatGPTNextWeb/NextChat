@@ -471,6 +471,21 @@ const ru: PartialLocaleType = {
   FineTuned: {
     Sysmessage: "Вы - помощник",
   },
+  SearchChat: {
+    Name: "Поиск",
+    Page: {
+      Title: "Поиск в истории чатов",
+      Search: "Введите ключевые слова для поиска",
+      NoResult: "Результатов не найдено",
+      NoData: "Нет данных",
+      Loading: "Загрузка",
+
+      SubTitle: (count: number) => `Найдено ${count} результатов`,
+    },
+    Item: {
+      View: "Просмотр",
+    },
+  },
   Mask: {
     Name: "Маска",
     Page: {

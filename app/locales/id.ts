@@ -470,6 +470,21 @@ const id: PartialLocaleType = {
   FineTuned: {
     Sysmessage: "Anda adalah seorang asisten",
   },
+  SearchChat: {
+    Name: "Cari",
+    Page: {
+      Title: "Cari riwayat obrolan",
+      Search: "Masukkan kata kunci pencarian",
+      NoResult: "Tidak ada hasil ditemukan",
+      NoData: "Tidak ada data",
+      Loading: "Memuat",
+
+      SubTitle: (count: number) => `Ditemukan ${count} hasil`,
+    },
+    Item: {
+      View: "Lihat",
+    },
+  },
   Mask: {
     Name: "Masker",
     Page: {

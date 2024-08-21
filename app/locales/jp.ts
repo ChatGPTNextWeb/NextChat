@@ -460,8 +460,26 @@ const jp: PartialLocaleType = {
   Plugin: {
     Name: "プラグイン",
   },
+  Discovery: {
+    Name: "発見",
+  },
   FineTuned: {
     Sysmessage: "あなたはアシスタントです",
+  },
+  SearchChat: {
+    Name: "検索",
+    Page: {
+      Title: "チャット履歴を検索",
+      Search: "検索キーワードを入力",
+      NoResult: "結果が見つかりませんでした",
+      NoData: "データがありません",
+      Loading: "読み込み中",
+
+      SubTitle: (count: number) => `${count} 件の結果が見つかりました`,
+    },
+    Item: {
+      View: "表示",
+    },
   },
   Mask: {
     Name: "マスク",
