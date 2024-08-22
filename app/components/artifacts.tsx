@@ -1,4 +1,11 @@
-import { useEffect, useState, useRef, useMemo } from "react";
+import {
+  useEffect,
+  useState,
+  useRef,
+  useMemo,
+  forwardRef,
+  useImperativeHandle,
+} from "react";
 import { useParams } from "react-router";
 import { useWindowSize } from "@/app/utils";
 import { IconButton } from "./button";
@@ -8,6 +15,7 @@ import CopyIcon from "../icons/copy.svg";
 import DownloadIcon from "../icons/download.svg";
 import GithubIcon from "../icons/github.svg";
 import LoadingButtonIcon from "../icons/loading.svg";
+import ReloadButtonIcon from "../icons/reload.svg";
 import Locale from "../locales";
 import { Modal, showToast } from "./ui-lib";
 import { copyToClipboard, downloadAs } from "../utils";
@@ -15,73 +23,89 @@ import { Path, ApiPath, REPO_URL } from "@/app/constant";
 import { Loading } from "./home";
 import styles from "./artifacts.module.scss";
 
-export function HTMLPreview(props: {
+type HTMLPreviewProps = {
   code: string;
   autoHeight?: boolean;
   height?: number | string;
   onLoad?: (title?: string) => void;
-}) {
-  const ref = useRef<HTMLIFrameElement>(null);
-  const frameId = useRef<string>(nanoid());
-  const [iframeHeight, setIframeHeight] = useState(600);
-  const [title, setTitle] = useState("");
-  /*
-   * https://stackoverflow.com/questions/19739001/what-is-the-difference-between-srcdoc-and-src-datatext-html-in-an
-   * 1. using srcdoc
-   * 2. using src with dataurl:
-   *    easy to share
-   *    length limit (Data URIs cannot be larger than 32,768 characters.)
-   */
+};
 
-  useEffect(() => {
-    const handleMessage = (e: any) => {
-      const { id, height, title } = e.data;
-      setTitle(title);
-      if (id == frameId.current) {
-        setIframeHeight(height);
+export type HTMLPreviewHander = {
+  reload: () => void;
+};
+
+export const HTMLPreview = forwardRef<HTMLPreviewHander, HTMLPreviewProps>(
+  function HTMLPreview(props, ref) {
+    const iframeRef = useRef<HTMLIFrameElement>(null);
+    const [frameId, setFrameId] = useState<string>(nanoid());
+    const [iframeHeight, setIframeHeight] = useState(600);
+    const [title, setTitle] = useState("");
+    /*
+     * https://stackoverflow.com/questions/19739001/what-is-the-difference-between-srcdoc-and-src-datatext-html-in-an
+     * 1. using srcdoc
+     * 2. using src with dataurl:
+     *    easy to share
+     *    length limit (Data URIs cannot be larger than 32,768 characters.)
+     */
+
+    useEffect(() => {
+      const handleMessage = (e: any) => {
+        const { id, height, title } = e.data;
+        setTitle(title);
+        if (id == frameId) {
+          setIframeHeight(height);
+        }
+      };
+      window.addEventListener("message", handleMessage);
+      return () => {
+        window.removeEventListener("message", handleMessage);
+      };
+    }, [frameId]);
+
+    useImperativeHandle(ref, () => ({
+      reload: () => {
+        setFrameId(nanoid());
+      },
+    }));
+
+    const height = useMemo(() => {
+      if (!props.autoHeight) return props.height || 600;
+      if (typeof props.height === "string") {
+        return props.height;
+      }
+      const parentHeight = props.height || 600;
+      return iframeHeight + 40 > parentHeight
+        ? parentHeight
+        : iframeHeight + 40;
+    }, [props.autoHeight, props.height, iframeHeight]);
+
+    const srcDoc = useMemo(() => {
+      const script = `<script>new ResizeObserver((entries) => parent.postMessage({id: '${frameId}', height: entries[0].target.clientHeight}, '*')).observe(document.body)</script>`;
+      if (props.code.includes("<!DOCTYPE html>")) {
+        props.code.replace("<!DOCTYPE html>", "<!DOCTYPE html>" + script);
+      }
+      return script + props.code;
+    }, [props.code, frameId]);
+
+    const handleOnLoad = () => {
+      if (props?.onLoad) {
+        props.onLoad(title);
       }
     };
-    window.addEventListener("message", handleMessage);
-    return () => {
-      window.removeEventListener("message", handleMessage);
-    };
-  }, []);
 
-  const height = useMemo(() => {
-    if (!props.autoHeight) return props.height || 600;
-    if (typeof props.height === "string") {
-      return props.height;
-    }
-    const parentHeight = props.height || 600;
-    return iframeHeight + 40 > parentHeight ? parentHeight : iframeHeight + 40;
-  }, [props.autoHeight, props.height, iframeHeight]);
-
-  const srcDoc = useMemo(() => {
-    const script = `<script>new ResizeObserver((entries) => parent.postMessage({id: '${frameId.current}', height: entries[0].target.clientHeight}, '*')).observe(document.body)</script>`;
-    if (props.code.includes("</head>")) {
-      props.code.replace("</head>", "</head>" + script);
-    }
-    return props.code + script;
-  }, [props.code]);
-
-  const handleOnLoad = () => {
-    if (props?.onLoad) {
-      props.onLoad(title);
-    }
-  };
-
-  return (
-    <iframe
-      className={styles["artifacts-iframe"]}
-      id={frameId.current}
-      ref={ref}
-      sandbox="allow-forms allow-modals allow-scripts"
-      style={{ height }}
-      srcDoc={srcDoc}
-      onLoad={handleOnLoad}
-    />
-  );
-}
+    return (
+      <iframe
+        className={styles["artifacts-iframe"]}
+        key={frameId}
+        ref={iframeRef}
+        sandbox="allow-forms allow-modals allow-scripts"
+        style={{ height }}
+        srcDoc={srcDoc}
+        onLoad={handleOnLoad}
+      />
+    );
+  },
+);
 
 export function ArtifactsShareButton({
   getCode,
@@ -184,6 +208,7 @@ export function Artifacts() {
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(true);
   const [fileName, setFileName] = useState("");
+  const previewRef = useRef<HTMLPreviewHander>(null);
 
   useEffect(() => {
     if (id) {
@@ -208,6 +233,13 @@ export function Artifacts() {
         <a href={REPO_URL} target="_blank" rel="noopener noreferrer">
           <IconButton bordered icon={<GithubIcon />} shadow />
         </a>
+        <IconButton
+          bordered
+          style={{ marginLeft: 20 }}
+          icon={<ReloadButtonIcon />}
+          shadow
+          onClick={() => previewRef.current?.reload()}
+        />
         <div className={styles["artifacts-title"]}>NextChat Artifacts</div>
         <ArtifactsShareButton
           id={id}
@@ -220,6 +252,7 @@ export function Artifacts() {
         {code && (
           <HTMLPreview
             code={code}
+            ref={previewRef}
             autoHeight={false}
             height={"100%"}
             onLoad={(title) => {

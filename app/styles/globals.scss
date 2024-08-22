@@ -304,7 +304,7 @@ pre {
   }
 }
 
-code{
+pre {
   .show-hide-button {
     border-radius: 10px;
     position: absolute;
@@ -314,7 +314,9 @@ code{
     height: fit-content;
     display: inline-flex;
     justify-content: center;
+    pointer-events: none;
     button{
+      pointer-events: auto;
       margin-top: 3em;
       margin-bottom: 4em;
       padding: 5px 16px;
