@@ -27,6 +27,7 @@ import { createPersistStore } from "../utils/store";
 import { collectModelsWithDefaultModel } from "../utils/model";
 import { useAccessStore } from "./access";
 import { isDalle3 } from "../utils";
+import { indexedDBStorage } from "@/app/utils/indexedDB-storage";
 
 export type ChatMessage = RequestMessage & {
   date: string;
@@ -665,7 +666,8 @@ export const useChatStore = createPersistStore(
         set(() => ({ sessions }));
       },
 
-      clearAllData() {
+      async clearAllData() {
+        await indexedDBStorage.clear();
         localStorage.clear();
         location.reload();
       },
