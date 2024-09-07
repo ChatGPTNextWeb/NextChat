@@ -509,10 +509,6 @@ const cn = {
     Clear: "上下文已清除",
     Revert: "恢复上下文",
   },
-  Plugin: {
-    Name: "插件",
-    Artifacts: "Artifacts",
-  },
   Discovery: {
     Name: "发现",
   },
@@ -532,6 +528,46 @@ const cn = {
     },
     Item: {
       View: "查看",
+    },
+  },
+  Plugin: {
+    Name: "插件",
+    Page: {
+      Title: "插件",
+      SubTitle: (count: number) => `${count} 个插件`,
+      Search: "搜索插件",
+      Create: "新建",
+      Find: "您可以在Github上找到优秀的插件：",
+    },
+    Item: {
+      Info: (count: number) => `${count} 方法`,
+      View: "查看",
+      Edit: "编辑",
+      Delete: "删除",
+      DeleteConfirm: "确认删除？",
+    },
+    Auth: {
+      None: "不需要授权",
+      Basic: "Basic",
+      Bearer: "Bearer",
+      Custom: "自定义",
+      CustomHeader: "自定义参数名称",
+      Token: "Token",
+      Proxy: "使用代理",
+      ProxyDescription: "使用代理解决 CORS 错误",
+      Location: "位置",
+      LocationHeader: "Header",
+      LocationQuery: "Query",
+      LocationBody: "Body",
+    },
+    EditModal: {
+      Title: (readonly: boolean) => `编辑插件 ${readonly ? "（只读）" : ""}`,
+      Download: "下载",
+      Auth: "授权方式",
+      Content: "OpenAPI Schema",
+      Load: "从网页加载",
+      Method: "方法",
+      Error: "格式错误",
     },
   },
   Mask: {
@@ -567,6 +603,10 @@ const cn = {
       HideContext: {
         Title: "隐藏预设对话",
         SubTitle: "隐藏后预设对话不会出现在聊天界面",
+      },
+      Artifacts: {
+        Title: "启用Artifacts",
+        SubTitle: "启用之后可以直接渲染HTML页面",
       },
       Share: {
         Title: "分享此面具",

@@ -2,7 +2,7 @@ import { BUILTIN_MASKS } from "../masks";
 import { getLang, Lang } from "../locales";
 import { DEFAULT_TOPIC, ChatMessage } from "./chat";
 import { ModelConfig, useAppConfig } from "./config";
-import { StoreKey, Plugin } from "../constant";
+import { StoreKey } from "../constant";
 import { nanoid } from "nanoid";
 import { createPersistStore } from "../utils/store";
 
@@ -17,7 +17,8 @@ export type Mask = {
   modelConfig: ModelConfig;
   lang: Lang;
   builtin: boolean;
-  plugin?: Plugin[];
+  plugin?: string[];
+  enableArtifacts?: boolean;
 };
 
 export const DEFAULT_MASK_STATE = {
@@ -38,7 +39,7 @@ export const createEmptyMask = () =>
     lang: getLang(),
     builtin: false,
     createdAt: Date.now(),
-    plugin: [Plugin.Artifacts],
+    plugin: [],
   }) as Mask;
 
 export const useMaskStore = createPersistStore(

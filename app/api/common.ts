@@ -32,10 +32,7 @@ export async function requestOpenai(req: NextRequest) {
     authHeaderName = "Authorization";
   }
 
-  let path = `${req.nextUrl.pathname}${req.nextUrl.search}`.replaceAll(
-    "/api/openai/",
-    "",
-  );
+  let path = `${req.nextUrl.pathname}`.replaceAll("/api/openai/", "");
 
   let baseUrl =
     (isAzure ? serverConfig.azureUrl : serverConfig.baseUrl) || OPENAI_BASE_URL;

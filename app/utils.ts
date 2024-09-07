@@ -2,6 +2,9 @@ import { useEffect, useState } from "react";
 import { showToast } from "./components/ui-lib";
 import Locale from "./locales";
 import { RequestMessage } from "./client/api";
+import { ServiceProvider, REQUEST_TIMEOUT_MS } from "./constant";
+import isObject from "lodash-es/isObject";
+import { fetch as tauriFetch, Body, ResponseType } from "@tauri-apps/api/http";
 
 export function trimTopic(topic: string) {
   // Fix an issue where double quotes still show in the Indonesian language
@@ -269,4 +272,49 @@ export function isVisionModel(model: string) {
 
 export function isDalle3(model: string) {
   return "dall-e-3" === model;
+}
+
+export function showPlugins(provider: ServiceProvider, model: string) {
+  if (
+    provider == ServiceProvider.OpenAI ||
+    provider == ServiceProvider.Azure ||
+    provider == ServiceProvider.Moonshot
+  ) {
+    return true;
+  }
+  if (provider == ServiceProvider.Anthropic && !model.includes("claude-2")) {
+    return true;
+  }
+  return false;
+}
+
+export function fetch(
+  url: string,
+  options?: Record<string, unknown>,
+): Promise<any> {
+  if (window.__TAURI__) {
+    const payload = options?.body || options?.data;
+    return tauriFetch(url, {
+      ...options,
+      body:
+        payload &&
+        ({
+          type: "Text",
+          payload,
+        } as any),
+      timeout: ((options?.timeout as number) || REQUEST_TIMEOUT_MS) / 1000,
+      responseType:
+        options?.responseType == "text" ? ResponseType.Text : ResponseType.JSON,
+    } as any);
+  }
+  return window.fetch(url, options);
+}
+
+export function adapter(config: Record<string, unknown>) {
+  const { baseURL, url, params, ...rest } = config;
+  const path = baseURL ? `${baseURL}${url}` : url;
+  const fetchUrl = params
+    ? `${path}?${new URLSearchParams(params as any).toString()}`
+    : path;
+  return fetch(fetchUrl as string, { ...rest, responseType: "text" });
 }

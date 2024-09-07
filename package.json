@@ -24,6 +24,7 @@
     "@svgr/webpack": "^6.5.1",
     "@vercel/analytics": "^0.1.11",
     "@vercel/speed-insights": "^1.0.2",
+    "axios": "^1.7.5",
     "emoji-picker-react": "^4.9.2",
     "fuse.js": "^7.0.0",
     "heic2any": "^0.0.4",
@@ -34,6 +35,7 @@
     "nanoid": "^5.0.3",
     "next": "^14.1.1",
     "node-fetch": "^3.3.1",
+    "openapi-client-axios": "^7.5.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-markdown": "^8.0.7",
@@ -49,7 +51,9 @@
     "zustand": "^4.3.8"
   },
   "devDependencies": {
+    "@tauri-apps/api": "^1.6.0",
     "@tauri-apps/cli": "1.5.11",
+    "@types/js-yaml": "4.0.9",
     "@types/lodash-es": "^4.17.12",
     "@types/node": "^20.11.30",
     "@types/react": "^18.2.70",

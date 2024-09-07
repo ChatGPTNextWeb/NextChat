@@ -1,0 +1,16 @@
+.plugin-title {
+  font-weight: bolder;
+  font-size: 16px;
+  margin: 10px 0;
+}
+.plugin-content {
+  font-size: 14px;
+  font-family: inherit;
+  pre code {
+    max-height: 240px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    min-width: 300px;
+  }
+}
+

@@ -5,7 +5,13 @@ import {
   ModelProvider,
   ServiceProvider,
 } from "../constant";
-import { ChatMessage, ModelType, useAccessStore, useChatStore } from "../store";
+import {
+  ChatMessageTool,
+  ChatMessage,
+  ModelType,
+  useAccessStore,
+  useChatStore,
+} from "../store";
 import { ChatGPTApi, DalleRequestPayload } from "./platforms/openai";
 import { GeminiProApi } from "./platforms/google";
 import { ClaudeApi } from "./platforms/anthropic";
@@ -56,6 +62,8 @@ export interface ChatOptions {
   onFinish: (message: string) => void;
   onError?: (err: Error) => void;
   onController?: (controller: AbortController) => void;
+  onBeforeTool?: (tool: ChatMessageTool) => void;
+  onAfterTool?: (tool: ChatMessageTool) => void;
 }
 
 export interface LLMUsage {

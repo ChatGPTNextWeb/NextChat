@@ -1,6 +1,12 @@
 import { ACCESS_CODE_PREFIX, Anthropic, ApiPath } from "@/app/constant";
 import { ChatOptions, getHeaders, LLMApi, MultimodalContent } from "../api";
-import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
+import {
+  useAccessStore,
+  useAppConfig,
+  useChatStore,
+  usePluginStore,
+  ChatMessageTool,
+} from "@/app/store";
 import { getClientConfig } from "@/app/config/client";
 import { DEFAULT_API_HOST } from "@/app/constant";
 import {
@@ -11,8 +17,9 @@ import {
 import Locale from "../../locales";
 import { prettyObject } from "@/app/utils/format";
 import { getMessageTextContent, isVisionModel } from "@/app/utils";
-import { preProcessImageContent } from "@/app/utils/chat";
+import { preProcessImageContent, stream } from "@/app/utils/chat";
 import { cloudflareAIGatewayUrl } from "@/app/utils/cloudflare";
+import { RequestPayload } from "./openai";
 
 export type MultiBlockContent = {
   type: "image" | "text";
@@ -191,112 +198,126 @@ export class ClaudeApi implements LLMApi {
     const controller = new AbortController();
     options.onController?.(controller);
 
-    const payload = {
-      method: "POST",
-      body: JSON.stringify(requestBody),
-      signal: controller.signal,
-      headers: {
-        ...getHeaders(), // get common headers
-        "anthropic-version": accessStore.anthropicApiVersion,
-        // do not send `anthropicApiKey` in browser!!!
-        // Authorization: getAuthKey(accessStore.anthropicApiKey),
-      },
-    };
-
     if (shouldStream) {
-      try {
-        const context = {
-          text: "",
-          finished: false,
-        };
-
-        const finish = () => {
-          if (!context.finished) {
-            options.onFinish(context.text);
-            context.finished = true;
-          }
-        };
-
-        controller.signal.onabort = finish;
-        fetchEventSource(path, {
-          ...payload,
-          async onopen(res) {
-            const contentType = res.headers.get("content-type");
-            console.log("response content type: ", contentType);
-
-            if (contentType?.startsWith("text/plain")) {
-              context.text = await res.clone().text();
-              return finish();
-            }
-
-            if (
-              !res.ok ||
-              !res.headers
-                .get("content-type")
-                ?.startsWith(EventStreamContentType) ||
-              res.status !== 200
-            ) {
-              const responseTexts = [context.text];
-              let extraInfo = await res.clone().text();
-              try {
-                const resJson = await res.clone().json();
-                extraInfo = prettyObject(resJson);
-              } catch {}
-
-              if (res.status === 401) {
-                responseTexts.push(Locale.Error.Unauthorized);
-              }
-
-              if (extraInfo) {
-                responseTexts.push(extraInfo);
-              }
-
-              context.text = responseTexts.join("\n\n");
-
-              return finish();
-            }
-          },
-          onmessage(msg) {
-            let chunkJson:
-              | undefined
-              | {
-                  type: "content_block_delta" | "content_block_stop";
-                  delta?: {
-                    type: "text_delta";
-                    text: string;
-                  };
-                  index: number;
+      let index = -1;
+      const [tools, funcs] = usePluginStore
+        .getState()
+        .getAsTools(
+          useChatStore.getState().currentSession().mask?.plugin as string[],
+        );
+      return stream(
+        path,
+        requestBody,
+        {
+          ...getHeaders(),
+          "anthropic-version": accessStore.anthropicApiVersion,
+        },
+        // @ts-ignore
+        tools.map((tool) => ({
+          name: tool?.function?.name,
+          description: tool?.function?.description,
+          input_schema: tool?.function?.parameters,
+        })),
+        funcs,
+        controller,
+        // parseSSE
+        (text: string, runTools: ChatMessageTool[]) => {
+          // console.log("parseSSE", text, runTools);
+          let chunkJson:
+            | undefined
+            | {
+                type: "content_block_delta" | "content_block_stop";
+                content_block?: {
+                  type: "tool_use";
+                  id: string;
+                  name: string;
                 };
-            try {
-              chunkJson = JSON.parse(msg.data);
-            } catch (e) {
-              console.error("[Response] parse error", msg.data);
-            }
+                delta?: {
+                  type: "text_delta" | "input_json_delta";
+                  text?: string;
+                  partial_json?: string;
+                };
+                index: number;
+              };
+          chunkJson = JSON.parse(text);
 
-            if (!chunkJson || chunkJson.type === "content_block_stop") {
-              return finish();
-            }
-
-            const { delta } = chunkJson;
-            if (delta?.text) {
-              context.text += delta.text;
-              options.onUpdate?.(context.text, delta.text);
-            }
-          },
-          onclose() {
-            finish();
-          },
-          onerror(e) {
-            options.onError?.(e);
-            throw e;
-          },
-          openWhenHidden: true,
-        });
-      } catch (e) {
-        console.error("failed to chat", e);
-        options.onError?.(e as Error);
-      }
+          if (chunkJson?.content_block?.type == "tool_use") {
+            index += 1;
+            const id = chunkJson?.content_block.id;
+            const name = chunkJson?.content_block.name;
+            runTools.push({
+              id,
+              type: "function",
+              function: {
+                name,
+                arguments: "",
+              },
+            });
+          }
+          if (
+            chunkJson?.delta?.type == "input_json_delta" &&
+            chunkJson?.delta?.partial_json
+          ) {
+            // @ts-ignore
+            runTools[index]["function"]["arguments"] +=
+              chunkJson?.delta?.partial_json;
+          }
+          return chunkJson?.delta?.text;
+        },
+        // processToolMessage, include tool_calls message and tool call results
+        (
+          requestPayload: RequestPayload,
+          toolCallMessage: any,
+          toolCallResult: any[],
+        ) => {
+          // reset index value
+          index = -1;
+          // @ts-ignore
+          requestPayload?.messages?.splice(
+            // @ts-ignore
+            requestPayload?.messages?.length,
+            0,
+            {
+              role: "assistant",
+              content: toolCallMessage.tool_calls.map(
+                (tool: ChatMessageTool) => ({
+                  type: "tool_use",
+                  id: tool.id,
+                  name: tool?.function?.name,
+                  input: tool?.function?.arguments
+                    ? JSON.parse(tool?.function?.arguments)
+                    : {},
+                }),
+              ),
+            },
+            // @ts-ignore
+            ...toolCallResult.map((result) => ({
+              role: "user",
+              content: [
+                {
+                  type: "tool_result",
+                  tool_use_id: result.tool_call_id,
+                  content: result.content,
+                },
+              ],
+            })),
+          );
+        },
+        options,
+      );
     } else {
+      const payload = {
+        method: "POST",
+        body: JSON.stringify(requestBody),
+        signal: controller.signal,
+        headers: {
+          ...getHeaders(), // get common headers
+          "anthropic-version": accessStore.anthropicApiVersion,
+          // do not send `anthropicApiKey` in browser!!!
+          // Authorization: getAuthKey(accessStore.anthropicApiKey),
+        },
+      };
+
       try {
         controller.signal.onabort = () => options.onFinish("");
 

@@ -413,6 +413,21 @@
   margin-top: 5px;
 }
 
+.chat-message-tools {
+  font-size: 12px;
+  color: #aaa;
+  line-height: 1.5;
+  margin-top: 5px;
+  .chat-message-tool {
+    display: flex;
+    align-items: end;
+    svg {
+      margin-left: 5px;
+      margin-right: 5px;
+    }
+  }
+}
+
 .chat-message-item {
   box-sizing: border-box;
   max-width: 100%;

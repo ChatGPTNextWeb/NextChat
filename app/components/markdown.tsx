@@ -19,7 +19,6 @@ import {
   HTMLPreview,
   HTMLPreviewHander,
 } from "./artifacts";
-import { Plugin } from "../constant";
 import { useChatStore } from "../store";
 import { IconButton } from "./button";
 
@@ -77,7 +76,6 @@ export function PreCode(props: { children: any }) {
   const { height } = useWindowSize();
   const chatStore = useChatStore();
   const session = chatStore.currentSession();
-  const plugins = session.mask?.plugin;
 
   const renderArtifacts = useDebouncedCallback(() => {
     if (!ref.current) return;
@@ -94,10 +92,7 @@ export function PreCode(props: { children: any }) {
     }
   }, 600);
 
-  const enableArtifacts = useMemo(
-    () => plugins?.includes(Plugin.Artifacts),
-    [plugins],
-  );
+  const enableArtifacts = session.mask?.enableArtifacts !== false;
 
   //Wrap the paragraph for plain-text
   useEffect(() => {
