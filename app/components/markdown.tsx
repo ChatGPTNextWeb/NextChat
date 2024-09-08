@@ -163,7 +163,7 @@ export function PreCode(props: { children: any }) {
   );
 }
 
-function CustomCode(props: { children: any }) {
+function CustomCode(props: { children: any; className?: string }) {
   const ref = useRef<HTMLPreElement>(null);
   const [collapsed, setCollapsed] = useState(true);
   const [showToggle, setShowToggle] = useState(false);
@@ -182,6 +182,7 @@ function CustomCode(props: { children: any }) {
   return (
     <>
       <code
+        className={props?.className}
         ref={ref}
         style={{
           maxHeight: collapsed ? "400px" : "none",

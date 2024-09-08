@@ -41,7 +41,7 @@ export default function RootLayout({
           name="viewport"
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
         />
-        <link rel="manifest" href="/site.webmanifest"></link>
+        <link rel="manifest" href="/site.webmanifest" crossOrigin="use-credentials"></link>
         <script src="/serviceWorkerRegister.js" defer></script>
       </head>
       <body>

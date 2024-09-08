@@ -203,7 +203,7 @@ export class ClaudeApi implements LLMApi {
       const [tools, funcs] = usePluginStore
         .getState()
         .getAsTools(
-          useChatStore.getState().currentSession().mask?.plugin as string[],
+          useChatStore.getState().currentSession().mask?.plugin || [],
         );
       return stream(
         path,
