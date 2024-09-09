@@ -106,7 +106,7 @@ function createEmptySession(): ChatSession {
 
 function getSummarizeModel(currentModel: string) {
   // if it is using gpt-* models, force to use 4o-mini to summarize
-  if (currentModel.startsWith("gpt")) {
+  if (currentModel.startsWith("gpt") || currentModel.startsWith("chatgpt")) {
     const configStore = useAppConfig.getState();
     const accessStore = useAccessStore.getState();
     const allModel = collectModelsWithDefaultModel(
@@ -476,7 +476,8 @@ export const useChatStore = createPersistStore(
         // system prompts, to get close to OpenAI Web ChatGPT
         const shouldInjectSystemPrompts =
           modelConfig.enableInjectSystemPrompts &&
-          session.mask.modelConfig.model.startsWith("gpt-");
+          (session.mask.modelConfig.model.startsWith("gpt-") ||
+            session.mask.modelConfig.model.startsWith("chatgpt-"));
 
         var systemPrompts: ChatMessage[] = [];
         systemPrompts = shouldInjectSystemPrompts
