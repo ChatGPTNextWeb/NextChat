@@ -426,16 +426,7 @@ export function MaskPage() {
   const maskStore = useMaskStore();
   const chatStore = useChatStore();
 
-  const [filterLang, setFilterLang] = useState<Lang | undefined>(
-    () => localStorage.getItem("Mask-language") as Lang | undefined,
-  );
-  useEffect(() => {
-    if (filterLang) {
-      localStorage.setItem("Mask-language", filterLang);
-    } else {
-      localStorage.removeItem("Mask-language");
-    }
-  }, [filterLang]);
+  const filterLang = maskStore.language;
 
   const allMasks = maskStore
     .getAll()
@@ -542,9 +533,9 @@ export function MaskPage() {
               onChange={(e) => {
                 const value = e.currentTarget.value;
                 if (value === Locale.Settings.Lang.All) {
-                  setFilterLang(undefined);
+                  maskStore.setLanguage(undefined);
                 } else {
-                  setFilterLang(value as Lang);
+                  maskStore.setLanguage(value as Lang);
                 }
               }}
             >

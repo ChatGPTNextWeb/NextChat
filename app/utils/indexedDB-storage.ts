@@ -1,5 +1,8 @@
 import { StateStorage } from "zustand/middleware";
 import { get, set, del, clear } from "idb-keyval";
+import { safeLocalStorage } from "@/app/utils";
+
+const localStorage = safeLocalStorage();
 
 class IndexedDBStorage implements StateStorage {
   public async getItem(name: string): Promise<string | null> {

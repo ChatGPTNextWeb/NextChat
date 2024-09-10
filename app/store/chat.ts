@@ -26,8 +26,10 @@ import { nanoid } from "nanoid";
 import { createPersistStore } from "../utils/store";
 import { collectModelsWithDefaultModel } from "../utils/model";
 import { useAccessStore } from "./access";
-import { isDalle3 } from "../utils";
+import { isDalle3, safeLocalStorage } from "../utils";
 import { indexedDBStorage } from "@/app/utils/indexedDB-storage";
+
+const localStorage = safeLocalStorage();
 
 export type ChatMessageTool = {
   id: string;
@@ -179,6 +181,7 @@ function fillTemplateWith(input: string, modelConfig: ModelConfig) {
 const DEFAULT_CHAT_STATE = {
   sessions: [createEmptySession()],
   currentSessionIndex: 0,
+  lastInput: "",
 };
 
 export const useChatStore = createPersistStore(
@@ -700,6 +703,11 @@ export const useChatStore = createPersistStore(
         await indexedDBStorage.clear();
         localStorage.clear();
         location.reload();
+      },
+      setLastInput(lastInput: string) {
+        set({
+          lastInput,
+        });
       },
     };
 
