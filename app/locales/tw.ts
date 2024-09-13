@@ -81,6 +81,14 @@ const tw = {
       SaveAs: "另存新檔",
     },
     IsContext: "預設提示詞",
+    ShortcutKey: {
+      Title: "鍵盤快捷方式",
+      newChat: "打開新聊天",
+      focusInput: "聚焦輸入框",
+      copyLastMessage: "複製最後一個回覆",
+      copyLastCode: "複製最後一個代碼塊",
+      showShortcutKey: "顯示快捷方式",
+    },
   },
   Export: {
     Title: "將聊天記錄匯出為 Markdown",

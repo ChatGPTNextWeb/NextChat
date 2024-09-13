@@ -646,3 +646,51 @@
     bottom: 30px;
   }
 }
+
+.shortcut-key-container {
+  padding: 10px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.shortcut-key-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 16px;
+}
+
+.shortcut-key-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  overflow: hidden;
+  padding: 10px;
+  background-color: var(--white);
+}
+
+.shortcut-key-title {
+  font-size: 14px;
+  color: var(--black);
+}
+
+.shortcut-key-keys {
+  display: flex;
+  gap: 8px;
+}
+
+.shortcut-key {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: var(--border-in-light);
+  border-radius: 8px;
+  padding: 4px;
+  background-color: var(--gray);
+  min-width: 32px;
+}
+
+.shortcut-key span {
+  font-size: 12px;
+  color: var(--black);
+}

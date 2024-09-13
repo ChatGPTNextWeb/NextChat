@@ -1,3 +1,4 @@
+import { ShortcutKeyModal } from "../components/chat";
 import { getClientConfig } from "../config/client";
 import { SubmitKey } from "../store/config";
 
@@ -81,6 +82,14 @@ const cn = {
       SaveAs: "存为面具",
     },
     IsContext: "预设提示词",
+    ShortcutKey: {
+      Title: "键盘快捷方式",
+      newChat: "打开新聊天",
+      focusInput: "聚焦输入框",
+      copyLastMessage: "复制最后一个回复",
+      copyLastCode: "复制最后一个代码块",
+      showShortcutKey: "显示快捷方式",
+    },
   },
   Export: {
     Title: "分享聊天记录",
@@ -495,8 +504,8 @@ const cn = {
     },
   },
   Copy: {
-    Success: "已写入剪切板",
-    Failed: "复制失败，请赋予剪切板权限",
+    Success: "已写入剪贴板",
+    Failed: "复制失败，请赋予剪贴板权限",
   },
   Download: {
     Success: "内容已下载到您的目录。",
