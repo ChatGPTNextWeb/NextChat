@@ -80,7 +80,7 @@ export const HTMLPreview = forwardRef<HTMLPreviewHander, HTMLPreviewProps>(
     }, [props.autoHeight, props.height, iframeHeight]);
 
     const srcDoc = useMemo(() => {
-      const script = `<script>new ResizeObserver((entries) => parent.postMessage({id: '${frameId}', height: entries[0].target.clientHeight}, '*')).observe(document.body)</script>`;
+      const script = `<script>window.addEventListener("DOMContentLoaded", () => new ResizeObserver((entries) => parent.postMessage({id: '${frameId}', height: entries[0].target.clientHeight}, '*')).observe(document.body))</script>`;
       if (props.code.includes("<!DOCTYPE html>")) {
         props.code.replace("<!DOCTYPE html>", "<!DOCTYPE html>" + script);
       }

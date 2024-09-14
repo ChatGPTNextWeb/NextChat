@@ -237,9 +237,26 @@ function escapeBrackets(text: string) {
   );
 }
 
+function tryWrapHtmlCode(text: string) {
+  // try add wrap html code (fixed: html codeblock include 2 newline)
+  return text
+    .replace(
+      /([`]*?)(\w*?)([\n\r]*?)(<!DOCTYPE html>)/g,
+      (match, quoteStart, lang, newLine, doctype) => {
+        return !quoteStart ? "\n```html\n" + doctype : match;
+      },
+    )
+    .replace(
+      /(<\/body>)([\r\n\s]*?)(<\/html>)([\n\r]*?)([`]*?)([\n\r]*?)/g,
+      (match, bodyEnd, space, htmlEnd, newLine, quoteEnd) => {
+        return !quoteEnd ? bodyEnd + space + htmlEnd + "\n```\n" : match;
+      },
+    );
+}
+
 function _MarkDownContent(props: { content: string }) {
   const escapedContent = useMemo(() => {
-    return escapeBrackets(escapeDollarNumber(props.content));
+    return tryWrapHtmlCode(escapeBrackets(escapeDollarNumber(props.content)));
   }, [props.content]);
 
   return (
