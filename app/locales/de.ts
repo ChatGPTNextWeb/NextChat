@@ -43,6 +43,8 @@ const de: PartialLocaleType = {
       PinToastAction: "Ansehen",
       Delete: "Löschen",
       Edit: "Bearbeiten",
+      RefreshTitle: "Titel aktualisieren",
+      RefreshToast: "Anfrage zur Titelaktualisierung gesendet",
     },
     Commands: {
       new: "Neues Gespräch",
@@ -421,6 +423,10 @@ const de: PartialLocaleType = {
     },
 
     Model: "Modell",
+    CompressModel: {
+      Title: "Kompressionsmodell",
+      SubTitle: "Modell zur Komprimierung des Verlaufs",
+    },
     Temperature: {
       Title: "Zufälligkeit (temperature)",
       SubTitle: "Je höher der Wert, desto zufälliger die Antwort",

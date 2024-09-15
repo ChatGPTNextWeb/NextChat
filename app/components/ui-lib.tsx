@@ -292,13 +292,19 @@ export function PasswordInput(
 
 export function Select(
   props: React.DetailedHTMLProps<
-    React.SelectHTMLAttributes<HTMLSelectElement>,
+    React.SelectHTMLAttributes<HTMLSelectElement> & {
+      align?: "left" | "center";
+    },
     HTMLSelectElement
   >,
 ) {
-  const { className, children, ...otherProps } = props;
+  const { className, children, align, ...otherProps } = props;
   return (
-    <div className={`${styles["select-with-icon"]} ${className}`}>
+    <div
+      className={`${styles["select-with-icon"]} ${
+        align === "left" ? styles["left-align-option"] : ""
+      } ${className}`}
+    >
       <select className={styles["select-with-icon-select"]} {...otherProps}>
         {children}
       </select>

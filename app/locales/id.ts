@@ -43,6 +43,8 @@ const id: PartialLocaleType = {
       PinToastAction: "Lihat",
       Delete: "Hapus",
       Edit: "Edit",
+      RefreshTitle: "Segarkan Judul",
+      RefreshToast: "Permintaan penyegaran judul telah dikirim",
     },
     Commands: {
       new: "Obrolan Baru",
@@ -411,6 +413,10 @@ const id: PartialLocaleType = {
     },
 
     Model: "Model",
+    CompressModel: {
+      Title: "Model Kompresi",
+      SubTitle: "Model yang digunakan untuk mengompres riwayat",
+    },
     Temperature: {
       Title: "Randomness (temperature)",
       SubTitle: "Semakin tinggi nilainya, semakin acak responsnya",

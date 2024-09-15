@@ -43,6 +43,7 @@ import QualityIcon from "../icons/hd.svg";
 import StyleIcon from "../icons/palette.svg";
 import PluginIcon from "../icons/plugin.svg";
 import ShortcutkeyIcon from "../icons/shortcutkey.svg";
+import ReloadIcon from "../icons/reload.svg";
 
 import {
   ChatMessage,
@@ -624,7 +625,7 @@ export function ChatActions(props: {
           items={models.map((m) => ({
             title: `${m.displayName}${
               m?.provider?.providerName
-                ? "(" + m?.provider?.providerName + ")"
+                ? " (" + m?.provider?.providerName + ")"
                 : ""
             }`,
             value: `${m.name}@${m?.provider?.providerName}`,
@@ -1541,6 +1542,17 @@ function _Chat() {
           </div>
         </div>
         <div className="window-actions">
+          <div className="window-action-button">
+            <IconButton
+              icon={<ReloadIcon />}
+              bordered
+              title={Locale.Chat.Actions.RefreshTitle}
+              onClick={() => {
+                showToast(Locale.Chat.Actions.RefreshToast);
+                chatStore.summarizeSession(true);
+              }}
+            />
+          </div>
           {!isMobileScreen && (
             <div className="window-action-button">
               <IconButton

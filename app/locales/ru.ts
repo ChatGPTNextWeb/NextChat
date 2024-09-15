@@ -43,6 +43,8 @@ const ru: PartialLocaleType = {
       PinToastAction: "Просмотреть",
       Delete: "Удалить",
       Edit: "Редактировать",
+      RefreshTitle: "Обновить заголовок",
+      RefreshToast: "Запрос на обновление заголовка отправлен",
     },
     Commands: {
       new: "Новый чат",
@@ -414,6 +416,10 @@ const ru: PartialLocaleType = {
     },
 
     Model: "Модель",
+    CompressModel: {
+      Title: "Модель сжатия",
+      SubTitle: "Модель, используемая для сжатия истории",
+    },
     Temperature: {
       Title: "Случайность (temperature)",
       SubTitle: "Чем больше значение, тем более случайные ответы",

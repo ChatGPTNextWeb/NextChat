@@ -43,6 +43,8 @@ const ko: PartialLocaleType = {
       PinToastAction: "보기",
       Delete: "삭제",
       Edit: "편집",
+      RefreshTitle: "제목 새로고침",
+      RefreshToast: "제목 새로고침 요청이 전송되었습니다",
     },
     Commands: {
       new: "새 채팅",
@@ -404,6 +406,10 @@ const ko: PartialLocaleType = {
     },
 
     Model: "모델 (model)",
+    CompressModel: {
+      Title: "압축 모델",
+      SubTitle: "기록을 압축하는 데 사용되는 모델",
+    },
     Temperature: {
       Title: "무작위성 (temperature)",
       SubTitle: "값이 클수록 응답이 더 무작위적",

@@ -43,6 +43,8 @@ const ar: PartialLocaleType = {
       PinToastAction: "عرض",
       Delete: "حذف",
       Edit: "تحرير",
+      RefreshTitle: "تحديث العنوان",
+      RefreshToast: "تم إرسال طلب تحديث العنوان",
     },
     Commands: {
       new: "دردشة جديدة",
@@ -404,6 +406,10 @@ const ar: PartialLocaleType = {
     },
 
     Model: "النموذج",
+    CompressModel: {
+      Title: "نموذج الضغط",
+      SubTitle: "النموذج المستخدم لضغط السجل التاريخي",
+    },
     Temperature: {
       Title: "العشوائية (temperature)",
       SubTitle: "كلما زادت القيمة، زادت العشوائية في الردود",

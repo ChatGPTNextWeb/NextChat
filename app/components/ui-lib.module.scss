@@ -252,6 +252,12 @@
   position: relative;
   max-width: fit-content;
 
+  &.left-align-option {
+    option {
+      text-align: left;
+    }
+  }
+
   .select-with-icon-select {
     height: 100%;
     border: var(--border-in-light);

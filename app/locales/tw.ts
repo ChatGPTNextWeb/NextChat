@@ -43,6 +43,8 @@ const tw = {
       PinToastAction: "檢視",
       Delete: "刪除",
       Edit: "編輯",
+      RefreshTitle: "刷新標題",
+      RefreshToast: "已發送刷新標題請求",
     },
     Commands: {
       new: "新建聊天",
@@ -368,6 +370,10 @@ const tw = {
     },
 
     Model: "模型 (model)",
+    CompressModel: {
+      Title: "壓縮模型",
+      SubTitle: "用於壓縮歷史記錄的模型",
+    },
     Temperature: {
       Title: "隨機性 (temperature)",
       SubTitle: "值越大，回應越隨機",

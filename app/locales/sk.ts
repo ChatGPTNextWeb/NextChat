@@ -45,6 +45,8 @@ const sk: PartialLocaleType = {
       PinToastAction: "Zobraziť",
       Delete: "Vymazať",
       Edit: "Upraviť",
+      RefreshTitle: "Obnoviť názov",
+      RefreshToast: "Požiadavka na obnovenie názvu bola odoslaná",
     },
     Commands: {
       new: "Začať nový chat",
@@ -365,6 +367,10 @@ const sk: PartialLocaleType = {
     },
 
     Model: "Model",
+    CompressModel: {
+      Title: "Kompresný model",
+      SubTitle: "Model používaný na kompresiu histórie",
+    },
     Temperature: {
       Title: "Teplota",
       SubTitle: "Vyššia hodnota robí výstup náhodnejším",
