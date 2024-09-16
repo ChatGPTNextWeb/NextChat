@@ -98,6 +98,7 @@ async function request(req: NextRequest) {
     headers: {
       "Content-Type": "application/json",
       "Cache-Control": "no-store",
+      "anthropic-dangerous-direct-browser-access": "true",
       [authHeaderName]: authValue,
       "anthropic-version":
         req.headers.get("anthropic-version") ||
