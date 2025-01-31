@@ -614,13 +614,13 @@ export const useChatStore = createPersistStore(
           : shortTermMemoryStartIndex;
         // and if user has cleared history messages, we should exclude the memory too.
         const contextStartIndex = Math.max(clearContextIndex, memoryStartIndex);
-        const maxTokenThreshold = modelConfig.max_tokens;
+        // const maxTokenThreshold = modelConfig.max_tokens;
 
         // get recent messages as much as possible
         const reversedRecentMessages = [];
         for (
           let i = totalMessageCount - 1, tokenCount = 0;
-          i >= contextStartIndex && tokenCount < maxTokenThreshold;
+          i >= contextStartIndex ;//&& tokenCount < maxTokenThreshold;
           i -= 1
         ) {
           const msg = messages[i];
