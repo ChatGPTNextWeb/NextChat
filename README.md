@@ -40,6 +40,13 @@ One-Click to get a well-designed cross-platform ChatGPT web UI, with Claude, GPT
 
 </div>
 
+## 🥳 Cheer for DeepSeek, China's AI star!
+ > Purpose-Built UI for DeepSeek Reasoner Model
+ 
+<img src="https://github.com/user-attachments/assets/f3952210-3af1-4dc0-9b81-40eaa4847d9a"/>
+
+
+
 ## 🫣 NextChat Support MCP  ! 
 > Before build, please set env ENABLE_MCP=true
 
