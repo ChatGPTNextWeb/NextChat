@@ -473,8 +473,13 @@ export function ImagePreviewer(props: {
 
       if (isMobile || (isApp && window.__TAURI__)) {
         if (isApp && window.__TAURI__) {
+          /**
+           * Fixed client app [Tauri]
+           * Resolved the issue where files couldn't be saved when there was a `:` in the dialog.
+           */
+          const fileName = props.topic.replace(/:/g, '');
           const result = await window.__TAURI__.dialog.save({
-            defaultPath: `${props.topic}.png`,
+            defaultPath: `${fileName}.png`,
             filters: [
               {
                 name: "PNG Files",
