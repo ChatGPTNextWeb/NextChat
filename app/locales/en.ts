@@ -779,6 +779,9 @@ const en: LocaleType = {
     Import: "Import",
     Sync: "Sync",
     Config: "Config",
+    Search: "Search",
+    SelectorTitle: "Select",
+    NoResults: "No Results",
   },
   Exporter: {
     Description: {

@@ -78,10 +78,10 @@
 
 .list {
   border: var(--border-in-light);
-  border-radius: 10px;
+  border-radius: 0 0 10px 10px;
   box-shadow: var(--card-shadow);
   margin-bottom: 20px;
-  animation: slide-in ease 0.3s;
+
   background: var(--white);
 }
 
@@ -313,11 +313,38 @@
   .selector-item-disabled {
     opacity: 0.6;
   }
+  .selector-bar {
+    background-color: var(--white);
+    border: solid var(--border-in-light);
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    min-height: 40px;
+    width: 100%;
+  }
+  .selector-title {
+    font-size: large;
+    font-weight: bold;
+    padding: 10px;
+  }
+  .selector-search-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    border-bottom: solid var(--border-in-light);
+  }
+  .selector-search-input {
+    padding: 5px;
+    margin-right: 5px;
+    flex-grow: 1;
+    max-width: none;
+  }
 
   &-content {
-    min-width: 300px;
+    animation: slide-in ease 0.3s;
+    width: 30rem;
+    height: 60vh;
     .list {
-      max-height: 90vh;
       overflow-x: hidden;
       overflow-y: auto;
 
@@ -336,4 +363,3 @@
     }
   }
 }
-

@@ -773,6 +773,9 @@ const cn = {
     Import: "导入",
     Sync: "同步",
     Config: "配置",
+    Search: "搜索",
+    SelectorTitle: "选择",
+    NoResults: "没有结果",
   },
   Exporter: {
     Description: {

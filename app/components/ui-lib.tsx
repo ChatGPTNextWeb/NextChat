@@ -507,44 +507,83 @@ export function Selector<T>(props: {
       props.onClose?.();
     }
   };
-
+  const [searchText, setSearchText] = useState("");
+  const [filteredItems, setFilteredItems] = useState([...props.items]);
+  function onSearch(text: string) {
+    setSearchText(text);
+    if (text === "") {
+      setFilteredItems([...props.items]);
+      return;
+    }
+    // filter by items title
+    const newItems = props.items.filter((item) =>
+      item.title.toLowerCase().includes(text.toLowerCase()),
+    );
+    setFilteredItems([...newItems]);
+  }
   return (
     <div className={styles["selector"]} onClick={() => props.onClose?.()}>
-      <div className={styles["selector-content"]}>
+      <div
+        className={styles["selector-content"]}
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* title and search box */}
+        <div className={styles["selector-bar"]}>
+          <div className={styles["selector-title"]}>
+            {Locale.UI.SelectorTitle}
+          </div>
+          <div className={styles["selector-search-container"]}>
+            <input
+              type="text"
+              className={styles["selector-search-input"]}
+              placeholder={Locale.UI.Search}
+              autoFocus
+              onInput={(e) => onSearch(e.currentTarget.value)}
+            />
+          </div>
+        </div>
+        {/* list content */}
         <List>
-          {props.items.map((item, i) => {
-            const selected = selectedValues.includes(item.value);
-            return (
-              <ListItem
-                className={clsx(styles["selector-item"], {
-                  [styles["selector-item-disabled"]]: item.disable,
-                })}
-                key={i}
-                title={item.title}
-                subTitle={item.subTitle}
-                onClick={(e) => {
-                  if (item.disable) {
-                    e.stopPropagation();
-                  } else {
-                    handleSelection(e, item.value);
-                  }
-                }}
-              >
-                {selected ? (
-                  <div
-                    style={{
-                      height: 10,
-                      width: 10,
-                      backgroundColor: "var(--primary)",
-                      borderRadius: 10,
-                    }}
-                  ></div>
-                ) : (
-                  <></>
-                )}
-              </ListItem>
-            );
-          })}
+          {filteredItems.length ? (
+            filteredItems.map((item, i) => {
+              const selected = selectedValues.includes(item.value);
+              return (
+                <ListItem
+                  className={clsx(styles["selector-item"], {
+                    [styles["selector-item-disabled"]]: item.disable,
+                  })}
+                  key={i}
+                  title={item.title}
+                  subTitle={item.subTitle}
+                  onClick={(e) => {
+                    if (item.disable) {
+                      e.stopPropagation();
+                    } else {
+                      handleSelection(e, item.value);
+                    }
+                  }}
+                >
+                  {selected ? (
+                    <div
+                      style={{
+                        height: 10,
+                        width: 10,
+                        backgroundColor: "var(--primary)",
+                        borderRadius: 10,
+                      }}
+                    ></div>
+                  ) : (
+                    <></>
+                  )}
+                </ListItem>
+              );
+            })
+          ) : (
+            <ListItem
+              title={Locale.UI.NoResults}
+              className={styles["selector-item"]}
+            ></ListItem>
+          )}
         </List>
       </div>
     </div>
