@@ -7,6 +7,7 @@ import RemarkGfm from "remark-gfm";
 import RehypeHighlight from "rehype-highlight";
 import { useRef, useState, RefObject, useEffect, useMemo } from "react";
 import { copyToClipboard, useWindowSize } from "../utils";
+import "lowlight/lib/all";
 import mermaid from "mermaid";
 import Locale from "../locales";
 import LoadingIcon from "../icons/three-dots.svg";

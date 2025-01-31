@@ -124,6 +124,11 @@ export async function requestOpenai(req: NextRequest) {
           [
             ServiceProvider.OpenAI,
             ServiceProvider.Azure,
+            // 自定义等级
+            "L1",
+            "L2",
+            "L3",
+            "L4",
             jsonBody?.model as string, // support provider-unspecified model
           ],
         )
