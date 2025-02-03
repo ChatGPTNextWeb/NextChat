@@ -347,6 +347,33 @@ const en: LocaleType = {
           SubTitle: "Must start with http(s):// or use /api/openai as default",
         },
       },
+      Bedrock: {
+        Region: {
+          Title: "AWS Region",
+          SubTitle: "The AWS region where Bedrock service is located",
+          Placeholder: "us-west-2",
+          Invalid: "Invalid AWS region format. Example: us-west-2",
+        },
+        AccessKey: {
+          Title: "AWS Access Key ID",
+          SubTitle: "Your AWS access key ID for Bedrock service",
+          Placeholder: "AKIA...",
+          Invalid: "Invalid AWS access key format. Must be 20 characters long.",
+        },
+        SecretKey: {
+          Title: "AWS Secret Access Key",
+          SubTitle: "Your AWS secret access key for Bedrock service",
+          Placeholder: "****",
+          Invalid: "Invalid AWS secret key format. Must be 40 characters long.",
+        },
+        EncryptionKey: {
+          Title: "Encryption Key",
+          SubTitle: "Your encryption key for configuration data",
+          Placeholder: "Enter encryption key",
+          Invalid:
+            "Invalid encryption key format. Must no less than 8 characters long!",
+        },
+      },
       Azure: {
         ApiKey: {
           Title: "Azure Api Key",

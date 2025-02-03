@@ -16,6 +16,7 @@ import {
   DEEPSEEK_BASE_URL,
   XAI_BASE_URL,
   CHATGLM_BASE_URL,
+  BEDROCK_BASE_URL,
 } from "../constant";
 import { getHeaders } from "../client/api";
 import { getClientConfig } from "../config/client";
@@ -23,36 +24,26 @@ import { createPersistStore } from "../utils/store";
 import { ensure } from "../utils/clone";
 import { DEFAULT_CONFIG } from "./config";
 import { getModelProvider } from "../utils/model";
+import { encrypt, decrypt } from "../utils/aws";
 
 let fetchState = 0; // 0 not fetch, 1 fetching, 2 done
 
 const isApp = getClientConfig()?.buildMode === "export";
 
 const DEFAULT_OPENAI_URL = isApp ? OPENAI_BASE_URL : ApiPath.OpenAI;
-
 const DEFAULT_GOOGLE_URL = isApp ? GEMINI_BASE_URL : ApiPath.Google;
-
 const DEFAULT_ANTHROPIC_URL = isApp ? ANTHROPIC_BASE_URL : ApiPath.Anthropic;
-
 const DEFAULT_BAIDU_URL = isApp ? BAIDU_BASE_URL : ApiPath.Baidu;
-
 const DEFAULT_BYTEDANCE_URL = isApp ? BYTEDANCE_BASE_URL : ApiPath.ByteDance;
-
 const DEFAULT_ALIBABA_URL = isApp ? ALIBABA_BASE_URL : ApiPath.Alibaba;
-
 const DEFAULT_TENCENT_URL = isApp ? TENCENT_BASE_URL : ApiPath.Tencent;
-
 const DEFAULT_MOONSHOT_URL = isApp ? MOONSHOT_BASE_URL : ApiPath.Moonshot;
-
 const DEFAULT_STABILITY_URL = isApp ? STABILITY_BASE_URL : ApiPath.Stability;
-
 const DEFAULT_IFLYTEK_URL = isApp ? IFLYTEK_BASE_URL : ApiPath.Iflytek;
-
 const DEFAULT_DEEPSEEK_URL = isApp ? DEEPSEEK_BASE_URL : ApiPath.DeepSeek;
-
 const DEFAULT_XAI_URL = isApp ? XAI_BASE_URL : ApiPath.XAI;
-
 const DEFAULT_CHATGLM_URL = isApp ? CHATGLM_BASE_URL : ApiPath.ChatGLM;
+const DEFAULT_BEDROCK_URL = isApp ? BEDROCK_BASE_URL : ApiPath.Bedrock;
 
 const DEFAULT_ACCESS_STATE = {
   accessCode: "",
@@ -123,6 +114,14 @@ const DEFAULT_ACCESS_STATE = {
   chatglmUrl: DEFAULT_CHATGLM_URL,
   chatglmApiKey: "",
 
+  // aws bedrock
+  bedrockUrl: DEFAULT_BEDROCK_URL,
+  awsRegion: "",
+  awsAccessKey: "",
+  awsSecretKey: "",
+  encryptionKey: "",
+  bedrockAnthropicVersion: "bedrock-2023-05-31",
+
   // server config
   needCode: true,
   hideUserApiKey: false,
@@ -139,11 +138,9 @@ const DEFAULT_ACCESS_STATE = {
 
 export const useAccessStore = createPersistStore(
   { ...DEFAULT_ACCESS_STATE },
-
   (set, get) => ({
     enabledAccessControl() {
       this.fetch();
-
       return get().needCode;
     },
     getVisionModels() {
@@ -152,7 +149,6 @@ export const useAccessStore = createPersistStore(
     },
     edgeVoiceName() {
       this.fetch();
-
       return get().edgeTTSVoiceName;
     },
 
@@ -191,6 +187,7 @@ export const useAccessStore = createPersistStore(
     isValidMoonshot() {
       return ensure(get(), ["moonshotApiKey"]);
     },
+
     isValidIflytek() {
       return ensure(get(), ["iflytekApiKey"]);
     },
@@ -204,6 +201,15 @@ export const useAccessStore = createPersistStore(
 
     isValidChatGLM() {
       return ensure(get(), ["chatglmApiKey"]);
+    },
+
+    isValidBedrock() {
+      return ensure(get(), [
+        "awsRegion",
+        "awsAccessKey",
+        "awsSecretKey",
+        "encryptionKey",
+      ]);
     },
 
     isAuthorized() {
@@ -224,10 +230,12 @@ export const useAccessStore = createPersistStore(
         this.isValidDeepSeek() ||
         this.isValidXAI() ||
         this.isValidChatGLM() ||
+        this.isValidBedrock() ||
         !this.enabledAccessControl() ||
         (this.enabledAccessControl() && ensure(get(), ["accessCode"]))
       );
     },
+
     fetch() {
       if (fetchState > 0 || getClientConfig()?.buildMode === "export") return;
       fetchState = 1;
@@ -246,7 +254,6 @@ export const useAccessStore = createPersistStore(
             DEFAULT_CONFIG.modelConfig.model = model;
             DEFAULT_CONFIG.modelConfig.providerName = providerName as any;
           }
-
           return res;
         })
         .then((res: DangerConfig) => {
@@ -259,6 +266,43 @@ export const useAccessStore = createPersistStore(
         .finally(() => {
           fetchState = 2;
         });
+    },
+
+    // Override the set method to encrypt AWS credentials before storage
+    set: (partial: { [key: string]: any }) => {
+      if (partial.awsAccessKey) {
+        partial.awsAccessKey = encrypt(
+          partial.awsAccessKey,
+          partial.encryptionKey,
+        );
+      }
+      if (partial.awsSecretKey) {
+        partial.awsSecretKey = encrypt(
+          partial.awsSecretKey,
+          partial.encryptionKey,
+        );
+      }
+      if (partial.awsRegion) {
+        partial.awsRegion = encrypt(partial.awsRegion, partial.encryptionKey);
+      }
+      set(partial);
+    },
+
+    // Add getter to decrypt AWS credentials when needed
+    get: () => {
+      const state = get();
+      return {
+        ...state,
+        awsRegion: state.awsRegion
+          ? decrypt(state.awsRegion, state.encryptionKey)
+          : "",
+        awsAccessKey: state.awsAccessKey
+          ? decrypt(state.awsAccessKey, state.encryptionKey)
+          : "",
+        awsSecretKey: state.awsSecretKey
+          ? decrypt(state.awsSecretKey, state.encryptionKey)
+          : "",
+      };
     },
   }),
   {
