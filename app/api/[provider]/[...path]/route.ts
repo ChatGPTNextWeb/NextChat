@@ -1,6 +1,7 @@
 import { ApiPath } from "@/app/constant";
 import { NextRequest } from "next/server";
 import { handle as openaiHandler } from "../../openai";
+import { handle as bedrockHandler } from "../../bedrock";
 import { handle as azureHandler } from "../../azure";
 import { handle as googleHandler } from "../../google";
 import { handle as anthropicHandler } from "../../anthropic";
@@ -23,12 +24,15 @@ async function handle(
   const apiPath = `/api/${params.provider}`;
   console.log(`[${params.provider} Route] params `, params);
   switch (apiPath) {
+    case ApiPath.Bedrock:
+      return bedrockHandler(req, { params });
     case ApiPath.Azure:
       return azureHandler(req, { params });
     case ApiPath.Google:
       return googleHandler(req, { params });
     case ApiPath.Anthropic:
       return anthropicHandler(req, { params });
+
     case ApiPath.Baidu:
       return baiduHandler(req, { params });
     case ApiPath.ByteDance:
