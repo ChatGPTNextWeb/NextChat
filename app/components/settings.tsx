@@ -1574,7 +1574,7 @@ export function Settings() {
             >
               {Object.values(Theme).map((v) => (
                 <option value={v} key={v}>
-                  {v}
+                  {Locale.Settings.ThemeOptions[v]}
                 </option>
               ))}
             </Select>

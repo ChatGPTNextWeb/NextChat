@@ -211,6 +211,11 @@ const cn = {
     },
     SendKey: "发送键",
     Theme: "主题",
+    ThemeOptions: {
+      auto: "自动",
+      light: "亮色",
+      dark: "深色",
+    },
     TightBorder: "无边框模式",
     SendPreviewBubble: {
       Title: "预览气泡",
