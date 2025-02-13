@@ -714,6 +714,12 @@ export const useChatStore = createPersistStore(
             },
             onFinish(message, responseRes) {
               if (responseRes?.status === 200) {
+                // deal with <think> and </think> tags
+                if (message.startsWith("<think>")) {
+                  message = message
+                    .slice(message.indexOf("</think>") + 8)
+                    .trim();
+                }
                 get().updateTargetSession(
                   session,
                   (session) =>
