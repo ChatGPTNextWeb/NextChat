@@ -321,6 +321,10 @@ For ByteDance: use `modelName@bytedance=deploymentName` to customize model name 
 
 Change default model
 
+### `DEFAULT_COMPRESS_MODEL` （optional）
+
+Change default summary model
+
 ### `VISION_MODELS` (optional)
 
 > Default: Empty
@@ -346,7 +350,6 @@ Stability API key.
 ### `STABILITY_URL` (optional)
 
 Customize Stability API url.
-
 
 ### `ENABLE_MCP` (optional)
 
