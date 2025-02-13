@@ -212,6 +212,11 @@
   transition: all ease 0.3s;
   opacity: 0;
   cursor: pointer;
+
+  @media only screen and (max-width: 600px) {
+    transform: translateX(-4px);
+    opacity: 0.5;
+  }
 }
 
 .chat-item:hover > .chat-item-delete {
