@@ -82,7 +82,11 @@ export function Avatar(props: { model?: ModelType; avatar?: string }) {
       LlmIcon = BotIconGrok;
     } else if (modelName.startsWith("hunyuan")) {
       LlmIcon = BotIconHunyuan;
-    } else if (modelName.startsWith("doubao") || modelName.startsWith("ep-")) {
+    } else if (
+      modelName.startsWith("doubao") ||
+      modelName.startsWith("ep-") ||
+      modelName.startsWith("bot-")
+    ) {
       LlmIcon = BotIconDoubao;
     } else if (
       modelName.toLowerCase().includes("glm") ||

@@ -216,7 +216,13 @@ export const Baidu = {
 
 export const ByteDance = {
   ExampleEndpoint: "https://ark.cn-beijing.volces.com/api/",
-  ChatPath: "api/v3/chat/completions",
+  ChatPath: (modelName: string) => {
+    if (modelName.startsWith("bot-")) {
+      return "api/v3/bots/chat/completions";
+    } else {
+      return "api/v3/chat/completions";
+    }
+  },
 };
 
 export const Alibaba = {
