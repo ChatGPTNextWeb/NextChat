@@ -64,11 +64,17 @@ export function Avatar(props: { model?: ModelType; avatar?: string }) {
       LlmIcon = BotIconGemini;
     } else if (modelName.startsWith("gemma")) {
       LlmIcon = BotIconGemma;
-    } else if (modelName.startsWith("claude")) {
+    } else if (
+      modelName.startsWith("claude") ||
+      modelName.startsWith("anthropic")
+    ) {
       LlmIcon = BotIconClaude;
     } else if (modelName.includes("llama")) {
       LlmIcon = BotIconMeta;
-    } else if (modelName.startsWith("mixtral") || modelName.startsWith("codestral")) {
+    } else if (
+      modelName.startsWith("mixtral") ||
+      modelName.startsWith("codestral")
+    ) {
       LlmIcon = BotIconMistral;
     } else if (modelName.includes("deepseek")) {
       LlmIcon = BotIconDeepseek;
