@@ -12,6 +12,7 @@ import { handle as stabilityHandler } from "../../stability";
 import { handle as iflytekHandler } from "../../iflytek";
 import { handle as deepseekHandler } from "../../deepseek";
 import { handle as siliconflowHandler } from "../../siliconflow";
+import { handle as ppioHandler } from "../../ppio";
 import { handle as xaiHandler } from "../../xai";
 import { handle as chatglmHandler } from "../../glm";
 import { handle as proxyHandler } from "../../proxy";
@@ -50,6 +51,8 @@ async function handle(
       return chatglmHandler(req, { params });
     case ApiPath.SiliconFlow:
       return siliconflowHandler(req, { params });
+    case ApiPath.PPIO:
+      return ppioHandler(req, { params });
     case ApiPath.OpenAI:
       return openaiHandler(req, { params });
     default:
