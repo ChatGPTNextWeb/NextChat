@@ -1,19 +1,76 @@
 import { TTSConfig, TTSConfigValidator } from "../store";
+import React, { useState } from "react";
 
 import Locale from "../locales";
 import { ListItem, Select } from "./ui-lib";
 import {
+  ModelProvider,
   DEFAULT_TTS_ENGINE,
   DEFAULT_TTS_ENGINES,
   DEFAULT_TTS_MODELS,
   DEFAULT_TTS_VOICES,
 } from "../constant";
 import { InputRange } from "./input-range";
+import { IconButton } from "./button";
+import SpeakIcon from "../icons/speak.svg";
+import SpeakStopIcon from "../icons/speak-stop.svg";
+import { createTTSPlayer } from "../utils/audio";
+import { useAppConfig } from "../store";
+import { ClientApi } from "../client/api";
+import { showToast } from "../components/ui-lib";
 
+const ttsPlayer = createTTSPlayer();
 export function TTSConfigList(props: {
   ttsConfig: TTSConfig;
   updateConfig: (updater: (config: TTSConfig) => void) => void;
 }) {
+  const [speechLoading, setSpeechLoading] = useState(false);
+  const [speechStatus, setSpeechStatus] = useState(false);
+
+  const config = useAppConfig.getState();
+
+  function stopSpeech() {
+    ttsPlayer.stop();
+    setSpeechStatus(false);
+  }
+
+  async function playSpeech(text: string, ttsConfig: TTSConfig) {
+    try {
+      const api = new ClientApi(ModelProvider.GPT);
+      setSpeechLoading(true);
+      ttsPlayer.init();
+
+      const audioBuffer = await api.llm.speech({
+        model: ttsConfig.model,
+        input: text,
+        voice: ttsConfig.voice,
+        speed: ttsConfig.speed,
+      });
+
+      setSpeechStatus(true);
+      await ttsPlayer.play(audioBuffer, () => {
+        setSpeechStatus(false);
+      });
+    } catch (error) {
+      console.error("[OpenAI Speech]", error);
+      setSpeechStatus(false);
+      // Implement user-facing error notification here
+      if (typeof (error as Error).message === "string") {
+        showToast((error as Error).message);
+      }
+    } finally {
+      setSpeechLoading(false);
+    }
+  }
+
+  async function openaiSpeech(text: string) {
+    if (speechStatus) {
+      stopSpeech();
+    } else {
+      await playSpeech(text, config.ttsConfig);
+    }
+  }
+
   return (
     <>
       <ListItem
@@ -88,23 +145,41 @@ export function TTSConfigList(props: {
             title={Locale.Settings.TTS.Voice.Title}
             subTitle={Locale.Settings.TTS.Voice.SubTitle}
           >
-            <Select
-              value={props.ttsConfig.voice}
-              onChange={(e) => {
-                props.updateConfig(
-                  (config) =>
-                    (config.voice = TTSConfigValidator.voice(
+            <div style={{ display: "flex", gap: "10px" }}>
+              <IconButton
+                aria={Locale.Chat.Actions.Speech}
+                icon={speechStatus ? <SpeakStopIcon /> : <SpeakIcon />}
+                text={
+                  speechLoading
+                    ? "Loading..."
+                    : speechStatus
+                    ? Locale.Chat.Actions.Stop
+                    : Locale.Chat.Actions.Speech
+                }
+                onClick={() => {
+                  openaiSpeech(
+                    "NextChat,Unleash your imagination, experience the future of AI conversation.",
+                  );
+                }}
+              />
+
+              <Select
+                value={props.ttsConfig.voice}
+                onChange={(e) => {
+                  props.updateConfig((config) => {
+                    config.voice = TTSConfigValidator.voice(
                       e.currentTarget.value,
-                    )),
-                );
-              }}
-            >
-              {DEFAULT_TTS_VOICES.map((v, i) => (
-                <option value={v} key={i}>
-                  {v}
-                </option>
-              ))}
-            </Select>
+                    );
+                  });
+                }}
+              >
+                {DEFAULT_TTS_VOICES.map((v, i) => (
+                  <option value={v} key={i}>
+                    {v}
+                  </option>
+                ))}
+              </Select>
+            </div>
           </ListItem>
           <ListItem
             title={Locale.Settings.TTS.Speed.Title}
