@@ -44,7 +44,7 @@
     "openapi-client-axios": "^7.5.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-markdown": "^8.0.7",
+    "react-markdown": "^10.1.0",
     "react-router-dom": "^6.15.0",
     "rehype-highlight": "^6.0.0",
     "rehype-katex": "^6.0.3",
