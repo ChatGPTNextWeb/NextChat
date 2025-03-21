@@ -363,6 +363,22 @@ const sk: PartialLocaleType = {
         Title: "Vlastné modely",
         SubTitle: "Možnosti vlastného modelu, oddelené čiarkou",
       },
+      Huawei: {
+        ApiKey: {
+          Title: "API kľúč",
+          SubTitle: "Použite svoj vlastný HUAWEI API kľúč",
+          Placeholder: "HUAWEI kľúč",
+        },
+        SecretKey: {
+          Title: "Tajný kľúč",
+          SubTitle: "Použite svoj vlastný HUAWEI tajný kľúč",
+          Placeholder: "HUAWEI tajný kľúč",
+        },
+        Endpoint: {
+          Title: "Adresa rozhrania",
+          SubTitle: "Nepodporuje vlastnú konfiguráciu .env",
+        },
+      },
       Google: {
         ApiKey: {
           Title: "API kľúč",
