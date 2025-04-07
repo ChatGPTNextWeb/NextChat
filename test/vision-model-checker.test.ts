@@ -1,3 +1,4 @@
+import { jest } from "@jest/globals";
 import { isVisionModel } from "../app/utils";
 
 describe("isVisionModel", () => {
@@ -50,7 +51,7 @@ describe("isVisionModel", () => {
 
   test("should identify models from VISION_MODELS env var", () => {
     process.env.VISION_MODELS = "custom-vision-model,another-vision-model";
-    
+
     expect(isVisionModel("custom-vision-model")).toBe(true);
     expect(isVisionModel("another-vision-model")).toBe(true);
     expect(isVisionModel("unrelated-model")).toBe(false);
