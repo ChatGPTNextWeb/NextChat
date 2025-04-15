@@ -17,8 +17,8 @@
     "prompts": "node ./scripts/fetch-prompts.mjs",
     "prepare": "husky install",
     "proxy-dev": "sh ./scripts/init-proxy.sh && proxychains -f ./scripts/proxychains.conf yarn dev",
-    "test": "jest --watch",
-    "test:ci": "jest --ci"
+    "test": "node --no-warnings --experimental-vm-modules $(yarn bin jest) --watch",
+    "test:ci": "node --no-warnings --experimental-vm-modules $(yarn bin jest) --ci"
   },
   "dependencies": {
     "@fortaine/fetch-event-source": "^3.0.6",
