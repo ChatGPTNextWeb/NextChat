@@ -197,11 +197,6 @@ const no: PartialLocaleType = {
     },
     SendKey: "Send-knapp",
     Theme: "Tema",
-    TightBorder: "Stram innramming",
-    AutoScrollMessage: {
-      Title: "Automatisk rulling av svar",
-      SubTitle: "Rull meldingen under svar",
-    },
     TightBorder: "Ingen ramme-modus",
     SendPreviewBubble: {
       Title: "Forhåndsvisningsboble",
