@@ -34,16 +34,20 @@ ENV PROXY_URL=""
 ENV OPENAI_API_KEY=""
 ENV GOOGLE_API_KEY=""
 ENV CODE=""
+ENV ENABLE_MCP=""
 
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/.next/server ./.next/server
 
+RUN mkdir -p /app/app/mcp && chmod 777 /app/app/mcp
+COPY --from=builder /app/app/mcp/mcp_config.default.json /app/app/mcp/mcp_config.json
+
 EXPOSE 3000
 
 CMD if [ -n "$PROXY_URL" ]; then \
-    export HOSTNAME="127.0.0.1"; \
+    export HOSTNAME="0.0.0.0"; \
     protocol=$(echo $PROXY_URL | cut -d: -f1); \
     host=$(echo $PROXY_URL | cut -d/ -f3 | cut -d: -f1); \
     port=$(echo $PROXY_URL | cut -d: -f3); \

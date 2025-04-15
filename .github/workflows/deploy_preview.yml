@@ -3,9 +3,7 @@ name: VercelPreviewDeployment
 on:
   pull_request_target:
     types:
-      - opened
-      - synchronize
-      - reopened
+      - review_requested
 
 env:
   VERCEL_TEAM: ${{ secrets.VERCEL_TEAM }}
@@ -49,7 +47,7 @@ jobs:
         run: npm install --global vercel@latest
 
       - name: Cache dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         id: cache-npm
         with:
           path: ~/.npm

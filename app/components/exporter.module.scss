@@ -94,6 +94,7 @@
 
   button {
     flex-grow: 1;
+
     &:not(:last-child) {
       margin-right: 10px;
     }
@@ -190,6 +191,59 @@
         pre {
           overflow: hidden;
         }
+
+        .message-image {
+          width: 100%;
+          margin-top: 10px;
+        }
+
+        .message-images {
+          display: grid;
+          justify-content: left;
+          grid-gap: 10px;
+          grid-template-columns: repeat(var(--image-count), auto);
+          margin-top: 10px;
+        }
+
+        @media screen and (max-width: 600px) {
+          $image-width: calc(calc(100vw/2)/var(--image-count));
+
+          .message-image-multi {
+            width: $image-width;
+            height: $image-width;
+          }
+
+          .message-image {
+            max-width: calc(100vw/3*2);
+          }
+        }
+
+        @media screen and (min-width: 600px) {
+          $max-image-width: calc(900px/3*2/var(--image-count));
+          $image-width: calc(80vw/3*2/var(--image-count));
+
+          .message-image-multi {
+            width: $image-width;
+            height: $image-width;
+            max-width: $max-image-width;
+            max-height: $max-image-width;
+          }
+
+          .message-image {
+            max-width: calc(100vw/3*2);
+          }
+        }
+
+        .message-image-multi {
+          object-fit: cover;
+        }
+
+        .message-image,
+        .message-image-multi {
+          box-sizing: border-box;
+          border-radius: 10px;
+          border: rgba($color: #888, $alpha: 0.2) 1px solid;
+        }
       }
 
       &-assistant {
@@ -213,6 +267,5 @@
     }
   }
 
-  .default-theme {
-  }
+  .default-theme {}
 }

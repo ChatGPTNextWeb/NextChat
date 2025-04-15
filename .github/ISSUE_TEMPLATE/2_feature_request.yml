@@ -1,0 +1,21 @@
+name: '🌠 Feature Request'
+description: 'Suggest an idea'
+title: '[Feature Request] '
+labels: ['enhancement']
+body:
+  - type: textarea
+    attributes:
+      label: '🥰 Feature Description'
+      description: Please add a clear and concise description of the problem you are seeking to solve with this feature request.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: '🧐 Proposed Solution'
+      description: Describe the solution you'd like in a clear and concise manner.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: '📝 Additional Information'
+      description: Add any other context about the problem here.

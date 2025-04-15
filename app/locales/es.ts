@@ -1,95 +1,256 @@
 import { SubmitKey } from "../store/config";
 import type { PartialLocaleType } from "./index";
+import { getClientConfig } from "../config/client";
+import { SAAS_CHAT_UTM_URL } from "@/app/constant";
+const isApp = !!getClientConfig()?.isApp;
 
 const es: PartialLocaleType = {
   WIP: "En construcción...",
   Error: {
-    Unauthorized:
-      "Acceso no autorizado, por favor ingrese el código de acceso en la [página](/#/auth) de configuración.",
+    Unauthorized: isApp
+      ? `😆 La conversación encontró algunos problemas, no te preocupes:
+    \\ 1️⃣ Si deseas comenzar sin configuración, [haz clic aquí para empezar a chatear inmediatamente 🚀](${SAAS_CHAT_UTM_URL})
+    \\ 2️⃣ Si deseas usar tus propios recursos de OpenAI, haz clic [aquí](/#/settings) para modificar la configuración ⚙️`
+      : `😆 La conversación encontró algunos problemas, no te preocupes:
+    \ 1️⃣ Si deseas comenzar sin configuración, [haz clic aquí para empezar a chatear inmediatamente 🚀](${SAAS_CHAT_UTM_URL})
+    \ 2️⃣ Si estás utilizando una versión de implementación privada, haz clic [aquí](/#/auth) para ingresar la clave de acceso 🔑
+    \ 3️⃣ Si deseas usar tus propios recursos de OpenAI, haz clic [aquí](/#/settings) para modificar la configuración ⚙️
+ `,
+  },
+  Auth: {
+    Title: "Se requiere contraseña",
+    Tips: "El administrador ha habilitado la verificación de contraseña. Introduce el código de acceso a continuación",
+    SubTips: "O ingresa tu clave API de OpenAI o Google",
+    Input: "Introduce el código de acceso aquí",
+    Confirm: "Confirmar",
+    Later: "Más tarde",
+    Return: "Regresar",
+    SaasTips:
+      "La configuración es demasiado complicada, quiero usarlo de inmediato",
+    TopTips:
+      "🥳 Oferta de lanzamiento de NextChat AI, desbloquea OpenAI o1, GPT-4o, Claude-3.5 y los últimos grandes modelos",
   },
   ChatItem: {
-    ChatItemCount: (count: number) => `${count} mensajes`,
+    ChatItemCount: (count: number) => `${count} conversaciones`,
   },
   Chat: {
-    SubTitle: (count: number) => `${count} mensajes con ChatGPT`,
+    SubTitle: (count: number) => `Total de ${count} conversaciones`,
+    EditMessage: {
+      Title: "Editar registro de mensajes",
+      Topic: {
+        Title: "Tema de la conversación",
+        SubTitle: "Cambiar el tema de la conversación actual",
+      },
+    },
     Actions: {
-      ChatList: "Ir a la lista de chats",
-      CompressedHistory: "Historial de memoria comprimido",
-      Export: "Exportar todos los mensajes como Markdown",
+      ChatList: "Ver lista de mensajes",
+      CompressedHistory: "Ver historial de Prompts comprimidos",
+      Export: "Exportar historial de chat",
       Copy: "Copiar",
       Stop: "Detener",
       Retry: "Reintentar",
-      Delete: "Delete",
+      Pin: "Fijar",
+      PinToastContent:
+        "Se ha fijado 1 conversación a los prompts predeterminados",
+      PinToastAction: "Ver",
+      Delete: "Eliminar",
+      Edit: "Editar",
+      RefreshTitle: "Actualizar título",
+      RefreshToast: "Se ha enviado la solicitud de actualización del título",
     },
-    Rename: "Renombrar chat",
-    Typing: "Escribiendo...",
+    Commands: {
+      new: "Nueva conversación",
+      newm: "Nueva conversación desde la máscara",
+      next: "Siguiente conversación",
+      prev: "Conversación anterior",
+      clear: "Limpiar contexto",
+      del: "Eliminar conversación",
+    },
+    InputActions: {
+      Stop: "Detener respuesta",
+      ToBottom: "Ir al más reciente",
+      Theme: {
+        auto: "Tema automático",
+        light: "Modo claro",
+        dark: "Modo oscuro",
+      },
+      Prompt: "Comandos rápidos",
+      Masks: "Todas las máscaras",
+      Clear: "Limpiar chat",
+      Settings: "Configuración de conversación",
+      UploadImage: "Subir imagen",
+    },
+    Rename: "Renombrar conversación",
+    Typing: "Escribiendo…",
     Input: (submitKey: string) => {
-      var inputHints = `Escribe algo y presiona ${submitKey} para enviar`;
+      var inputHints = `${submitKey} para enviar`;
       if (submitKey === String(SubmitKey.Enter)) {
-        inputHints += ", presiona Shift + Enter para nueva línea";
+        inputHints += "，Shift + Enter para nueva línea";
       }
-      return inputHints;
+      return (
+        inputHints + "，/ para activar autocompletado，: para activar comandos"
+      );
     },
     Send: "Enviar",
     Config: {
-      Reset: "Reset to Default",
-      SaveAs: "Save as Mask",
+      Reset: "Borrar memoria",
+      SaveAs: "Guardar como máscara",
     },
+    IsContext: "Prompt predeterminado",
   },
   Export: {
-    Title: "Todos los mensajes",
+    Title: "Compartir historial de chat",
     Copy: "Copiar todo",
-    Download: "Descargar",
-    MessageFromYou: "Mensaje de ti",
-    MessageFromChatGPT: "Mensaje de ChatGPT",
+    Download: "Descargar archivo",
+    Share: "Compartir en ShareGPT",
+    MessageFromYou: "Usuario",
+    MessageFromChatGPT: "ChatGPT",
+    Format: {
+      Title: "Formato de exportación",
+      SubTitle: "Puedes exportar como texto Markdown o imagen PNG",
+    },
+    IncludeContext: {
+      Title: "Incluir contexto de máscara",
+      SubTitle: "Mostrar contexto de máscara en los mensajes",
+    },
+    Steps: {
+      Select: "Seleccionar",
+      Preview: "Vista previa",
+    },
+    Image: {
+      Toast: "Generando captura de pantalla",
+      Modal: "Mantén presionado o haz clic derecho para guardar la imagen",
+    },
+  },
+  Select: {
+    Search: "Buscar mensajes",
+    All: "Seleccionar todo",
+    Latest: "Últimos mensajes",
+    Clear: "Limpiar selección",
   },
   Memory: {
-    Title: "Historial de memoria",
-    EmptyContent: "Aún no hay nada.",
-    Copy: "Copiar todo",
-    Send: "Send Memory",
-    Reset: "Reset Session",
-    ResetConfirm:
-      "Resetting will clear the current conversation history and historical memory. Are you sure you want to reset?",
+    Title: "Resumen histórico",
+    EmptyContent:
+      "El contenido de la conversación es demasiado corto para resumir",
+    Send: "Comprimir automáticamente el historial de chat y enviarlo como contexto",
+    Copy: "Copiar resumen",
+    Reset: "[no usado]",
+    ResetConfirm: "¿Confirmar para borrar el resumen histórico?",
   },
   Home: {
-    NewChat: "Nuevo chat",
-    DeleteChat: "¿Confirmar eliminación de la conversación seleccionada?",
-    DeleteToast: "Chat Deleted",
-    Revert: "Revert",
+    NewChat: "Nueva conversación",
+    DeleteChat: "¿Confirmar la eliminación de la conversación seleccionada?",
+    DeleteToast: "Conversación eliminada",
+    Revert: "Deshacer",
   },
   Settings: {
     Title: "Configuración",
-    SubTitle: "Todas las configuraciones",
+    SubTitle: "Todas las opciones de configuración",
 
+    Danger: {
+      Reset: {
+        Title: "Restablecer todas las configuraciones",
+        SubTitle:
+          "Restablecer todas las configuraciones a los valores predeterminados",
+        Action: "Restablecer ahora",
+        Confirm: "¿Confirmar el restablecimiento de todas las configuraciones?",
+      },
+      Clear: {
+        Title: "Eliminar todos los datos",
+        SubTitle: "Eliminar todos los chats y datos de configuración",
+        Action: "Eliminar ahora",
+        Confirm:
+          "¿Confirmar la eliminación de todos los chats y datos de configuración?",
+      },
+    },
     Lang: {
-      Name: "Language", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`
+      Name: "Language", // ATENCIÓN: si deseas agregar una nueva traducción, por favor no traduzcas este valor, déjalo como `Language`
       All: "Todos los idiomas",
     },
     Avatar: "Avatar",
     FontSize: {
       Title: "Tamaño de fuente",
-      SubTitle: "Ajustar el tamaño de fuente del contenido del chat",
+      SubTitle: "Tamaño de la fuente del contenido del chat",
+    },
+    FontFamily: {
+      Title: "Fuente del Chat",
+      SubTitle:
+        "Fuente del contenido del chat, dejar vacío para aplicar la fuente predeterminada global",
+      Placeholder: "Nombre de la Fuente",
     },
     InjectSystemPrompts: {
-      Title: "Inyectar Prompts del Sistema",
+      Title: "Inyectar mensajes del sistema",
       SubTitle:
-        "Agregar forzosamente un prompt de sistema simulado de ChatGPT al comienzo de la lista de mensajes en cada solicitud",
+        "Forzar la adición de un mensaje del sistema simulado de ChatGPT al principio de cada lista de mensajes",
     },
+    InputTemplate: {
+      Title: "Preprocesamiento de entrada del usuario",
+      SubTitle: "El último mensaje del usuario se rellenará en esta plantilla",
+    },
+
     Update: {
-      Version: (x: string) => `Versión: ${x}`,
-      IsLatest: "Última versión",
+      Version: (x: string) => `Versión actual: ${x}`,
+      IsLatest: "Ya estás en la última versión",
       CheckUpdate: "Buscar actualizaciones",
       IsChecking: "Buscando actualizaciones...",
-      FoundUpdate: (x: string) => `Se encontró una nueva versión: ${x}`,
-      GoToUpdate: "Actualizar",
+      FoundUpdate: (x: string) => `Nueva versión encontrada: ${x}`,
+      GoToUpdate: "Ir a actualizar",
     },
-    SendKey: "Tecla de envío",
+    SendKey: "Tecla de enviar",
     Theme: "Tema",
-    TightBorder: "Borde ajustado",
+    TightBorder: "Modo sin borde",
     SendPreviewBubble: {
-      Title: "Enviar burbuja de vista previa",
-      SubTitle: "Preview markdown in bubble",
+      Title: "Vista previa del globo",
+      SubTitle:
+        "Previsualiza el contenido Markdown en un globo de vista previa",
+    },
+    AutoGenerateTitle: {
+      Title: "Generar título automáticamente",
+      SubTitle: "Generar un título adecuado basado en el contenido del chat",
+    },
+    Sync: {
+      CloudState: "Datos en la nube",
+      NotSyncYet: "Aún no se ha sincronizado",
+      Success: "Sincronización exitosa",
+      Fail: "Sincronización fallida",
+
+      Config: {
+        Modal: {
+          Title: "Configurar sincronización en la nube",
+          Check: "Verificar disponibilidad",
+        },
+        SyncType: {
+          Title: "Tipo de sincronización",
+          SubTitle: "Selecciona el servidor de sincronización preferido",
+        },
+        Proxy: {
+          Title: "Habilitar proxy",
+          SubTitle:
+            "Debes habilitar el proxy para sincronizar en el navegador y evitar restricciones de CORS",
+        },
+        ProxyUrl: {
+          Title: "Dirección del proxy",
+          SubTitle: "Solo para el proxy CORS incluido en este proyecto",
+        },
+
+        WebDav: {
+          Endpoint: "Dirección WebDAV",
+          UserName: "Nombre de usuario",
+          Password: "Contraseña",
+        },
+
+        UpStash: {
+          Endpoint: "URL de REST de UpStash Redis",
+          UserName: "Nombre de respaldo",
+          Password: "Token de REST de UpStash Redis",
+        },
+      },
+
+      LocalState: "Datos locales",
+      Overview: (overview: any) => {
+        return `${overview.chat} conversaciones, ${overview.message} mensajes, ${overview.prompt} prompts, ${overview.mask} máscaras`;
+      },
+      ImportFailed: "Importación fallida",
     },
     AutoScrollMessage: {
       Title: "Respuesta con Auto-Desplazamiento",
@@ -97,147 +258,352 @@ const es: PartialLocaleType = {
     },
     Mask: {
       Splash: {
-        Title: "Mask Splash Screen",
-        SubTitle: "Show a mask splash screen before starting new chat",
+        Title: "Pantalla de inicio de máscara",
+        SubTitle:
+          "Mostrar la pantalla de inicio de la máscara al iniciar un nuevo chat",
+      },
+      Builtin: {
+        Title: "Ocultar máscaras integradas",
+        SubTitle:
+          "Ocultar las máscaras integradas en todas las listas de máscaras",
       },
     },
     Prompt: {
       Disable: {
-        Title: "Desactivar autocompletado",
-        SubTitle: "Escribe / para activar el autocompletado",
+        Title: "Deshabilitar autocompletado de prompts",
+        SubTitle:
+          "Escribe / al principio del campo de entrada para activar el autocompletado",
       },
-      List: "Lista de autocompletado",
+      List: "Lista de prompts personalizados",
       ListCount: (builtin: number, custom: number) =>
-        `${builtin} incorporado, ${custom} definido por el usuario`,
+        `Integrados ${builtin}, definidos por el usuario ${custom}`,
       Edit: "Editar",
       Modal: {
-        Title: "Prompt List",
-        Add: "Add One",
-        Search: "Search Prompts",
+        Title: "Lista de prompts",
+        Add: "Nuevo",
+        Search: "Buscar prompts",
       },
       EditModal: {
-        Title: "Edit Prompt",
+        Title: "Editar prompt",
       },
     },
     HistoryCount: {
-      Title: "Cantidad de mensajes adjuntos",
-      SubTitle: "Número de mensajes enviados adjuntos por solicitud",
+      Title: "Número de mensajes históricos adjuntos",
+      SubTitle: "Número de mensajes históricos enviados con cada solicitud",
     },
     CompressThreshold: {
-      Title: "Umbral de compresión de historial",
+      Title: "Umbral de compresión de mensajes históricos",
       SubTitle:
-        "Se comprimirán los mensajes si la longitud de los mensajes no comprimidos supera el valor",
+        "Cuando los mensajes históricos no comprimidos superan este valor, se realizará la compresión",
     },
 
     Usage: {
-      Title: "Saldo de la cuenta",
+      Title: "Consulta de saldo",
       SubTitle(used: any, total: any) {
-        return `Usado $${used}, subscription $${total}`;
+        return `Saldo usado este mes: $${used}, total suscrito: $${total}`;
       },
-      IsChecking: "Comprobando...",
-      Check: "Comprobar de nuevo",
-      NoAccess: "Introduzca la clave API para comprobar el saldo",
+      IsChecking: "Verificando…",
+      Check: "Revisar de nuevo",
+      NoAccess:
+        "Introduce la clave API o la contraseña de acceso para ver el saldo",
     },
 
-    Model: "Modelo",
+    Access: {
+      SaasStart: {
+        Title: "Use NextChat AI",
+        Label: "(The most cost-effective solution)",
+        SubTitle:
+          "Officially maintained by NextChat, zero configuration ready to use, supports the latest large models like OpenAI o1, GPT-4o, and Claude-3.5",
+        ChatNow: "Chat Now",
+      },
+
+      AccessCode: {
+        Title: "Contraseña de acceso",
+        SubTitle: "El administrador ha habilitado el acceso encriptado",
+        Placeholder: "Introduce la contraseña de acceso",
+      },
+      CustomEndpoint: {
+        Title: "Interfaz personalizada",
+        SubTitle: "¿Usar servicios personalizados de Azure u OpenAI?",
+      },
+      Provider: {
+        Title: "Proveedor de modelos",
+        SubTitle: "Cambiar entre diferentes proveedores",
+      },
+      OpenAI: {
+        ApiKey: {
+          Title: "Clave API",
+          SubTitle:
+            "Usa una clave API de OpenAI personalizada para omitir la restricción de acceso por contraseña",
+          Placeholder: "Clave API de OpenAI",
+        },
+
+        Endpoint: {
+          Title: "Dirección del endpoint",
+          SubTitle:
+            "Debe incluir http(s):// además de la dirección predeterminada",
+        },
+      },
+      Azure: {
+        ApiKey: {
+          Title: "Clave de interfaz",
+          SubTitle:
+            "Usa una clave de Azure personalizada para omitir la restricción de acceso por contraseña",
+          Placeholder: "Clave API de Azure",
+        },
+
+        Endpoint: {
+          Title: "Dirección del endpoint",
+          SubTitle: "Ejemplo:",
+        },
+
+        ApiVerion: {
+          Title: "Versión de la interfaz (versión de api de azure)",
+          SubTitle: "Selecciona una versión específica",
+        },
+      },
+      Anthropic: {
+        ApiKey: {
+          Title: "Clave de interfaz",
+          SubTitle:
+            "Usa una clave de Anthropic personalizada para omitir la restricción de acceso por contraseña",
+          Placeholder: "Clave API de Anthropic",
+        },
+
+        Endpoint: {
+          Title: "Dirección del endpoint",
+          SubTitle: "Ejemplo:",
+        },
+
+        ApiVerion: {
+          Title: "Versión de la interfaz (versión de claude api)",
+          SubTitle: "Selecciona una versión específica de la API",
+        },
+      },
+      Google: {
+        ApiKey: {
+          Title: "Clave API",
+          SubTitle: "Obtén tu clave API de Google AI",
+          Placeholder: "Introduce tu clave API de Google AI Studio",
+        },
+
+        Endpoint: {
+          Title: "Dirección del endpoint",
+          SubTitle: "Ejemplo:",
+        },
+
+        ApiVersion: {
+          Title: "Versión de la API (solo para gemini-pro)",
+          SubTitle: "Selecciona una versión específica de la API",
+        },
+        GoogleSafetySettings: {
+          Title: "Nivel de filtrado de seguridad de Google",
+          SubTitle: "Configura el nivel de filtrado de contenido",
+        },
+      },
+      Baidu: {
+        ApiKey: {
+          Title: "Clave API",
+          SubTitle: "Usa una clave API de Baidu personalizada",
+          Placeholder: "Clave API de Baidu",
+        },
+        SecretKey: {
+          Title: "Clave secreta",
+          SubTitle: "Usa una clave secreta de Baidu personalizada",
+          Placeholder: "Clave secreta de Baidu",
+        },
+        Endpoint: {
+          Title: "Dirección del endpoint",
+          SubTitle:
+            "No admite personalización, dirígete a .env para configurarlo",
+        },
+      },
+      ByteDance: {
+        ApiKey: {
+          Title: "Clave de interfaz",
+          SubTitle: "Usa una clave API de ByteDance personalizada",
+          Placeholder: "Clave API de ByteDance",
+        },
+        Endpoint: {
+          Title: "Dirección del endpoint",
+          SubTitle: "Ejemplo:",
+        },
+      },
+      Alibaba: {
+        ApiKey: {
+          Title: "Clave de interfaz",
+          SubTitle: "Usa una clave API de Alibaba Cloud personalizada",
+          Placeholder: "Clave API de Alibaba Cloud",
+        },
+        Endpoint: {
+          Title: "Dirección del endpoint",
+          SubTitle: "Ejemplo:",
+        },
+      },
+      CustomModel: {
+        Title: "Nombre del modelo personalizado",
+        SubTitle:
+          "Agrega opciones de modelos personalizados, separados por comas",
+      },
+    },
+
+    Model: "Modelo (model)",
+    CompressModel: {
+      Title: "Modelo de compresión",
+      SubTitle: "Modelo utilizado para comprimir el historial",
+    },
     Temperature: {
-      Title: "Temperatura",
-      SubTitle: "Un valor mayor genera una salida más aleatoria",
+      Title: "Aleatoriedad (temperature)",
+      SubTitle: "Cuanto mayor sea el valor, más aleatorio será el resultado",
+    },
+    TopP: {
+      Title: "Muestreo por núcleo (top_p)",
+      SubTitle: "Similar a la aleatoriedad, pero no cambies ambos a la vez",
     },
     MaxTokens: {
-      Title: "Máximo de tokens",
-      SubTitle: "Longitud máxima de tokens de entrada y tokens generados",
+      Title: "Límite de tokens por respuesta (max_tokens)",
+      SubTitle: "Número máximo de tokens utilizados en una sola interacción",
     },
     PresencePenalty: {
-      Title: "Penalización de presencia",
+      Title: "Novedad de temas (presence_penalty)",
       SubTitle:
-        "Un valor mayor aumenta la probabilidad de hablar sobre nuevos temas",
+        "Cuanto mayor sea el valor, más probable es que se amplíen a nuevos temas",
     },
     FrequencyPenalty: {
-      Title: "Penalización de frecuencia",
+      Title: "Penalización de frecuencia (frequency_penalty)",
       SubTitle:
-        "Un valor mayor que disminuye la probabilidad de repetir la misma línea",
+        "Cuanto mayor sea el valor, más probable es que se reduzcan las palabras repetidas",
     },
   },
   Store: {
-    DefaultTopic: "Nueva conversación",
-    BotHello: "¡Hola! ¿Cómo puedo ayudarte hoy?",
-    Error: "Algo salió mal, por favor intenta nuevamente más tarde.",
+    DefaultTopic: "Nuevo chat",
+    BotHello: "¿En qué puedo ayudarte?",
+    Error: "Hubo un error, inténtalo de nuevo más tarde",
     Prompt: {
       History: (content: string) =>
-        "Este es un resumen del historial del chat entre la IA y el usuario como recapitulación: " +
-        content,
+        "Este es un resumen del chat histórico como referencia: " + content,
       Topic:
-        "Por favor, genera un título de cuatro a cinco palabras que resuma nuestra conversación sin ningún inicio, puntuación, comillas, puntos, símbolos o texto adicional. Elimina las comillas que lo envuelven.",
+        "Devuelve un tema breve de esta frase en cuatro a cinco palabras, sin explicación, sin puntuación, sin muletillas, sin texto adicional, sin negritas. Si no hay tema, devuelve 'charlas casuales'",
       Summarize:
-        "Resuma nuestra discusión brevemente en 200 caracteres o menos para usarlo como un recordatorio para futuros contextos.",
+        "Resume brevemente el contenido de la conversación para usar como un prompt de contexto, manteniéndolo dentro de 200 palabras",
     },
   },
   Copy: {
     Success: "Copiado al portapapeles",
-    Failed:
-      "La copia falló, por favor concede permiso para acceder al portapapeles",
+    Failed: "Error al copiar, por favor otorga permisos al portapapeles",
+  },
+  Download: {
+    Success: "Contenido descargado en tu directorio.",
+    Failed: "Error al descargar.",
   },
   Context: {
-    Toast: (x: any) => `With ${x} contextual prompts`,
-    Edit: "Contextual and Memory Prompts",
-    Add: "Add One",
+    Toast: (x: any) => `Contiene ${x} prompts predefinidos`,
+    Edit: "Configuración del chat actual",
+    Add: "Agregar una conversación",
+    Clear: "Contexto borrado",
+    Revert: "Restaurar contexto",
   },
   Plugin: {
-    Name: "Plugin",
+    Name: "Complemento",
   },
   FineTuned: {
-    Sysmessage: "Eres un asistente que",
+    Sysmessage: "Eres un asistente",
   },
-  Mask: {
-    Name: "Mask",
+  SearchChat: {
+    Name: "Buscar",
     Page: {
-      Title: "Prompt Template",
-      SubTitle: (count: number) => `${count} prompt templates`,
-      Search: "Search Templates",
-      Create: "Create",
+      Title: "Buscar en el historial de chat",
+      Search: "Ingrese la palabra clave de búsqueda",
+      NoResult: "No se encontraron resultados",
+      NoData: "Sin datos",
+      Loading: "Cargando",
+
+      SubTitle: (count: number) => `Se encontraron ${count} resultados`,
     },
     Item: {
-      Info: (count: number) => `${count} prompts`,
+      View: "Ver",
+    },
+  },
+  Mask: {
+    Name: "Máscara",
+    Page: {
+      Title: "Máscaras de rol predefinidas",
+      SubTitle: (count: number) => `${count} definiciones de rol predefinidas`,
+      Search: "Buscar máscara de rol",
+      Create: "Crear nuevo",
+    },
+    Item: {
+      Info: (count: number) => `Contiene ${count} conversaciones predefinidas`,
       Chat: "Chat",
-      View: "View",
-      Edit: "Edit",
-      Delete: "Delete",
-      DeleteConfirm: "Confirm to delete?",
+      View: "Ver",
+      Edit: "Editar",
+      Delete: "Eliminar",
+      DeleteConfirm: "¿Confirmar eliminación?",
     },
     EditModal: {
       Title: (readonly: boolean) =>
-        `Edit Prompt Template ${readonly ? "(readonly)" : ""}`,
-      Download: "Download",
-      Clone: "Clone",
+        `Editar máscara predefinida ${readonly ? "（solo lectura）" : ""}`,
+      Download: "Descargar predefinido",
+      Clone: "Clonar predefinido",
     },
     Config: {
-      Avatar: "Bot Avatar",
-      Name: "Bot Name",
+      Avatar: "Avatar del rol",
+      Name: "Nombre del rol",
+      Sync: {
+        Title: "Usar configuración global",
+        SubTitle:
+          "¿Usar la configuración global del modelo para la conversación actual?",
+        Confirm:
+          "La configuración personalizada de la conversación actual se sobrescribirá automáticamente, ¿confirmar habilitar la configuración global?",
+      },
+      HideContext: {
+        Title: "Ocultar conversaciones predefinidas",
+        SubTitle:
+          "Las conversaciones predefinidas ocultas no aparecerán en la interfaz de chat",
+      },
+      Share: {
+        Title: "Compartir esta máscara",
+        SubTitle: "Generar un enlace directo a esta máscara",
+        Action: "Copiar enlace",
+      },
     },
   },
   NewChat: {
-    Return: "Return",
-    Skip: "Skip",
-    Title: "Pick a Mask",
-    SubTitle: "Chat with the Soul behind the Mask",
-    More: "Find More",
-    NotShow: "Not Show Again",
-    ConfirmNoShow: "Confirm to disable？You can enable it in settings later.",
+    Return: "Regresar",
+    Skip: "Comenzar ahora",
+    NotShow: "No mostrar más",
+    ConfirmNoShow:
+      "¿Confirmar desactivación? Puedes reactivar en la configuración en cualquier momento.",
+    Title: "Selecciona una máscara",
+    SubTitle: "Comienza ahora y colisiona con la mente detrás de la máscara",
+    More: "Ver todo",
+  },
+
+  URLCommand: {
+    Code: "Detectado un código de acceso en el enlace, ¿deseas autocompletarlo?",
+    Settings:
+      "Detectada configuración predefinida en el enlace, ¿deseas autocompletarla?",
   },
 
   UI: {
-    Confirm: "Confirm",
-    Cancel: "Cancel",
-    Close: "Close",
-    Create: "Create",
-    Edit: "Edit",
+    Confirm: "Confirmar",
+    Cancel: "Cancelar",
+    Close: "Cerrar",
+    Create: "Crear",
+    Edit: "Editar",
+    Export: "Exportar",
+    Import: "Importar",
+    Sync: "Sincronizar",
+    Config: "Configurar",
   },
   Exporter: {
+    Description: {
+      Title: "Solo se mostrarán los mensajes después de borrar el contexto",
+    },
     Model: "Modelo",
     Messages: "Mensajes",
     Topic: "Tema",
-    Time: "Time",
+    Time: "Hora",
   },
 };
 

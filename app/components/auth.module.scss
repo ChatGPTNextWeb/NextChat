@@ -1,12 +1,70 @@
 .auth-page {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   height: 100%;
   width: 100%;
   flex-direction: column;
+  .top-banner {
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 12px 64px;
+    box-sizing: border-box;
+    background: var(--second);
+    .top-banner-inner {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 14px;
+      line-height: 150%;
+      span {
+        gap: 8px;
+        a {
+          display: inline-flex;
+          align-items: center;
+          text-decoration: none;
+          margin-left: 8px;
+          color: var(--primary);
+        }
+      }
+    }
+    .top-banner-close {
+      cursor: pointer;
+      position: absolute;
+      top: 50%;
+      right: 48px;
+      transform: translateY(-50%);
+    }
+  }
+
+  @media (max-width: 600px) {
+    .top-banner {
+      padding: 12px 24px 12px 12px;
+      .top-banner-close {
+        right: 10px;
+      }
+      .top-banner-inner {
+        .top-banner-logo {
+          margin-right: 8px;
+        }
+      }
+    }
+  }
+
+  .auth-header {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    animation: slide-in-from-top ease 0.3s;
+  }
 
   .auth-logo {
+    margin-top: 10vh;
     transform: scale(1.4);
   }
 
@@ -14,6 +72,7 @@
     font-size: 24px;
     font-weight: bold;
     line-height: 2;
+    margin-bottom: 1vh;
   }
 
   .auth-tips {
@@ -22,6 +81,10 @@
 
   .auth-input {
     margin: 3vh 0;
+  }
+
+  .auth-input-second {
+    margin: 0 0 3vh 0;
   }
 
   .auth-actions {

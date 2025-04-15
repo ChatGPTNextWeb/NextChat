@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import { IconButton } from "./button";
 import GithubIcon from "../icons/github.svg";
@@ -6,6 +8,7 @@ import { ISSUE_URL } from "../constant";
 import Locale from "../locales";
 import { showConfirm } from "./ui-lib";
 import { useSyncStore } from "../store/sync";
+import { useChatStore } from "../store/chat";
 
 interface IErrorBoundaryState {
   hasError: boolean;
@@ -28,8 +31,7 @@ export class ErrorBoundary extends React.Component<any, IErrorBoundaryState> {
     try {
       useSyncStore.getState().export();
     } finally {
-      localStorage.clear();
-      location.reload();
+      useChatStore.getState().clearAllData();
     }
   }
 

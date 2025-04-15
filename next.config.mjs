@@ -64,10 +64,17 @@ if (mode !== "export") {
 
   nextConfig.rewrites = async () => {
     const ret = [
-      // adjust for previous verison directly using "/api/proxy/" as proxy base route
+      // adjust for previous version directly using "/api/proxy/" as proxy base route
+      // {
+      //   source: "/api/proxy/v1/:path*",
+      //   destination: "https://api.openai.com/v1/:path*",
+      // },
       {
-        source: "/api/proxy/v1/:path*",
-        destination: "https://api.openai.com/v1/:path*",
+        // https://{resource_name}.openai.azure.com/openai/deployments/{deploy_name}/chat/completions
+        source:
+          "/api/proxy/azure/:resource_name/deployments/:deploy_name/:path*",
+        destination:
+          "https://:resource_name.openai.azure.com/openai/deployments/:deploy_name/:path*",
       },
       {
         source: "/api/proxy/google/:path*",
@@ -78,12 +85,20 @@ if (mode !== "export") {
         destination: "https://api.openai.com/:path*",
       },
       {
+        source: "/api/proxy/anthropic/:path*",
+        destination: "https://api.anthropic.com/:path*",
+      },
+      {
         source: "/google-fonts/:path*",
         destination: "https://fonts.googleapis.com/:path*",
       },
       {
         source: "/sharegpt",
         destination: "https://sharegpt.com/api/conversations",
+      },
+      {
+        source: "/api/proxy/alibaba/:path*",
+        destination: "https://dashscope.aliyuncs.com/api/:path*",
       },
     ];
 

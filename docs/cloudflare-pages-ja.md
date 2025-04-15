@@ -12,7 +12,7 @@ GitHub でこのプロジェクトをフォークし、dash.cloudflare.com に�
 7. "Build Settings" で、"Framework presets" オプションを選択し、"Next.js" を選択します。
 8. node:buffer のバグのため、デフォルトの "Build command" は使用しないでください。代わりに、以下のコマンドを使用してください:
     ```
-    npx https://prerelease-registry.devprod.cloudflare.dev/next-on-pages/runs/4930842298/npm-package-next-on-pages-230 --experimental-minify
+    npx @cloudflare/next-on-pages --experimental-minify
     ```
 9. "Build output directory" はデフォルト値を使用し、変更しない。
 10. "Root Directory" を変更しない。

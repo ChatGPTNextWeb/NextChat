@@ -11,8 +11,8 @@
 6. "프로젝트 이름" 및 "프로덕션 브랜치"의 기본값을 사용하거나 필요에 따라 변경합니다.
 7. "빌드 설정"에서 "프레임워크 프리셋" 옵션을 선택하고 "Next.js"를 선택합니다.
 8. node:buffer 버그로 인해 지금은 기본 "빌드 명령어"를 사용하지 마세요. 다음 명령을 사용하세요:
-   ``
-   npx https://prerelease-registry.devprod.cloudflare.dev/next-on-pages/runs/4930842298/npm-package-next-on-pages-230 --experimental- minify
+   ```
+   npx @cloudflare/next-on-pages --experimental-minify
    ```
 9. "빌드 출력 디렉토리"의 경우 기본값을 사용하고 수정하지 마십시오.
 10. "루트 디렉토리"는 수정하지 마십시오.

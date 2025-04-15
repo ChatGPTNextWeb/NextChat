@@ -1,0 +1,119 @@
+@import "../styles/animation.scss";
+.plugin-page {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  .plugin-page-body {
+    padding: 20px;
+    overflow-y: auto;
+
+    .plugin-filter {
+      width: 100%;
+      max-width: 100%;
+      margin-bottom: 20px;
+      animation: slide-in ease 0.3s;
+      height: 40px;
+
+      display: flex;
+
+      .search-bar {
+        flex-grow: 1;
+        max-width: 100%;
+        min-width: 0;
+        outline: none;
+      }
+
+      .search-bar:focus {
+        border: 1px solid var(--primary);
+      }
+
+      .plugin-filter-lang {
+        height: 100%;
+        margin-left: 10px;
+      }
+
+      .plugin-create {
+        height: 100%;
+        margin-left: 10px;
+        box-sizing: border-box;
+        min-width: 80px;
+      }
+    }
+
+    .plugin-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 20px;
+      border: var(--border-in-light);
+      animation: slide-in ease 0.3s;
+
+      &:not(:last-child) {
+        border-bottom: 0;
+      }
+
+      &:first-child {
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+      }
+
+      &:last-child {
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+      }
+
+      .plugin-header {
+        display: flex;
+        align-items: center;
+
+        .plugin-icon {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-right: 10px;
+        }
+
+        .plugin-title {
+          .plugin-name {
+            font-size: 14px;
+            font-weight: bold;
+          }
+          .plugin-info {
+            font-size: 12px;
+          }
+          .plugin-runtime-warning {
+            font-size: 12px;
+            color: #f86c6c;
+          }
+        }
+      }
+
+      .plugin-actions {
+        display: flex;
+        flex-wrap: nowrap;
+        transition: all ease 0.3s;
+        justify-content: center;
+        align-items: center;
+      }
+
+      @media screen and (max-width: 600px) {
+        display: flex;
+        flex-direction: column;
+        padding-bottom: 10px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        box-shadow: var(--card-shadow);
+
+        &:not(:last-child) {
+          border-bottom: var(--border-in-light);
+        }
+
+        .plugin-actions {
+          width: 100%;
+          justify-content: space-between;
+          padding-top: 10px;
+        }
+      }
+    }
+  }
+}

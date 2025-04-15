@@ -1,0 +1,21 @@
+name: '🌠 功能需求'
+description: '提出需求或建议'
+title: '[Feature Request] '
+labels: ['enhancement']
+body:
+  - type: textarea
+    attributes:
+      label: '🥰 需求描述'
+      description: 请添加一个清晰且简洁的问题描述，阐述您希望通过这个功能需求解决的问题。
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: '🧐 解决方案'
+      description: 请清晰且简洁地描述您想要的解决方案。
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: '📝 补充信息'
+      description: 在这里添加关于问题的任何其他背景信息。

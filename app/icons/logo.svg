@@ -1,0 +1,19 @@
+<svg width="38.73" height="42" viewBox="0 0 221 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect x="160.697" y="38.125" width="65.007" height="145.932" rx="32.503" transform="rotate(21.987 160.697 38.125)" fill="url(#logo_svg__a)"></rect>
+  <path fill-rule="evenodd" clip-rule="evenodd" d="m48.642 79.125-25.92 71.213c-6.139 16.869 2.558 35.52 19.427 41.66 16.868 6.14 35.52-2.558 41.66-19.426L94.23 143.94l-36.658-37.439a32.42 32.42 0 0 1-9.244-23.497c.033-1.326.14-2.62.314-3.879Z" fill="url(#logo_svg__b)"></path>
+  <path d="M172.578 132.787a32.765 32.765 0 0 1 8.981 24.238c-1.458 28.748-36.622 41.778-56.46 20.92l-67.644-71.122a32.763 32.763 0 0 1-8.981-24.238c1.457-28.748 36.622-41.778 56.46-20.92l67.644 71.122Z" fill="url(#logo_svg__c)" fill-opacity="0.96"></path>
+  <defs>
+    <linearGradient id="logo_svg__a" x1="215.063" y1="59.628" x2="160.714" y2="157.96" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#3EADFE"></stop>
+      <stop offset="1" stop-color="#2A7AFF"></stop>
+    </linearGradient>
+    <linearGradient id="logo_svg__b" x1="105.376" y1="84.416" x2="19.745" y2="131.163" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#01B3FF"></stop>
+      <stop offset="1" stop-color="#59ECFA"></stop>
+    </linearGradient>
+    <linearGradient id="logo_svg__c" x1="102.734" y1="136.396" x2="192.577" y2="155.859" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#023BFF" stop-opacity="0.82"></stop>
+      <stop offset="0.88" stop-color="#2D86FF" stop-opacity="0.76"></stop>
+    </linearGradient>
+  </defs>
+</svg>

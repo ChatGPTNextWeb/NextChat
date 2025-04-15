@@ -2,8 +2,7 @@
 
 require("../polyfill");
 
-import { useState, useEffect } from "react";
-
+import { useEffect, useState } from "react";
 import styles from "./home.module.scss";
 
 import BotIcon from "../icons/bot.svg";
@@ -12,32 +11,38 @@ import LoadingIcon from "../icons/three-dots.svg";
 import { getCSSVar, useMobileScreen } from "../utils";
 
 import dynamic from "next/dynamic";
-import { ModelProvider, Path, SlotID } from "../constant";
+import { Path, SlotID } from "../constant";
 import { ErrorBoundary } from "./error";
 
 import { getISOLang, getLang } from "../locales";
 
 import {
   HashRouter as Router,
-  Routes,
   Route,
+  Routes,
   useLocation,
 } from "react-router-dom";
 import { SideBar } from "./sidebar";
 import { useAppConfig } from "../store/config";
 import { AuthPage } from "./auth";
 import { getClientConfig } from "../config/client";
-import { ClientApi } from "../client/api";
+import { type ClientApi, getClientApi } from "../client/api";
 import { useAccessStore } from "../store";
+import clsx from "clsx";
+import { initializeMcpSystem, isMcpEnabled } from "../mcp/actions";
 
 export function Loading(props: { noLogo?: boolean }) {
   return (
-    <div className={styles["loading-content"] + " no-dark"}>
+    <div className={clsx("no-dark", styles["loading-content"])}>
       {!props.noLogo && <BotIcon />}
       <LoadingIcon />
     </div>
   );
 }
+
+const Artifacts = dynamic(async () => (await import("./artifacts")).Artifacts, {
+  loading: () => <Loading noLogo />,
+});
 
 const Settings = dynamic(async () => (await import("./settings")).Settings, {
   loading: () => <Loading noLogo />,
@@ -54,6 +59,28 @@ const NewChat = dynamic(async () => (await import("./new-chat")).NewChat, {
 const MaskPage = dynamic(async () => (await import("./mask")).MaskPage, {
   loading: () => <Loading noLogo />,
 });
+
+const PluginPage = dynamic(async () => (await import("./plugin")).PluginPage, {
+  loading: () => <Loading noLogo />,
+});
+
+const SearchChat = dynamic(
+  async () => (await import("./search-chat")).SearchChatPage,
+  {
+    loading: () => <Loading noLogo />,
+  },
+);
+
+const Sd = dynamic(async () => (await import("./sd")).Sd, {
+  loading: () => <Loading noLogo />,
+});
+
+const McpMarketPage = dynamic(
+  async () => (await import("./mcp-market")).McpMarketPage,
+  {
+    loading: () => <Loading noLogo />,
+  },
+);
 
 export function useSwitchTheme() {
   const config = useAppConfig();
@@ -122,11 +149,23 @@ const loadAsyncGoogleFont = () => {
   document.head.appendChild(linkEl);
 };
 
+export function WindowContent(props: { children: React.ReactNode }) {
+  return (
+    <div className={styles["window-content"]} id={SlotID.AppBody}>
+      {props?.children}
+    </div>
+  );
+}
+
 function Screen() {
   const config = useAppConfig();
   const location = useLocation();
+  const isArtifact = location.pathname.includes(Path.Artifacts);
   const isHome = location.pathname === Path.Home;
   const isAuth = location.pathname === Path.Auth;
+  const isSd = location.pathname === Path.Sd;
+  const isSdNew = location.pathname === Path.SdNew;
+
   const isMobileScreen = useMobileScreen();
   const shouldTightBorder =
     getClientConfig()?.isApp || (config.tightBorder && !isMobileScreen);
@@ -135,34 +174,48 @@ function Screen() {
     loadAsyncGoogleFont();
   }, []);
 
+  if (isArtifact) {
+    return (
+      <Routes>
+        <Route path="/artifacts/:id" element={<Artifacts />} />
+      </Routes>
+    );
+  }
+  const renderContent = () => {
+    if (isAuth) return <AuthPage />;
+    if (isSd) return <Sd />;
+    if (isSdNew) return <Sd />;
+    return (
+      <>
+        <SideBar
+          className={clsx({
+            [styles["sidebar-show"]]: isHome,
+          })}
+        />
+        <WindowContent>
+          <Routes>
+            <Route path={Path.Home} element={<Chat />} />
+            <Route path={Path.NewChat} element={<NewChat />} />
+            <Route path={Path.Masks} element={<MaskPage />} />
+            <Route path={Path.Plugins} element={<PluginPage />} />
+            <Route path={Path.SearchChat} element={<SearchChat />} />
+            <Route path={Path.Chat} element={<Chat />} />
+            <Route path={Path.Settings} element={<Settings />} />
+            <Route path={Path.McpMarket} element={<McpMarketPage />} />
+          </Routes>
+        </WindowContent>
+      </>
+    );
+  };
+
   return (
     <div
-      className={
-        styles.container +
-        ` ${shouldTightBorder ? styles["tight-container"] : styles.container} ${
-          getLang() === "ar" ? styles["rtl-screen"] : ""
-        }`
-      }
+      className={clsx(styles.container, {
+        [styles["tight-container"]]: shouldTightBorder,
+        [styles["rtl-screen"]]: getLang() === "ar",
+      })}
     >
-      {isAuth ? (
-        <>
-          <AuthPage />
-        </>
-      ) : (
-        <>
-          <SideBar className={isHome ? styles["sidebar-show"] : ""} />
-
-          <div className={styles["window-content"]} id={SlotID.AppBody}>
-            <Routes>
-              <Route path={Path.Home} element={<Chat />} />
-              <Route path={Path.NewChat} element={<NewChat />} />
-              <Route path={Path.Masks} element={<MaskPage />} />
-              <Route path={Path.Chat} element={<Chat />} />
-              <Route path={Path.Settings} element={<Settings />} />
-            </Routes>
-          </div>
-        </>
-      )}
+      {renderContent()}
     </div>
   );
 }
@@ -170,12 +223,8 @@ function Screen() {
 export function useLoadData() {
   const config = useAppConfig();
 
-  var api: ClientApi;
-  if (config.modelConfig.model.startsWith("gemini")) {
-    api = new ClientApi(ModelProvider.GeminiPro);
-  } else {
-    api = new ClientApi(ModelProvider.GPT);
-  }
+  const api: ClientApi = getClientApi(config.modelConfig.providerName);
+
   useEffect(() => {
     (async () => {
       const models = await api.llm.models();
@@ -193,6 +242,20 @@ export function Home() {
   useEffect(() => {
     console.log("[Config] got config from build time", getClientConfig());
     useAccessStore.getState().fetch();
+
+    const initMcp = async () => {
+      try {
+        const enabled = await isMcpEnabled();
+        if (enabled) {
+          console.log("[MCP] initializing...");
+          await initializeMcpSystem();
+          console.log("[MCP] initialized");
+        }
+      } catch (err) {
+        console.error("[MCP] failed to initialize:", err);
+      }
+    };
+    initMcp();
   }, []);
 
   if (!useHasHydrated()) {
