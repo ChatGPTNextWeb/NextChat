@@ -75,6 +75,25 @@ export class DeepSeekApi implements LLMApi {
       }
     }
 
+    // 检测并修复消息顺序，确保除system外的第一个消息是user
+    const filteredMessages: ChatOptions["messages"] = [];
+    let hasFoundFirstUser = false;
+
+    for (const msg of messages) {
+      if (msg.role === "system") {
+        // Keep all system messages
+        filteredMessages.push(msg);
+      } else if (msg.role === "user") {
+        // User message directly added
+        filteredMessages.push(msg);
+        hasFoundFirstUser = true;
+      } else if (hasFoundFirstUser) {
+        // After finding the first user message, all subsequent non-system messages are retained.
+        filteredMessages.push(msg);
+      }
+      // If hasFoundFirstUser is false and it is not a system message, it will be skipped.
+    }
+
     const modelConfig = {
       ...useAppConfig.getState().modelConfig,
       ...useChatStore.getState().currentSession().mask.modelConfig,
@@ -85,7 +104,7 @@ export class DeepSeekApi implements LLMApi {
     };
 
     const requestPayload: RequestPayload = {
-      messages,
+      messages: filteredMessages,
       stream: options.config.stream,
       model: modelConfig.model,
       temperature: modelConfig.temperature,
