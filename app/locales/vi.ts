@@ -427,6 +427,22 @@ const vi: PartialLocaleType = {
         SubTitle:
           "Thêm tùy chọn mô hình tùy chỉnh, sử dụng dấu phẩy để phân cách",
       },
+      Huawei: {
+        ApiKey: {
+          Title: "Khóa API",
+          SubTitle: "Sử dụng khóa API HUAWEI của bạn",
+          Placeholder: "Khóa HUAWEI",
+        },
+        SecretKey: {
+          Title: "Khóa bí mật",
+          SubTitle: "Sử dụng khóa bí mật HUAWEI của bạn",
+          Placeholder: "Khóa bí mật HUAWEI",
+        },
+        Endpoint: {
+          Title: "Địa chỉ điểm cuối",
+          SubTitle: "Không hỗ trợ cấu hình .env tùy chỉnh",
+        },
+      },
     },
 
     Model: "Mô hình (model)",

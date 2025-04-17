@@ -440,6 +440,23 @@ const fr: PartialLocaleType = {
         SubTitle:
           "Ajouter des options de modèles personnalisés, séparées par des virgules",
       },
+      Huawei: {
+        ApiKey: {
+          Title: "Clé API",
+          SubTitle: "Utilisez votre propre clé API HUAWEI",
+          Placeholder: "Clé HUAWEI",
+        },
+        SecretKey: {
+          Title: "Clé secrète",
+          SubTitle: "Utilisez votre propre clé secrète HUAWEI",
+          Placeholder: "Clé secrète HUAWEI",
+        },
+        Endpoint: {
+          Title: "Adresse de l'endpoint",
+          SubTitle:
+            "Ne prend pas en charge la configuration personnalisée .env",
+        },
+      },
     },
 
     Model: "Modèle",

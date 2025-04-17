@@ -15,6 +15,7 @@ import { handle as siliconflowHandler } from "../../siliconflow";
 import { handle as xaiHandler } from "../../xai";
 import { handle as chatglmHandler } from "../../glm";
 import { handle as proxyHandler } from "../../proxy";
+import { handle as huaweiHandler } from "../../huawei";
 
 async function handle(
   req: NextRequest,
@@ -52,6 +53,8 @@ async function handle(
       return siliconflowHandler(req, { params });
     case ApiPath.OpenAI:
       return openaiHandler(req, { params });
+    case ApiPath.Huawei:
+      return huaweiHandler(req, { params });
     default:
       return proxyHandler(req, { params });
   }
