@@ -491,6 +491,17 @@ const en: LocaleType = {
           SubTitle: "Example: ",
         },
       },
+      PPIO: {
+        ApiKey: {
+          Title: "PPIO API Key",
+          SubTitle: "Use a custom PPIO API Key",
+          Placeholder: "PPIO API Key",
+        },
+        Endpoint: {
+          Title: "Endpoint Address",
+          SubTitle: "Example: ",
+        },
+      },
       Stability: {
         ApiKey: {
           Title: "Stability API Key",

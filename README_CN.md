@@ -275,6 +275,14 @@ SiliconFlow API Key.
 
 SiliconFlow API URL.
 
+### `PPIO_API_KEY` (optional)
+
+PPIO API Key.
+
+### `PPIO_URL` (optional)
+
+PPIO API URL.
+
 ## 开发
 
 点击下方按钮，开始二次开发：
