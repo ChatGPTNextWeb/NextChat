@@ -1,14 +1,13 @@
 import fetch from "node-fetch";
 import fs from "fs/promises";
 
-const RAW_FILE_URL = "https://raw.githubusercontent.com/";
-const MIRRORF_FILE_URL = "http://raw.fgit.ml/";
+const MIRRORF_FILE_URL = "https://cdn.jsdelivr.net/gh/";
 
-const RAW_CN_URL = "PlexPt/awesome-chatgpt-prompts-zh/main/prompts-zh.json";
+const RAW_CN_URL = "PlexPt/awesome-chatgpt-prompts-zh@main/prompts-zh.json";
 const CN_URL = MIRRORF_FILE_URL + RAW_CN_URL;
-const RAW_TW_URL = "PlexPt/awesome-chatgpt-prompts-zh/main/prompts-zh-TW.json";
+const RAW_TW_URL = "PlexPt/awesome-chatgpt-prompts-zh@main/prompts-zh-TW.json";
 const TW_URL = MIRRORF_FILE_URL + RAW_TW_URL;
-const RAW_EN_URL = "f/awesome-chatgpt-prompts/main/prompts.csv";
+const RAW_EN_URL = "f/awesome-chatgpt-prompts@main/prompts.csv";
 const EN_URL = MIRRORF_FILE_URL + RAW_EN_URL;
 const FILE = "./public/prompts.json";
 
@@ -84,11 +83,11 @@ async function fetchEN() {
 async function main() {
   Promise.all([fetchCN(), fetchTW(), fetchEN()])
     .then(([cn, tw, en]) => {
-      fs.writeFile(FILE, JSON.stringify({ cn, tw, en }));
+      fs.writeFile(FILE, JSON.stringify({ cn, tw, en }, null, 2));
     })
     .catch((e) => {
       console.error("[Fetch] failed to fetch prompts");
-      fs.writeFile(FILE, JSON.stringify({ cn: [], tw: [], en: [] }));
+      fs.writeFile(FILE, JSON.stringify({ cn: [], tw: [], en: [] }, null, 2));
     })
     .finally(() => {
       console.log("[Fetch] saved to " + FILE);
