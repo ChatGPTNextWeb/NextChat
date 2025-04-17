@@ -117,7 +117,7 @@ export class DoubaoApi implements LLMApi {
     options.onController?.(controller);
 
     try {
-      const chatPath = this.path(ByteDance.ChatPath);
+      const chatPath = this.path(ByteDance.ChatPath(modelConfig.model));
       const chatPayload = {
         method: "POST",
         body: JSON.stringify(requestPayload),
