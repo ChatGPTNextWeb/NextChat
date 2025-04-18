@@ -1666,7 +1666,21 @@ export function Settings() {
               }
             ></input>
           </ListItem>
-
+          <ListItem
+            title={Locale.Settings.AutoScrollMessage.Title}
+            subTitle={Locale.Settings.AutoScrollMessage.SubTitle}
+          >
+            <input
+              type="checkbox"
+              checked={config.autoScrollMessage}
+              onChange={(e) =>
+                updateConfig(
+                  (config) =>
+                    (config.autoScrollMessage = e.currentTarget.checked),
+                )
+              }
+            ></input>
+          </ListItem>
           <ListItem
             title={Locale.Mask.Config.Artifacts.Title}
             subTitle={Locale.Mask.Config.Artifacts.SubTitle}

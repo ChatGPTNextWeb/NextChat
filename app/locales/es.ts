@@ -252,6 +252,10 @@ const es: PartialLocaleType = {
       },
       ImportFailed: "Importación fallida",
     },
+    AutoScrollMessage: {
+      Title: "Respuesta con Auto-Desplazamiento",
+      SubTitle: "Desplazar el mensaje durante la respuesta",
+    },
     Mask: {
       Splash: {
         Title: "Pantalla de inicio de máscara",
