@@ -40,6 +40,8 @@ import { type ClientApi, getClientApi } from "../client/api";
 import { getMessageTextContent } from "../utils";
 import { MaskAvatar } from "./mask";
 import clsx from "clsx";
+import { save } from "@tauri-apps/plugin-dialog";
+import { writeFile } from "@tauri-apps/plugin-fs";
 
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
@@ -456,7 +458,7 @@ export function ImagePreviewer(props: {
 
       if (isMobile || (isApp && window.__TAURI__)) {
         if (isApp && window.__TAURI__) {
-          const result = await window.__TAURI__.dialog.save({
+          const result = await save({
             defaultPath: `${props.topic}.png`,
             filters: [
               {
@@ -474,7 +476,7 @@ export function ImagePreviewer(props: {
             const response = await fetch(blob);
             const buffer = await response.arrayBuffer();
             const uint8Array = new Uint8Array(buffer);
-            await window.__TAURI__.fs.writeBinaryFile(result, uint8Array);
+            await writeFile(result, uint8Array);
             showToast(Locale.Download.Success);
           } else {
             showToast(Locale.Download.Failed);
