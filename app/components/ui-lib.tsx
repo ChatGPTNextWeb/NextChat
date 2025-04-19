@@ -11,6 +11,7 @@ import MaxIcon from "../icons/max.svg";
 import MinIcon from "../icons/min.svg";
 
 import Locale from "../locales";
+import { maskSensitiveValue } from "../utils/aws";
 
 import { createRoot } from "react-dom/client";
 import React, {
@@ -270,12 +271,24 @@ export function Input(props: InputProps) {
 }
 
 export function PasswordInput(
-  props: HTMLProps<HTMLInputElement> & { aria?: string },
+  props: HTMLProps<HTMLInputElement> & {
+    aria?: string;
+    maskWhenShow?: boolean;
+  },
 ) {
   const [visible, setVisible] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const { maskWhenShow, onChange, value, ...inputProps } = props;
+
   function changeVisibility() {
     setVisible(!visible);
   }
+
+  // Get display value - use masked value only when showing and maskWhenShow is true and not editing
+  const displayValue =
+    maskWhenShow && visible && value && !isEditing
+      ? maskSensitiveValue(value as string)
+      : value;
 
   return (
     <div className={"password-input-container"}>
@@ -286,7 +299,11 @@ export function PasswordInput(
         className={"password-eye"}
       />
       <input
-        {...props}
+        {...inputProps}
+        value={displayValue}
+        onChange={onChange}
+        onFocus={() => setIsEditing(true)}
+        onBlur={() => setIsEditing(false)}
         type={visible ? "text" : "password"}
         className={"password-input"}
       />
@@ -552,6 +569,7 @@ export function Selector<T>(props: {
     </div>
   );
 }
+
 export function FullScreen(props: any) {
   const { children, right = 10, top = 10, ...rest } = props;
   const ref = useRef<HTMLDivElement>();
