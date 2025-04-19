@@ -163,19 +163,18 @@ export const getServerSideConfig = () => {
   const isXAI = !!process.env.XAI_API_KEY;
   const isChatGLM = !!process.env.CHATGLM_API_KEY;
   const isSiliconFlow = !!process.env.SILICONFLOW_API_KEY;
-  // const apiKeyEnvVar = process.env.OPENAI_API_KEY ?? "";
-  // const apiKeys = apiKeyEnvVar.split(",").map((v) => v.trim());
-  // const randomIndex = Math.floor(Math.random() * apiKeys.length);
-  // const apiKey = apiKeys[randomIndex];
-  // console.log(
-  //   `[Server Config] using ${randomIndex + 1} of ${apiKeys.length} api key`,
-  // );
+
+  const isBedrock =
+    process.env.ENABLE_AWS_BEDROCK === "true" &&
+    !!process.env.AWS_ACCESS_KEY_ID &&
+    !!process.env.AWS_SECRET_ACCESS_KEY &&
+    !!process.env.AWS_REGION;
 
   const allowedWebDavEndpoints = (
     process.env.WHITE_WEBDAV_ENDPOINTS ?? ""
   ).split(",");
 
-  return {
+  const config = {
     baseUrl: process.env.BASE_URL,
     apiKey: getApiKey(process.env.OPENAI_API_KEY),
     openaiOrgId: process.env.OPENAI_ORG_ID,
@@ -246,6 +245,12 @@ export const getServerSideConfig = () => {
     siliconFlowUrl: process.env.SILICONFLOW_URL,
     siliconFlowApiKey: getApiKey(process.env.SILICONFLOW_API_KEY),
 
+    isBedrock,
+    bedrockRegion: process.env.AWS_REGION,
+    bedrockAccessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    bedrockSecretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+    bedrockEndpoint: process.env.AWS_BEDROCK_ENDPOINT,
+
     gtmId: process.env.GTM_ID,
     gaId: process.env.GA_ID || DEFAULT_GA_ID,
 
@@ -266,4 +271,5 @@ export const getServerSideConfig = () => {
     allowedWebDavEndpoints,
     enableMcp: process.env.ENABLE_MCP === "true",
   };
+  return config;
 };

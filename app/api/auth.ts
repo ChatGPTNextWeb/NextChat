@@ -56,14 +56,6 @@ export function auth(req: NextRequest, modelProvider: ModelProvider) {
   // if user does not provide an api key, inject system api key
   if (!apiKey) {
     const serverConfig = getServerSideConfig();
-
-    // const systemApiKey =
-    //   modelProvider === ModelProvider.GeminiPro
-    //     ? serverConfig.googleApiKey
-    //     : serverConfig.isAzure
-    //     ? serverConfig.azureApiKey
-    //     : serverConfig.apiKey;
-
     let systemApiKey: string | undefined;
 
     switch (modelProvider) {
@@ -104,6 +96,11 @@ export function auth(req: NextRequest, modelProvider: ModelProvider) {
       case ModelProvider.SiliconFlow:
         systemApiKey = serverConfig.siliconFlowApiKey;
         break;
+      case ModelProvider.Bedrock:
+        console.log(
+          "[Auth] Using AWS credentials for Bedrock, no API key override.",
+        );
+        return { error: false };
       case ModelProvider.GPT:
       default:
         if (req.nextUrl.pathname.includes("azure/deployments")) {
@@ -117,7 +114,10 @@ export function auth(req: NextRequest, modelProvider: ModelProvider) {
       console.log("[Auth] use system api key");
       req.headers.set("Authorization", `Bearer ${systemApiKey}`);
     } else {
-      console.log("[Auth] admin did not provide an api key");
+      console.log(
+        "[Auth] admin did not provide an api key for provider:",
+        modelProvider,
+      );
     }
   } else {
     console.log("[Auth] use user api key");

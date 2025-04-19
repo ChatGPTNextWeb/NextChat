@@ -693,22 +693,71 @@ export function ChatActions(props: {
             onClose={() => setShowModelSelector(false)}
             onSelection={(s) => {
               if (s.length === 0) return;
-              const [model, providerName] = getModelProvider(s[0]);
-              chatStore.updateTargetSession(session, (session) => {
-                session.mask.modelConfig.model = model as ModelType;
-                session.mask.modelConfig.providerName =
-                  providerName as ServiceProvider;
-                session.mask.syncGlobalConfig = false;
-              });
-              if (providerName == "ByteDance") {
-                const selectedModel = models.find(
-                  (m) =>
-                    m.name == model &&
-                    m?.provider?.providerName == providerName,
-                );
-                showToast(selectedModel?.displayName ?? "");
+              const selectedValue = s[0];
+              console.log(
+                "[ChatActions] Model selected raw value:",
+                selectedValue,
+              );
+              // providerId here will be lowercase, e.g., "bedrock"
+              const [model, providerId] = getModelProvider(selectedValue);
+              console.log(
+                "[ChatActions] Parsed model:",
+                model,
+                "Provider ID:",
+                providerId,
+              );
+
+              // Convert lowercase providerId to TitleCase ServiceProvider enum value
+              let targetProvider: ServiceProvider | undefined;
+              if (providerId) {
+                const upperProvider =
+                  providerId.charAt(0).toUpperCase() + providerId.slice(1);
+                if (
+                  Object.values(ServiceProvider).includes(
+                    upperProvider as ServiceProvider,
+                  )
+                ) {
+                  targetProvider = upperProvider as ServiceProvider;
+                } else {
+                  console.error(
+                    `[ChatActions] Unknown provider ID: ${providerId}. Falling back to OpenAI.`,
+                  );
+                  // Handle error or fallback if needed
+                  targetProvider = ServiceProvider.OpenAI; // Fallback for unrecognized provider
+                }
               } else {
-                showToast(model);
+                // Handle case where providerId is missing, maybe default to OpenAI?
+                targetProvider = ServiceProvider.OpenAI;
+                console.warn(
+                  `[ChatActions] Provider ID missing in ${selectedValue}, defaulting to OpenAI.`,
+                );
+              }
+
+              console.log(
+                "[ChatActions] Target ServiceProvider Enum:",
+                targetProvider,
+              );
+
+              if (targetProvider) {
+                // Only update if we found a valid provider
+                chatStore.updateTargetSession(session, (session) => {
+                  session.mask.modelConfig.model = model as ModelType;
+                  session.mask.modelConfig.providerName = targetProvider!; // Use the Enum value (Assert non-null)
+                  session.mask.syncGlobalConfig = false;
+                  console.log(
+                    "[ChatActions] Updated session modelConfig:",
+                    session.mask.modelConfig,
+                  );
+                });
+                // Display toast based on provider
+                const toastMessage =
+                  targetProvider === ServiceProvider.ByteDance
+                    ? models.find(
+                        (m) =>
+                          m.name === model && m?.provider?.id === providerId,
+                      )?.displayName ?? model
+                    : model;
+                showToast(toastMessage);
               }
             }}
           />

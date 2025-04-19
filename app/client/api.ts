@@ -24,6 +24,7 @@ import { DeepSeekApi } from "./platforms/deepseek";
 import { XAIApi } from "./platforms/xai";
 import { ChatGLMApi } from "./platforms/glm";
 import { SiliconflowApi } from "./platforms/siliconflow";
+import { BedrockApi } from "./platforms/bedrock";
 
 export const ROLES = ["system", "user", "assistant"] as const;
 export type MessageRole = (typeof ROLES)[number];
@@ -172,6 +173,9 @@ export class ClientApi {
         break;
       case ModelProvider.SiliconFlow:
         this.llm = new SiliconflowApi();
+        break;
+      case ModelProvider.Bedrock:
+        this.llm = new BedrockApi();
         break;
       default:
         this.llm = new ChatGPTApi();
@@ -356,11 +360,46 @@ export function getHeaders(ignoreHeaders: boolean = false) {
   return headers;
 }
 
-export function getClientApi(provider: ServiceProvider): ClientApi {
-  switch (provider) {
+export function getClientApi(provider: ServiceProvider | string): ClientApi {
+  console.log(
+    "[getClientApi] Received Provider (raw):",
+    provider,
+    "| Type:",
+    typeof provider,
+  );
+
+  // Standardize the provider name to match Enum case (TitleCase)
+  let standardizedProvider: ServiceProvider | string;
+  if (typeof provider === "string") {
+    // Convert known lowercase versions to their Enum equivalent
+    switch (provider.toLowerCase()) {
+      case "bedrock":
+        standardizedProvider = ServiceProvider.Bedrock;
+        break;
+      case "openai":
+        standardizedProvider = ServiceProvider.OpenAI;
+        break;
+      case "google":
+        standardizedProvider = ServiceProvider.Google;
+        break;
+      // Add other potential lowercase strings if needed
+      default:
+        standardizedProvider = provider; // Keep unknown strings as is
+    }
+  } else {
+    standardizedProvider = provider; // Already an Enum value
+  }
+
+  console.log("[getClientApi] Standardized Provider:", standardizedProvider);
+
+  switch (standardizedProvider) {
     case ServiceProvider.Google:
+      console.log(
+        "[getClientApi] Returning ClientApi(ModelProvider.GeminiPro)",
+      );
       return new ClientApi(ModelProvider.GeminiPro);
     case ServiceProvider.Anthropic:
+      console.log("[getClientApi] Returning ClientApi(ModelProvider.Claude)");
       return new ClientApi(ModelProvider.Claude);
     case ServiceProvider.Baidu:
       return new ClientApi(ModelProvider.Ernie);
@@ -382,7 +421,16 @@ export function getClientApi(provider: ServiceProvider): ClientApi {
       return new ClientApi(ModelProvider.ChatGLM);
     case ServiceProvider.SiliconFlow:
       return new ClientApi(ModelProvider.SiliconFlow);
+    case ServiceProvider.Bedrock:
+      console.log(
+        "[getClientApi] Returning ClientApi(ModelProvider.Bedrock) for",
+        standardizedProvider,
+      );
+      return new ClientApi(ModelProvider.Bedrock);
     default:
+      console.log(
+        `[getClientApi] Provider '${provider}' (Standardized: '${standardizedProvider}') not matched, returning default GPT.`,
+      );
       return new ClientApi(ModelProvider.GPT);
   }
 }

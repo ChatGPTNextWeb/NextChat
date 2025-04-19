@@ -456,7 +456,26 @@ export const useChatStore = createPersistStore(
           ]);
         });
 
-        const api: ClientApi = getClientApi(modelConfig.providerName);
+        // --- 详细日志 (修正版) ---
+        const providerNameFromConfig = modelConfig.providerName;
+        console.log(
+          "[onUserInput] Preparing API call. Provider from config:",
+          providerNameFromConfig,
+          "| Type:",
+          typeof providerNameFromConfig,
+          "| Is Enum value (Bedrock)?:",
+          providerNameFromConfig === ServiceProvider.Bedrock, // 与枚举比较
+          "| Is 'Bedrock' string?:",
+          providerNameFromConfig === "Bedrock", // 与字符串比较
+          "| Model:",
+          modelConfig.model,
+        );
+        // --- 日志结束 ---
+
+        // 使用从配置中获取的 providerName，并提供默认值
+        const api: ClientApi = getClientApi(
+          providerNameFromConfig ?? ServiceProvider.OpenAI,
+        );
         // make request
         api.llm.chat({
           messages: sendMessages,

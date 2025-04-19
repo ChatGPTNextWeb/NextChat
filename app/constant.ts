@@ -72,6 +72,7 @@ export enum ApiPath {
   ChatGLM = "/api/chatglm",
   DeepSeek = "/api/deepseek",
   SiliconFlow = "/api/siliconflow",
+  Bedrock = "/api/bedrock",
 }
 
 export enum SlotID {
@@ -130,6 +131,7 @@ export enum ServiceProvider {
   ChatGLM = "ChatGLM",
   DeepSeek = "DeepSeek",
   SiliconFlow = "SiliconFlow",
+  Bedrock = "Bedrock",
 }
 
 // Google API safety settings, see https://ai.google.dev/gemini-api/docs/safety-settings
@@ -156,6 +158,7 @@ export enum ModelProvider {
   ChatGLM = "ChatGLM",
   DeepSeek = "DeepSeek",
   SiliconFlow = "SiliconFlow",
+  Bedrock = "Bedrock",
 }
 
 export const Stability = {
@@ -264,6 +267,10 @@ export const SiliconFlow = {
   ExampleEndpoint: SILICONFLOW_BASE_URL,
   ChatPath: "v1/chat/completions",
   ListModelPath: "v1/models?&sub_type=chat",
+};
+
+export const Bedrock = {
+  ChatPath: "v1/chat/completions",
 };
 
 export const DEFAULT_INPUT_TEMPLATE = `{{input}}`; // input / time / model / lang

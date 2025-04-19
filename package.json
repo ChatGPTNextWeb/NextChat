@@ -21,6 +21,7 @@
     "test:ci": "node --no-warnings --experimental-vm-modules $(yarn bin jest) --ci"
   },
   "dependencies": {
+    "@aws-sdk/client-bedrock-runtime": "^3.782.0",
     "@fortaine/fetch-event-source": "^3.0.6",
     "@hello-pangea/dnd": "^16.5.0",
     "@modelcontextprotocol/sdk": "^1.0.4",
