@@ -190,8 +190,7 @@ export const Azure = {
 
 export const Google = {
   ExampleEndpoint: "https://generativelanguage.googleapis.com/",
-  ChatPath: (modelName: string) =>
-    `v1beta/models/${modelName}:streamGenerateContent`,
+  ChatPath: (modelName: string) => `v1beta/models/${modelName}:generateContent`,
 };
 
 export const Baidu = {
@@ -523,7 +522,6 @@ const openaiModels = [
 ];
 
 const googleModels = [
-  "gemini-1.0-pro", // Deprecated on 2/15/2025
   "gemini-1.5-pro-latest",
   "gemini-1.5-pro",
   "gemini-1.5-pro-002",
@@ -539,6 +537,7 @@ const googleModels = [
   "gemini-exp-1121",
   "gemini-exp-1206",
   "gemini-2.0-flash",
+  "gemini-2.0-flash-lite",
   "gemini-2.0-flash-exp",
   "gemini-2.0-flash-lite-preview-02-05",
   "gemini-2.0-flash-thinking-exp",
@@ -546,6 +545,7 @@ const googleModels = [
   "gemini-2.0-flash-thinking-exp-01-21",
   "gemini-2.0-pro-exp",
   "gemini-2.0-pro-exp-02-05",
+  "gemini-2.5-pro-exp-03-25",
 ];
 
 const anthropicModels = [
