@@ -112,7 +112,7 @@ For enterprise inquiries, please contact: **business@nextchat.dev**
 - 🚀 v2.15.8 Now supports Realtime Chat [#5672](https://github.com/ChatGPTNextWeb/ChatGPT-Next-Web/issues/5672)
 - 🚀 v2.15.4 The Application supports using Tauri fetch LLM API, MORE SECURITY! [#5379](https://github.com/ChatGPTNextWeb/ChatGPT-Next-Web/issues/5379)
 - 🚀 v2.15.0 Now supports Plugins! Read this: [NextChat-Awesome-Plugins](https://github.com/ChatGPTNextWeb/NextChat-Awesome-Plugins)
-- 🚀 v2.14.0 Now supports  Artifacts & SD 
+- 🚀 v2.14.0 Now supports  Artifacts & SD.
 - 🚀 v2.10.1 support Google Gemini Pro model.
 - 🚀 v2.9.11 you can use azure endpoint now.
 - 🚀 v2.8 now we have a client that runs across all platforms!
@@ -320,7 +320,7 @@ For ByteDance: use `modelName@bytedance=deploymentName` to customize model name 
 
 ### `DEFAULT_MODEL` （optional）
 
-Change default model
+Change default model.
 
 ### `VISION_MODELS` (optional)
 
@@ -351,7 +351,7 @@ Customize Stability API url.
 
 ### `ENABLE_MCP` (optional)
 
-Enable MCP（Model Context Protocol）Feature
+Enable MCP（Model Context Protocol）Feature.
 
 ### `SILICONFLOW_API_KEY` (optional)
 
