@@ -1,6 +1,6 @@
 import {
   FETCH_COMMIT_URL,
-  FETCH_TAG_URL,
+  FETCH_LATEST_RELEASE_URL,
   ModelProvider,
   StoreKey,
 } from "../constant";
@@ -41,11 +41,11 @@ async function getVersion(type: VersionType) {
     const remoteId = new Date(remoteCommitTime).getTime().toString();
     return remoteId;
   } else if (type === "tag") {
-    const data = (await (await fetch(FETCH_TAG_URL)).json()) as {
-      commit: { sha: string; url: string };
+    const data = (await (await fetch(FETCH_LATEST_RELEASE_URL)).json()) as {
+      tag_name: string;
       name: string;
-    }[];
-    return data.at(0)?.name;
+    };
+    return data.tag_name;
   }
 }
 
