@@ -12,6 +12,9 @@ import { fetch as tauriStreamFetch } from "./utils/stream";
 import { VISION_MODEL_REGEXES, EXCLUDE_VISION_MODEL_REGEXES } from "./constant";
 import { useAccessStore } from "./store";
 import { ModelSize } from "./typing";
+import { writeText } from "@tauri-apps/plugin-clipboard-manager";
+import { save } from "@tauri-apps/plugin-dialog";
+import { writeTextFile } from "@tauri-apps/plugin-fs";
 
 export function trimTopic(topic: string) {
   // Fix an issue where double quotes still show in the Indonesian language
@@ -20,15 +23,15 @@ export function trimTopic(topic: string) {
   return (
     topic
       // fix for gemini
-      .replace(/^["“”*]+|["“”*]+$/g, "")
-      .replace(/[，。！？”“"、,.!?*]*$/, "")
+      .replace(/^["""*]+|["""*]+$/g, "")
+      .replace(/[，。！？""""、,.!?*]*$/, "")
   );
 }
 
 export async function copyToClipboard(text: string) {
   try {
     if (window.__TAURI__) {
-      window.__TAURI__.writeText(text);
+      await writeText(text);
     } else {
       await navigator.clipboard.writeText(text);
     }
@@ -52,7 +55,7 @@ export async function copyToClipboard(text: string) {
 
 export async function downloadAs(text: string, filename: string) {
   if (window.__TAURI__) {
-    const result = await window.__TAURI__.dialog.save({
+    const result = await save({
       defaultPath: `${filename}`,
       filters: [
         {
@@ -68,7 +71,7 @@ export async function downloadAs(text: string, filename: string) {
 
     if (result !== null) {
       try {
-        await window.__TAURI__.fs.writeTextFile(result, text);
+        await writeTextFile(result, text);
         showToast(Locale.Download.Success);
       } catch (error) {
         showToast(Locale.Download.Failed);
@@ -448,24 +451,29 @@ export function getOperationId(operation: {
 
 export function clientUpdate() {
   // this a wild for updating client app
-  return window.__TAURI__?.updater
+  const tauriApp = window.__TAURI__;
+  if (!tauriApp || !tauriApp.updater) return Promise.resolve();
+
+  return tauriApp.updater
     .checkUpdate()
-    .then((updateResult) => {
+    .then((updateResult: any) => {
       if (updateResult.shouldUpdate) {
-        window.__TAURI__?.updater
+        return tauriApp.updater
           .installUpdate()
-          .then((result) => {
+          .then((result: any) => {
             showToast(Locale.Settings.Update.Success);
           })
-          .catch((e) => {
+          .catch((e: any) => {
             console.error("[Install Update Error]", e);
             showToast(Locale.Settings.Update.Failed);
           });
       }
+      return updateResult;
     })
-    .catch((e) => {
+    .catch((e: any) => {
       console.error("[Check Update Error]", e);
       showToast(Locale.Settings.Update.Failed);
+      return e;
     });
 }
 
