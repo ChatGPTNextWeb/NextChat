@@ -1,5 +1,4 @@
 import { useState, useEffect, useMemo } from "react";
-
 import styles from "./settings.module.scss";
 
 import ResetIcon from "../icons/reload.svg";
@@ -967,7 +966,89 @@ export function Settings() {
       </ListItem>
     </>
   );
-
+  const bedrockConfigComponent = accessStore.provider ===
+    ServiceProvider.Bedrock && (
+    <>
+      <ListItem
+        title={Locale.Settings.Access.Bedrock.Region.Title}
+        subTitle={Locale.Settings.Access.Bedrock.Region.SubTitle}
+      >
+        <input
+          aria-label={Locale.Settings.Access.Bedrock.Region.Title}
+          type="text"
+          value={accessStore.awsRegion}
+          placeholder="us-west-2"
+          onChange={(e) =>
+            accessStore.update((access) => {
+              const region = e.currentTarget.value;
+              access.awsRegion = region;
+            })
+          }
+        />
+      </ListItem>
+      <ListItem
+        title={Locale.Settings.Access.Bedrock.AccessKey.Title}
+        subTitle={Locale.Settings.Access.Bedrock.AccessKey.SubTitle}
+      >
+        <PasswordInput
+          aria-label={Locale.Settings.Access.Bedrock.AccessKey.Title}
+          value={accessStore.awsAccessKey}
+          type="text"
+          placeholder={Locale.Settings.Access.Bedrock.AccessKey.Placeholder}
+          onChange={(e) => {
+            accessStore.update((access) => {
+              const accessKey = e.currentTarget.value;
+              access.awsAccessKey = accessKey;
+            });
+          }}
+          maskWhenShow={true}
+        />
+      </ListItem>
+      <ListItem
+        title={Locale.Settings.Access.Bedrock.SecretKey.Title}
+        subTitle={Locale.Settings.Access.Bedrock.SecretKey.SubTitle}
+      >
+        <PasswordInput
+          aria-label={Locale.Settings.Access.Bedrock.SecretKey.Title}
+          value={accessStore.awsSecretKey}
+          type="text"
+          placeholder={Locale.Settings.Access.Bedrock.SecretKey.Placeholder}
+          onChange={(e) => {
+            accessStore.update((access) => {
+              const secretKey = e.currentTarget.value;
+              access.awsSecretKey = secretKey;
+            });
+          }}
+          maskWhenShow={true}
+        />
+      </ListItem>
+      <ListItem
+        title={Locale.Settings.Access.Bedrock.EncryptionKey.Title}
+        subTitle={Locale.Settings.Access.Bedrock.EncryptionKey.SubTitle}
+      >
+        <PasswordInput
+          aria-label={Locale.Settings.Access.Bedrock.EncryptionKey.Title}
+          value={accessStore.encryptionKey}
+          type="text"
+          placeholder={Locale.Settings.Access.Bedrock.EncryptionKey.Placeholder}
+          onChange={(e) => {
+            accessStore.update(
+              (access) => (access.encryptionKey = e.currentTarget.value),
+            );
+          }}
+          onBlur={(e) => {
+            const value = e.currentTarget.value;
+            if (!value || value.length < 8) {
+              showToast(Locale.Settings.Access.Bedrock.EncryptionKey.Invalid);
+              accessStore.update((access) => (access.encryptionKey = ""));
+              return;
+            }
+          }}
+          maskWhenShow={true}
+        />
+      </ListItem>
+    </>
+  );
   const baiduConfigComponent = accessStore.provider ===
     ServiceProvider.Baidu && (
     <>
@@ -1808,6 +1889,7 @@ export function Settings() {
                   </ListItem>
 
                   {openAIConfigComponent}
+                  {bedrockConfigComponent}
                   {azureConfigComponent}
                   {googleConfigComponent}
                   {anthropicConfigComponent}
