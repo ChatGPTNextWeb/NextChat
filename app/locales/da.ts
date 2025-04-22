@@ -498,6 +498,22 @@ const da: PartialLocaleType = {
         Title: "Egne modelnavne",
         SubTitle: "Skriv komma-adskilte navne",
       },
+      Huawei: {
+        ApiKey: {
+          Title: "API-nøgle",
+          SubTitle: "Brug din egen HUAWEI API-nøgle",
+          Placeholder: "HUAWEI-nøgle",
+        },
+        SecretKey: {
+          Title: "Hemmelig nøgle",
+          SubTitle: "Brug din egen HUAWEI hemmelige nøgle",
+          Placeholder: "HUAWEI hemmelig nøgle",
+        },
+        Endpoint: {
+          Title: "Grænsefladeadresse",
+          SubTitle: "Understøtter ikke tilpasset .env-konfiguration",
+        },
+      },
       Google: {
         ApiKey: {
           Title: "Google-nøgle",
