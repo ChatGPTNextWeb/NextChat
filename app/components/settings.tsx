@@ -1699,6 +1699,23 @@ export function Settings() {
               }
             ></input>
           </ListItem>
+          <ListItem
+            title={Locale.Settings.AutoScroll.Title}
+            subTitle={Locale.Settings.AutoScroll.SubTitle}
+          >
+            <input
+              aria-label={Locale.Settings.AutoScroll.Title}
+              type="checkbox"
+              checked={config.enableAutoScroll}
+              data-testid="enable-auto-scroll-checkbox"
+              onChange={(e) =>
+                updateConfig(
+                  (config) =>
+                    (config.enableAutoScroll = e.currentTarget.checked),
+                )
+              }
+            ></input>
+          </ListItem>
         </List>
 
         <SyncItems />
