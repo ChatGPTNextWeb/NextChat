@@ -207,6 +207,11 @@ const fr: PartialLocaleType = {
       SubTitle:
         "Générer un titre approprié en fonction du contenu de la discussion",
     },
+    AutoScroll: {
+      Title: "Activer le défilement automatique",
+      SubTitle:
+        "Faire défiler automatiquement le chat vers le bas lors du focus sur la zone de texte ou de l'envoi d'un message",
+    },
     Sync: {
       CloudState: "Données cloud",
       NotSyncYet: "Pas encore synchronisé",

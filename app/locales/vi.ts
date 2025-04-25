@@ -200,6 +200,11 @@ const vi: PartialLocaleType = {
       Title: "Tự động tạo tiêu đề",
       SubTitle: "Tạo tiêu đề phù hợp dựa trên nội dung cuộc trò chuyện",
     },
+    AutoScroll: {
+      Title: "Bật Tự động Cuộn",
+      SubTitle:
+        "Tự động cuộn cuộc trò chuyện xuống dưới khi tập trung vào vùng văn bản hoặc gửi tin nhắn",
+    },
     Sync: {
       CloudState: "Dữ liệu đám mây",
       NotSyncYet: "Chưa thực hiện đồng bộ",

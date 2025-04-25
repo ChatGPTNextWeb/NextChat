@@ -55,6 +55,8 @@ export const DEFAULT_CONFIG = {
 
   enableCodeFold: true, // code fold config
 
+  enableAutoScroll: true, // auto scroll config
+
   disablePromptHint: false,
 
   dontShowMaskSplashScreen: false, // dont show splash screen when create chat

@@ -201,6 +201,11 @@ const id: PartialLocaleType = {
       Title: "Otomatis Membuat Judul",
       SubTitle: "Membuat judul yang sesuai berdasarkan konten obrolan",
     },
+    AutoScroll: {
+      Title: "Aktifkan Gulir Otomatis",
+      SubTitle:
+        "Secara otomatis gulir obrolan ke bawah saat area teks difokuskan atau pesan dikirim",
+    },
     Sync: {
       CloudState: "Data Cloud",
       NotSyncYet: "Belum disinkronkan",
