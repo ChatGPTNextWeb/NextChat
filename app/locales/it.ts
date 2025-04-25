@@ -209,6 +209,11 @@ const it: PartialLocaleType = {
       SubTitle:
         "Genera un titolo appropriato in base al contenuto della conversazione",
     },
+    AutoScroll: {
+      Title: "Abilita lo scorrimento automatico",
+      SubTitle:
+        "Scorri automaticamente la chat in basso quando si seleziona l'area di testo o si invia un messaggio",
+    },
     Sync: {
       CloudState: "Dati cloud",
       NotSyncYet: "Non è ancora avvenuta alcuna sincronizzazione",
