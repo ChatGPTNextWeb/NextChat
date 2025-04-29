@@ -21,8 +21,24 @@ const nextConfig = {
     }
 
     config.resolve.fallback = {
+      ...config.resolve.fallback,
       child_process: false,
+      process: false,
+      path: false,
+      fs: false,
+      os: false,
+      util: false,
+      stream: false,
+      buffer: require.resolve('buffer/'),
+      events: require.resolve('events/'),
     };
+
+    config.plugins.push(
+      new webpack.ProvidePlugin({
+        Buffer: ['buffer', 'Buffer'],
+        process: 'process/browser',
+      }),
+    );
 
     return config;
   },
