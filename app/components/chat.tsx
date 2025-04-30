@@ -1,14 +1,19 @@
+//#region  ignore head
 import { useDebouncedCallback } from "use-debounce";
 import React, {
   Fragment,
   RefObject,
   useCallback,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
 } from "react";
 
+import { toast, Toaster } from "react-hot-toast";
+import { debounce } from "lodash";
+// import { startVoiceDetection } from "../utils/voice-start";
 import SendWhiteIcon from "../icons/send-white.svg";
 import BrainIcon from "../icons/brain.svg";
 import RenameIcon from "../icons/rename.svg";
@@ -48,6 +53,7 @@ import PluginIcon from "../icons/plugin.svg";
 import ShortcutkeyIcon from "../icons/shortcutkey.svg";
 import McpToolIcon from "../icons/tool.svg";
 import HeadphoneIcon from "../icons/headphone.svg";
+import MenuIcon from "../icons/menu.svg";
 import {
   BOT_HELLO,
   ChatMessage,
@@ -125,6 +131,7 @@ import { getModelProvider } from "../utils/model";
 import { RealtimeChat } from "@/app/components/realtime-chat";
 import clsx from "clsx";
 import { getAvailableClientsCount, isMcpEnabled } from "../mcp/actions";
+import { InterviewOverlay } from "./interview-overlay";
 
 const localStorage = safeLocalStorage();
 
@@ -449,47 +456,58 @@ export function ChatAction(props: {
     </div>
   );
 }
-
-function useScrollToBottom(
-  scrollRef: RefObject<HTMLDivElement>,
-  detach: boolean = false,
-  messages: ChatMessage[],
-) {
-  // for auto-scroll
-  const [autoScroll, setAutoScroll] = useState(true);
-  const scrollDomToBottom = useCallback(() => {
-    const dom = scrollRef.current;
-    if (dom) {
-      requestAnimationFrame(() => {
-        setAutoScroll(true);
-        dom.scrollTo(0, dom.scrollHeight);
-      });
-    }
-  }, [scrollRef]);
-
-  // auto scroll
-  useEffect(() => {
-    if (autoScroll && !detach) {
-      scrollDomToBottom();
-    }
+export function ChatActionVoice(props: {
+  text: string;
+  icon: JSX.Element;
+  onClick: () => void;
+}) {
+  const iconRef = useRef<HTMLDivElement>(null);
+  const textRef = useRef<HTMLDivElement>(null);
+  const [width, setWidth] = useState({
+    full: 32,
+    icon: 16,
   });
 
-  // auto scroll when messages length changes
-  const lastMessagesLength = useRef(messages.length);
-  useEffect(() => {
-    if (messages.length > lastMessagesLength.current && !detach) {
-      scrollDomToBottom();
-    }
-    lastMessagesLength.current = messages.length;
-  }, [messages.length, detach, scrollDomToBottom]);
+  function updateWidth() {
+    if (!iconRef.current || !textRef.current) return;
+    const getWidth = (dom: HTMLDivElement) => dom.getBoundingClientRect().width;
+    const textWidth = getWidth(textRef.current);
+    const iconWidth = getWidth(iconRef.current);
+    setWidth({
+      full: textWidth + iconWidth,
+      icon: iconWidth,
+    });
+  }
 
-  return {
-    scrollRef,
-    autoScroll,
-    setAutoScroll,
-    scrollDomToBottom,
-  };
+  // 使用 useLayoutEffect 确保在 DOM 更新后同步执行
+  useLayoutEffect(() => {
+    console.log("执行了:updateWidth");
+    updateWidth();
+  }, [props.text, props.icon]); // 添加依赖项，确保在 text 或 icon 变化时重新计算宽度
+
+  return (
+    <div
+      className={clsx(styles["chat-input-action-voice"], "clickable")}
+      onClick={() => {
+        props.onClick();
+      }}
+      style={
+        {
+          "--icon-width": `${width.icon}px`,
+          "--full-width": `${width.full}px`,
+        } as React.CSSProperties
+      }
+    >
+      <div ref={iconRef} className={styles["icon"]}>
+        {props.icon}
+      </div>
+      <div className={styles["text"]} ref={textRef}>
+        {props.text}
+      </div>
+    </div>
+  );
 }
+//#endregion
 
 export function ChatActions(props: {
   uploadImage: () => void;
@@ -503,13 +521,14 @@ export function ChatActions(props: {
   setShowShortcutKeyModal: React.Dispatch<React.SetStateAction<boolean>>;
   setUserInput: (input: string) => void;
   setShowChatSidePanel: React.Dispatch<React.SetStateAction<boolean>>;
+  setShowOverlay: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const config = useAppConfig();
   const navigate = useNavigate();
   const chatStore = useChatStore();
   const pluginStore = usePluginStore();
   const session = chatStore.currentSession();
-
+  // const showOverlayRef = useRef(showOverlay);
   // switch themes
   const theme = config.theme;
 
@@ -834,6 +853,15 @@ export function ChatActions(props: {
         )}
         {!isMobileScreen && <MCPAction />}
       </>
+
+      <ChatActionVoice
+        onClick={() => {
+          props.setShowOverlay(true);
+        }}
+        text="开始"
+        icon={<MenuIcon />}
+      />
+
       <div className={styles["chat-input-actions-end"]}>
         {config.realtimeConfig.enable && (
           <ChatAction
@@ -986,6 +1014,47 @@ export function ShortcutKeyModal(props: { onClose: () => void }) {
   );
 }
 
+function useScrollToBottom(
+  scrollRef: RefObject<HTMLDivElement>,
+  detach: boolean = false,
+  messages: ChatMessage[],
+) {
+  // for auto-scroll
+  const [autoScroll, setAutoScroll] = useState(true);
+  const scrollDomToBottom = useCallback(() => {
+    const dom = scrollRef.current;
+    if (dom) {
+      requestAnimationFrame(() => {
+        setAutoScroll(true);
+        dom.scrollTo(0, dom.scrollHeight);
+      });
+    }
+  }, [scrollRef]);
+
+  // auto scroll
+  useEffect(() => {
+    if (autoScroll && !detach) {
+      scrollDomToBottom();
+    }
+  });
+
+  // auto scroll when messages length changes
+  const lastMessagesLength = useRef(messages.length);
+  useEffect(() => {
+    if (messages.length > lastMessagesLength.current && !detach) {
+      scrollDomToBottom();
+    }
+    lastMessagesLength.current = messages.length;
+  }, [messages.length, detach, scrollDomToBottom]);
+
+  return {
+    scrollRef,
+    autoScroll,
+    setAutoScroll,
+    scrollDomToBottom,
+  };
+}
+
 function _Chat() {
   type RenderMessage = ChatMessage & { preview?: boolean };
 
@@ -996,7 +1065,9 @@ function _Chat() {
   const fontFamily = config.fontFamily;
 
   const [showExport, setShowExport] = useState(false);
-
+  // 使用状态来控制 InterviewOverlay 的显示和隐藏
+  const [showOverlay, setShowOverlay] = useState(false);
+  const showOverlayRef = useRef(showOverlay);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const [userInput, setUserInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -1020,7 +1091,11 @@ function _Chat() {
   }, [scrollRef?.current?.scrollHeight]);
 
   const isTyping = userInput !== "";
-
+  // 当子组件传回文本时更新 userInput
+  const handleTextUpdate = (text: string) => {
+    // console.log(`传入的文本:${text}`);
+    setUserInput(text);
+  };
   // if user is typing, should auto scroll to bottom
   // if user is not typing, should auto scroll to bottom only if already at bottom
   const { setAutoScroll, scrollDomToBottom } = useScrollToBottom(
@@ -1679,9 +1754,28 @@ function _Chat() {
 
   const [showChatSidePanel, setShowChatSidePanel] = useState(false);
 
+  const toastShow = (text: string): void => {
+    console.log(`toastShow value is: ${text}`);
+
+    if (text.length <= 3) {
+      console.log("弹出toas啊弹啊");
+      toast("没有监听到任何文本!!!", {
+        icon: "⚠️", // 自定义图标
+        style: {
+          background: "#fff3cd", // 背景色
+          color: "#856404", // 文字颜色
+          border: "1px solid #ffeeba", // 边框
+        },
+      });
+      return;
+    }
+    doSubmit(text);
+  };
+  const toastShowDebounce = debounce(toastShow, 500);
   return (
     <>
       <div className={styles.chat} key={session.id}>
+        {/* 聊天窗口头部 */}
         <div className="window-header" data-tauri-drag-region>
           {isMobileScreen && (
             <div className="window-actions">
@@ -1768,6 +1862,7 @@ function _Chat() {
             setShowModal={setShowPromptModal}
           />
         </div>
+        {/* 聊天消息区域 */}
         <div className={styles["chat-main"]}>
           <div className={styles["chat-body-container"]}>
             <div
@@ -1781,7 +1876,6 @@ function _Chat() {
               }}
             >
               {messages
-                // TODO
                 // .filter((m) => !m.isMcpResponse)
                 .map((message, i) => {
                   const isUser = message.role === "user";
@@ -1966,6 +2060,7 @@ function _Chat() {
                               ))}
                             </div>
                           )}
+
                           <div className={styles["chat-message-item"]}>
                             <Markdown
                               key={message.streaming ? "loading" : "done"}
@@ -2021,6 +2116,7 @@ function _Chat() {
                               </div>
                             )}
                           </div>
+
                           {message?.audio_url && (
                             <div className={styles["chat-message-audio"]}>
                               <audio src={message.audio_url} controls />
@@ -2039,6 +2135,7 @@ function _Chat() {
                   );
                 })}
             </div>
+            {/* 消息输入区域 */}
             <div className={styles["chat-input-panel"]}>
               <PromptHints
                 prompts={promptHints}
@@ -2067,6 +2164,7 @@ function _Chat() {
                 setShowShortcutKeyModal={setShowShortcutKeyModal}
                 setUserInput={setUserInput}
                 setShowChatSidePanel={setShowChatSidePanel}
+                setShowOverlay={setShowOverlay}
               />
               <label
                 className={clsx(styles["chat-input-panel-inner"], {
@@ -2126,6 +2224,8 @@ function _Chat() {
               </label>
             </div>
           </div>
+
+          {/* 侧边面板 */}
           <div
             className={clsx(styles["chat-side-panel"], {
               [styles["mobile"]]: isMobileScreen,
@@ -2160,6 +2260,28 @@ function _Chat() {
       {showShortcutKeyModal && (
         <ShortcutKeyModal onClose={() => setShowShortcutKeyModal(false)} />
       )}
+      {/* 当状态为 true 时，加载 InterviewOverlay 组件 */}
+      {showOverlay && (
+        <InterviewOverlay
+          onClose={() => {
+            setShowOverlay(false);
+          }}
+          onTextUpdate={handleTextUpdate}
+          submitMessage={toastShowDebounce}
+        />
+      )}
+
+      {/* 全局的 Toaster 组件，可以设置默认位置和样式 */}
+      <Toaster
+        position="top-center"
+        toastOptions={{
+          style: {
+            background: "#fff3cd",
+            color: "#856404",
+            border: "1px solid #ffeeba",
+          },
+        }}
+      />
     </>
   );
 }

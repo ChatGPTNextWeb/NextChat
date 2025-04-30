@@ -1,0 +1,64 @@
+.container {
+  position: relative;
+  padding: 15px;
+  border-bottom: 1px solid var(--gray);
+}
+
+.avatarContainer {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 10px;
+  border: 2px solid var(--primary);
+}
+
+.userInfo {
+  flex: 1;
+  overflow: hidden;
+}
+
+.nickname {
+  font-size: 16px;
+  font-weight: bold;
+  color: var(--black);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.userId {
+  font-size: 12px;
+  color: var(--black-50);
+  margin-top: 2px;
+}
+
+.menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 120px;
+  background-color: var(--white);
+  border-radius: 4px;
+  box-shadow: var(--card-shadow);
+  z-index: 1000;
+  overflow: hidden;
+}
+
+.menuItem {
+  padding: 10px 15px;
+  font-size: 14px;
+  color: var(--black);
+  cursor: pointer;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: var(--gray);
+  }
+}

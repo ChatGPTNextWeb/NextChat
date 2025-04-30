@@ -142,6 +142,9 @@ const DEFAULT_ACCESS_STATE = {
   defaultModel: "",
   visionModels: "",
 
+  // 添加微信登录状态
+  wechatLoggedIn: false,
+  accessToken: "",
   // tts config
   edgeTTSVoiceName: "zh-CN-YunxiNeural",
 };

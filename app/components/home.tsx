@@ -30,6 +30,7 @@ import { type ClientApi, getClientApi } from "../client/api";
 import { useAccessStore } from "../store";
 import clsx from "clsx";
 import { initializeMcpSystem, isMcpEnabled } from "../mcp/actions";
+import LoginPage from "../pages/login";
 
 export function Loading(props: { noLogo?: boolean }) {
   return (
@@ -82,6 +83,11 @@ const McpMarketPage = dynamic(
   },
 );
 
+// const InterviewPage = dynamic(
+//   async ()=>(await import("./interview-overlay")).InterviewOverlay,{
+//     loading: ()=> <Loading noLogo/>
+//   }
+// )
 export function useSwitchTheme() {
   const config = useAppConfig();
 
@@ -193,6 +199,7 @@ function Screen() {
           })}
         />
         <WindowContent>
+          {/* <AuthWrapper></AuthWrapper>   只有登录时才可以路由到其他页面，相当于拦截器*/}
           <Routes>
             <Route path={Path.Home} element={<Chat />} />
             <Route path={Path.NewChat} element={<NewChat />} />
@@ -202,6 +209,8 @@ function Screen() {
             <Route path={Path.Chat} element={<Chat />} />
             <Route path={Path.Settings} element={<Settings />} />
             <Route path={Path.McpMarket} element={<McpMarketPage />} />
+            <Route path={Path.Login} element={<LoginPage />} />
+            {/* <Route path={Path.Interview} element={<InterviewPage/>}/> */}
           </Routes>
         </WindowContent>
       </>

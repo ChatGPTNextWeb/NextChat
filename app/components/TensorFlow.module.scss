@@ -1,0 +1,179 @@
+.voiceRecognitionContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #1e1e1e;
+  border-radius: 10px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+  color: #ffffff;
+}
+
+.title {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 24px;
+}
+
+.statusContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.statusIndicator {
+  display: flex;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 8px 16px;
+  border-radius: 20px;
+  margin-bottom: 10px;
+}
+
+.statusDot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-right: 10px;
+  
+  &.idle {
+    background-color: #888888;
+  }
+  
+  &.recording {
+    background-color: #ff9800;
+    animation: pulse 1.5s infinite;
+  }
+  
+  &.training {
+    background-color: #2196f3;
+    animation: pulse 1.5s infinite;
+  }
+  
+  &.recognizing {
+    background-color: #9c27b0;
+    animation: pulse 1.5s infinite;
+  }
+  
+  &.trained {
+    background-color: #4caf50;
+  }
+  
+  &.matched {
+    background-color: #4caf50;
+  }
+  
+  &.not_matched {
+    background-color: #f44336;
+  }
+  
+  &.error {
+    background-color: #f44336;
+  }
+}
+
+.statusText {
+  font-size: 14px;
+}
+
+.message {
+  font-size: 16px;
+  text-align: center;
+  margin: 0;
+}
+
+.visualizerContainer {
+  width: 100%;
+  height: 150px;
+  margin-bottom: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.controlsContainer {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  
+  @media (max-width: 600px) {
+    flex-direction: column;
+  }
+}
+
+.trainingControls,
+.recognitionControls {
+  display: flex;
+  flex-direction: column;
+  width: 48%;
+  
+  @media (max-width: 600px) {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+  
+  h3 {
+    margin-bottom: 10px;
+    font-size: 18px;
+  }
+}
+
+.button {
+  padding: 10px 15px;
+  margin-bottom: 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #2196f3;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  
+  &:hover:not(:disabled) {
+    background-color: #1976d2;
+  }
+  
+  &:disabled {
+    background-color: #cccccc;
+    color: #666666;
+    cursor: not-allowed;
+  }
+}
+
+.resultContainer {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 5px;
+}
+
+.scoreBar {
+  width: 100%;
+  height: 20px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.scoreIndicator {
+  height: 100%;
+  background: linear-gradient(to right, #f44336, #ffeb3b, #4caf50);
+  border-radius: 10px;
+  transition: width 0.5s ease-in-out;
+}
+
+.scoreValue {
+  text-align: center;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7); }
+  70% { box-shadow: 0 0 0 10px rgba(255, 255, 255, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+}

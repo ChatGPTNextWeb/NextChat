@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="210" height="210" viewBox="0 0 21 21" style="border: 1px solid #eee;">
+  <!-- 定义颜色（黑色和白色） -->
+  <defs>
+    <rect id="black" width="1" height="1" fill="#000" />
+    <rect id="white" width="1" height="1" fill="#fff" stroke="#eee" stroke-width="0.1" />
+  </defs>
+
+  <!-- 位置探测图形（左上、右上、左下） -->
+  <!-- 左上探测图形（7x7） -->
+  <g>
+    <use xlink:href="#black" x="0" y="0" width="7" height="7" /> <!-- 外框 -->
+    <use xlink:href="#white" x="1" y="1" width="5" height="5" /> <!-- 内框 -->
+    <use xlink:href="#black" x="2" y="2" width="3" height="3" /> <!-- 中心 -->
+  </g>
+  <!-- 右上探测图形 -->
+  <g>
+    <use xlink:href="#black" x="14" y="0" width="7" height="7" />
+    <use xlink:href="#white" x="15" y="1" width="5" height="5" />
+    <use xlink:href="#black" x="16" y="2" width="3" height="3" />
+  </g>
+  <!-- 左下探测图形 -->
+  <g>
+    <use xlink:href="#black" x="0" y="14" width="7" height="7" />
+    <use xlink:href="#white" x="1" y="15" width="5" height="5" />
+    <use xlink:href="#black" x="2" y="16" width="3" height="3" />
+  </g>
+
+  <!-- 定位图形（水平和垂直） -->
+  <g>
+    <!-- 水平定位线（第6、12、18行） -->
+    <rect x="6" y="0" width="1" height="21" fill="#000" />
+    <rect x="12" y="0" width="1" height="21" fill="#000" />
+    <!-- 垂直定位线（第6、12、18列） -->
+    <rect x="0" y="6" width="21" height="1" fill="#000" />
+    <rect x="0" y="12" width="21" height="1" fill="#000" />
+  </g>
+
+  <!-- 随机数据模块（非真实数据，模拟展示） -->
+  <g>
+    <!-- 生成随机黑白模块（排除已定义区域） -->
+    <rect x="7" y="7" width="1" height="1" fill="#000" />
+    <rect x="8" y="7" width="1" height="1" fill="#000" />
+    <rect x="9" y="7" width="1" height="1" fill="#fff" />
+    <rect x="10" y="7" width="1" height="1" fill="#000" />
+    <!-- 省略中间模块，可根据需要扩展 -->
+    <rect x="19" y="19" width="1" height="1" fill="#000" />
+  </g>
+
+  <!-- 背景白色模块（覆盖未定义区域） -->
+  <rect x="0" y="0" width="21" height="21" fill="#fff" stroke="#eee" stroke-width="0.1" />
+</svg>

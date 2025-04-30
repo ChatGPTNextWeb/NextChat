@@ -1,0 +1,195 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: var(--gray);
+}
+
+.loginCard {
+  width: 400px;
+  background-color: var(--white);
+  border-radius: 10px;
+  box-shadow: var(--card-shadow);
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 30px;
+
+  h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+    color: var(--primary);
+  }
+
+  .subtitle {
+    font-size: 14px;
+    color: var(--black-50);
+  }
+}
+
+.qrcodeContainer {
+  width: 240px;
+  height: 240px;
+  position: relative;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.loadingWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+
+  p {
+    margin-top: 15px;
+    color: var(--black-50);
+    font-size: 14px;
+  }
+}
+
+.loadingIcon {
+  width: 40px;
+  height: 40px;
+  animation: spin 1.5s linear infinite;
+}
+
+.qrcodeWrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+
+  &:hover .qrcodeOverlay {
+    opacity: 1;
+  }
+}
+
+.qrcode {
+  width: 200px;
+  height: 200px;
+  padding: 10px;
+  background-color: white;
+  border: 1px solid var(--gray);
+  border-radius: 8px;
+}
+
+.qrcodeOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.3s;
+  border-radius: 8px;
+
+  p {
+    color: white;
+    font-size: 16px;
+  }
+}
+
+.qrcodeHint {
+  margin-top: 15px;
+  color: var(--black-50);
+  font-size: 14px;
+  text-align: center;
+}
+
+.statusWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+}
+
+.statusIcon {
+  width: 60px;
+  height: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.successIcon {
+  width: 60px;
+  height: 60px;
+  color: var(--success);
+}
+
+.errorIcon {
+  width: 60px;
+  height: 60px;
+  color: var(--error);
+}
+
+.statusText {
+  font-size: 16px;
+  text-align: center;
+  color: var(--black);
+  margin-bottom: 20px;
+}
+
+.footer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.expireHint {
+  font-size: 12px;
+  color: var(--black-50);
+  margin-bottom: 15px;
+}
+
+.refreshButton {
+  padding: 8px 20px;
+  background-color: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: var(--primary-dark);
+  }
+
+  &:disabled {
+    background-color: var(--gray);
+    cursor: not-allowed;
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

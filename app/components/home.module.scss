@@ -1,20 +1,26 @@
 @mixin container {
   background-color: var(--white);
-  border: var(--border-in-light);
-  border-radius: 20px;
-  box-shadow: var(--shadow);
+  // 移除边框
+  // border: var(--border-in-light);
+  // 移除圆角
+  // border-radius: 20px;
+  // 移除阴影
+  // box-shadow: var(--shadow);
   color: var(--black);
   background-color: var(--white);
-  min-width: 600px;
-  min-height: 370px;
-  max-width: 1200px;
+  
+  // 修改最小宽度和高度
+  min-width: 100vw;
+  min-height: 100vh;
+  max-width: 100vw;
+  max-height: 100vh;
 
   display: flex;
   overflow: hidden;
   box-sizing: border-box;
 
-  width: var(--window-width);
-  height: var(--window-height);
+  width: 100vw;
+  height: 100vh;
 }
 
 .container {
@@ -24,13 +30,13 @@
 @media only screen and (min-width: 600px) {
   .tight-container {
     --window-width: 100vw;
-    --window-height: var(--full-height);
+    --window-height: 100vh;
     --window-content-width: calc(100% - var(--sidebar-width));
 
     @include container();
 
     max-width: 100vw;
-    max-height: var(--full-height);
+    max-height: 100vh;
 
     border-radius: 0;
     border: 0;
@@ -107,10 +113,10 @@
 
 @media only screen and (max-width: 600px) {
   .container {
-    min-height: unset;
-    min-width: unset;
-    max-height: unset;
-    min-width: unset;
+    min-height: 100vh;
+    min-width: 100vw;
+    max-height: 100vh;
+    max-width: 100vw;
     border: 0;
     border-radius: 0;
   }

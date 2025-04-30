@@ -39,19 +39,22 @@ export const SILICONFLOW_BASE_URL = "https://api.siliconflow.cn";
 export const CACHE_URL_PREFIX = "/api/cache";
 export const UPLOAD_URL = `${CACHE_URL_PREFIX}/upload`;
 
+// 添加到现有的Path枚举中
 export enum Path {
   Home = "/",
   Chat = "/chat",
   Settings = "/settings",
   NewChat = "/new-chat",
   Masks = "/masks",
-  Plugins = "/plugins",
   Auth = "/auth",
+  Login = "/login", // 添加登录路径
+  Plugins = "/plugins",
   Sd = "/sd",
   SdNew = "/sd-new",
   Artifacts = "/artifacts",
   SearchChat = "/search-chat",
   McpMarket = "/mcp-market",
+  Interview = "/interview",
 }
 
 export enum ApiPath {
@@ -673,15 +676,15 @@ const siliconflowModels = [
 
 let seq = 1000; // 内置的模型序号生成器从1000开始
 export const DEFAULT_MODELS = [
-  ...openaiModels.map((name) => ({
+  ...siliconflowModels.map((name) => ({
     name,
     available: true,
-    sorted: seq++, // Global sequence sort(index)
+    sorted: seq++,
     provider: {
-      id: "openai",
-      providerName: "OpenAI",
-      providerType: "openai",
-      sorted: 1, // 这里是固定的，确保顺序与之前内置的版本一致
+      id: "siliconflow",
+      providerName: "SiliconFlow",
+      providerType: "siliconflow",
+      sorted: 1,
     },
   })),
   ...openaiModels.map((name) => ({
@@ -816,15 +819,15 @@ export const DEFAULT_MODELS = [
       sorted: 13,
     },
   })),
-  ...siliconflowModels.map((name) => ({
+  ...openaiModels.map((name) => ({
     name,
     available: true,
-    sorted: seq++,
+    sorted: seq++, // Global sequence sort(index)
     provider: {
-      id: "siliconflow",
-      providerName: "SiliconFlow",
-      providerType: "siliconflow",
-      sorted: 14,
+      id: "openai",
+      providerName: "OpenAI",
+      providerType: "openai",
+      sorted: 14, // 这里是固定的，确保顺序与之前内置的版本一致
     },
   })),
 ] as const;

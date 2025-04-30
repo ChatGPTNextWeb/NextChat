@@ -8,7 +8,6 @@ import GithubIcon from "../icons/github.svg";
 import ChatGptIcon from "../icons/chatgpt.svg";
 import AddIcon from "../icons/add.svg";
 import DeleteIcon from "../icons/delete.svg";
-import MaskIcon from "../icons/mask.svg";
 import McpIcon from "../icons/mcp.svg";
 import DragIcon from "../icons/drag.svg";
 import DiscoveryIcon from "../icons/discovery.svg";
@@ -32,6 +31,8 @@ import dynamic from "next/dynamic";
 import { Selector, showConfirm } from "./ui-lib";
 import clsx from "clsx";
 import { isMcpEnabled } from "../mcp/actions";
+
+import { WechatAuthor } from "./WechatAuthor";
 
 const DISCOVERY = [
   { name: Locale.Plugin.Name, path: Path.Plugins },
@@ -224,6 +225,7 @@ export function SideBarTail(props: {
   );
 }
 
+// 在侧边栏组件中添加WechatAuthor
 export function SideBar(props: { className?: string }) {
   useHotKey();
   const { onDragStart, shouldNarrow } = useDragSideBar();
@@ -249,6 +251,7 @@ export function SideBar(props: { className?: string }) {
       shouldNarrow={shouldNarrow}
       {...props}
     >
+      <WechatAuthor /> {/* 添加到最顶部 */}
       <SideBarHeader
         title="NextChat"
         subTitle="Build your own AI assistant."
@@ -256,7 +259,7 @@ export function SideBar(props: { className?: string }) {
         shouldNarrow={shouldNarrow}
       >
         <div className={styles["sidebar-header-bar"]}>
-          <IconButton
+          {/* <IconButton
             icon={<MaskIcon />}
             text={shouldNarrow ? undefined : Locale.Mask.Name}
             className={styles["sidebar-bar-button"]}
@@ -268,7 +271,7 @@ export function SideBar(props: { className?: string }) {
               }
             }}
             shadow
-          />
+          /> */}
           {mcpEnabled && (
             <IconButton
               icon={<McpIcon />}
