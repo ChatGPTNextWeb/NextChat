@@ -36,6 +36,8 @@ export const CHATGLM_BASE_URL = "https://open.bigmodel.cn";
 
 export const SILICONFLOW_BASE_URL = "https://api.siliconflow.cn";
 
+export const PPIO_BASE_URL = "https://api.ppinfra.com/v3/openai";
+
 export const CACHE_URL_PREFIX = "/api/cache";
 export const UPLOAD_URL = `${CACHE_URL_PREFIX}/upload`;
 
@@ -72,6 +74,7 @@ export enum ApiPath {
   ChatGLM = "/api/chatglm",
   DeepSeek = "/api/deepseek",
   SiliconFlow = "/api/siliconflow",
+  PPIO = "/api/ppio",
 }
 
 export enum SlotID {
@@ -130,6 +133,7 @@ export enum ServiceProvider {
   ChatGLM = "ChatGLM",
   DeepSeek = "DeepSeek",
   SiliconFlow = "SiliconFlow",
+  PPIO = "PPIO",
 }
 
 // Google API safety settings, see https://ai.google.dev/gemini-api/docs/safety-settings
@@ -156,6 +160,7 @@ export enum ModelProvider {
   ChatGLM = "ChatGLM",
   DeepSeek = "DeepSeek",
   SiliconFlow = "SiliconFlow",
+  PPIO = "PPIO",
 }
 
 export const Stability = {
@@ -264,6 +269,12 @@ export const SiliconFlow = {
   ExampleEndpoint: SILICONFLOW_BASE_URL,
   ChatPath: "v1/chat/completions",
   ListModelPath: "v1/models?&sub_type=chat",
+};
+
+export const PPIO = {
+  ExampleEndpoint: PPIO_BASE_URL,
+  ChatPath: "chat/completions",
+  ListModelPath: "models",
 };
 
 export const DEFAULT_INPUT_TEMPLATE = `{{input}}`; // input / time / model / lang
@@ -671,6 +682,28 @@ const siliconflowModels = [
   "Pro/deepseek-ai/DeepSeek-V3",
 ];
 
+const ppioModels = [
+  "deepseek/deepseek-r1/community",
+  "deepseek/deepseek-v3/community",
+  "deepseek/deepseek-r1",
+  "deepseek/deepseek-v3",
+  "deepseek/deepseek-r1-distill-llama-70b",
+  "deepseek/deepseek-r1-distill-qwen-32b",
+  "deepseek/deepseek-r1-distill-qwen-14b",
+  "deepseek/deepseek-r1-distill-llama-8b",
+  "qwen/qwen-2.5-72b-instruct",
+  "qwen/qwen2.5-32b-instruct",
+  "qwen/qwen-2-vl-72b-instruct",
+  "meta-llama/llama-3.2-3b-instruct",
+  "meta-llama/llama-3.1-70b-instruct",
+  "meta-llama/llama-3.1-8b-instruct",
+  "baichuan/baichuan2-13b-chat",
+  "01-ai/yi-1.5-34b-chat",
+  "01-ai/yi-1.5-9b-chat",
+  "thudm/glm-4-9b-chat",
+  "qwen/qwen-2-7b-instruct",
+];
+
 let seq = 1000; // 内置的模型序号生成器从1000开始
 export const DEFAULT_MODELS = [
   ...openaiModels.map((name) => ({
@@ -825,6 +858,17 @@ export const DEFAULT_MODELS = [
       providerName: "SiliconFlow",
       providerType: "siliconflow",
       sorted: 14,
+    },
+  })),
+  ...ppioModels.map((name) => ({
+    name,
+    available: true,
+    sorted: seq++,
+    provider: {
+      id: "ppio",
+      providerName: "PPIO",
+      providerType: "ppio",
+      sorted: 15,
     },
   })),
 ] as const;

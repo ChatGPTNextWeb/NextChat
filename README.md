@@ -361,6 +361,14 @@ SiliconFlow API Key.
 
 SiliconFlow API URL.
 
+### `PPIO_API_KEY` (optional)
+
+PPIO API Key.
+
+### `PPIO_URL` (optional)
+
+PPIO API URL.
+
 ## Requirements
 
 NodeJS >= 18, Docker >= 20

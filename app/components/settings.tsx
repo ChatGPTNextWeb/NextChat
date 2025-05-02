@@ -75,6 +75,7 @@ import {
   ChatGLM,
   DeepSeek,
   SiliconFlow,
+  PPIO,
 } from "../constant";
 import { Prompt, SearchService, usePromptStore } from "../store/prompt";
 import { ErrorBoundary } from "./error";
@@ -1359,6 +1360,44 @@ export function Settings() {
       </ListItem>
     </>
   );
+  const ppioConfigComponent = accessStore.provider === ServiceProvider.PPIO && (
+    <>
+      <ListItem
+        title={Locale.Settings.Access.PPIO.Endpoint.Title}
+        subTitle={
+          Locale.Settings.Access.PPIO.Endpoint.SubTitle + PPIO.ExampleEndpoint
+        }
+      >
+        <input
+          aria-label={Locale.Settings.Access.PPIO.Endpoint.Title}
+          type="text"
+          value={accessStore.ppioUrl}
+          placeholder={PPIO.ExampleEndpoint}
+          onChange={(e) =>
+            accessStore.update(
+              (access) => (access.ppioUrl = e.currentTarget.value),
+            )
+          }
+        ></input>
+      </ListItem>
+      <ListItem
+        title={Locale.Settings.Access.PPIO.ApiKey.Title}
+        subTitle={Locale.Settings.Access.PPIO.ApiKey.SubTitle}
+      >
+        <PasswordInput
+          aria-label={Locale.Settings.Access.PPIO.ApiKey.Title}
+          value={accessStore.ppioApiKey}
+          type="text"
+          placeholder={Locale.Settings.Access.PPIO.ApiKey.Placeholder}
+          onChange={(e) => {
+            accessStore.update(
+              (access) => (access.ppioApiKey = e.currentTarget.value),
+            );
+          }}
+        />
+      </ListItem>
+    </>
+  );
 
   const stabilityConfigComponent = accessStore.provider ===
     ServiceProvider.Stability && (
@@ -1822,6 +1861,7 @@ export function Settings() {
                   {XAIConfigComponent}
                   {chatglmConfigComponent}
                   {siliconflowConfigComponent}
+                  {ppioConfigComponent}
                 </>
               )}
             </>

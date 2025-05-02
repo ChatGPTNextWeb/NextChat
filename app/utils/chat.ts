@@ -633,7 +633,8 @@ export function streamWithThink(
               if (chunk.content.includes("\n\n")) {
                 const lines = chunk.content.split("\n\n");
                 remainText += lines.join("\n\n> ");
-              } else {
+              } else if (chunk.content != "\n") {
+                // deal with single newline after <think> tag
                 remainText += chunk.content;
               }
             }
