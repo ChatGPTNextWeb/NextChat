@@ -24,6 +24,7 @@ import { DeepSeekApi } from "./platforms/deepseek";
 import { XAIApi } from "./platforms/xai";
 import { ChatGLMApi } from "./platforms/glm";
 import { SiliconflowApi } from "./platforms/siliconflow";
+import { OpenRouterApi } from "./platforms/openrouter";
 
 export const ROLES = ["system", "user", "assistant"] as const;
 export type MessageRole = (typeof ROLES)[number];
@@ -173,6 +174,9 @@ export class ClientApi {
       case ModelProvider.SiliconFlow:
         this.llm = new SiliconflowApi();
         break;
+      case ModelProvider.OpenRouter:
+        this.llm = new OpenRouterApi();
+        break;
       default:
         this.llm = new ChatGPTApi();
     }
@@ -265,6 +269,8 @@ export function getHeaders(ignoreHeaders: boolean = false) {
     const isChatGLM = modelConfig.providerName === ServiceProvider.ChatGLM;
     const isSiliconFlow =
       modelConfig.providerName === ServiceProvider.SiliconFlow;
+    const isOpenRouter =
+      modelConfig.providerName === ServiceProvider.OpenRouter;
     const isEnabledAccessControl = accessStore.enabledAccessControl();
     const apiKey = isGoogle
       ? accessStore.googleApiKey
@@ -286,6 +292,8 @@ export function getHeaders(ignoreHeaders: boolean = false) {
       ? accessStore.chatglmApiKey
       : isSiliconFlow
       ? accessStore.siliconflowApiKey
+      : isOpenRouter
+      ? accessStore.openrouterApiKey
       : isIflytek
       ? accessStore.iflytekApiKey && accessStore.iflytekApiSecret
         ? accessStore.iflytekApiKey + ":" + accessStore.iflytekApiSecret
@@ -304,6 +312,7 @@ export function getHeaders(ignoreHeaders: boolean = false) {
       isXAI,
       isChatGLM,
       isSiliconFlow,
+      isOpenRouter,
       apiKey,
       isEnabledAccessControl,
     };
@@ -332,6 +341,7 @@ export function getHeaders(ignoreHeaders: boolean = false) {
     isXAI,
     isChatGLM,
     isSiliconFlow,
+    isOpenRouter,
     apiKey,
     isEnabledAccessControl,
   } = getConfig();
@@ -382,6 +392,8 @@ export function getClientApi(provider: ServiceProvider): ClientApi {
       return new ClientApi(ModelProvider.ChatGLM);
     case ServiceProvider.SiliconFlow:
       return new ClientApi(ModelProvider.SiliconFlow);
+    case ServiceProvider.OpenRouter:
+      return new ClientApi(ModelProvider.OpenRouter);
     default:
       return new ClientApi(ModelProvider.GPT);
   }

@@ -507,6 +507,17 @@ const cn = {
           SubTitle: "样例：",
         },
       },
+      OpenRouter: {
+        ApiKey: {
+          Title: "接口密钥",
+          SubTitle: "使用自定义 OpenRouter API Key",
+          Placeholder: "OpenRouter API Key",
+        },
+        Endpoint: {
+          Title: "接口地址",
+          SubTitle: "样例：",
+        },
+      },
       Stability: {
         ApiKey: {
           Title: "接口密钥",
