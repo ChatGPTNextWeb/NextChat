@@ -161,7 +161,7 @@ export class OpenRouterApi implements LLMApi {
               delta: {
                 content: string | null;
                 tool_calls: ChatMessageTool[];
-                reasoning_content: string | null;
+                reasoning: string | null;
               };
             }>;
             const tool_calls = choices[0]?.delta?.tool_calls;
@@ -183,7 +183,7 @@ export class OpenRouterApi implements LLMApi {
                 runTools[index]["function"]["arguments"] += args;
               }
             }
-            const reasoning = choices[0]?.delta?.reasoning_content;
+            const reasoning = choices[0]?.delta?.reasoning;
             const content = choices[0]?.delta?.content;
 
             // Skip if both content and reasoning_content are empty or null
