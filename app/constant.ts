@@ -1175,7 +1175,7 @@ export const DEFAULT_MODELS = [
       id: "openrouter",
       providerName: "OpenRouter",
       providerType: "openrouter",
-      sorted: 14,
+      sorted: 15,
     },
   })),
 ] as const;
