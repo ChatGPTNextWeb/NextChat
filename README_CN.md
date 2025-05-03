@@ -275,6 +275,14 @@ SiliconFlow API Key.
 
 SiliconFlow API URL.
 
+### `OPENROUTER_API_KEY` (optional)
+
+OpenRouter API Key.
+
+### `OPENROUTER_URL` (optional)
+
+OpenRouter API URL.
+
 ## 开发
 
 点击下方按钮，开始二次开发：

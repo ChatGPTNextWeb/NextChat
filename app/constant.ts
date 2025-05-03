@@ -682,6 +682,8 @@ const siliconflowModels = [
   "Pro/deepseek-ai/DeepSeek-V3",
 ];
 
+// Use this to generate newest model list -> https://gist.github.com/hyc1230/d4b271d161ffcda485f1fa1a27e08096
+// Current list is generated on 2025/05/03
 const openrouterModels = [
   "microsoft/phi-4-reasoning-plus:free",
   "microsoft/phi-4-reasoning-plus",

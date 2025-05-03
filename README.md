@@ -361,6 +361,14 @@ SiliconFlow API Key.
 
 SiliconFlow API URL.
 
+### `OPENROUTER_API_KEY` (optional)
+
+OpenRouter API Key.
+
+### `OPENROUTER_URL` (optional)
+
+OpenRouter API URL.
+
 ## Requirements
 
 NodeJS >= 18, Docker >= 20
