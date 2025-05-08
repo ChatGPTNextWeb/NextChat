@@ -8,6 +8,7 @@ export interface McpRequestMessage {
   id?: string | number;
   method: "tools/call" | string;
   params?: {
+    name?: string;
     [key: string]: unknown;
   };
 }
@@ -65,12 +66,14 @@ export const McpNotificationsSchema: z.ZodType<McpNotifications> = z.object({
 // Next Chat
 ////////////
 export interface ListToolsResponse {
-  tools: {
-    name?: string;
-    description?: string;
-    inputSchema?: object;
-    [key: string]: any;
-  };
+  tools: ToolSchema[];
+}
+
+export interface ToolSchema {
+  name?: string;
+  description?: string;
+  inputSchema?: object;
+  [key: string]: any;
 }
 
 export type McpClientData =
@@ -110,14 +113,31 @@ export interface ServerStatusResponse {
 }
 
 // MCP 服务器配置相关类型
-export interface ServerConfig {
+
+export const isServerSseConfig = (c?: ServerConfig): c is ServerSseConfig =>
+  c !== null && typeof c === "object" && c.type === "sse";
+export const isServerStdioConfig = (c?: ServerConfig): c is ServerStdioConfig =>
+  c !== null && typeof c === "object" && (!c.type || c.type === "stdio");
+
+export type ServerConfig = ServerStdioConfig | ServerSseConfig;
+
+export interface ServerStdioConfig {
+  type?: "stdio";
   command: string;
   args: string[];
   env?: Record<string, string>;
   status?: "active" | "paused" | "error";
 }
 
+export interface ServerSseConfig {
+  type: "sse";
+  url: string;
+  headers?: Record<string, string>;
+  status?: "active" | "paused" | "error";
+}
+
 export interface McpConfigData {
+  enableMcp?: boolean;
   // MCP Server 的配置
   mcpServers: Record<string, ServerConfig>;
 }

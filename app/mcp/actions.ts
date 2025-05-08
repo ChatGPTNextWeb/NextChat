@@ -1,4 +1,6 @@
-"use server";
+if (!EXPORT_MODE) {
+  ("use server");
+}
 import {
   createClient,
   executeRequest,
@@ -14,14 +16,22 @@ import {
   ServerConfig,
   ServerStatusResponse,
 } from "./types";
-import fs from "fs/promises";
-import path from "path";
-import { getServerSideConfig } from "../config/server";
+
+const JSON_INDENT = 2;
 
 const logger = new MCPClientLogger("MCP Actions");
-const CONFIG_PATH = path.join(process.cwd(), "app/mcp/mcp_config.json");
+
+const getConfigPath = async () => {
+  if (EXPORT_MODE) {
+    return "/mcp/config.json";
+  } else {
+    const path = await import("path");
+    return path.join(process.cwd(), "app/mcp/mcp_config.json");
+  }
+};
 
 const clientsMap = new Map<string, McpClientData>();
+const toolToClientMap = new Map<string, string>();
 
 // 获取客户端状态
 export async function getClientsStatus(): Promise<
@@ -126,6 +136,13 @@ async function initializeSingleClient(
         `Supported tools for [${clientId}]: ${JSON.stringify(tools, null, 2)}`,
       );
       clientsMap.set(clientId, { client, tools, errorMsg: null });
+      if (tools?.tools) {
+        for (const tool of tools.tools) {
+          if (tool.name) {
+            toolToClientMap.set(tool.name, clientId);
+          }
+        }
+      }
       logger.success(`Client [${clientId}] initialized successfully`);
     })
     .catch((error) => {
@@ -243,6 +260,13 @@ export async function resumeMcpServer(clientId: string): Promise<void> {
       const client = await createClient(clientId, serverConfig);
       const tools = await listTools(client);
       clientsMap.set(clientId, { client, tools, errorMsg: null });
+      if (tools?.tools) {
+        for (const tool of tools.tools) {
+          if (tool.name) {
+            toolToClientMap.set(tool.name, clientId);
+          }
+        }
+      }
       logger.success(`Client [${clientId}] initialized successfully`);
 
       // 初始化成功后更新配置
@@ -339,7 +363,19 @@ export async function executeMcpAction(
   request: McpRequestMessage,
 ) {
   try {
-    const client = clientsMap.get(clientId);
+    let client = clientsMap.get(clientId);
+    if (
+      !client &&
+      request.params?.name &&
+      typeof request.params.name === "string"
+    ) {
+      // Use a tool-to-client mapping that's maintained when tools are initialized
+      const toolName = request.params.name;
+      const toolClientId = toolToClientMap.get(toolName);
+      if (toolClientId) {
+        client = clientsMap.get(toolClientId);
+      }
+    }
     if (!client?.client) {
       throw new Error(`Client ${clientId} not found`);
     }
@@ -354,8 +390,30 @@ export async function executeMcpAction(
 // 获取 MCP 配置文件
 export async function getMcpConfigFromFile(): Promise<McpConfigData> {
   try {
-    const configStr = await fs.readFile(CONFIG_PATH, "utf-8");
-    return JSON.parse(configStr);
+    if (EXPORT_MODE) {
+      const res = await fetch(await getConfigPath());
+      const config: McpConfigData = await res.json();
+      const storage = localStorage;
+      const storedConfig_str = storage.getItem("McpConfig");
+      if (storedConfig_str) {
+        const storedConfig: McpConfigData = JSON.parse(storedConfig_str);
+        // Create a merged configuration that combines both sources
+        const merged = { ...config.mcpServers };
+        if (storedConfig.mcpServers) {
+          // Ensure we process all servers from stored config
+          for (const id in storedConfig.mcpServers) {
+            merged[id] = { ...merged[id], ...storedConfig.mcpServers[id] };
+          }
+        }
+
+        config.mcpServers = merged;
+      }
+      return config;
+    } else {
+      const fs = await import("fs/promises");
+      const configStr = await fs.readFile(await getConfigPath(), "utf-8");
+      return JSON.parse(configStr);
+    }
   } catch (error) {
     logger.error(`Failed to load MCP config, using default config: ${error}`);
     return DEFAULT_MCP_CONFIG;
@@ -364,20 +422,42 @@ export async function getMcpConfigFromFile(): Promise<McpConfigData> {
 
 // 更新 MCP 配置文件
 async function updateMcpConfig(config: McpConfigData): Promise<void> {
-  try {
+  if (EXPORT_MODE) {
+    try {
+      const storage = localStorage;
+      storage.setItem("McpConfig", JSON.stringify(config));
+    } catch (storageError) {
+      logger.warn(`Failed to save MCP config to localStorage: ${storageError}`);
+      // Continue execution without storage
+    }
+  } else {
+    const fs = await import("fs/promises");
+    const path = await import("path");
     // 确保目录存在
-    await fs.mkdir(path.dirname(CONFIG_PATH), { recursive: true });
-    await fs.writeFile(CONFIG_PATH, JSON.stringify(config, null, 2));
-  } catch (error) {
-    throw error;
+    await fs.mkdir(path.dirname(await getConfigPath()), { recursive: true });
+    await fs.writeFile(
+      await getConfigPath(),
+      JSON.stringify(config, null, JSON_INDENT),
+    );
   }
 }
 
 // 检查 MCP 是否启用
 export async function isMcpEnabled() {
   try {
-    const serverConfig = getServerSideConfig();
-    return serverConfig.enableMcp;
+    const config = await getMcpConfigFromFile();
+    if (typeof config.enableMcp === "boolean") {
+      return config.enableMcp;
+    }
+    if (EXPORT_MODE) {
+      const { getClientConfig } = await import("../config/client");
+      const clientConfig = getClientConfig();
+      return clientConfig?.enableMcp === true;
+    } else {
+      const { getServerSideConfig } = await import("../config/server");
+      const serverConfig = getServerSideConfig();
+      return serverConfig.enableMcp;
+    }
   } catch (error) {
     logger.error(`Failed to check MCP status: ${error}`);
     return false;
