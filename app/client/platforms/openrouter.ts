@@ -280,7 +280,7 @@ export class OpenRouterApi implements LLMApi {
         id: "openrouter",
         providerName: "OpenRouter",
         providerType: "openrouter",
-        sorted: 14,
+        sorted: 15,
       },
     }));
   }
