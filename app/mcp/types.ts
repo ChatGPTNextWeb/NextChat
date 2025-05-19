@@ -116,10 +116,15 @@ export interface ServerStatusResponse {
 
 export const isServerSseConfig = (c?: ServerConfig): c is ServerSseConfig =>
   c !== null && typeof c === "object" && c.type === "sse";
+export const isStreamableSseConfig = (c?: ServerConfig): c is ServerSseConfig =>
+  c !== null && typeof c === "object" && c.type === "streamable";
 export const isServerStdioConfig = (c?: ServerConfig): c is ServerStdioConfig =>
   c !== null && typeof c === "object" && (!c.type || c.type === "stdio");
 
-export type ServerConfig = ServerStdioConfig | ServerSseConfig;
+export type ServerConfig =
+  | ServerStdioConfig
+  | ServerSseConfig
+  | ServerSteamableConfig;
 
 export interface ServerStdioConfig {
   type?: "stdio";
@@ -131,6 +136,13 @@ export interface ServerStdioConfig {
 
 export interface ServerSseConfig {
   type: "sse";
+  url: string;
+  headers?: Record<string, string>;
+  status?: "active" | "paused" | "error";
+}
+
+export interface ServerSteamableConfig {
+  type: "streamable";
   url: string;
   headers?: Record<string, string>;
   status?: "active" | "paused" | "error";

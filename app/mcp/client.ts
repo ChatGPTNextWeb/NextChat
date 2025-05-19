@@ -1,11 +1,6 @@
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { MCPClientLogger } from "./logger";
-import {
-  ListToolsResponse,
-  McpRequestMessage,
-  ServerConfig,
-  isServerSseConfig,
-} from "./types";
+import { ListToolsResponse, McpRequestMessage, ServerConfig } from "./types";
 import { z } from "zod";
 
 const logger = new MCPClientLogger();
@@ -18,11 +13,16 @@ export async function createClient(
 
   let transport;
 
-  if (isServerSseConfig(config)) {
+  if (config.type === "sse") {
     const { SSEClientTransport } = await import(
       "@modelcontextprotocol/sdk/client/sse.js"
     );
     transport = new SSEClientTransport(new URL(config.url));
+  } else if (config.type === "streamable") {
+    const { StreamableHTTPClientTransport } = await import(
+      "@modelcontextprotocol/sdk/client/streamableHttp.js"
+    );
+    transport = new StreamableHTTPClientTransport(new URL(config.url));
   } else {
     if (EXPORT_MODE) {
       throw new Error(
