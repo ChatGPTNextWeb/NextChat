@@ -570,7 +570,7 @@ const anthropicModels = [
   "claude-3-7-sonnet-20250219",
   "claude-3-7-sonnet-latest",
   "claude-sonnet-4-0",
-  "claude-sonnet-4-20250514,
+  "claude-sonnet-4-20250514",
   "claude-opus-4-0",
   "claude-opus-4-20250514",
 ];
