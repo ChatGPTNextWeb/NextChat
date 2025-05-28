@@ -441,6 +441,7 @@ export const KnowledgeCutOffDate: Record<string, string> = {
   o1: "2023-10",
   "o3-mini-2025-01-31": "2023-10",
   "o3-mini": "2023-10",
+  "o3-2025-04-16": "2024-01-06", //https://platform.openai.com/docs/models/o3
   // After improvements,
   // it's now easier to add "KnowledgeCutOffDate" instead of stupid hardcoding it, as was done previously.
   "gemini-pro": "2023-12",
@@ -468,6 +469,7 @@ export const VISION_MODEL_REGEXES = [
   /gpt-4o/,
   /gpt-4\.1/,
   /claude-3/,
+  /claude-4/,
   /gemini-1\.5/,
   /gemini-exp/,
   /gemini-2\.0/,
@@ -519,6 +521,7 @@ const openaiModels = [
   "o1-preview",
   "o3-mini",
   "o3",
+  "o3-2025-04-16",
   "o4-mini",
 ];
 
@@ -546,6 +549,9 @@ const googleModels = [
   "gemini-2.0-flash-thinking-exp-01-21",
   "gemini-2.0-pro-exp",
   "gemini-2.0-pro-exp-02-05",
+  "gemini-2.5-pro-exp-03-25",
+  "gemini-2.5-pro-preview-05-06",
+  "gemini-2.5-flash-preview-04-17"
 ];
 
 const anthropicModels = [
@@ -563,6 +569,10 @@ const anthropicModels = [
   "claude-3-5-sonnet-latest",
   "claude-3-7-sonnet-20250219",
   "claude-3-7-sonnet-latest",
+  "claude-sonnet-4-0",
+  "claude-sonnet-4-20250514",
+  "claude-opus-4-0",
+  "claude-opus-4-20250514",
 ];
 
 const baiduModels = [
