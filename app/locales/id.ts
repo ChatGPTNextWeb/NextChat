@@ -428,6 +428,22 @@ const id: PartialLocaleType = {
         Title: "Nama Model Kustom",
         SubTitle: "Tambahkan opsi model kustom, pisahkan dengan koma",
       },
+      Huawei: {
+        ApiKey: {
+          Title: "Kunci API",
+          SubTitle: "Gunakan kunci API HUAWEI Anda sendiri",
+          Placeholder: "Kunci HUAWEI",
+        },
+        SecretKey: {
+          Title: "Kunci Rahasia",
+          SubTitle: "Gunakan kunci rahasia HUAWEI Anda sendiri",
+          Placeholder: "Kunci Rahasia HUAWEI",
+        },
+        Endpoint: {
+          Title: "Alamat Endpoint",
+          SubTitle: "Tidak mendukung konfigurasi .env kustom",
+        },
+      },
     },
 
     Model: "Model",

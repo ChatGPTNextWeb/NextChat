@@ -431,6 +431,22 @@ const tr: PartialLocaleType = {
         SubTitle:
           "Özelleştirilmiş model seçenekleri ekleyin, İngilizce virgül ile ayırın",
       },
+      Huawei: {
+        ApiKey: {
+          Title: "API Anahtarı",
+          SubTitle: "Kendi Huawei API Anahtarınızı kullanın",
+          Placeholder: "HUAWEI Anahtarı",
+        },
+        SecretKey: {
+          Title: "Gizli Anahtar",
+          SubTitle: "Kendi HUAWEI Gizli Anahtarınızı kullanın",
+          Placeholder: "HUAWEI Gizli Anahtarı",
+        },
+        Endpoint: {
+          Title: "Arayüz Adresi",
+          SubTitle: "Özelleştirilmiş .env yapılandırmasına desteklenmez",
+        },
+      },
     },
 
     Model: "Model (model)",

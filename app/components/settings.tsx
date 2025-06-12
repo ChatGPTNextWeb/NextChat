@@ -75,6 +75,7 @@ import {
   ChatGLM,
   DeepSeek,
   SiliconFlow,
+  Huawei,
 } from "../constant";
 import { Prompt, SearchService, usePromptStore } from "../store/prompt";
 import { ErrorBoundary } from "./error";
@@ -1457,6 +1458,46 @@ export function Settings() {
       </ListItem>
     </>
   );
+  const huaweiConfigComponent = accessStore.provider ===
+    ServiceProvider.Huawei && (
+    <>
+      <ListItem
+        title={Locale.Settings.Access.Huawei.Endpoint.Title}
+        subTitle={
+          Locale.Settings.Access.Huawei.Endpoint.SubTitle +
+          Huawei.ExampleEndpoint
+        }
+      >
+        <input
+          aria-label={Locale.Settings.Access.Huawei.Endpoint.Title}
+          type="text"
+          value={accessStore.huaweiUrl}
+          placeholder={Huawei.ExampleEndpoint}
+          onChange={(e) =>
+            accessStore.update(
+              (access) => (access.huaweiUrl = e.currentTarget.value),
+            )
+          }
+        ></input>
+      </ListItem>
+      <ListItem
+        title={Locale.Settings.Access.Huawei.ApiKey.Title}
+        subTitle={Locale.Settings.Access.Huawei.ApiKey.SubTitle}
+      >
+        <PasswordInput
+          aria-label={Locale.Settings.Access.Huawei.ApiKey.Title}
+          value={accessStore.huaweiApiKey}
+          type="text"
+          placeholder={Locale.Settings.Access.Huawei.ApiKey.Placeholder}
+          onChange={(e) => {
+            accessStore.update(
+              (access) => (access.huaweiApiKey = e.currentTarget.value),
+            );
+          }}
+        />
+      </ListItem>
+    </>
+  );
 
   return (
     <ErrorBoundary>
@@ -1822,6 +1863,7 @@ export function Settings() {
                   {XAIConfigComponent}
                   {chatglmConfigComponent}
                   {siliconflowConfigComponent}
+                  {huaweiConfigComponent}
                 </>
               )}
             </>

@@ -427,6 +427,22 @@ const cs: PartialLocaleType = {
         Title: "Vlastní názvy modelů",
         SubTitle: "Přidejte možnosti vlastních modelů, oddělené čárkami",
       },
+      Huawei: {
+        ApiKey: {
+          Title: "API Klíč",
+          SubTitle: "Použijte svůj HUAWEI API klíč",
+          Placeholder: "HUAWEI Klíč",
+        },
+        SecretKey: {
+          Title: "Tajný Klíč",
+          SubTitle: "Použijte svůj HUAWEI Tajný klíč",
+          Placeholder: "HUAWEI Tajný Klíč",
+        },
+        Endpoint: {
+          Title: "Adresa rozhraní",
+          SubTitle: "Nepodporuje vlastní konfiguraci .env",
+        },
+      },
     },
 
     Model: "Model (model)",
