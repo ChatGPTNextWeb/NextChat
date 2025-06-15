@@ -343,6 +343,32 @@ const cn = {
           SubTitle: "除默认地址外，必须包含 http(s)://",
         },
       },
+      Bedrock: {
+        Region: {
+          Title: "AWS 区域",
+          SubTitle: "Bedrock 服务所在的 AWS 区域",
+          Placeholder: "us-west-2",
+          Invalid: "无效的 AWS 区域格式。示例：us-west-2",
+        },
+        AccessKey: {
+          Title: "AWS 访问密钥 ID",
+          SubTitle: "用于 Bedrock 服务的 AWS 访问密钥 ID",
+          Placeholder: "AKIA...",
+          Invalid: "无效的 AWS Access Key 格式。必须为20个字符。",
+        },
+        SecretKey: {
+          Title: "AWS 私有访问密钥",
+          SubTitle: "用于 Bedrock 服务的 AWS 私有访问密钥",
+          Placeholder: "****",
+          Invalid: "无效的 AWS Secret Key 格式。必须为40个字符。",
+        },
+        EncryptionKey: {
+          Title: "加密密钥",
+          SubTitle: "用于配置数据的加密密钥",
+          Placeholder: "输入加密密钥",
+          Invalid: "无效的加密密钥。必须至少包含8个字符！",
+        },
+      },
       Azure: {
         ApiKey: {
           Title: "接口密钥",
