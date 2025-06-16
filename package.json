@@ -27,7 +27,7 @@
     "@next/third-parties": "^14.1.0",
     "@svgr/webpack": "^6.5.1",
     "@vercel/analytics": "^0.1.11",
-    "@vercel/speed-insights": "^1.0.2",
+    "@vercel/speed-insights": "^1.2.0",
     "axios": "^1.7.5",
     "clsx": "^2.1.1",
     "emoji-picker-react": "^4.9.2",
