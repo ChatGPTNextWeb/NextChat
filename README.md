@@ -9,7 +9,15 @@
 
 <h1 align="center">NextChat</h1>
 
-English / [简体中文](./README_CN.md)
+English / [简体中文](./README_CN.md) / 
+[Deutsch](https://www.readme-i18n.com/ChatGPTNextWeb/NextChat?lang=de) /
+[Español](https://www.readme-i18n.com/ChatGPTNextWeb/NextChat?lang=es) /
+[français](https://www.readme-i18n.com/ChatGPTNextWeb/NextChat?lang=fr) /
+[日本語](https://www.readme-i18n.com/ChatGPTNextWeb/NextChat?lang=ja) /
+[한국어](https://www.readme-i18n.com/ChatGPTNextWeb/NextChat?lang=ko) /
+[Português](https://www.readme-i18n.com/ChatGPTNextWeb/NextChat?lang=pt) /
+[Русский](https://www.readme-i18n.com/ChatGPTNextWeb/NextChat?lang=ru) 
+<!-- 👆 Keep these links. Translations will automatically update with the README. -->
 
 <a href="https://trendshift.io/repositories/5973" target="_blank"><img src="https://trendshift.io/api/badge/repositories/5973" alt="ChatGPTNextWeb%2FChatGPT-Next-Web | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a>
 
