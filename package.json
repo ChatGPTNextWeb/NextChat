@@ -33,7 +33,7 @@
     "emoji-picker-react": "^4.9.2",
     "fuse.js": "^7.0.0",
     "heic2any": "^0.0.4",
-    "html-to-image": "^1.11.11",
+    "html-to-image": "^1.11.13",
     "idb-keyval": "^6.2.1",
     "lodash-es": "^4.17.21",
     "markdown-to-txt": "^2.0.1",
