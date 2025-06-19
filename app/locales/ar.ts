@@ -77,6 +77,8 @@ const ar: PartialLocaleType = {
       Clear: "مسح الدردشة",
       Settings: "إعدادات الدردشة",
       UploadImage: "تحميل صورة",
+      PasteQuestion: "Questions",
+      PasteResponse: "Answers",
     },
     Rename: "إعادة تسمية الدردشة",
     Typing: "يكتب…",

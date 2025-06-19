@@ -77,6 +77,8 @@ const bn: PartialLocaleType = {
       Clear: "চ্যাট পরিষ্কার করুন",
       Settings: "চ্যাট সেটিংস",
       UploadImage: "চিত্র আপলোড করুন",
+      PasteQuestion: "Questions",
+      PasteResponse: "Answers",
     },
     Rename: "চ্যাট নাম পরিবর্তন করুন",
     Typing: "লিখছে…",

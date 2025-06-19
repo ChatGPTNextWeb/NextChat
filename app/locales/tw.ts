@@ -77,6 +77,8 @@ const tw = {
       Clear: "清除聊天",
       Settings: "對話設定",
       UploadImage: "上傳圖片",
+      PasteQuestion: "Questions",
+      PasteResponse: "Answers",
     },
     Rename: "重新命名對話",
     Typing: "正在輸入…",

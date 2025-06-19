@@ -77,6 +77,8 @@ const sk: PartialLocaleType = {
       Masks: "Masky",
       Clear: "Vymazať kontext",
       Settings: "Nastavenia",
+      PasteQuestion: "Questions",
+      PasteResponse: "Answers",
     },
     Rename: "Premenovať Chat",
     Typing: "Písanie…",
