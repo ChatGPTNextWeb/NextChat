@@ -1903,7 +1903,7 @@ function _Chat() {
                                           }
                                         },
                                       );
-                                    }
+                                    }}
                                   ></IconButton>
                                 </div>
                               )}
