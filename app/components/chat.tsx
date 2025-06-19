@@ -1906,7 +1906,6 @@ function _Chat() {
                                     }}
                                   ></IconButton>
                                 </div>
-                              )}
                               {isUser ? (
                                 <Avatar avatar={config.avatar} />
                               ) : (
