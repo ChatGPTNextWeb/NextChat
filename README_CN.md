@@ -232,6 +232,9 @@ DeepSeek Api Url.
 
 用来控制模型列表，使用 `+` 增加一个模型，使用 `-` 来隐藏一个模型，使用 `模型名=展示名` 来自定义模型的展示名，用英文逗号隔开。
 
+OpenRouter 提供的模型（除 `openrouter/auto` 外）需要手动配置，使用 `+provider/model@OpenRouter`。
+> 示例：`+qwen/qwen3-32b:free@OpenRouter` 这个配置会在模型列表显示一个 `qwen/qwen3-32b:free(OpenRouter)` 的选项。
+
 在Azure的模式下，支持使用`modelName@Azure=deploymentName`的方式配置模型名称和部署名称(deploy-name)
 > 示例：`+gpt-3.5-turbo@Azure=gpt35`这个配置会在模型列表显示一个`gpt35(Azure)`的选项。
 > 如果你只能使用Azure模式，那么设置 `-all,+gpt-3.5-turbo@Azure=gpt35` 则可以让对话的默认使用 `gpt35(Azure)`
@@ -274,6 +277,14 @@ SiliconFlow API Key.
 ### `SILICONFLOW_URL` (optional)
 
 SiliconFlow API URL.
+
+### `OPENROUTER_API_KEY` (optional)
+
+OpenRouter API Key.
+
+### `OPENROUTER_URL` (optional)
+
+OpenRouter API URL.
 
 ## 开发
 

@@ -467,6 +467,17 @@ const da: PartialLocaleType = {
           SubTitle: "F.eks.: ",
         },
       },
+      OpenRouter: {
+        ApiKey: {
+          Title: "OpenRouter-nøgle",
+          SubTitle: "Din egen OpenRouter-nøgle",
+          Placeholder: "OpenRouter API Key",
+        },
+        Endpoint: {
+          Title: "Adresse",
+          SubTitle: "F.eks.: ",
+        },
+      },
       Stability: {
         ApiKey: {
           Title: "Stability-nøgle",

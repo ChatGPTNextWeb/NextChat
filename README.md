@@ -311,6 +311,9 @@ To control custom models, use `+` to add a custom model, use `-` to hide a model
 
 User `-all` to disable all default models, `+all` to enable all default models.
 
+Models from OpenRouter (except `openrouter/auto`) need to be configured manually, use `+provider/model@OpenRouter`.
+> Example: `+qwen/qwen3-32b:free@OpenRouter` will show `qwen/qwen3-32b:free(OpenRouter)` in model list.
+
 For Azure: use `modelName@Azure=deploymentName` to customize model name and deployment name.
 > Example: `+gpt-3.5-turbo@Azure=gpt35` will show option `gpt35(Azure)` in model list.
 > If you only can use Azure model, `-all,+gpt-3.5-turbo@Azure=gpt35` will `gpt35(Azure)` the only option in model list.
@@ -360,6 +363,14 @@ SiliconFlow API Key.
 ### `SILICONFLOW_URL` (optional)
 
 SiliconFlow API URL.
+
+### `OPENROUTER_API_KEY` (optional)
+
+OpenRouter API Key.
+
+### `OPENROUTER_URL` (optional)
+
+OpenRouter API URL.
 
 ## Requirements
 
