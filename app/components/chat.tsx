@@ -4,6 +4,7 @@ import React, {
   RefObject,
   useCallback,
   useEffect,
+  useId,
   useMemo,
   useRef,
   useState,
@@ -48,6 +49,8 @@ import PluginIcon from "../icons/plugin.svg";
 import ShortcutkeyIcon from "../icons/shortcutkey.svg";
 import McpToolIcon from "../icons/tool.svg";
 import HeadphoneIcon from "../icons/headphone.svg";
+import PasteQuestionIcon from "../icons/paste-question.svg";
+import PasteResponseIcon from "../icons/paste-response.svg";
 import {
   BOT_HELLO,
   ChatMessage,
@@ -125,6 +128,7 @@ import { getModelProvider } from "../utils/model";
 import { RealtimeChat } from "@/app/components/realtime-chat";
 import clsx from "clsx";
 import { getAvailableClientsCount, isMcpEnabled } from "../mcp/actions";
+import { nanoid } from "nanoid";
 
 const localStorage = safeLocalStorage();
 
@@ -503,6 +507,8 @@ export function ChatActions(props: {
   setShowShortcutKeyModal: React.Dispatch<React.SetStateAction<boolean>>;
   setUserInput: (input: string) => void;
   setShowChatSidePanel: React.Dispatch<React.SetStateAction<boolean>>;
+  handlePasteQuestion: () => void;
+  handlePasteResponse: () => void;
 }) {
   const config = useAppConfig();
   const navigate = useNavigate();
@@ -833,6 +839,16 @@ export function ChatActions(props: {
           />
         )}
         {!isMobileScreen && <MCPAction />}
+        <ChatAction
+          onClick={props.handlePasteQuestion}
+          text={Locale.Chat.InputActions.PasteQuestion}
+          icon={<PasteQuestionIcon />}
+        />
+        <ChatAction
+          onClick={props.handlePasteResponse}
+          text={Locale.Chat.InputActions.PasteResponse}
+          icon={<PasteResponseIcon />}
+        />
       </>
       <div className={styles["chat-input-actions-end"]}>
         {config.realtimeConfig.enable && (
@@ -1113,7 +1129,7 @@ function _Chat() {
     }
     setIsLoading(true);
     chatStore
-      .onUserInput(userInput, attachImages)
+      .onUserInput(userInput, attachImages, false, false) // isMcpResponse = false, isPasted = false
       .then(() => setIsLoading(false));
     setAttachImages([]);
     chatStore.setLastInput(userInput);
@@ -1266,7 +1282,9 @@ function _Chat() {
     setIsLoading(true);
     const textContent = getMessageTextContent(userMessage);
     const images = getMessageImages(userMessage);
-    chatStore.onUserInput(textContent, images).then(() => setIsLoading(false));
+    // For resent messages, isPasted should be false.
+    // If the original userMessage had isPasted=true, it wouldn't have a bot response to resend.
+    chatStore.onUserInput(textContent, images, false, false).then(() => setIsLoading(false));
     inputRef.current?.focus();
   };
 
@@ -1508,6 +1526,43 @@ function _Chat() {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const handlePasteQuestion = () => {
+    if (userInput.trim() === "") return;
+
+    const newMessage = createMessage({
+      role: "user",
+      content: userInput,
+      isPasted: true,
+      id: nanoid(),
+      date: new Date().toLocaleString(),
+    });
+
+    chatStore.updateTargetSession(session, (session) => {
+      session.messages = session.messages.concat(newMessage);
+    });
+
+    setUserInput("");
+    scrollDomToBottom();
+  };
+
+  const handlePasteResponse = () => {
+    if (userInput.trim() === "") return;
+
+    const newMessage = createMessage({
+      role: "assistant",
+      content: userInput,
+      isPasted: true,
+      id: nanoid(),
+      date: new Date().toLocaleString(),
+    });
+
+    chatStore.updateTargetSession(session, (session) => {
+      session.messages = session.messages.concat(newMessage);
+    });
+    setUserInput("");
+    scrollDomToBottom();
+  };
 
   const handlePaste = useCallback(
     async (event: React.ClipboardEvent<HTMLTextAreaElement>) => {
@@ -1807,47 +1862,51 @@ function _Chat() {
                         <div className={styles["chat-message-container"]}>
                           <div className={styles["chat-message-header"]}>
                             <div className={styles["chat-message-avatar"]}>
+                              {/*Reverted: Edit button always visible now*/}
                               <div className={styles["chat-message-edit"]}>
                                 <IconButton
                                   icon={<EditIcon />}
-                                  aria={Locale.Chat.Actions.Edit}
-                                  onClick={async () => {
-                                    const newMessage = await showPrompt(
-                                      Locale.Chat.Actions.Edit,
-                                      getMessageTextContent(message),
-                                      10,
-                                    );
-                                    let newContent:
-                                      | string
-                                      | MultimodalContent[] = newMessage;
-                                    const images = getMessageImages(message);
-                                    if (images.length > 0) {
-                                      newContent = [
-                                        { type: "text", text: newMessage },
-                                      ];
-                                      for (let i = 0; i < images.length; i++) {
-                                        newContent.push({
-                                          type: "image_url",
-                                          image_url: {
-                                            url: images[i],
-                                          },
-                                        });
-                                      }
-                                    }
-                                    chatStore.updateTargetSession(
-                                      session,
-                                      (session) => {
-                                        const m = session.mask.context
-                                          .concat(session.messages)
-                                          .find((m) => m.id === message.id);
-                                        if (m) {
-                                          m.content = newContent;
-                                        }
-                                      },
-                                    );
-                                  }}
-                                ></IconButton>
-                              </div>
+                                    aria={Locale.Chat.Actions.Edit}
+                                    onClick={async () => {
+                                      const newTextContent = await showPrompt(
+                                        Locale.Chat.Actions.Edit,
+                                        getMessageTextContent(message),
+                                        10,
+                                      );
+                                      chatStore.updateTargetSession(
+                                        session,
+                                        (session) => {
+                                          const m = session.mask.context
+                                            .concat(session.messages)
+                                            .find(
+                                              (m) => m.id === message.id,
+                                            );
+                                          if (m) {
+                                            if (typeof m.content === "string") {
+                                              m.content = newTextContent;
+                                            } else if (
+                                              Array.isArray(m.content)
+                                            ) {
+                                              const textItem = m.content.find(
+                                                (item) => item.type === "text",
+                                              );
+                                              if (textItem) {
+                                                textItem.text = newTextContent;
+                                              } else {
+                                                // if no text item, add one
+                                                m.content.unshift({
+                                                  type: "text",
+                                                  text: newTextContent,
+                                                });
+                                              }
+                                            }
+                                          }
+                                        },
+                                      );
+                                    }}
+                                  ></IconButton>
+                                </div>
+                              )}
                               {isUser ? (
                                 <Avatar avatar={config.avatar} />
                               ) : (
@@ -2067,6 +2126,8 @@ function _Chat() {
                 setShowShortcutKeyModal={setShowShortcutKeyModal}
                 setUserInput={setUserInput}
                 setShowChatSidePanel={setShowChatSidePanel}
+                handlePasteQuestion={handlePasteQuestion}
+                handlePasteResponse={handlePasteResponse}
               />
               <label
                 className={clsx(styles["chat-input-panel-inner"], {

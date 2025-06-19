@@ -63,6 +63,7 @@ export type ChatMessage = RequestMessage & {
   tools?: ChatMessageTool[];
   audio_url?: string;
   isMcpResponse?: boolean;
+  isPasted?: boolean;
 };
 
 export function createMessage(override: Partial<ChatMessage>): ChatMessage {
@@ -408,6 +409,7 @@ export const useChatStore = createPersistStore(
         content: string,
         attachImages?: string[],
         isMcpResponse?: boolean,
+        isPasted?: boolean, // Added isPasted parameter
       ) {
         const session = get().currentSession();
         const modelConfig = session.mask.modelConfig;
@@ -431,7 +433,21 @@ export const useChatStore = createPersistStore(
           role: "user",
           content: mContent,
           isMcpResponse,
+          isPasted, // Pass isPasted to createMessage
         });
+
+        // If message is pasted, add it to messages and return early.
+        if (userMessage.isPasted) {
+          get().updateTargetSession(session, (session) => {
+            session.messages = session.messages.concat([userMessage]);
+            session.lastUpdate = Date.now();
+          });
+          get().updateStat(userMessage, session);
+          // No bot message needed if user message is pasted and we are stopping here.
+          // Or, if it's a pasted response, both messages are created in chat.tsx.
+          // This early return prevents API call.
+          return;
+        }
 
         const botMessage: ChatMessage = createMessage({
           role: "assistant",
