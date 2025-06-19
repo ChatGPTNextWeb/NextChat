@@ -56,6 +56,7 @@ export enum Path {
 
 export enum ApiPath {
   Cors = "",
+  Bedrock = "/api/bedrock",
   Azure = "/api/azure",
   OpenAI = "/api/openai",
   Anthropic = "/api/anthropic",
@@ -129,6 +130,7 @@ export enum ServiceProvider {
   XAI = "XAI",
   ChatGLM = "ChatGLM",
   DeepSeek = "DeepSeek",
+  Bedrock = "Bedrock",
   SiliconFlow = "SiliconFlow",
 }
 
@@ -155,6 +157,7 @@ export enum ModelProvider {
   XAI = "XAI",
   ChatGLM = "ChatGLM",
   DeepSeek = "DeepSeek",
+  Bedrock = "Bedrock",
   SiliconFlow = "SiliconFlow",
 }
 
@@ -259,6 +262,15 @@ export const ChatGLM = {
   ImagePath: "api/paas/v4/images/generations",
   VideoPath: "api/paas/v4/videos/generations",
 };
+
+export const Bedrock = {
+  ChatPath: "model", // Simplified path since we'll append the full path in bedrock.ts
+  ApiVersion: "2023-11-01",
+  getEndpoint: (region: string = "us-west-2") =>
+    `https://bedrock-runtime.${region}.amazonaws.com`,
+};
+// Get the region from access store for BEDROCK_BASE_URL
+export const BEDROCK_BASE_URL = Bedrock.getEndpoint();
 
 export const SiliconFlow = {
   ExampleEndpoint: SILICONFLOW_BASE_URL,
@@ -477,6 +489,8 @@ export const VISION_MODEL_REGEXES = [
   /gpt-4-turbo(?!.*preview)/, // Matches "gpt-4-turbo" but not "gpt-4-turbo-preview"
   /^dall-e-3$/, // Matches exactly "dall-e-3"
   /glm-4v/,
+  /nova-lite/,
+  /nova-pro/,
   /vl/i,
   /o3/,
   /o4-mini/,
@@ -520,6 +534,29 @@ const openaiModels = [
   "o3-mini",
   "o3",
   "o4-mini",
+];
+
+const bedrockModels = [
+  // Amazon nova Models
+  "us.amazon.nova-micro-v1:0",
+  "us.amazon.nova-lite-v1:0",
+  "us.amazon.nova-pro-v1:0",
+  // Claude Models
+  "anthropic.claude-3-haiku-20240307-v1:0",
+  "anthropic.claude-3-5-haiku-20241022-v1:0",
+  "anthropic.claude-3-sonnet-20240229-v1:0",
+  "anthropic.claude-3-5-sonnet-20241022-v2:0",
+  "anthropic.claude-3-opus-20240229-v1:0",
+  "us.anthropic.claude-3-7-sonnet-20250219-v1:0",
+  // Meta Llama Models
+  "us.meta.llama3-1-8b-instruct-v1:0",
+  "us.meta.llama3-1-70b-instruct-v1:0",
+  "us.meta.llama3-2-11b-instruct-v1:0",
+  "us.meta.llama3-2-90b-instruct-v1:0",
+  "us.meta.llama3-3-70b-instruct-v1:0",
+  // Mistral Models
+  "mistral.mistral-large-2402-v1:0",
+  "mistral.mistral-large-2407-v1:0",
 ];
 
 const googleModels = [
@@ -802,6 +839,7 @@ export const DEFAULT_MODELS = [
       sorted: 11,
     },
   })),
+
   ...chatglmModels.map((name) => ({
     name,
     available: true,
@@ -833,6 +871,17 @@ export const DEFAULT_MODELS = [
       providerName: "SiliconFlow",
       providerType: "siliconflow",
       sorted: 14,
+    },
+  })),
+  ...bedrockModels.map((name) => ({
+    name,
+    available: true,
+    sorted: seq++,
+    provider: {
+      id: "bedrock",
+      providerName: "Bedrock",
+      providerType: "bedrock",
+      sorted: 15,
     },
   })),
 ] as const;
