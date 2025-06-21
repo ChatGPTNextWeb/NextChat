@@ -566,13 +566,6 @@ const ru: PartialLocaleType = {
     SubTitle: "Начните сейчас, столкнитесь с мыслями за маской",
     More: "Показать все",
   },
-
-  URLCommand: {
-    Code: "Обнаружен код доступа в ссылке, автоматически заполнить?",
-    Settings:
-      "Обнаружены предустановленные настройки в ссылке, автоматически заполнить?",
-  },
-
   UI: {
     Confirm: "Подтвердить",
     Cancel: "Отмена",
@@ -592,6 +585,65 @@ const ru: PartialLocaleType = {
     Messages: "Сообщения",
     Topic: "Тема",
     Time: "Время",
+  },
+  URLCommand: {
+    Code: "Обнаружен код доступа из URL. Применить?",
+    Settings: "Обнаружены настройки из URL. Применить?",
+  },
+  SdPanel: {
+    Prompt: "Промпт",
+    NegativePrompt: "Негативный промпт",
+    PleaseInput: (name: string) => `Введите ${name}`,
+    AspectRatio: "Соотношение сторон",
+    ImageStyle: "Стиль изображения",
+    OutFormat: "Формат вывода",
+    AIModel: "AI-модель",
+    ModelVersion: "Версия модели",
+    Submit: "Отправить",
+    ParamIsRequired: (name: string) => `Поле ${name} обязательно`,
+    Styles: {
+      D3Model: "3D-модель",
+      AnalogFilm: "аналоговая плёнка",
+      Anime: "аниме",
+      Cinematic: "кино",
+      ComicBook: "комикс",
+      DigitalArt: "цифровое искусство",
+      Enhance: "улучшение",
+      FantasyArt: "фэнтези-арт",
+      Isometric: "изометрия",
+      LineArt: "контурное искусство",
+      LowPoly: "низкополигональное",
+      ModelingCompound: "композиционное моделирование",
+      NeonPunk: "неон-панк",
+      Origami: "оригами",
+      Photographic: "фотографический стиль",
+      PixelArt: "пиксель-арт",
+      TileTexture: "текстура плитки",
+    },
+  },
+  Sd: {
+    SubTitle: (count: number) => `${count} изображений`,
+    Actions: {
+      Params: "Параметры",
+      Copy: "Скопировать промпт",
+      Delete: "Удалить",
+      Retry: "Повторить",
+      ReturnHome: "На главную",
+      History: "История",
+    },
+    EmptyRecord: "Пока нет изображений",
+    Status: {
+      Name: "Статус",
+      Success: "Успешно",
+      Error: "Ошибка",
+      Wait: "Ожидание",
+      Running: "В процессе",
+    },
+    Danger: {
+      Delete: "Подтвердите удаление",
+    },
+    GenerateParams: "Сгенерировать параметры",
+    Detail: "Подробнее",
   },
 };
 
