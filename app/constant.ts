@@ -36,6 +36,9 @@ export const CHATGLM_BASE_URL = "https://open.bigmodel.cn";
 
 export const SILICONFLOW_BASE_URL = "https://api.siliconflow.cn";
 
+export const HUAWEI_BASE_URL =
+  "https://maas-cn-southwest-2.modelarts-maas.com/v1/infers";
+
 export const CACHE_URL_PREFIX = "/api/cache";
 export const UPLOAD_URL = `${CACHE_URL_PREFIX}/upload`;
 
@@ -72,6 +75,7 @@ export enum ApiPath {
   ChatGLM = "/api/chatglm",
   DeepSeek = "/api/deepseek",
   SiliconFlow = "/api/siliconflow",
+  Huawei = "/api/huawei",
 }
 
 export enum SlotID {
@@ -130,6 +134,7 @@ export enum ServiceProvider {
   ChatGLM = "ChatGLM",
   DeepSeek = "DeepSeek",
   SiliconFlow = "SiliconFlow",
+  Huawei = "Huawei",
 }
 
 // Google API safety settings, see https://ai.google.dev/gemini-api/docs/safety-settings
@@ -156,6 +161,7 @@ export enum ModelProvider {
   ChatGLM = "ChatGLM",
   DeepSeek = "DeepSeek",
   SiliconFlow = "SiliconFlow",
+  Huawei = "Huawei",
 }
 
 export const Stability = {
@@ -212,6 +218,11 @@ export const Baidu = {
     }
     return `rpc/2.0/ai_custom/v1/wenxinworkshop/chat/${endpoint}`;
   },
+};
+
+export const Huawei = {
+  ExampleEndpoint: HUAWEI_BASE_URL,
+  ChatPath: "/v1/chat/completions",
 };
 
 export const ByteDance = {
@@ -582,6 +593,11 @@ const bytedanceModels = [
   "Doubao-pro-4k",
   "Doubao-pro-32k",
   "Doubao-pro-128k",
+  "deepseek-r1-250120",
+  "deepseek-v3-241226",
+  "deepseek-v3-250324",
+  "deepseek-r1-distill-qwen-7b-250120",
+  "deepseek-r1-distill-qwen-32b-250120",
 ];
 
 const alibabaModes = [
@@ -677,6 +693,11 @@ const siliconflowModels = [
   "THUDM/glm-4-9b-chat",
   "Pro/deepseek-ai/DeepSeek-R1",
   "Pro/deepseek-ai/DeepSeek-V3",
+];
+
+const huaweiModels = [
+  "DeepSeek-R1",
+  "DeepSeek-V3",
 ];
 
 let seq = 1000; // 内置的模型序号生成器从1000开始
@@ -833,6 +854,17 @@ export const DEFAULT_MODELS = [
       providerName: "SiliconFlow",
       providerType: "siliconflow",
       sorted: 14,
+    },
+  })),
+  ...huaweiModels.map((name) => ({
+    name,
+    available: true,
+    sorted: seq++,
+    provider: {
+      id: "huawei",
+      providerName: "Huawei",
+      providerType: "Huawei",
+      sorted: 15,
     },
   })),
 ] as const;

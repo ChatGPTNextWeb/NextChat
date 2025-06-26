@@ -421,6 +421,22 @@ const ko: PartialLocaleType = {
         Title: "커스텀 모델 이름",
         SubTitle: "커스텀 모델 옵션 추가, 영어 쉼표로 구분",
       },
+      Huawei: {
+        ApiKey: {
+          Title: "API 키",
+          SubTitle: "자신의 HUAWEI API 키를 사용하세요",
+          Placeholder: "HUAWEI 키",
+        },
+        SecretKey: {
+          Title: "비밀 키",
+          SubTitle: "자신의 HUAWEI 비밀 키를 사용하세요",
+          Placeholder: "HUAWEI 비밀 키",
+        },
+        Endpoint: {
+          Title: "엔드포인트 주소",
+          SubTitle: "사용자 정의 .env 구성을 지원하지 않습니다",
+        },
+      },
     },
 
     Model: "모델 (model)",

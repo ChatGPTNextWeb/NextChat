@@ -88,6 +88,10 @@ declare global {
       SILICONFLOW_URL?: string;
       SILICONFLOW_API_KEY?: string;
 
+      //huaweionly
+      HUAWEI_URL?: string;
+      HUAWEI_API_KEY?: string;
+
       // custom template for preprocessing user input
       DEFAULT_INPUT_TEMPLATE?: string;
 
@@ -163,6 +167,7 @@ export const getServerSideConfig = () => {
   const isXAI = !!process.env.XAI_API_KEY;
   const isChatGLM = !!process.env.CHATGLM_API_KEY;
   const isSiliconFlow = !!process.env.SILICONFLOW_API_KEY;
+  const isHuawei = !!process.env.HUAWEI_API_KEY;
   // const apiKeyEnvVar = process.env.OPENAI_API_KEY ?? "";
   // const apiKeys = apiKeyEnvVar.split(",").map((v) => v.trim());
   // const randomIndex = Math.floor(Math.random() * apiKeys.length);
@@ -232,6 +237,10 @@ export const getServerSideConfig = () => {
     isXAI,
     xaiUrl: process.env.XAI_URL,
     xaiApiKey: getApiKey(process.env.XAI_API_KEY),
+
+    isHuawei,
+    huaweiUrl: process.env.HUAWEI_URL,
+    huaweiApiKey: getApiKey(process.env.HUAWEI_API_KEY),
 
     isChatGLM,
     chatglmUrl: process.env.CHATGLM_URL,

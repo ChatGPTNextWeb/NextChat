@@ -420,6 +420,22 @@ const ar: PartialLocaleType = {
         Title: "اسم النموذج المخصص",
         SubTitle: "أضف خيارات نموذج مخصص، مفصولة بفواصل إنجليزية",
       },
+      Huawei: {
+        ApiKey: {
+          Title: "مفتاح API",
+          SubTitle: "استخدم مفتاح API الخاص بـ HUAWEI",
+          Placeholder: "مفتاح HUAWEI",
+        },
+        SecretKey: {
+          Title: "المفتاح السري",
+          SubTitle: "استخدم مفتاح HUAWEI السري الخاص بك",
+          Placeholder: "المفتاح السري HUAWEI",
+        },
+        Endpoint: {
+          Title: "عنوان الواجهة",
+          SubTitle: "لا يدعم التكوين المخصص .env",
+        },
+      },
     },
 
     Model: "النموذج",

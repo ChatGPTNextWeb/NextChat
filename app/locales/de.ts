@@ -439,6 +439,22 @@ const de: PartialLocaleType = {
         SubTitle:
           "Fügen Sie benutzerdefinierte Modelloptionen hinzu, getrennt durch Kommas",
       },
+      Huawei: {
+        ApiKey: {
+          Title: "API-Schlüssel",
+          SubTitle: "Verwenden Sie Ihren eigenen HUAWEI API-Schlüssel",
+          Placeholder: "HUAWEI-Schlüssel",
+        },
+        SecretKey: {
+          Title: "Geheimer Schlüssel",
+          SubTitle: "Verwenden Sie Ihren eigenen HUAWEI geheimen Schlüssel",
+          Placeholder: "HUAWEI geheimer Schlüssel",
+        },
+        Endpoint: {
+          Title: "Schnittstellenadresse",
+          SubTitle: "Unterstützt keine benutzerdefinierte .env-Konfiguration",
+        },
+      },
     },
 
     Model: "Modell",

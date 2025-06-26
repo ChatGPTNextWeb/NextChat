@@ -428,6 +428,22 @@ const bn: PartialLocaleType = {
         SubTitle:
           "স্বনির্ধারিত মডেল বিকল্পগুলি যুক্ত করুন, ইংরেজি কমা দ্বারা আলাদা করুন",
       },
+      Huawei: {
+        ApiKey: {
+          Title: "এপিআই কী",
+          SubTitle: "আপনার HUAWEI এপিআই কী ব্যবহার করুন",
+          Placeholder: "HUAWEI কী",
+        },
+        SecretKey: {
+          Title: "গোপন কী",
+          SubTitle: "আপনার HUAWEI গোপন কী ব্যবহার করুন",
+          Placeholder: "HUAWEI গোপন কী",
+        },
+        Endpoint: {
+          Title: "এন্ডপয়েন্ট ঠিকানা",
+          SubTitle: "কাস্টম কনফিগারেশনের জন্য .env-এ যান",
+        },
+      },
     },
 
     Model: "মডেল (model)",

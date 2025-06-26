@@ -538,6 +538,22 @@ const cn = {
         Title: "自定义模型名",
         SubTitle: "增加自定义模型可选项，使用英文逗号隔开",
       },
+      Huawei: {
+        ApiKey: {
+          Title: "API Key",
+          SubTitle: "使用自定义华为API Key",
+          Placeholder: "HUAWEI Key",
+        },
+        SecretKey: {
+          Title: "Secret Key",
+          SubTitle: "使用自定义HUAWEI Secret Key",
+          Placeholder: "HUAWEI Secret Key",
+        },
+        Endpoint: {
+          Title: "接口地址",
+          SubTitle: "不支持自定义前往.env配置",
+        },
+      },
     },
 
     Model: "模型 (model)",

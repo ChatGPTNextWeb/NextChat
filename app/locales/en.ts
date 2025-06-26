@@ -522,6 +522,22 @@ const en: LocaleType = {
         Title: "Custom Models",
         SubTitle: "Custom model options, seperated by comma",
       },
+      Huawei: {
+        ApiKey: {
+          Title: "API Key",
+          SubTitle: "Use your own HUAWEI API key",
+          Placeholder: "HUAWEI Key",
+        },
+        SecretKey: {
+          Title: "Secret Key",
+          SubTitle: "Use your own HUAWEI Secret key",
+          Placeholder: "HUAWEI Secret Key",
+        },
+        Endpoint: {
+          Title: "Endpoint Address",
+          SubTitle: "Does not support custom .env configuration",
+        },
+      },
       Google: {
         ApiKey: {
           Title: "API Key",

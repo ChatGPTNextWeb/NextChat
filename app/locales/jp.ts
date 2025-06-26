@@ -424,6 +424,22 @@ const jp: PartialLocaleType = {
         Title: "カスタムモデル名",
         SubTitle: "カスタムモデルの選択肢を追加、英語のカンマで区切る",
       },
+      Huawei: {
+        ApiKey: {
+          Title: "APIキー",
+          SubTitle: "自分のHUAWEI APIキーを使用してください",
+          Placeholder: "HUAWEIキー",
+        },
+        SecretKey: {
+          Title: "秘密キー",
+          SubTitle: "自分のHUAWEI秘密キーを使用してください",
+          Placeholder: "HUAWEI秘密キー",
+        },
+        Endpoint: {
+          Title: "エンドポイントアドレス",
+          SubTitle: "カスタム.env構成はサポートされていません",
+        },
+      },
     },
 
     Model: "モデル (model)",

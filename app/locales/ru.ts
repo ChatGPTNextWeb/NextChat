@@ -431,6 +431,22 @@ const ru: PartialLocaleType = {
         SubTitle:
           "Добавьте варианты пользовательских моделей, разделяя запятыми",
       },
+      Huawei: {
+        ApiKey: {
+          Title: "API Ключ",
+          SubTitle: "Используйте свой HUAWEI API ключ",
+          Placeholder: "HUAWEI Ключ",
+        },
+        SecretKey: {
+          Title: "Секретный Ключ",
+          SubTitle: "Используйте свой HUAWEI Секретный ключ",
+          Placeholder: "HUAWEI Секретный Ключ",
+        },
+        Endpoint: {
+          Title: "Адрес интерфейса",
+          SubTitle: "Не поддерживает собственную конфигурацию .env",
+        },
+      },
     },
 
     Model: "Модель",
