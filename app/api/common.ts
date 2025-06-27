@@ -6,14 +6,20 @@ import { getModelProvider, isModelNotavailableInServer } from "../utils/model";
 
 const serverConfig = getServerSideConfig();
 
+// Hàm proxy request từ client tới OpenAI hoặc Azure OpenAI, xử lý xác thực, cấu hình endpoint, kiểm tra model, và trả về response phù hợp.
 export async function requestOpenai(req: NextRequest) {
+  // Tạo controller để có thể hủy request khi timeout
   const controller = new AbortController();
 
+  // Kiểm tra xem request có phải tới Azure OpenAI không
   const isAzure = req.nextUrl.pathname.includes("azure/deployments");
 
+  // Biến lưu giá trị xác thực và tên header xác thực
   var authValue,
     authHeaderName = "";
+
   if (isAzure) {
+    // Nếu là Azure, lấy api-key từ header Authorization
     authValue =
       req.headers
         .get("Authorization")
@@ -23,26 +29,38 @@ export async function requestOpenai(req: NextRequest) {
 
     authHeaderName = "api-key";
   } else {
+    // Nếu là OpenAI thường, giữ nguyên header Authorization
+
     authValue = req.headers.get("Authorization") ?? "";
     authHeaderName = "Authorization";
+
+    console.log("[Auth] ", authValue);
   }
 
+  // Xử lý lại đường dẫn endpoint cho phù hợp với OpenAI/Azure
   let path = `${req.nextUrl.pathname}`.replaceAll("/api/openai/", "");
 
+  // console.log("[Proxy] mac dinh ", path);
+
+  // Lấy baseUrl từ config, ưu tiên Azure nếu là request Azure
   let baseUrl =
     (isAzure ? serverConfig.azureUrl : serverConfig.baseUrl) || OPENAI_BASE_URL;
 
+  // Đảm bảo baseUrl có tiền tố https
   if (!baseUrl.startsWith("http")) {
     baseUrl = `https://${baseUrl}`;
   }
 
+  // Loại bỏ dấu "/" ở cuối baseUrl nếu có
   if (baseUrl.endsWith("/")) {
     baseUrl = baseUrl.slice(0, -1);
   }
 
+  // In ra log để debug đường dẫn và baseUrl
   console.log("[Proxy] ", path);
   console.log("[Base Url]", baseUrl);
 
+  // Thiết lập timeout cho request (10 phút), nếu quá sẽ abort
   const timeoutId = setTimeout(
     () => {
       controller.abort();
@@ -50,6 +68,7 @@ export async function requestOpenai(req: NextRequest) {
     10 * 60 * 1000,
   );
 
+  // Nếu là Azure, xử lý lại path và api-version cho đúng chuẩn Azure
   if (isAzure) {
     const azureApiVersion =
       req?.nextUrl?.searchParams?.get("api-version") ||
@@ -60,9 +79,7 @@ export async function requestOpenai(req: NextRequest) {
       "",
     )}?api-version=${azureApiVersion}`;
 
-    // Forward compatibility:
-    // if display_name(deployment_name) not set, and '{deploy-id}' in AZURE_URL
-    // then using default '{deploy-id}'
+    // Nếu có customModels và azureUrl, kiểm tra và thay thế deployment id nếu cần
     if (serverConfig.customModels && serverConfig.azureUrl) {
       const modelName = path.split("/")[1];
       let realDeployName = "";
@@ -88,8 +105,12 @@ export async function requestOpenai(req: NextRequest) {
     }
   }
 
+  // Tạo url cuối cùng để fetch, có thể qua Cloudflare Gateway nếu cấu hình
   const fetchUrl = cloudflareAIGatewayUrl(`${baseUrl}/${path}`);
+
   console.log("fetchUrl", fetchUrl);
+
+  // Thiết lập các option cho fetch, bao gồm headers, method, body, v.v.
   const fetchOptions: RequestInit = {
     headers: {
       "Content-Type": "application/json",
@@ -101,14 +122,14 @@ export async function requestOpenai(req: NextRequest) {
     },
     method: req.method,
     body: req.body,
-    // to fix #2485: https://stackoverflow.com/questions/55920957/cloudflare-worker-typeerror-one-time-use-body
+    // Fix lỗi body chỉ dùng được 1 lần trên Cloudflare Worker
     redirect: "manual",
     // @ts-ignore
     duplex: "half",
     signal: controller.signal,
   };
 
-  // #1815 try to refuse gpt4 request
+  // Kiểm tra model có bị cấm sử dụng không (ví dụ: cấm GPT-4)
   if (serverConfig.customModels && req.body) {
     try {
       const clonedBody = await req.text();
@@ -116,7 +137,7 @@ export async function requestOpenai(req: NextRequest) {
 
       const jsonBody = JSON.parse(clonedBody) as { model?: string };
 
-      // not undefined and is false
+      // Nếu model không được phép sử dụng, trả về lỗi 403
       if (
         isModelNotavailableInServer(
           serverConfig.customModels,
@@ -124,7 +145,7 @@ export async function requestOpenai(req: NextRequest) {
           [
             ServiceProvider.OpenAI,
             ServiceProvider.Azure,
-            jsonBody?.model as string, // support provider-unspecified model
+            jsonBody?.model as string, // hỗ trợ model không rõ provider
           ],
         )
       ) {
@@ -144,43 +165,40 @@ export async function requestOpenai(req: NextRequest) {
   }
 
   try {
+    // Gửi request tới OpenAI/Azure và nhận response
     const res = await fetch(fetchUrl, fetchOptions);
 
-    // Extract the OpenAI-Organization header from the response
+    // Lấy header OpenAI-Organization từ response (nếu có)
     const openaiOrganizationHeader = res.headers.get("OpenAI-Organization");
 
-    // Check if serverConfig.openaiOrgId is defined and not an empty string
+    // Nếu đã cấu hình openaiOrgId, log giá trị header này
     if (serverConfig.openaiOrgId && serverConfig.openaiOrgId.trim() !== "") {
-      // If openaiOrganizationHeader is present, log it; otherwise, log that the header is not present
       console.log("[Org ID]", openaiOrganizationHeader);
     } else {
       console.log("[Org ID] is not set up.");
     }
 
-    // to prevent browser prompt for credentials
+    // Xử lý lại headers trả về cho client
     const newHeaders = new Headers(res.headers);
-    newHeaders.delete("www-authenticate");
-    // to disable nginx buffering
-    newHeaders.set("X-Accel-Buffering", "no");
+    newHeaders.delete("www-authenticate"); // Xóa header yêu cầu xác thực
+    newHeaders.set("X-Accel-Buffering", "no"); // Tắt buffer của nginx
 
-    // Conditionally delete the OpenAI-Organization header from the response if [Org ID] is undefined or empty (not setup in ENV)
-    // Also, this is to prevent the header from being sent to the client
+    // Nếu chưa cấu hình Org ID, xóa header này khỏi response
     if (!serverConfig.openaiOrgId || serverConfig.openaiOrgId.trim() === "") {
       newHeaders.delete("OpenAI-Organization");
     }
 
-    // The latest version of the OpenAI API forced the content-encoding to be "br" in json response
-    // So if the streaming is disabled, we need to remove the content-encoding header
-    // Because Vercel uses gzip to compress the response, if we don't remove the content-encoding header
-    // The browser will try to decode the response with brotli and fail
+    // Xóa header content-encoding để tránh lỗi giải nén trên trình duyệt
     newHeaders.delete("content-encoding");
 
+    // Trả về response cho client với các header đã xử lý
     return new Response(res.body, {
       status: res.status,
       statusText: res.statusText,
       headers: newHeaders,
     });
   } finally {
+    // Dù thành công hay lỗi đều clear timeout
     clearTimeout(timeoutId);
   }
 }

@@ -31,7 +31,6 @@ import {
   showConfirm,
   showToast,
 } from "./ui-lib";
-import { ModelConfigList } from "./model-config";
 
 import { IconButton } from "./button";
 import {
@@ -530,6 +529,8 @@ function SyncItems() {
                 setShowSyncConfigModal(true);
               }}
             />
+
+            {/* thuc hien dong bo voi cloud */}
             {couldSync && (
               <IconButton
                 icon={<ResetIcon />}
@@ -1873,7 +1874,8 @@ export function Settings() {
           </ListItem>
         </List>
 
-        <List>
+        {/* CAU HINH MODEL CUSTOM */}
+        {/* <List>
           <ModelConfigList
             modelConfig={config.modelConfig}
             updateConfig={(updater) => {
@@ -1882,7 +1884,7 @@ export function Settings() {
               config.update((config) => (config.modelConfig = modelConfig));
             }}
           />
-        </List>
+        </List> */}
 
         {shouldShowPromptModal && (
           <UserPromptModal onClose={() => setShowPromptModal(false)} />

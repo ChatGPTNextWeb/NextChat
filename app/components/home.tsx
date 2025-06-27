@@ -5,7 +5,8 @@ require("../polyfill");
 import { useEffect, useState } from "react";
 import styles from "./home.module.scss";
 
-import BotIcon from "../icons/bot.svg";
+//icon chebichat logo
+import BotIcon from "../icons/chebichat.svg";
 import LoadingIcon from "../icons/three-dots.svg";
 
 import { getCSSVar, useMobileScreen } from "../utils";
@@ -14,7 +15,7 @@ import dynamic from "next/dynamic";
 import { Path, SlotID } from "../constant";
 import { ErrorBoundary } from "./error";
 
-import { getISOLang, getLang } from "../locales";
+import { getISOLang } from "../locales";
 
 import {
   HashRouter as Router,
@@ -212,7 +213,7 @@ function Screen() {
     <div
       className={clsx(styles.container, {
         [styles["tight-container"]]: shouldTightBorder,
-        [styles["rtl-screen"]]: getLang() === "ar",
+        // [styles["rtl-screen"]]: getLang() === "ar", // Removed because "ar" is not a possible return value
       })}
     >
       {renderContent()}

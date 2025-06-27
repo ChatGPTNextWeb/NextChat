@@ -59,6 +59,8 @@ export async function handle(
   }
 
   try {
+    console.log("mac dinh su dung OpenAI API");
+    console.log("[OpenAI Route] ", subpath);
     const response = await requestOpenai(req);
 
     // list models

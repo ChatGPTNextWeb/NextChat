@@ -132,10 +132,16 @@ interface ChatProvider {
   usage: () => void;
 }
 
+// Khởi tạo API client dựa trên nhà cung cấp mô hình được chỉ định
 export class ClientApi {
   public llm: LLMApi;
 
+  // Hàm khởi tạo nhận vào một provider (nhà cung cấp mô hình AI)
+  // Mặc định là ModelProvider.GPT nếu không được chỉ định
   constructor(provider: ModelProvider = ModelProvider.GPT) {
+    console.log("[ClientApi] provider ", provider);
+
+    // Sử dụng switch để khởi tạo instance tương ứng với provider được chọn
     switch (provider) {
       case ModelProvider.GeminiPro:
         this.llm = new GeminiProApi();
@@ -178,13 +184,18 @@ export class ClientApi {
     }
   }
 
+  // Hàm cấu hình (chưa triển khai chi tiết)
   config() {}
 
+  // Hàm lấy prompts (chưa triển khai chi tiết)
   prompts() {}
 
+  // Hàm lấy masks (chưa triển khai chi tiết)
   masks() {}
 
+  // Hàm chia sẻ cuộc trò chuyện
   async share(messages: ChatMessage[], avatarUrl: string | null = null) {
+    // Chuẩn bị dữ liệu tin nhắn để chia sẻ
     const msgs = messages
       .map((m) => ({
         from: m.role === "user" ? "human" : "gpt",
@@ -197,14 +208,20 @@ export class ClientApi {
             "Share from [NextChat]: https://github.com/Yidadaa/ChatGPT-Next-Web",
         },
       ]);
-    // 敬告二开开发者们，为了开源大模型的发展，请不要修改上述消息，此消息用于后续数据清洗使用
+    // Lưu ý: Không nên sửa đổi dòng thông báo cuối cùng này vì nó dùng cho việc làm sạch dữ liệu sau này
     // Please do not modify this message
 
     console.log("[Share]", messages, msgs);
+    //
+    // Lấy cấu hình client
     const clientConfig = getClientConfig();
+
+    // Xác định URL để chia sẻ dựa trên môi trường (app hay web)
     const proxyUrl = "/sharegpt";
     const rawUrl = "https://sharegpt.com/api/conversations";
     const shareUrl = clientConfig?.isApp ? rawUrl : proxyUrl;
+
+    // Gửi yêu cầu POST để chia sẻ cuộc trò chuyện
     const res = await fetch(shareUrl, {
       body: JSON.stringify({
         avatarUrl,
@@ -216,14 +233,16 @@ export class ClientApi {
       method: "POST",
     });
 
+    // Xử lý phản hồi và trả về link chia sẻ
     const resJson = await res.json();
-    console.log("[Share]", resJson);
+    // console.log("[Share]", resJson);
     if (resJson.id) {
       return `https://shareg.pt/${resJson.id}`;
     }
   }
 }
 
+// Hàm tạo token xác thực Bearer
 export function getBearerToken(
   apiKey: string,
   noBearer: boolean = false,
@@ -233,14 +252,21 @@ export function getBearerToken(
     : "";
 }
 
+// Hàm kiểm tra chuỗi có hợp lệ không (có độ dài > 0)
 export function validString(x: string): boolean {
   return x?.length > 0;
 }
 
+// Hàm lấy các header cần thiết cho yêu cầu API
 export function getHeaders(ignoreHeaders: boolean = false) {
+  // Lấy store để truy cập các trạng thái liên quan đến quyền truy cập và chat
   const accessStore = useAccessStore.getState();
   const chatStore = useChatStore.getState();
+
+  // Khởi tạo đối tượng headers rỗng
   let headers: Record<string, string> = {};
+
+  // Nếu không bỏ qua headers thì thêm các header mặc định
   if (!ignoreHeaders) {
     headers = {
       "Content-Type": "application/json",
@@ -248,10 +274,15 @@ export function getHeaders(ignoreHeaders: boolean = false) {
     };
   }
 
+  // Lấy cấu hình client
   const clientConfig = getClientConfig();
 
+  // Hàm getConfig sẽ xác định nhà cung cấp hiện tại và API key tương ứng
   function getConfig() {
+    // Lấy cấu hình mô hình từ session hiện tại
     const modelConfig = chatStore.currentSession().mask.modelConfig;
+
+    // Kiểm tra loại nhà cung cấp đang được sử dụng
     const isGoogle = modelConfig.providerName === ServiceProvider.Google;
     const isAzure = modelConfig.providerName === ServiceProvider.Azure;
     const isAnthropic = modelConfig.providerName === ServiceProvider.Anthropic;
@@ -265,7 +296,11 @@ export function getHeaders(ignoreHeaders: boolean = false) {
     const isChatGLM = modelConfig.providerName === ServiceProvider.ChatGLM;
     const isSiliconFlow =
       modelConfig.providerName === ServiceProvider.SiliconFlow;
+
+    // Kiểm tra xem có bật kiểm soát truy cập không
     const isEnabledAccessControl = accessStore.enabledAccessControl();
+
+    // Xác định API key dựa trên nhà cung cấp đang được sử dụng
     const apiKey = isGoogle
       ? accessStore.googleApiKey
       : isAzure
@@ -291,6 +326,8 @@ export function getHeaders(ignoreHeaders: boolean = false) {
         ? accessStore.iflytekApiKey + ":" + accessStore.iflytekApiSecret
         : ""
       : accessStore.openaiApiKey;
+
+    console.log("apiKey:", apiKey);
     return {
       isGoogle,
       isAzure,
@@ -309,6 +346,7 @@ export function getHeaders(ignoreHeaders: boolean = false) {
     };
   }
 
+  // Hàm xác định header nào sẽ được sử dụng để xác thực
   function getAuthHeader(): string {
     return isAzure
       ? "api-key"
@@ -319,6 +357,7 @@ export function getHeaders(ignoreHeaders: boolean = false) {
       : "Authorization";
   }
 
+  // Lấy các giá trị đã được xác định trong getConfig
   const {
     isGoogle,
     isAzure,
@@ -335,19 +374,24 @@ export function getHeaders(ignoreHeaders: boolean = false) {
     apiKey,
     isEnabledAccessControl,
   } = getConfig();
-  // when using baidu api in app, not set auth header
+
+  // Khi sử dụng API của Baidu trong ứng dụng, không đặt header xác thực
   if (isBaidu && clientConfig?.isApp) return headers;
 
+  // Xác định tên header xác thực
   const authHeader = getAuthHeader();
 
+  // Tạo token xác thực
   const bearerToken = getBearerToken(
     apiKey,
     isAzure || isAnthropic || isGoogle,
   );
 
+  // Nếu có bearer token thì thêm vào headers
   if (bearerToken) {
     headers[authHeader] = bearerToken;
   } else if (isEnabledAccessControl && validString(accessStore.accessCode)) {
+    // Nếu có mã truy cập thì sử dụng nó để tạo bearer token
     headers["Authorization"] = getBearerToken(
       ACCESS_CODE_PREFIX + accessStore.accessCode,
     );
@@ -356,6 +400,7 @@ export function getHeaders(ignoreHeaders: boolean = false) {
   return headers;
 }
 
+// Hàm tạo instance của ClientApi dựa trên nhà cung cấp dịch vụ
 export function getClientApi(provider: ServiceProvider): ClientApi {
   switch (provider) {
     case ServiceProvider.Google:

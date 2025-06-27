@@ -65,32 +65,45 @@ export const useMaskStore = createPersistStore(
 
       return masks[id];
     },
+    // Hàm cập nhật một mask dựa trên id và một hàm updater
     updateMask(id: string, updater: (mask: Mask) => void) {
-      const masks = get().masks;
-      const mask = masks[id];
-      if (!mask) return;
-      const updateMask = { ...mask };
-      updater(updateMask);
-      masks[id] = updateMask;
-      set(() => ({ masks }));
-      get().markUpdate();
+      const masks = get().masks; // Lấy danh sách các mask hiện tại
+      const mask = masks[id]; // Lấy mask theo id
+      if (!mask) return; // Nếu không tìm thấy thì thoát
+      const updateMask = { ...mask }; // Tạo bản sao mask để cập nhật
+      updater(updateMask); // Gọi hàm updater để chỉnh sửa mask
+      masks[id] = updateMask; // Gán lại mask đã cập nhật vào danh sách
+      set(() => ({ masks })); // Cập nhật lại state
+      get().markUpdate(); // Đánh dấu đã cập nhật
     },
+    // Hàm xóa một mask theo id
     delete(id: string) {
-      const masks = get().masks;
-      delete masks[id];
-      set(() => ({ masks }));
-      get().markUpdate();
+      const masks = get().masks; // Lấy danh sách các mask hiện tại
+      delete masks[id]; // Xóa mask theo id
+      set(() => ({ masks })); // Cập nhật lại state
+      get().markUpdate(); // Đánh dấu đã cập nhật
     },
 
+    // Hàm lấy một mask theo id (nếu không truyền id sẽ lấy id mặc định)
     get(id?: string) {
       return get().masks[id ?? 1145141919810];
     },
+
+    // Hàm lấy tất cả các mask (bao gồm cả mask người dùng và mask mặc định)
     getAll() {
+      // Lấy danh sách mask của người dùng, sắp xếp theo thời gian tạo mới nhất
       const userMasks = Object.values(get().masks).sort(
         (a, b) => b.createdAt - a.createdAt,
       );
-      const config = useAppConfig.getState();
-      if (config.hideBuiltinMasks) return userMasks;
+      const config = useAppConfig.getState(); // Lấy config hiện tại
+
+      // console.log(config)
+
+      if (config.hideBuiltinMasks) return userMasks; // Nếu ẩn mask mặc định thì chỉ trả về mask người dùng
+
+      console.log("[Build] builtin masks: ", BUILTIN_MASKS);
+
+      // Tạo danh sách mask mặc định (BUILTIN_MASKS) với cấu hình model hiện tại
       const buildinMasks = BUILTIN_MASKS.map(
         (m) =>
           ({
@@ -101,6 +114,8 @@ export const useMaskStore = createPersistStore(
             },
           }) as Mask,
       );
+
+      // Trả về danh sách mask người dùng + mask mặc định
       return userMasks.concat(buildinMasks);
     },
     search(text: string) {

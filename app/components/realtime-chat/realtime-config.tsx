@@ -4,7 +4,7 @@ import Locale from "@/app/locales";
 import { ListItem, Select, PasswordInput } from "@/app/components/ui-lib";
 
 import { InputRange } from "@/app/components/input-range";
-import { Voice } from "rt-client";
+// import { Voice } from "rt-client";
 import { ServiceProvider } from "@/app/constant";
 
 const providers = [ServiceProvider.OpenAI, ServiceProvider.Azure];
@@ -129,7 +129,7 @@ export function RealtimeConfigList(props: {
             />
           </ListItem>
           {azureConfigComponent}
-          <ListItem
+          {/* <ListItem
             title={Locale.Settings.TTS.Voice.Title}
             subTitle={Locale.Settings.TTS.Voice.SubTitle}
           >
@@ -147,7 +147,7 @@ export function RealtimeConfigList(props: {
                 </option>
               ))}
             </Select>
-          </ListItem>
+          </ListItem> */}
           <ListItem
             title={Locale.Settings.Realtime.Temperature.Title}
             subTitle={Locale.Settings.Realtime.Temperature.SubTitle}

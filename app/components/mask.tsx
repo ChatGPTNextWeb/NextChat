@@ -45,7 +45,6 @@ import {
   readFromFile,
 } from "../utils";
 import { Updater } from "../typing";
-import { ModelConfigList } from "./model-config";
 import { FileName, Path } from "../constant";
 import { BUILTIN_MASK_STORE } from "../masks";
 import {
@@ -246,13 +245,14 @@ export function MaskConfig(props: {
         ) : null}
       </List>
 
-      <List>
+      {/* CAU HINH MODEL */}
+      {/* <List>
         <ModelConfigList
           modelConfig={{ ...props.mask.modelConfig }}
           updateConfig={updateConfig}
         />
         {props.extraListItems}
-      </List>
+      </List> */}
     </>
   );
 }

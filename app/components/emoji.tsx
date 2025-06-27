@@ -6,26 +6,13 @@ import EmojiPicker, {
 
 import { ModelType } from "../store";
 
-import BotIconDefault from "../icons/llm-icons/default.svg";
-import BotIconOpenAI from "../icons/llm-icons/openai.svg";
-import BotIconGemini from "../icons/llm-icons/gemini.svg";
-import BotIconGemma from "../icons/llm-icons/gemma.svg";
-import BotIconClaude from "../icons/llm-icons/claude.svg";
-import BotIconMeta from "../icons/llm-icons/meta.svg";
-import BotIconMistral from "../icons/llm-icons/mistral.svg";
-import BotIconDeepseek from "../icons/llm-icons/deepseek.svg";
-import BotIconMoonshot from "../icons/llm-icons/moonshot.svg";
-import BotIconQwen from "../icons/llm-icons/qwen.svg";
-import BotIconWenxin from "../icons/llm-icons/wenxin.svg";
-import BotIconGrok from "../icons/llm-icons/grok.svg";
-import BotIconHunyuan from "../icons/llm-icons/hunyuan.svg";
-import BotIconDoubao from "../icons/llm-icons/doubao.svg";
-import BotIconChatglm from "../icons/llm-icons/chatglm.svg";
+// import BotIconDefault from "../icons/llm-icons/chebichat.svg";
+
+// thay bang chebichat
 
 export function getEmojiUrl(unified: string, style: EmojiStyle) {
-  // Whoever owns this Content Delivery Network (CDN), I am using your CDN to serve emojis
-  // Old CDN broken, so I had to switch to this one
-  // Author: https://github.com/H0llyW00dzZ
+  // Phương thức trả về đường dẫn URL của emoji dựa trên mã hóa unified và kiểu style
+  // CDN mới được sử dụng để phục vụ hình ảnh emoji
   return `https://fastly.jsdelivr.net/npm/emoji-datasource-apple/img/${style}/64/${unified}.png`;
 }
 
@@ -39,75 +26,109 @@ export function AvatarPicker(props: {
       theme={EmojiTheme.AUTO}
       getEmojiUrl={getEmojiUrl}
       onEmojiClick={(e) => {
+        // Gọi hàm onEmojiClick khi người dùng click vào emoji
+        // Truyền giá trị unified của emoji đã chọn
         props.onEmojiClick(e.unified);
       }}
     />
   );
 }
 
-export function Avatar(props: { model?: ModelType; avatar?: string }) {
-  let LlmIcon = BotIconDefault;
-
-  if (props.model) {
-    const modelName = props.model.toLowerCase();
-
-    if (
-      modelName.startsWith("gpt") ||
-      modelName.startsWith("chatgpt") ||
-      modelName.startsWith("dall-e") ||
-      modelName.startsWith("dalle") ||
-      modelName.startsWith("o1") ||
-      modelName.startsWith("o3")
-    ) {
-      LlmIcon = BotIconOpenAI;
-    } else if (modelName.startsWith("gemini")) {
-      LlmIcon = BotIconGemini;
-    } else if (modelName.startsWith("gemma")) {
-      LlmIcon = BotIconGemma;
-    } else if (modelName.startsWith("claude")) {
-      LlmIcon = BotIconClaude;
-    } else if (modelName.includes("llama")) {
-      LlmIcon = BotIconMeta;
-    } else if (modelName.startsWith("mixtral") || modelName.startsWith("codestral")) {
-      LlmIcon = BotIconMistral;
-    } else if (modelName.includes("deepseek")) {
-      LlmIcon = BotIconDeepseek;
-    } else if (modelName.startsWith("moonshot")) {
-      LlmIcon = BotIconMoonshot;
-    } else if (modelName.startsWith("qwen")) {
-      LlmIcon = BotIconQwen;
-    } else if (modelName.startsWith("ernie")) {
-      LlmIcon = BotIconWenxin;
-    } else if (modelName.startsWith("grok")) {
-      LlmIcon = BotIconGrok;
-    } else if (modelName.startsWith("hunyuan")) {
-      LlmIcon = BotIconHunyuan;
-    } else if (modelName.startsWith("doubao") || modelName.startsWith("ep-")) {
-      LlmIcon = BotIconDoubao;
-    } else if (
-      modelName.includes("glm") ||
-      modelName.startsWith("cogview-") ||
-      modelName.startsWith("cogvideox-")
-    ) {
-      LlmIcon = BotIconChatglm;
-    }
-
-    return (
-      <div className="no-dark">
-        <LlmIcon className="user-avatar" width={30} height={30} />
-      </div>
-    );
-  }
-
+// Function to render chebichat PNG avatar
+function chebichatAvatar() {
   return (
     <div className="user-avatar">
-      {props.avatar && <EmojiAvatar avatar={props.avatar} />}
+      <img
+        src="/chebichat.png"
+        alt="chebichat avatar"
+        width={48}
+        height={48}
+        style={{ borderRadius: "50%" }}
+      />
     </div>
   );
 }
 
+//xu ly avatar cho Chebichat
+// nếu không có avatar thì trả về avatar mặc định của Chebichat
+// nếu có avatar thì trả về avatar tương ứng với tên avatar
+export function Avatar(props: { model?: ModelType; avatar?: string }) {
+  // console.log("Avatar props", props);
+
+  if (props.avatar === "chebi-user") {
+    //sau thay the bang avatar tu Chebichat Platform (Avatar Google,...)
+
+    // Nếu avatar là "chebi-user", trả về avatar mặc định của Chebichat
+    return null;
+  }
+
+  return chebichatAvatar();
+
+  // let LlmIcon = BotIconDefault;
+
+  //phan biệt các loại model và gán icon tương ứng
+  // if (props.model) {
+  //   const modelName = props.model.toLowerCase();
+
+  //   // Xác định icon phù hợp dựa trên tên model
+  //   if (
+  //     modelName.startsWith("gpt") ||
+  //     modelName.startsWith("chatgpt") ||
+  //     modelName.startsWith("dall-e") ||
+  //     modelName.startsWith("dalle") ||
+  //     modelName.startsWith("o1") ||
+  //     modelName.startsWith("o3")
+  //   ) {
+  //     LlmIcon = BotIconOpenAI;
+  //   } else if (modelName.startsWith("gemini")) {
+  //     LlmIcon = BotIconGemini;
+  //   } else if (modelName.startsWith("gemma")) {
+  //     LlmIcon = BotIconGemma;
+  //   } else if (modelName.startsWith("claude")) {
+  //     LlmIcon = BotIconClaude;
+  //   } else if (modelName.includes("llama")) {
+  //     LlmIcon = BotIconMeta;
+  //   } else if (
+  //     modelName.startsWith("mixtral") ||
+  //     modelName.startsWith("codestral")
+  //   ) {
+  //     LlmIcon = BotIconMistral;
+  //   } else if (modelName.includes("deepseek")) {
+  //     LlmIcon = BotIconDeepseek;
+  //   } else if (modelName.startsWith("moonshot")) {
+  //     LlmIcon = BotIconMoonshot;
+  //   } else if (modelName.startsWith("qwen")) {
+  //     LlmIcon = BotIconQwen;
+  //   } else if (modelName.startsWith("ernie")) {
+  //     LlmIcon = BotIconWenxin;
+  //   } else if (modelName.startsWith("grok")) {
+  //     LlmIcon = BotIconGrok;
+  //   } else if (modelName.startsWith("hunyuan")) {
+  //     LlmIcon = BotIconHunyuan;
+  //   } else if (modelName.startsWith("doubao") || modelName.startsWith("ep-")) {
+  //     LlmIcon = BotIconDoubao;
+  //   } else if (
+  //     modelName.includes("glm") ||
+  //     modelName.startsWith("cogview-") ||
+  //     modelName.startsWith("cogvideox-")
+  //   ) {
+  //     LlmIcon = BotIconChatglm;
+  //   }
+
+  //   return chebichatAvatar();
+  // }
+
+  // return (
+  //   console.log("Avatar", props.avatar),
+  //   <div className="user-avatar">
+  //     {props.avatar && <EmojiAvatar avatar={props.avatar} size={48} />}
+  //   </div>
+  // );
+}
+
 export function EmojiAvatar(props: { avatar: string; size?: number }) {
   return (
+    // Hiển thị emoji dựa trên giá trị avatar được truyền vào
     <Emoji
       unified={props.avatar}
       size={props.size ?? 18}

@@ -108,7 +108,7 @@ export function RealtimeChat({
         //   console.error("Set message failed:", error);
         // }
       } catch (error) {
-        console.error("Connection failed:", error);
+        // console.error("Connection failed:", error);
         setStatus("Connection failed");
       } finally {
         setIsConnecting(false);

@@ -4,8 +4,9 @@ import styles from "./home.module.scss";
 
 import { IconButton } from "./button";
 import SettingsIcon from "../icons/settings.svg";
-import GithubIcon from "../icons/github.svg";
-import ChatGptIcon from "../icons/chatgpt.svg";
+
+import ChatGptIcon from "../icons/chebichat.svg";
+
 import AddIcon from "../icons/add.svg";
 import DeleteIcon from "../icons/delete.svg";
 import MaskIcon from "../icons/mask.svg";
@@ -23,19 +24,20 @@ import {
   MIN_SIDEBAR_WIDTH,
   NARROW_SIDEBAR_WIDTH,
   Path,
-  REPO_URL,
 } from "../constant";
 
 import { Link, useNavigate } from "react-router-dom";
 import { isIOS, useMobileScreen } from "../utils";
 import dynamic from "next/dynamic";
-import { Selector, showConfirm } from "./ui-lib";
+import { Selector, showConfirm, showToast } from "./ui-lib";
 import clsx from "clsx";
 import { isMcpEnabled } from "../mcp/actions";
+import { useSyncStore } from "../store/sync";
 
 const DISCOVERY = [
-  { name: Locale.Plugin.Name, path: Path.Plugins },
-  { name: "Stable Diffusion", path: Path.Sd },
+  // { name: Locale.Plugin.Name, path: Path.Plugins },
+  // { name: "Stable Diffusion", path: Path.Sd },
+  { name: Locale.UI.Sync, path: "/sync" },
   { name: Locale.SearchChat.Page.Title, path: Path.SearchChat },
 ];
 
@@ -233,6 +235,8 @@ export function SideBar(props: { className?: string }) {
   const chatStore = useChatStore();
   const [mcpEnabled, setMcpEnabled] = useState(false);
 
+  const syncStore = useSyncStore();
+
   useEffect(() => {
     // 检查 MCP 是否启用
     const checkMcpStatus = async () => {
@@ -250,17 +254,20 @@ export function SideBar(props: { className?: string }) {
       {...props}
     >
       <SideBarHeader
-        title="NextChat"
-        subTitle="Build your own AI assistant."
-        logo={<ChatGptIcon />}
-        shouldNarrow={shouldNarrow}
+        title="Chebi Chat" // Tiêu đề sidebar
+        subTitle="Trợ lý AI học tiếng Trung" // Phụ đề sidebar
+        logo={<ChatGptIcon />} // Logo hiển thị
+        shouldNarrow={shouldNarrow} // Trạng thái thu nhỏ sidebar
       >
+        {/* Thanh công cụ phía trên của sidebar */}
         <div className={styles["sidebar-header-bar"]}>
+          {/* Nút chuyển sang giao diện tạo chat mới hoặc danh sách mask */}
           <IconButton
             icon={<MaskIcon />}
             text={shouldNarrow ? undefined : Locale.Mask.Name}
             className={styles["sidebar-bar-button"]}
             onClick={() => {
+              // Nếu chưa tắt splash screen mask thì chuyển sang tạo chat mới, ngược lại chuyển sang danh sách mask
               if (config.dontShowMaskSplashScreen !== true) {
                 navigate(Path.NewChat, { state: { fromHome: true } });
               } else {
@@ -269,17 +276,20 @@ export function SideBar(props: { className?: string }) {
             }}
             shadow
           />
+          {/* Nếu tính năng MCP được bật thì hiển thị nút MCP */}
           {mcpEnabled && (
             <IconButton
               icon={<McpIcon />}
               text={shouldNarrow ? undefined : Locale.Mcp.Name}
               className={styles["sidebar-bar-button"]}
               onClick={() => {
+                // Chuyển sang giao diện MCP Market
                 navigate(Path.McpMarket, { state: { fromHome: true } });
               }}
               shadow
             />
           )}
+          {/* Nút chuyển sang giao diện Discovery */}
           <IconButton
             icon={<DiscoveryIcon />}
             text={shouldNarrow ? undefined : Locale.Discovery.Name}
@@ -288,6 +298,7 @@ export function SideBar(props: { className?: string }) {
             shadow
           />
         </div>
+        {/* Hiển thị selector khi người dùng bấm vào Discovery */}
         {showDiscoverySelector && (
           <Selector
             items={[
@@ -299,8 +310,20 @@ export function SideBar(props: { className?: string }) {
               }),
             ]}
             onClose={() => setshowDiscoverySelector(false)}
-            onSelection={(s) => {
-              navigate(s[0], { state: { fromHome: true } });
+            onSelection={async (s) => {
+              console.log(s[0]);
+              if (s[0] == "/sync") {
+                try {
+                  await syncStore.sync();
+                  console.log("Dong bo thanh cong ");
+                  showToast(Locale.Settings.Sync.Success);
+                } catch (e) {
+                  showToast(Locale.Settings.Sync.Fail);
+                  console.error("[Sync]", e);
+                }
+              } else {
+                navigate(s[0], { state: { fromHome: true } });
+              }
             }}
           />
         )}
@@ -336,7 +359,8 @@ export function SideBar(props: { className?: string }) {
                 />
               </Link>
             </div>
-            <div className={styles["sidebar-action"]}>
+
+            {/* <div className={styles["sidebar-action"]}>
               <a href={REPO_URL} target="_blank" rel="noopener noreferrer">
                 <IconButton
                   aria={Locale.Export.MessageFromChatGPT}
@@ -344,7 +368,7 @@ export function SideBar(props: { className?: string }) {
                   shadow
                 />
               </a>
-            </div>
+            </div> */}
           </>
         }
         secondaryAction={

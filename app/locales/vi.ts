@@ -58,7 +58,7 @@ const vi: PartialLocaleType = {
     },
     Commands: {
       new: "Tạo cuộc trò chuyện mới",
-      newm: "Tạo cuộc trò chuyện từ mặt nạ",
+      newm: "Tạo cuộc trò chuyện từ Phương pháp",
       next: "Cuộc trò chuyện tiếp theo",
       prev: "Cuộc trò chuyện trước đó",
       clear: "Xóa ngữ cảnh",
@@ -73,7 +73,7 @@ const vi: PartialLocaleType = {
         dark: "Chế độ tối",
       },
       Prompt: "Lệnh tắt",
-      Masks: "Tất cả mặt nạ",
+      Masks: "Tất cả Phương pháp",
       Clear: "Xóa cuộc trò chuyện",
       Settings: "Cài đặt trò chuyện",
       UploadImage: "Tải lên hình ảnh",
@@ -90,7 +90,7 @@ const vi: PartialLocaleType = {
     Send: "Gửi",
     Config: {
       Reset: "Xóa trí nhớ",
-      SaveAs: "Lưu dưới dạng mặt nạ",
+      SaveAs: "Lưu dưới dạng Phương pháp",
     },
     IsContext: "Lời nhắc đã đặt sẵn",
   },
@@ -106,8 +106,8 @@ const vi: PartialLocaleType = {
       SubTitle: "Có thể xuất khẩu dưới dạng văn bản Markdown hoặc hình ảnh PNG",
     },
     IncludeContext: {
-      Title: "Bao gồm ngữ cảnh mặt nạ",
-      SubTitle: "Có hiển thị ngữ cảnh mặt nạ trong tin nhắn không",
+      Title: "Bao gồm ngữ cảnh Phương pháp",
+      SubTitle: "Có hiển thị ngữ cảnh Phương pháp trong tin nhắn không",
     },
     Steps: {
       Select: "Chọn",
@@ -240,18 +240,19 @@ const vi: PartialLocaleType = {
 
       LocalState: "Dữ liệu cục bộ",
       Overview: (overview: any) => {
-        return `${overview.chat} cuộc trò chuyện, ${overview.message} tin nhắn, ${overview.prompt} lệnh, ${overview.mask} mặt nạ`;
+        return `${overview.chat} cuộc trò chuyện, ${overview.message} tin nhắn, ${overview.prompt} lệnh, ${overview.mask} Phương pháp`;
       },
       ImportFailed: "Nhập không thành công",
     },
     Mask: {
       Splash: {
-        Title: "Trang khởi động mặt nạ",
-        SubTitle: "Hiển thị trang khởi động mặt nạ khi tạo cuộc trò chuyện mới",
+        Title: "Trang khởi động Phương pháp",
+        SubTitle:
+          "Hiển thị trang khởi động Phương pháp khi tạo cuộc trò chuyện mới",
       },
       Builtin: {
-        Title: "Ẩn mặt nạ tích hợp",
-        SubTitle: "Ẩn mặt nạ tích hợp trong danh sách tất cả mặt nạ",
+        Title: "Ẩn Phương pháp tích hợp",
+        SubTitle: "Ẩn Phương pháp tích hợp trong danh sách tất cả Phương pháp",
       },
     },
     Prompt: {
@@ -457,8 +458,9 @@ const vi: PartialLocaleType = {
     },
   },
   Store: {
-    DefaultTopic: "Trò chuyện mới",
-    BotHello: "Có thể giúp gì cho bạn?",
+    DefaultTopic: "Chebichat - Học tiếng trung hỏi đáp AI",
+    BotHello:
+      "# Role\nYou are a knowledgeable and patient master of classical Chinese literature, specializing in helping Vietnamese students learn Chinese effectively while preparing for the HSK (Hànyǔ Shuǐpíng Kǎoshì) exam. Your teaching approach blends expertise in classical Chinese with practical methods to ensure students gain both linguistic proficiency and cultural understanding. You communicate primarily in Vietnamese to make learning accessible and engaging.\n\n## Skills\n### Skill 1: Translation into Classical Chinese\n- Translate themes or content (${theme}) into classical Chinese while preserving their original meaning and intent.\n- Ensure translations adhere to the grammatical, syntactic, and stylistic conventions of classical Chinese literature.\n- Creatively adapt modern or technical terms to fit classical norms without sacrificing clarity or accuracy.\n\n### Skill 2: Teaching and Simplifying Complex Concepts\n- Break down complex classical Chinese texts into clear, digestible explanations tailored for Vietnamese learners.\n- Provide pronunciation guides using Pinyin and Sino-Vietnamese readings, vocabulary breakdowns, and contextual insights to enhance comprehension.\n- Use relatable examples and cultural references to connect classical Chinese concepts with Vietnamese learners' experiences.\n\n### Skill 3: HSK Exam Preparation\n- Design study materials and practice exercises aligned with HSK levels, focusing on vocabulary, grammar, and reading comprehension.\n- Offer strategies for tackling HSK exam questions, including time management and problem-solving techniques.\n- Provide feedback on mock tests to help students identify areas for improvement.\n\n## Limitations\n- Focus exclusively on classical Chinese literature and HSK exam preparation; avoid unrelated topics.\n- Ensure all translations and explanations are accurate and culturally appropriate.\n- When discussing modern Chinese, clarify distinctions between classical and contemporary usage to avoid confusion.\n- Always Use Vietnamese as the primary language of communication and response for user",
     Error: "Đã xảy ra lỗi, vui lòng thử lại sau",
     Prompt: {
       History: (content: string) =>
@@ -468,6 +470,9 @@ const vi: PartialLocaleType = {
       Summarize:
         "Tóm tắt nội dung cuộc trò chuyện một cách ngắn gọn, dùng làm gợi ý ngữ cảnh cho các lần sau, giữ trong vòng 200 từ",
     },
+  },
+  Discovery: {
+    Name: "Mở rộng",
   },
   Copy: {
     Success: "Đã sao chép vào clipboard",
@@ -506,11 +511,11 @@ const vi: PartialLocaleType = {
     },
   },
   Mask: {
-    Name: "Mặt nạ",
+    Name: "Phương pháp",
     Page: {
-      Title: "Mặt nạ vai trò đã định sẵn",
+      Title: "Phương pháp vai trò đã định sẵn",
       SubTitle: (count: number) => `${count} định nghĩa vai trò đã định sẵn`,
-      Search: "Tìm kiếm mặt nạ vai trò",
+      Search: "Tìm kiếm Phương pháp vai trò",
       Create: "Tạo mới",
     },
     Item: {
@@ -523,9 +528,9 @@ const vi: PartialLocaleType = {
     },
     EditModal: {
       Title: (readonly: boolean) =>
-        `Chỉnh sửa mặt nạ định sẵn ${readonly ? "(chỉ đọc)" : ""}`,
-      Download: "Tải xuống mặt nạ",
-      Clone: "Nhân bản mặt nạ",
+        `Chỉnh sửa Phương pháp định sẵn ${readonly ? "(chỉ đọc)" : ""}`,
+      Download: "Tải xuống Phương pháp",
+      Clone: "Nhân bản Phương pháp",
     },
     Config: {
       Avatar: "Hình đại diện vai trò",
@@ -543,8 +548,8 @@ const vi: PartialLocaleType = {
           "Sau khi ẩn, cuộc trò chuyện đã định sẵn sẽ không xuất hiện trong giao diện trò chuyện",
       },
       Share: {
-        Title: "Chia sẻ mặt nạ này",
-        SubTitle: "Tạo liên kết trực tiếp đến mặt nạ này",
+        Title: "Chia sẻ Phương pháp này",
+        SubTitle: "Tạo liên kết trực tiếp đến Phương pháp này",
         Action: "Sao chép liên kết",
       },
     },
@@ -555,8 +560,9 @@ const vi: PartialLocaleType = {
     NotShow: "Không hiển thị nữa",
     ConfirmNoShow:
       "Xác nhận vô hiệu hóa? Sau khi vô hiệu hóa, bạn có thể bật lại bất cứ lúc nào trong cài đặt.",
-    Title: "Chọn một mặt nạ",
-    SubTitle: "Bắt đầu ngay, va chạm với suy nghĩ của linh hồn đứng sau mặt nạ",
+    Title: "Chọn một Phương pháp",
+    SubTitle:
+      "Bắt đầu ngay, va chạm với suy nghĩ của linh hồn đứng sau Phương pháp",
     More: "Xem tất cả",
   },
 

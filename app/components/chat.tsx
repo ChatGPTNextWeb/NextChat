@@ -36,7 +36,6 @@ import CancelIcon from "../icons/cancel.svg";
 import ImageIcon from "../icons/image.svg";
 
 import LightIcon from "../icons/light.svg";
-import DarkIcon from "../icons/dark.svg";
 import AutoIcon from "../icons/auto.svg";
 import BottomIcon from "../icons/bottom.svg";
 import StopIcon from "../icons/pause.svg";
@@ -75,6 +74,7 @@ import {
   useMobileScreen,
   selectOrCopy,
   showPlugins,
+  isIOS,
 } from "../utils";
 
 import { uploadImage as uploadImageRemote } from "@/app/utils/chat";
@@ -510,22 +510,23 @@ export function ChatActions(props: {
   const pluginStore = usePluginStore();
   const session = chatStore.currentSession();
 
-  // switch themes
+  // Chuyển đổi giữa các chế độ giao diện sáng/tối
   const theme = config.theme;
 
   function nextTheme() {
-    const themes = [Theme.Auto, Theme.Light, Theme.Dark];
+    //, Theme.Dark
+    const themes = [Theme.Auto, Theme.Light];
     const themeIndex = themes.indexOf(theme);
     const nextIndex = (themeIndex + 1) % themes.length;
     const nextTheme = themes[nextIndex];
     config.update((config) => (config.theme = nextTheme));
   }
 
-  // stop all responses
+  // Dừng tất cả các phản hồi đang chạy
   const couldStop = ChatControllerPool.hasPending();
   const stopAll = () => ChatControllerPool.stopAll();
 
-  // switch model
+  // Chuyển đổi giữa các mô hình AI
   const currentModel = session.mask.modelConfig.model;
   const currentProviderName =
     session.mask.modelConfig?.providerName || ServiceProvider.OpenAI;
@@ -577,11 +578,11 @@ export function ChatActions(props: {
       props.setUploading(false);
     }
 
-    // if current model is not available
-    // switch to first available model
+    // nếu mô hình hiện tại không khả dụng
+    // chuyển sang mô hình khả dụng đầu tiên
     const isUnavailableModel = !models.some((m) => m.name === currentModel);
     if (isUnavailableModel && models.length > 0) {
-      // show next model to default model if exist
+      // hiển thị mô hình tiếp theo là mô hình mặc định nếu có
       let nextModel = models.find((model) => model.isDefault) || models[0];
       chatStore.updateTargetSession(session, (session) => {
         session.mask.modelConfig.model = nextModel.name;
@@ -637,9 +638,10 @@ export function ChatActions(props: {
                 <AutoIcon />
               ) : theme === Theme.Light ? (
                 <LightIcon />
-              ) : theme === Theme.Dark ? (
-                <DarkIcon />
-              ) : null}
+              ) : // theme === Theme.Dark ? (
+              //   <DarkIcon />
+              // )
+              null}
             </>
           }
         />
@@ -1167,7 +1169,8 @@ function _Chat() {
 
       // auto sync mask config from global config
       if (session.mask.syncGlobalConfig) {
-        console.log("[Mask] syncing from global, name = ", session.mask.name);
+        // console.log("[Mask] syncing from global, name = ", session.mask.name);
+
         session.mask.modelConfig = { ...config.modelConfig };
       }
     });
@@ -1330,18 +1333,32 @@ function _Chat() {
     }
   }
 
+  // Sử dụng useMemo để tạo mảng context chứa các tin nhắn ngữ cảnh (context messages) của phiên chat hiện tại.
+  // Nếu mask được thiết lập ẩn context (hideContext), trả về mảng rỗng.
+  // Ngược lại, sao chép các tin nhắn context từ session.mask.context.
   const context: RenderMessage[] = useMemo(() => {
     return session.mask.hideContext ? [] : session.mask.context.slice();
   }, [session.mask.context, session.mask.hideContext]);
 
+  // Nếu không có tin nhắn context nào (context.length === 0)
+  // và tin nhắn đầu tiên của session không phải là lời chào mặc định của bot (BOT_HELLO),
+  // thì thêm tin nhắn chào mặc định của bot vào context.
+  // Nếu người dùng chưa đăng nhập (không có quyền truy cập), thay nội dung lời chào bằng thông báo lỗi chưa đăng nhập.
   if (
     context.length === 0 &&
     session.messages.at(0)?.content !== BOT_HELLO.content
   ) {
+    // sao chép lời chào mặc định của bot
+
     const copiedHello = Object.assign({}, BOT_HELLO);
+
+    // nếu người dùng chưa đăng nhập, thay nội dung lời chào bằng thông báo lỗi chưa đăng nhập
     if (!accessStore.isAuthorized()) {
       copiedHello.content = Locale.Error.Unauthorized;
     }
+    // thêm lời chào vào context
+    // để hiển thị lời chào này trong giao diện chat
+    // như là một phần của ngữ cảnh cuộc trò chuyện
     context.push(copiedHello);
   }
 
@@ -1438,7 +1455,10 @@ function _Chat() {
 
   const clientConfig = useMemo(() => getClientConfig(), []);
 
-  const autoFocus = !isMobileScreen; // wont auto focus on mobile screen
+  const autoFocus = isIOS() ? false : !isMobileScreen; // wont auto focus on mobile screen
+
+  console.log("tu dong focus:", autoFocus);
+
   const showMaxIcon = !isMobileScreen && !clientConfig?.isApp;
 
   useCommand({
@@ -1781,9 +1801,13 @@ function _Chat() {
               }}
             >
               {messages
-                // TODO
                 // .filter((m) => !m.isMcpResponse)
                 .map((message, i) => {
+                  // Bypass rendering if message.role is "system"
+                  if (message.role === "system") {
+                    return null;
+                  }
+
                   const isUser = message.role === "user";
                   const isContext = i < context.length;
                   const showActions =
@@ -1794,6 +1818,8 @@ function _Chat() {
 
                   const shouldShowClearContextDivider =
                     i === clearContextIndex - 1;
+
+                  // console.log(message.role);
 
                   return (
                     <Fragment key={message.id}>
@@ -1848,9 +1874,9 @@ function _Chat() {
                                   }}
                                 ></IconButton>
                               </div>
-                              {isUser ? (
-                                <Avatar avatar={config.avatar} />
-                              ) : (
+
+                              {/* Neu la user thi khong hien thi avatar */}
+                              {isUser ? null : (
                                 <>
                                   {["system"].includes(message.role) ? (
                                     <Avatar avatar="2699-fe0f" />

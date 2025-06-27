@@ -27,6 +27,7 @@ import {
   ServiceProvider,
   StoreKey,
   SUMMARIZE_MODEL,
+  CHEBI_MESSAGE,
 } from "../constant";
 import Locale, { getLang } from "../locales";
 import { prettyObject } from "../utils/format";
@@ -96,17 +97,26 @@ export interface ChatSession {
 }
 
 export const DEFAULT_TOPIC = Locale.Store.DefaultTopic;
+
 export const BOT_HELLO: ChatMessage = createMessage({
-  role: "assistant",
+  role: "system",
   content: Locale.Store.BotHello,
 });
 
+// them hoi thoai moi
 function createEmptySession(): ChatSession {
   return {
     id: nanoid(),
     topic: DEFAULT_TOPIC,
     memoryPrompt: "",
-    messages: [],
+    messages: [
+      {
+        id: "text-to-pic-0",
+        role: "system",
+        content: CHEBI_MESSAGE,
+        date: "",
+      },
+    ],
     stat: {
       tokenCount: 0,
       wordCount: 0,
@@ -119,11 +129,12 @@ function createEmptySession(): ChatSession {
   };
 }
 
+// Hàm lấy mô hình tóm tắt dựa trên mô hình hiện tại
 function getSummarizeModel(
   currentModel: string,
   providerName: string,
 ): string[] {
-  // if it is using gpt-* models, force to use 4o-mini to summarize
+  // nếu đang sử dụng mô hình gpt-*, buộc phải dùng 4o-mini để tóm tắt
   if (currentModel.startsWith("gpt") || currentModel.startsWith("chatgpt")) {
     const configStore = useAppConfig.getState();
     const accessStore = useAccessStore.getState();
@@ -151,6 +162,7 @@ function getSummarizeModel(
   return [currentModel, providerName];
 }
 
+// Hàm đếm tổng số token trong các tin nhắn
 function countMessages(msgs: ChatMessage[]) {
   return msgs.reduce(
     (pre, cur) => pre + estimateTokenLength(getMessageTextContent(cur)),
@@ -158,17 +170,18 @@ function countMessages(msgs: ChatMessage[]) {
   );
 }
 
+// Hàm điền nội dung vào mẫu prompt
 function fillTemplateWith(input: string, modelConfig: ModelConfig) {
   const cutoff =
     KnowledgeCutOffDate[modelConfig.model] ?? KnowledgeCutOffDate.default;
-  // Find the model in the DEFAULT_MODELS array that matches the modelConfig.model
+  // Tìm mô hình trong mảng DEFAULT_MODELS khớp với modelConfig.model
   const modelInfo = DEFAULT_MODELS.find((m) => m.name === modelConfig.model);
 
   var serviceProvider = "OpenAI";
   if (modelInfo) {
-    // TODO: auto detect the providerName from the modelConfig.model
+    // TODO: tự động phát hiện providerName từ modelConfig.model
 
-    // Directly use the providerName from the modelInfo
+    // Sử dụng trực tiếp providerName từ modelInfo
     serviceProvider = modelInfo.provider.providerName;
   }
 
@@ -183,12 +196,12 @@ function fillTemplateWith(input: string, modelConfig: ModelConfig) {
 
   let output = modelConfig.template ?? DEFAULT_INPUT_TEMPLATE;
 
-  // remove duplicate
+  // loại bỏ nội dung trùng lặp
   if (input.startsWith(output)) {
     output = "";
   }
 
-  // must contains {{input}}
+  // phải chứa {{input}}
   const inputVar = "{{input}}";
   if (!output.includes(inputVar)) {
     output += "\n" + inputVar;
@@ -196,19 +209,20 @@ function fillTemplateWith(input: string, modelConfig: ModelConfig) {
 
   Object.entries(vars).forEach(([name, value]) => {
     const regex = new RegExp(`{{${name}}}`, "g");
-    output = output.replace(regex, value.toString()); // Ensure value is a string
+    output = output.replace(regex, value.toString()); // Đảm bảo giá trị là chuỗi
   });
 
   return output;
 }
 
+// Hàm lấy prompt hệ thống MCP
 async function getMcpSystemPrompt(): Promise<string> {
   const tools = await getAllTools();
 
   let toolsStr = "";
 
   tools.forEach((i) => {
-    // error client has no tools
+    // client lỗi không có công cụ
     if (!i.tools) return;
 
     toolsStr += MCP_TOOLS_TEMPLATE.replace(

@@ -518,12 +518,12 @@ export function ImagePreviewer(props: {
             <NextImage
               src={ChatGptIcon.src}
               alt="logo"
-              width={50}
-              height={50}
+              width={30}
+              height={30}
             />
           </div>
 
-          <div>
+          {/* <div>
             <div className={styles["main-title"]}>NextChat</div>
             <div className={styles["sub-title"]}>
               github.com/ChatGPTNextWeb/ChatGPT-Next-Web
@@ -536,7 +536,8 @@ export function ImagePreviewer(props: {
                 model={session.mask.modelConfig.model}
               />
             </div>
-          </div>
+          </div> */}
+
           <div>
             <div className={styles["chat-info-item"]}>
               {Locale.Exporter.Model}: {mask.modelConfig.model}

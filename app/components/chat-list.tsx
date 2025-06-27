@@ -150,6 +150,8 @@ export function ChatList(props: { narrow?: boolean }) {
                 index={i}
                 selected={i === selectedIndex}
                 onClick={() => {
+                  console.log(item.topic);
+
                   navigate(Path.Chat);
                   selectSession(i);
                 }}

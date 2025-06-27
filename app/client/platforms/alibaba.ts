@@ -18,7 +18,6 @@ import {
   LLMModel,
   SpeechOptions,
   MultimodalContent,
-  MultimodalContentForAlibaba,
 } from "../api";
 import { getClientConfig } from "@/app/config/client";
 import {
@@ -156,11 +155,13 @@ export class QwenApi implements LLMApi {
       );
 
       if (shouldStream) {
+        // Lấy danh sách các công cụ (tools) và hàm (funcs) từ plugin hiện tại của phiên chat
         const [tools, funcs] = usePluginStore
           .getState()
           .getAsTools(
             useChatStore.getState().currentSession().mask?.plugin || [],
           );
+        // Gọi hàm streamWithThink để xử lý chat dạng stream (dòng sự kiện server-sent events)
         return streamWithThink(
           chatPath,
           requestPayload,
@@ -168,74 +169,24 @@ export class QwenApi implements LLMApi {
           tools as any,
           funcs,
           controller,
-          // parseSSE
+          // SSE parse callback for OpenAI-style streaming
           (text: string, runTools: ChatMessageTool[]) => {
-            // console.log("parseSSE", text, runTools);
-            const json = JSON.parse(text);
-            const choices = json.output.choices as Array<{
-              message: {
-                content: string | null | MultimodalContentForAlibaba[];
-                tool_calls: ChatMessageTool[];
-                reasoning_content: string | null;
-              };
-            }>;
-
-            if (!choices?.length) return { isThinking: false, content: "" };
-
-            const tool_calls = choices[0]?.message?.tool_calls;
-            if (tool_calls?.length > 0) {
-              const index = tool_calls[0]?.index;
-              const id = tool_calls[0]?.id;
-              const args = tool_calls[0]?.function?.arguments;
-              if (id) {
-                runTools.push({
-                  id,
-                  type: tool_calls[0]?.type,
-                  function: {
-                    name: tool_calls[0]?.function?.name as string,
-                    arguments: args,
-                  },
-                });
-              } else {
-                // @ts-ignore
-                runTools[index]["function"]["arguments"] += args;
-              }
+            // Each `text` is a line like: data: {...}
+            let json: any;
+            try {
+              json = JSON.parse(text);
+            } catch {
+              return { isThinking: false, content: "" };
             }
+            const delta = json.choices?.[0]?.delta;
+            const content = delta?.content ?? "";
 
-            const reasoning = choices[0]?.message?.reasoning_content;
-            const content = choices[0]?.message?.content;
-
-            // Skip if both content and reasoning_content are empty or null
-            if (
-              (!reasoning || reasoning.length === 0) &&
-              (!content || content.length === 0)
-            ) {
-              return {
-                isThinking: false,
-                content: "",
-              };
-            }
-
-            if (reasoning && reasoning.length > 0) {
-              return {
-                isThinking: true,
-                content: reasoning,
-              };
-            } else if (content && content.length > 0) {
-              return {
-                isThinking: false,
-                content: Array.isArray(content)
-                  ? content.map((item) => item.text).join(",")
-                  : content,
-              };
-            }
-
+            // You can accumulate content outside if needed
             return {
               isThinking: false,
-              content: "",
+              content,
             };
           },
-          // processToolMessage, include tool_calls message and tool call results
           (
             requestPayload: RequestPayload,
             toolCallMessage: any,
@@ -248,7 +199,20 @@ export class QwenApi implements LLMApi {
               ...toolCallResult,
             );
           },
-          options,
+          {
+            ...options,
+            // Accumulate and render result as it streams
+            onUpdate: (() => {
+              let accumulated = "";
+              return (chunk: string, fetchText?: string) => {
+                accumulated += chunk;
+                options.onUpdate?.(accumulated, fetchText ?? "");
+              };
+            })(),
+            onFinish: (final: string, res: any) => {
+              options.onFinish?.(final, res);
+            },
+          },
         );
       } else {
         const res = await fetch(chatPath, chatPayload);

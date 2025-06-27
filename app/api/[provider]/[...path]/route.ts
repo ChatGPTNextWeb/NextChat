@@ -20,7 +20,11 @@ async function handle(
   req: NextRequest,
   { params }: { params: { provider: string; path: string[] } },
 ) {
+  // Handle OPTIONS request for CORS preflight
+  // params.provider = MODEL_PROVIDER;
+
   const apiPath = `/api/${params.provider}`;
+
   console.log(`[${params.provider} Route] params `, params);
   switch (apiPath) {
     case ApiPath.Azure:

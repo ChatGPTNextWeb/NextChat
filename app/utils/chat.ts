@@ -35,10 +35,10 @@ export function compressImage(file: Blob, maxSize: number): Promise<string> {
           if (dataUrl.length < maxSize) break;
 
           if (quality > 0.5) {
-            // Prioritize quality reduction
+            // Ưu tiên giảm chất lượng
             quality -= 0.1;
           } else {
-            // Then reduce the size
+            // Sau đó giảm kích thước
             width *= 0.9;
             height *= 0.9;
           }
@@ -198,6 +198,7 @@ export function stream(
   function animateResponseText() {
     if (finished || controller.signal.aborted) {
       responseText += remainText;
+
       console.log("[Response Animation] finished");
       if (responseText?.length === 0) {
         options.onError?.(new Error("empty response from server"));
@@ -211,6 +212,12 @@ export function stream(
       responseText += fetchText;
       remainText = remainText.slice(fetchCount);
       options.onUpdate?.(responseText, fetchText);
+
+      console.log("[Response Animation] update", {
+        responseText,
+        fetchText,
+        remainText,
+      });
     }
 
     requestAnimationFrame(animateResponseText);
@@ -548,7 +555,7 @@ export function streamWithThink(
       async onopen(res) {
         clearTimeout(requestTimeoutId);
         const contentType = res.headers.get("content-type");
-        console.log("[Request] response content type: ", contentType);
+        // console.log("[Request] response content type: ", contentType);
         responseRes = res;
 
         if (contentType?.startsWith("text/plain")) {

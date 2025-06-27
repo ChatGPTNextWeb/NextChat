@@ -153,81 +153,35 @@ export class SiliconflowApi implements LLMApi {
           tools as any,
           funcs,
           controller,
-          // parseSSE
+          // parseSSE mới cho SiliconFlow response
           (text: string, runTools: ChatMessageTool[]) => {
-            // console.log("parseSSE", text, runTools);
+            // Parse chuỗi JSON trả về thành đối tượng
             const json = JSON.parse(text);
-            const choices = json.choices as Array<{
-              delta: {
-                content: string | null;
-                tool_calls: ChatMessageTool[];
-                reasoning_content: string | null;
-              };
-            }>;
-            const tool_calls = choices[0]?.delta?.tool_calls;
-            if (tool_calls?.length > 0) {
-              const index = tool_calls[0]?.index;
-              const id = tool_calls[0]?.id;
-              const args = tool_calls[0]?.function?.arguments;
-              if (id) {
-                runTools.push({
-                  id,
-                  type: tool_calls[0]?.type,
-                  function: {
-                    name: tool_calls[0]?.function?.name as string,
-                    arguments: args,
-                  },
-                });
-              } else {
-                // @ts-ignore
-                runTools[index]["function"]["arguments"] += args;
-              }
-            }
-            const reasoning = choices[0]?.delta?.reasoning_content;
-            const content = choices[0]?.delta?.content;
 
-            // Skip if both content and reasoning_content are empty or null
-            if (
-              (!reasoning || reasoning.length === 0) &&
-              (!content || content.length === 0)
-            ) {
+            // Lấy nội dung trả lời từ output.text
+            const content = json?.output?.text ?? "";
+
+            // Nếu không có nội dung trả lời, trả về trạng thái không suy nghĩ và nội dung rỗng
+            if (!content || content.length === 0) {
               return {
                 isThinking: false,
                 content: "",
               };
             }
 
-            if (reasoning && reasoning.length > 0) {
-              return {
-                isThinking: true,
-                content: reasoning,
-              };
-            } else if (content && content.length > 0) {
-              return {
-                isThinking: false,
-                content: content,
-              };
-            }
-
+            // Trả về trạng thái không suy nghĩ và nội dung trả lời
             return {
               isThinking: false,
-              content: "",
+              content: content,
             };
           },
-          // processToolMessage, include tool_calls message and tool call results
+          // processToolMessage: SiliconFlow không có tool_call nên giữ nguyên hoặc để rỗng
           (
             requestPayload: RequestPayload,
             toolCallMessage: any,
             toolCallResult: any[],
           ) => {
-            // @ts-ignore
-            requestPayload?.messages?.splice(
-              // @ts-ignore
-              requestPayload?.messages?.length,
-              0,
-              toolCallMessage,
-              ...toolCallResult,
-            );
+            // Không cần xử lý tool_call, có thể để trống hoặc giữ nguyên nếu muốn tương thích
           },
           options,
         );

@@ -7,6 +7,7 @@ export const BUILTIN_MASK_ID = 100000;
 
 export const BUILTIN_MASK_STORE = {
   buildinId: BUILTIN_MASK_ID,
+
   masks: {} as Record<string, BuiltinMask>,
   get(id?: string) {
     if (!id) return undefined;
@@ -27,11 +28,11 @@ if (typeof window != "undefined") {
     .then((res) => res.json())
     .catch((error) => {
       console.error("[Fetch] failed to fetch masks", error);
-      return { cn: [], tw: [], en: [] };
+      return { vi: [], tw: [], en: [] };
     })
     .then((masks) => {
-      const { cn = [], tw = [], en = [] } = masks;
-      return [...cn, ...tw, ...en].map((m) => {
+      const { vi = [], tw = [], en = [] } = masks;
+      return [...vi, ...tw, ...en].map((m) => {
         BUILTIN_MASKS.push(BUILTIN_MASK_STORE.add(m));
       });
     });

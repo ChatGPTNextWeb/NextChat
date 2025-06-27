@@ -58,6 +58,7 @@ declare global {
       // alibaba only
       ALIBABA_URL?: string;
       ALIBABA_API_KEY?: string;
+      ALIBABA_APP_ID?: string; // alibaba app id, used for some models
 
       // tencent only
       TENCENT_URL?: string;
@@ -210,6 +211,7 @@ export const getServerSideConfig = () => {
     isAlibaba,
     alibabaUrl: process.env.ALIBABA_URL,
     alibabaApiKey: getApiKey(process.env.ALIBABA_API_KEY),
+    alibabaAppId: process.env.ALIBABA_APP_ID,
 
     isTencent,
     tencentUrl: process.env.TENCENT_URL,
