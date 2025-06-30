@@ -88,7 +88,7 @@
     "tsx": "^4.16.0",
     "typescript": "5.2.2",
     "watch": "^1.0.2",
-    "webpack": "^5.88.1"
+    "webpack": "^5.99.9"
   },
   "resolutions": {
     "lint-staged/yaml": "^2.2.2"
