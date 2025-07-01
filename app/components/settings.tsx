@@ -75,6 +75,7 @@ import {
   ChatGLM,
   DeepSeek,
   SiliconFlow,
+  AI302,
 } from "../constant";
 import { Prompt, SearchService, usePromptStore } from "../store/prompt";
 import { ErrorBoundary } from "./error";
@@ -1458,6 +1459,46 @@ export function Settings() {
     </>
   );
 
+  const ai302ConfigComponent = accessStore.provider === ServiceProvider["302.AI"] && (
+    <>
+      <ListItem
+          title={Locale.Settings.Access.AI302.Endpoint.Title}
+          subTitle={
+            Locale.Settings.Access.AI302.Endpoint.SubTitle +
+            AI302.ExampleEndpoint
+          }
+        >
+          <input
+            aria-label={Locale.Settings.Access.AI302.Endpoint.Title}
+            type="text"
+            value={accessStore.ai302Url}
+            placeholder={AI302.ExampleEndpoint}
+            onChange={(e) =>
+              accessStore.update(
+                (access) => (access.ai302Url = e.currentTarget.value),
+              )
+            }
+          ></input>
+        </ListItem>
+        <ListItem
+          title={Locale.Settings.Access.AI302.ApiKey.Title}
+          subTitle={Locale.Settings.Access.AI302.ApiKey.SubTitle}
+        >
+          <PasswordInput
+            aria-label={Locale.Settings.Access.AI302.ApiKey.Title}
+            value={accessStore.ai302ApiKey}
+            type="text"
+            placeholder={Locale.Settings.Access.AI302.ApiKey.Placeholder}
+            onChange={(e) => {
+              accessStore.update(
+                (access) => (access.ai302ApiKey = e.currentTarget.value),
+              );
+            }}
+          />
+        </ListItem>
+      </>
+  );
+
   return (
     <ErrorBoundary>
       <div className="window-header" data-tauri-drag-region>
@@ -1822,6 +1863,7 @@ export function Settings() {
                   {XAIConfigComponent}
                   {chatglmConfigComponent}
                   {siliconflowConfigComponent}
+                  {ai302ConfigComponent}
                 </>
               )}
             </>

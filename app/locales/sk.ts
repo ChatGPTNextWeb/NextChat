@@ -381,6 +381,17 @@ const sk: PartialLocaleType = {
           SubTitle: "Vyberte špecifickú verziu časti",
         },
       },
+      AI302: {
+        ApiKey: {
+          Title: "API kľúč",
+          SubTitle: "Použiť vlastný API kľúč 302.AI",
+          Placeholder: "302.AI API kľúč",
+        },
+        Endpoint: {
+          Title: "Adresa koncového bodu",
+          SubTitle: "Príklad:",
+        },
+      },
     },
 
     Model: "Model",

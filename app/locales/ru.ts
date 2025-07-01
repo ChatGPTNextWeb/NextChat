@@ -426,6 +426,17 @@ const ru: PartialLocaleType = {
           SubTitle: "Пример:",
         },
       },
+      AI302: {
+        ApiKey: {
+          Title: "Ключ интерфейса",
+          SubTitle: "Использовать пользовательский 302.AI API-ключ",
+          Placeholder: "302.AI API-ключ",
+        },
+        Endpoint: {
+          Title: "Адрес интерфейса",
+          SubTitle: "Пример:",
+        },
+      },
       CustomModel: {
         Title: "Название пользовательской модели",
         SubTitle:

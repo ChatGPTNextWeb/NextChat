@@ -420,6 +420,17 @@ const jp: PartialLocaleType = {
           SubTitle: "例：",
         },
       },
+      AI302: {
+        ApiKey: {
+          Title: "APIキー",
+          SubTitle: "カスタム302.AI APIキーを使用",
+          Placeholder: "302.AI APIキー",
+        },
+        Endpoint: {
+          Title: "エンドポイント",
+          SubTitle: "例：",
+        },
+      },
       CustomModel: {
         Title: "カスタムモデル名",
         SubTitle: "カスタムモデルの選択肢を追加、英語のカンマで区切る",

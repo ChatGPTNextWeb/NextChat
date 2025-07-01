@@ -423,6 +423,17 @@ const bn: PartialLocaleType = {
           SubTitle: "উদাহরণ:",
         },
       },
+      AI302: {
+        ApiKey: {
+          Title: "ইন্টারফেস কী",
+          SubTitle: "স্বনির্ধারিত 302.AI API কী ব্যবহার করুন",
+          Placeholder: "302.AI API কী",
+        },
+        Endpoint: {
+          Title: "ইন্টারফেস ঠিকানা",
+          SubTitle: "উদাহরণ:",
+        },
+      },
       CustomModel: {
         Title: "স্বনির্ধারিত মডেল নাম",
         SubTitle:
