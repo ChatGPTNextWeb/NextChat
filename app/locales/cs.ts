@@ -423,6 +423,17 @@ const cs: PartialLocaleType = {
           SubTitle: "Příklad:",
         },
       },
+      AI302: {
+        ApiKey: {
+          Title: "Rozhraní klíč",
+          SubTitle: "Použijte vlastní 302.AI API Key",
+          Placeholder: "302.AI API Key",
+        },
+        Endpoint: {
+          Title: "Adresa rozhraní",
+          SubTitle: "Příklad:",
+        },
+      },
       CustomModel: {
         Title: "Vlastní názvy modelů",
         SubTitle: "Přidejte možnosti vlastních modelů, oddělené čárkami",

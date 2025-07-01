@@ -434,6 +434,17 @@ const de: PartialLocaleType = {
           SubTitle: "Beispiel:",
         },
       },
+      AI302: {
+        ApiKey: {
+          Title: "Schnittstellenschlüssel",
+          SubTitle: "Verwenden Sie einen benutzerdefinierten 302.AI API-Schlüssel",
+          Placeholder: "302.AI API-Schlüssel",
+        },
+        Endpoint: {
+          Title: "Endpunktadresse",
+          SubTitle: "Beispiel:",
+        },
+      },
       CustomModel: {
         Title: "Benutzerdefinierter Modellname",
         SubTitle:

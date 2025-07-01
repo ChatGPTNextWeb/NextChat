@@ -543,6 +543,17 @@ const en: LocaleType = {
           SubTitle: "Select a safety filtering level",
         },
       },
+      AI302: {
+        ApiKey: {
+          Title: "302.AI API Key",
+          SubTitle: "Use a custom 302.AI API Key",
+          Placeholder: "302.AI API Key",
+        },
+        Endpoint: {
+          Title: "Endpoint Address",
+          SubTitle: "Example: ",
+        },
+      },
     },
 
     Model: "Model",

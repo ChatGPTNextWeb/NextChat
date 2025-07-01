@@ -433,6 +433,17 @@ const no: PartialLocaleType = {
         Title: "Egendefinert modellnavn",
         SubTitle: "Legg til egendefinerte modellalternativer, skill med komma",
       },
+      AI302: {
+        ApiKey: {
+          Title: "API-nøkkel",
+          SubTitle: "Bruk egendefinert 302.AI API-nøkkel",
+          Placeholder: "302.AI API-nøkkel",
+        },
+        Endpoint: {
+          Title: "API-adresse",
+          SubTitle: "Eksempel:",
+        },
+      },
     },
 
     Model: "Modell",

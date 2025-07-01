@@ -424,6 +424,17 @@ const id: PartialLocaleType = {
           SubTitle: "Contoh:",
         },
       },
+      AI302: {
+        ApiKey: {
+          Title: "Kunci Antarmuka",
+          SubTitle: "Gunakan 302.AI API Key kustom",
+          Placeholder: "302.AI API Key",
+        },
+        Endpoint: {
+          Title: "Alamat Antarmuka",
+          SubTitle: "Contoh:",
+        },
+      },
       CustomModel: {
         Title: "Nama Model Kustom",
         SubTitle: "Tambahkan opsi model kustom, pisahkan dengan koma",
