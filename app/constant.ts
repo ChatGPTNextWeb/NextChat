@@ -576,7 +576,7 @@ const bytedanceModels = [
   "Doubao-pro-4k",
   "Doubao-pro-32k",
   "Doubao-pro-128k",
-  "deepseek-r1-250120",
+  // "deepseek-r1-250120",
   "deepseek-v3-241226",
   "deepseek-v3-250324",
   "deepseek-r1-distill-qwen-7b-250120",
@@ -666,10 +666,7 @@ const siliconflowModels = [
   "Pro/deepseek-ai/DeepSeek-V3",
 ];
 
-const huaweiModels = [
-  "DeepSeek-R1",
-  "DeepSeek-V3",
-];
+const huaweiModels = ["DeepSeek-R1", "DeepSeek-V3"];
 
 let seq = 1000; // 内置的模型序号生成器从1000开始
 export const DEFAULT_MODELS = [
