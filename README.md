@@ -443,6 +443,10 @@ docker run -d -p 3000:3000 \
 bash <(curl -s https://raw.githubusercontent.com/Yidadaa/ChatGPT-Next-Web/main/scripts/setup.sh)
 ```
 
+### Build locally and push to the remote server and running using Docker
+
+To run the script, use the deploy-local-build.sh file located in the scripts folder as a reference. Be sure to update the environment variables and server-related information as needed.
+
 ## Synchronizing Chat Records (UpStash)
 
 | [简体中文](./docs/synchronise-chat-logs-cn.md) | [English](./docs/synchronise-chat-logs-en.md) | [Italiano](./docs/synchronise-chat-logs-es.md) | [日本語](./docs/synchronise-chat-logs-ja.md) | [한국어](./docs/synchronise-chat-logs-ko.md)
