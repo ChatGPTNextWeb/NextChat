@@ -553,7 +553,7 @@ const googleModels = [
   "gemini-2.0-flash-thinking-exp-01-21",
   "gemini-2.0-pro-exp",
   "gemini-2.0-pro-exp-02-05",
-  "gemini-2.5-pro-preview-06-05",
+  "gemini-2.5-pro",
 ];
 
 const anthropicModels = [
@@ -571,6 +571,8 @@ const anthropicModels = [
   "claude-3-5-sonnet-latest",
   "claude-3-7-sonnet-20250219",
   "claude-3-7-sonnet-latest",
+  "claude-opus-4-20250514",
+  "claude-sonnet-4-20250514",
 ];
 
 const baiduModels = [
