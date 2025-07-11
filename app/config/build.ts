@@ -10,7 +10,7 @@ export const getBuildConfig = () => {
 
   const buildMode = process.env.BUILD_MODE ?? "standalone";
   const isApp = !!process.env.BUILD_APP;
-  const version = "v" + tauriConfig.package.version;
+  const version = "v" + tauriConfig.version;
 
   const commitInfo = (() => {
     try {
