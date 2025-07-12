@@ -200,6 +200,11 @@ const tr: PartialLocaleType = {
       Title: "Başlığı Otomatik Oluştur",
       SubTitle: "Sohbet içeriğine göre uygun başlık oluştur",
     },
+    AutoScroll: {
+      Title: "Otomatik Kaydırmayı Etkinleştir",
+      SubTitle:
+        "Metin alanına odaklanıldığında veya mesaj gönderildiğinde sohbeti otomatik olarak aşağı kaydır",
+    },
     Sync: {
       CloudState: "Bulut Verisi",
       NotSyncYet: "Henüz senkronize edilmedi",

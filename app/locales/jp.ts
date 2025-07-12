@@ -200,6 +200,11 @@ const jp: PartialLocaleType = {
       Title: "自動タイトル生成",
       SubTitle: "チャット内容に基づいて適切なタイトルを生成",
     },
+    AutoScroll: {
+      Title: "自動スクロールを有効にする",
+      SubTitle:
+        "テキストエリアにフォーカスするか、メッセージを送信するとチャットが自動で下にスクロールされます",
+    },
     Sync: {
       CloudState: "クラウドデータ",
       NotSyncYet: "まだ同期されていません",

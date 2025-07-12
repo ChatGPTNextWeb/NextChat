@@ -222,6 +222,11 @@ const en: LocaleType = {
       Title: "Auto Generate Title",
       SubTitle: "Generate a suitable title based on the conversation content",
     },
+    AutoScroll: {
+      Title: "Enable Auto Scroll",
+      SubTitle:
+        "Automatically scroll chat to bottom on text area focus or message submit",
+    },
     Sync: {
       CloudState: "Last Update",
       NotSyncYet: "Not sync yet",
@@ -767,7 +772,7 @@ const en: LocaleType = {
       },
       Artifacts: {
         Title: "Enable Artifacts",
-        SubTitle: "Can render HTML page when enable artifacts.",
+        SubTitle: "Can render HTML page when enable artifacts",
       },
       CodeFold: {
         Title: "Enable CodeFold",
