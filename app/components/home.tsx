@@ -2,8 +2,7 @@
 
 require("../polyfill");
 
-import { useState, useEffect } from "react";
-
+import { useEffect, useState } from "react";
 import styles from "./home.module.scss";
 
 import BotIcon from "../icons/bot.svg";
@@ -19,8 +18,8 @@ import { getISOLang, getLang } from "../locales";
 
 import {
   HashRouter as Router,
-  Routes,
   Route,
+  Routes,
   useLocation,
 } from "react-router-dom";
 import { SideBar } from "./sidebar";
@@ -29,10 +28,12 @@ import { AuthPage } from "./auth";
 import { getClientConfig } from "../config/client";
 import { type ClientApi, getClientApi } from "../client/api";
 import { useAccessStore } from "../store";
+import clsx from "clsx";
+import { initializeMcpSystem, isMcpEnabled } from "../mcp/actions";
 
 export function Loading(props: { noLogo?: boolean }) {
   return (
-    <div className={styles["loading-content"] + " no-dark"}>
+    <div className={clsx("no-dark", styles["loading-content"])}>
       {!props.noLogo && <BotIcon />}
       <LoadingIcon />
     </div>
@@ -73,6 +74,13 @@ const SearchChat = dynamic(
 const Sd = dynamic(async () => (await import("./sd")).Sd, {
   loading: () => <Loading noLogo />,
 });
+
+const McpMarketPage = dynamic(
+  async () => (await import("./mcp-market")).McpMarketPage,
+  {
+    loading: () => <Loading noLogo />,
+  },
+);
 
 export function useSwitchTheme() {
   const config = useAppConfig();
@@ -179,7 +187,11 @@ function Screen() {
     if (isSdNew) return <Sd />;
     return (
       <>
-        <SideBar className={isHome ? styles["sidebar-show"] : ""} />
+        <SideBar
+          className={clsx({
+            [styles["sidebar-show"]]: isHome,
+          })}
+        />
         <WindowContent>
           <Routes>
             <Route path={Path.Home} element={<Chat />} />
@@ -189,6 +201,7 @@ function Screen() {
             <Route path={Path.SearchChat} element={<SearchChat />} />
             <Route path={Path.Chat} element={<Chat />} />
             <Route path={Path.Settings} element={<Settings />} />
+            <Route path={Path.McpMarket} element={<McpMarketPage />} />
           </Routes>
         </WindowContent>
       </>
@@ -197,9 +210,10 @@ function Screen() {
 
   return (
     <div
-      className={`${styles.container} ${
-        shouldTightBorder ? styles["tight-container"] : styles.container
-      } ${getLang() === "ar" ? styles["rtl-screen"] : ""}`}
+      className={clsx(styles.container, {
+        [styles["tight-container"]]: shouldTightBorder,
+        [styles["rtl-screen"]]: getLang() === "ar",
+      })}
     >
       {renderContent()}
     </div>
@@ -228,6 +242,20 @@ export function Home() {
   useEffect(() => {
     console.log("[Config] got config from build time", getClientConfig());
     useAccessStore.getState().fetch();
+
+    const initMcp = async () => {
+      try {
+        const enabled = await isMcpEnabled();
+        if (enabled) {
+          console.log("[MCP] initializing...");
+          await initializeMcpSystem();
+          console.log("[MCP] initialized");
+        }
+      } catch (err) {
+        console.error("[MCP] failed to initialize:", err);
+      }
+    };
+    initMcp();
   }, []);
 
   if (!useHasHydrated()) {

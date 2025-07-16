@@ -1,5 +1,5 @@
 "use client";
-import { ApiPath, DEFAULT_API_HOST, REQUEST_TIMEOUT_MS } from "@/app/constant";
+import { ApiPath, TENCENT_BASE_URL } from "@/app/constant";
 import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
 
 import {
@@ -8,6 +8,7 @@ import {
   LLMApi,
   LLMModel,
   MultimodalContent,
+  SpeechOptions,
 } from "../api";
 import Locale from "../../locales";
 import {
@@ -16,11 +17,16 @@ import {
 } from "@fortaine/fetch-event-source";
 import { prettyObject } from "@/app/utils/format";
 import { getClientConfig } from "@/app/config/client";
-import { getMessageTextContent, isVisionModel } from "@/app/utils";
+import {
+  getMessageTextContent,
+  isVisionModel,
+  getTimeoutMSByModel,
+} from "@/app/utils";
 import mapKeys from "lodash-es/mapKeys";
 import mapValues from "lodash-es/mapValues";
 import isArray from "lodash-es/isArray";
 import isObject from "lodash-es/isObject";
+import { fetch } from "@/app/utils/stream";
 
 export interface OpenAIListModelResponse {
   object: string;
@@ -69,9 +75,7 @@ export class HunyuanApi implements LLMApi {
 
     if (baseUrl.length === 0) {
       const isApp = !!getClientConfig()?.isApp;
-      baseUrl = isApp
-        ? DEFAULT_API_HOST + "/api/proxy/tencent"
-        : ApiPath.Tencent;
+      baseUrl = isApp ? TENCENT_BASE_URL : ApiPath.Tencent;
     }
 
     if (baseUrl.endsWith("/")) {
@@ -87,6 +91,10 @@ export class HunyuanApi implements LLMApi {
 
   extractMessage(res: any) {
     return res.Choices?.at(0)?.Message?.Content ?? "";
+  }
+
+  speech(options: SpeechOptions): Promise<ArrayBuffer> {
+    throw new Error("Method not implemented.");
   }
 
   async chat(options: ChatOptions) {
@@ -131,13 +139,14 @@ export class HunyuanApi implements LLMApi {
       // make a fetch request
       const requestTimeoutId = setTimeout(
         () => controller.abort(),
-        REQUEST_TIMEOUT_MS,
+        getTimeoutMSByModel(options.config.model),
       );
 
       if (shouldStream) {
         let responseText = "";
         let remainText = "";
         let finished = false;
+        let responseRes: Response;
 
         // animate response to make it looks smooth
         function animateResponseText() {
@@ -167,13 +176,14 @@ export class HunyuanApi implements LLMApi {
         const finish = () => {
           if (!finished) {
             finished = true;
-            options.onFinish(responseText + remainText);
+            options.onFinish(responseText + remainText, responseRes);
           }
         };
 
         controller.signal.onabort = finish;
 
         fetchEventSource(chatPath, {
+          fetch: fetch as any,
           ...chatPayload,
           async onopen(res) {
             clearTimeout(requestTimeoutId);
@@ -182,7 +192,7 @@ export class HunyuanApi implements LLMApi {
               "[Tencent] request response content type: ",
               contentType,
             );
-
+            responseRes = res;
             if (contentType?.startsWith("text/plain")) {
               responseText = await res.clone().text();
               return finish();
@@ -248,7 +258,7 @@ export class HunyuanApi implements LLMApi {
 
         const resJson = await res.json();
         const message = this.extractMessage(resJson);
-        options.onFinish(message);
+        options.onFinish(message, res);
       }
     } catch (e) {
       console.log("[Request] failed to make a chat request", e);

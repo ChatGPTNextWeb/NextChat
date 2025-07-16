@@ -1,27 +1,33 @@
 "use client";
+import { ApiPath, Alibaba, ALIBABA_BASE_URL } from "@/app/constant";
 import {
-  ApiPath,
-  Alibaba,
-  ALIBABA_BASE_URL,
-  REQUEST_TIMEOUT_MS,
-} from "@/app/constant";
-import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
-
+  useAccessStore,
+  useAppConfig,
+  useChatStore,
+  ChatMessageTool,
+  usePluginStore,
+} from "@/app/store";
+import {
+  preProcessImageContentForAlibabaDashScope,
+  streamWithThink,
+} from "@/app/utils/chat";
 import {
   ChatOptions,
   getHeaders,
   LLMApi,
   LLMModel,
+  SpeechOptions,
   MultimodalContent,
+  MultimodalContentForAlibaba,
 } from "../api";
-import Locale from "../../locales";
-import {
-  EventStreamContentType,
-  fetchEventSource,
-} from "@fortaine/fetch-event-source";
-import { prettyObject } from "@/app/utils/format";
 import { getClientConfig } from "@/app/config/client";
-import { getMessageTextContent } from "@/app/utils";
+import {
+  getMessageTextContent,
+  getMessageTextContentWithoutThinking,
+  getTimeoutMSByModel,
+  isVisionModel,
+} from "@/app/utils";
+import { fetch } from "@/app/utils/stream";
 
 export interface OpenAIListModelResponse {
   object: string;
@@ -83,12 +89,11 @@ export class QwenApi implements LLMApi {
     return res?.output?.choices?.at(0)?.message?.content ?? "";
   }
 
-  async chat(options: ChatOptions) {
-    const messages = options.messages.map((v) => ({
-      role: v.role,
-      content: getMessageTextContent(v),
-    }));
+  speech(options: SpeechOptions): Promise<ArrayBuffer> {
+    throw new Error("Method not implemented.");
+  }
 
+  async chat(options: ChatOptions) {
     const modelConfig = {
       ...useAppConfig.getState().modelConfig,
       ...useChatStore.getState().currentSession().mask.modelConfig,
@@ -96,6 +101,21 @@ export class QwenApi implements LLMApi {
         model: options.config.model,
       },
     };
+
+    const visionModel = isVisionModel(options.config.model);
+
+    const messages: ChatOptions["messages"] = [];
+    for (const v of options.messages) {
+      const content = (
+        visionModel
+          ? await preProcessImageContentForAlibabaDashScope(v.content)
+          : v.role === "assistant"
+          ? getMessageTextContentWithoutThinking(v)
+          : getMessageTextContent(v)
+      ) as any;
+
+      messages.push({ role: v.role, content });
+    }
 
     const shouldStream = !!options.config.stream;
     const requestPayload: RequestPayload = {
@@ -116,138 +136,127 @@ export class QwenApi implements LLMApi {
     options.onController?.(controller);
 
     try {
-      const chatPath = this.path(Alibaba.ChatPath);
+      const headers = {
+        ...getHeaders(),
+        "X-DashScope-SSE": shouldStream ? "enable" : "disable",
+      };
+
+      const chatPath = this.path(Alibaba.ChatPath(modelConfig.model));
       const chatPayload = {
         method: "POST",
         body: JSON.stringify(requestPayload),
         signal: controller.signal,
-        headers: {
-          ...getHeaders(),
-          "X-DashScope-SSE": shouldStream ? "enable" : "disable",
-        },
+        headers: headers,
       };
 
       // make a fetch request
       const requestTimeoutId = setTimeout(
         () => controller.abort(),
-        REQUEST_TIMEOUT_MS,
+        getTimeoutMSByModel(options.config.model),
       );
 
       if (shouldStream) {
-        let responseText = "";
-        let remainText = "";
-        let finished = false;
+        const [tools, funcs] = usePluginStore
+          .getState()
+          .getAsTools(
+            useChatStore.getState().currentSession().mask?.plugin || [],
+          );
+        return streamWithThink(
+          chatPath,
+          requestPayload,
+          headers,
+          tools as any,
+          funcs,
+          controller,
+          // parseSSE
+          (text: string, runTools: ChatMessageTool[]) => {
+            // console.log("parseSSE", text, runTools);
+            const json = JSON.parse(text);
+            const choices = json.output.choices as Array<{
+              message: {
+                content: string | null | MultimodalContentForAlibaba[];
+                tool_calls: ChatMessageTool[];
+                reasoning_content: string | null;
+              };
+            }>;
 
-        // animate response to make it looks smooth
-        function animateResponseText() {
-          if (finished || controller.signal.aborted) {
-            responseText += remainText;
-            console.log("[Response Animation] finished");
-            if (responseText?.length === 0) {
-              options.onError?.(new Error("empty response from server"));
-            }
-            return;
-          }
+            if (!choices?.length) return { isThinking: false, content: "" };
 
-          if (remainText.length > 0) {
-            const fetchCount = Math.max(1, Math.round(remainText.length / 60));
-            const fetchText = remainText.slice(0, fetchCount);
-            responseText += fetchText;
-            remainText = remainText.slice(fetchCount);
-            options.onUpdate?.(responseText, fetchText);
-          }
-
-          requestAnimationFrame(animateResponseText);
-        }
-
-        // start animaion
-        animateResponseText();
-
-        const finish = () => {
-          if (!finished) {
-            finished = true;
-            options.onFinish(responseText + remainText);
-          }
-        };
-
-        controller.signal.onabort = finish;
-
-        fetchEventSource(chatPath, {
-          ...chatPayload,
-          async onopen(res) {
-            clearTimeout(requestTimeoutId);
-            const contentType = res.headers.get("content-type");
-            console.log(
-              "[Alibaba] request response content type: ",
-              contentType,
-            );
-
-            if (contentType?.startsWith("text/plain")) {
-              responseText = await res.clone().text();
-              return finish();
+            const tool_calls = choices[0]?.message?.tool_calls;
+            if (tool_calls?.length > 0) {
+              const index = tool_calls[0]?.index;
+              const id = tool_calls[0]?.id;
+              const args = tool_calls[0]?.function?.arguments;
+              if (id) {
+                runTools.push({
+                  id,
+                  type: tool_calls[0]?.type,
+                  function: {
+                    name: tool_calls[0]?.function?.name as string,
+                    arguments: args,
+                  },
+                });
+              } else {
+                // @ts-ignore
+                runTools[index]["function"]["arguments"] += args;
+              }
             }
 
+            const reasoning = choices[0]?.message?.reasoning_content;
+            const content = choices[0]?.message?.content;
+
+            // Skip if both content and reasoning_content are empty or null
             if (
-              !res.ok ||
-              !res.headers
-                .get("content-type")
-                ?.startsWith(EventStreamContentType) ||
-              res.status !== 200
+              (!reasoning || reasoning.length === 0) &&
+              (!content || content.length === 0)
             ) {
-              const responseTexts = [responseText];
-              let extraInfo = await res.clone().text();
-              try {
-                const resJson = await res.clone().json();
-                extraInfo = prettyObject(resJson);
-              } catch {}
-
-              if (res.status === 401) {
-                responseTexts.push(Locale.Error.Unauthorized);
-              }
-
-              if (extraInfo) {
-                responseTexts.push(extraInfo);
-              }
-
-              responseText = responseTexts.join("\n\n");
-
-              return finish();
+              return {
+                isThinking: false,
+                content: "",
+              };
             }
-          },
-          onmessage(msg) {
-            if (msg.data === "[DONE]" || finished) {
-              return finish();
+
+            if (reasoning && reasoning.length > 0) {
+              return {
+                isThinking: true,
+                content: reasoning,
+              };
+            } else if (content && content.length > 0) {
+              return {
+                isThinking: false,
+                content: Array.isArray(content)
+                  ? content.map((item) => item.text).join(",")
+                  : content,
+              };
             }
-            const text = msg.data;
-            try {
-              const json = JSON.parse(text);
-              const choices = json.output.choices as Array<{
-                message: { content: string };
-              }>;
-              const delta = choices[0]?.message?.content;
-              if (delta) {
-                remainText += delta;
-              }
-            } catch (e) {
-              console.error("[Request] parse error", text, msg);
-            }
+
+            return {
+              isThinking: false,
+              content: "",
+            };
           },
-          onclose() {
-            finish();
+          // processToolMessage, include tool_calls message and tool call results
+          (
+            requestPayload: RequestPayload,
+            toolCallMessage: any,
+            toolCallResult: any[],
+          ) => {
+            requestPayload?.input?.messages?.splice(
+              requestPayload?.input?.messages?.length,
+              0,
+              toolCallMessage,
+              ...toolCallResult,
+            );
           },
-          onerror(e) {
-            options.onError?.(e);
-            throw e;
-          },
-          openWhenHidden: true,
-        });
+          options,
+        );
       } else {
         const res = await fetch(chatPath, chatPayload);
         clearTimeout(requestTimeoutId);
 
         const resJson = await res.json();
         const message = this.extractMessage(resJson);
-        options.onFinish(message);
+        options.onFinish(message, res);
       }
     } catch (e) {
       console.log("[Request] failed to make a chat request", e);

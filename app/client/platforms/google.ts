@@ -1,23 +1,36 @@
-import { ApiPath, Google, REQUEST_TIMEOUT_MS } from "@/app/constant";
-import { ChatOptions, getHeaders, LLMApi, LLMModel, LLMUsage } from "../api";
-import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
-import { getClientConfig } from "@/app/config/client";
-import { DEFAULT_API_HOST } from "@/app/constant";
-import Locale from "../../locales";
+import { ApiPath, Google } from "@/app/constant";
 import {
-  EventStreamContentType,
-  fetchEventSource,
-} from "@fortaine/fetch-event-source";
-import { prettyObject } from "@/app/utils/format";
+  ChatOptions,
+  getHeaders,
+  LLMApi,
+  LLMModel,
+  LLMUsage,
+  SpeechOptions,
+} from "../api";
+import {
+  useAccessStore,
+  useAppConfig,
+  useChatStore,
+  usePluginStore,
+  ChatMessageTool,
+} from "@/app/store";
+import { stream } from "@/app/utils/chat";
+import { getClientConfig } from "@/app/config/client";
+import { GEMINI_BASE_URL } from "@/app/constant";
+
 import {
   getMessageTextContent,
   getMessageImages,
   isVisionModel,
+  getTimeoutMSByModel,
 } from "@/app/utils";
 import { preProcessImageContent } from "@/app/utils/chat";
+import { nanoid } from "nanoid";
+import { RequestPayload } from "./openai";
+import { fetch } from "@/app/utils/stream";
 
 export class GeminiProApi implements LLMApi {
-  path(path: string): string {
+  path(path: string, shouldStream = false): string {
     const accessStore = useAccessStore.getState();
 
     let baseUrl = "";
@@ -27,7 +40,7 @@ export class GeminiProApi implements LLMApi {
 
     const isApp = !!getClientConfig()?.isApp;
     if (baseUrl.length === 0) {
-      baseUrl = isApp ? DEFAULT_API_HOST + `/api/proxy/google` : ApiPath.Google;
+      baseUrl = isApp ? GEMINI_BASE_URL : ApiPath.Google;
     }
     if (baseUrl.endsWith("/")) {
       baseUrl = baseUrl.slice(0, baseUrl.length - 1);
@@ -39,23 +52,42 @@ export class GeminiProApi implements LLMApi {
     console.log("[Proxy Endpoint] ", baseUrl, path);
 
     let chatPath = [baseUrl, path].join("/");
-
-    chatPath += chatPath.includes("?") ? "&alt=sse" : "?alt=sse";
-    // if chatPath.startsWith('http') then add key in query string
-    if (chatPath.startsWith("http") && accessStore.googleApiKey) {
-      chatPath += `&key=${accessStore.googleApiKey}`;
+    if (shouldStream) {
+      chatPath += chatPath.includes("?") ? "&alt=sse" : "?alt=sse";
     }
+
     return chatPath;
   }
   extractMessage(res: any) {
     console.log("[Response] gemini-pro response: ", res);
 
+    const getTextFromParts = (parts: any[]) => {
+      if (!Array.isArray(parts)) return "";
+
+      return parts
+        .map((part) => part?.text || "")
+        .filter((text) => text.trim() !== "")
+        .join("\n\n");
+    };
+
+    let content = "";
+    if (Array.isArray(res)) {
+      res.map((item) => {
+        content += getTextFromParts(item?.candidates?.at(0)?.content?.parts);
+      });
+    }
+
     return (
-      res?.candidates?.at(0)?.content?.parts.at(0)?.text ||
+      getTextFromParts(res?.candidates?.at(0)?.content?.parts) ||
+      content || //getTextFromParts(res?.at(0)?.candidates?.at(0)?.content?.parts) ||
       res?.error?.message ||
       ""
     );
   }
+  speech(options: SpeechOptions): Promise<ArrayBuffer> {
+    throw new Error("Method not implemented.");
+  }
+
   async chat(options: ChatOptions): Promise<void> {
     const apiClient = this;
     let multimodal = false;
@@ -154,7 +186,10 @@ export class GeminiProApi implements LLMApi {
     options.onController?.(controller);
     try {
       // https://github.com/google-gemini/cookbook/blob/main/quickstarts/rest/Streaming_REST.ipynb
-      const chatPath = this.path(Google.ChatPath(modelConfig.model));
+      const chatPath = this.path(
+        Google.ChatPath(modelConfig.model),
+        shouldStream,
+      );
 
       const chatPayload = {
         method: "POST",
@@ -163,121 +198,95 @@ export class GeminiProApi implements LLMApi {
         headers: getHeaders(),
       };
 
+      const isThinking = options.config.model.includes("-thinking");
       // make a fetch request
       const requestTimeoutId = setTimeout(
         () => controller.abort(),
-        REQUEST_TIMEOUT_MS,
+        getTimeoutMSByModel(options.config.model),
       );
 
       if (shouldStream) {
-        let responseText = "";
-        let remainText = "";
-        let finished = false;
+        const [tools, funcs] = usePluginStore
+          .getState()
+          .getAsTools(
+            useChatStore.getState().currentSession().mask?.plugin || [],
+          );
+        return stream(
+          chatPath,
+          requestPayload,
+          getHeaders(),
+          // @ts-ignore
+          tools.length > 0
+            ? // @ts-ignore
+              [{ functionDeclarations: tools.map((tool) => tool.function) }]
+            : [],
+          funcs,
+          controller,
+          // parseSSE
+          (text: string, runTools: ChatMessageTool[]) => {
+            // console.log("parseSSE", text, runTools);
+            const chunkJson = JSON.parse(text);
 
-        const finish = () => {
-          if (!finished) {
-            finished = true;
-            options.onFinish(responseText + remainText);
-          }
-        };
-
-        // animate response to make it looks smooth
-        function animateResponseText() {
-          if (finished || controller.signal.aborted) {
-            responseText += remainText;
-            finish();
-            return;
-          }
-
-          if (remainText.length > 0) {
-            const fetchCount = Math.max(1, Math.round(remainText.length / 60));
-            const fetchText = remainText.slice(0, fetchCount);
-            responseText += fetchText;
-            remainText = remainText.slice(fetchCount);
-            options.onUpdate?.(responseText, fetchText);
-          }
-
-          requestAnimationFrame(animateResponseText);
-        }
-
-        // start animaion
-        animateResponseText();
-
-        controller.signal.onabort = finish;
-
-        fetchEventSource(chatPath, {
-          ...chatPayload,
-          async onopen(res) {
-            clearTimeout(requestTimeoutId);
-            const contentType = res.headers.get("content-type");
-            console.log(
-              "[Gemini] request response content type: ",
-              contentType,
+            const functionCall = chunkJson?.candidates
+              ?.at(0)
+              ?.content.parts.at(0)?.functionCall;
+            if (functionCall) {
+              const { name, args } = functionCall;
+              runTools.push({
+                id: nanoid(),
+                type: "function",
+                function: {
+                  name,
+                  arguments: JSON.stringify(args), // utils.chat call function, using JSON.parse
+                },
+              });
+            }
+            return chunkJson?.candidates
+              ?.at(0)
+              ?.content.parts?.map((part: { text: string }) => part.text)
+              .join("\n\n");
+          },
+          // processToolMessage, include tool_calls message and tool call results
+          (
+            requestPayload: RequestPayload,
+            toolCallMessage: any,
+            toolCallResult: any[],
+          ) => {
+            // @ts-ignore
+            requestPayload?.contents?.splice(
+              // @ts-ignore
+              requestPayload?.contents?.length,
+              0,
+              {
+                role: "model",
+                parts: toolCallMessage.tool_calls.map(
+                  (tool: ChatMessageTool) => ({
+                    functionCall: {
+                      name: tool?.function?.name,
+                      args: JSON.parse(tool?.function?.arguments as string),
+                    },
+                  }),
+                ),
+              },
+              // @ts-ignore
+              ...toolCallResult.map((result) => ({
+                role: "function",
+                parts: [
+                  {
+                    functionResponse: {
+                      name: result.name,
+                      response: {
+                        name: result.name,
+                        content: result.content, // TODO just text content...
+                      },
+                    },
+                  },
+                ],
+              })),
             );
-
-            if (contentType?.startsWith("text/plain")) {
-              responseText = await res.clone().text();
-              return finish();
-            }
-
-            if (
-              !res.ok ||
-              !res.headers
-                .get("content-type")
-                ?.startsWith(EventStreamContentType) ||
-              res.status !== 200
-            ) {
-              const responseTexts = [responseText];
-              let extraInfo = await res.clone().text();
-              try {
-                const resJson = await res.clone().json();
-                extraInfo = prettyObject(resJson);
-              } catch {}
-
-              if (res.status === 401) {
-                responseTexts.push(Locale.Error.Unauthorized);
-              }
-
-              if (extraInfo) {
-                responseTexts.push(extraInfo);
-              }
-
-              responseText = responseTexts.join("\n\n");
-
-              return finish();
-            }
           },
-          onmessage(msg) {
-            if (msg.data === "[DONE]" || finished) {
-              return finish();
-            }
-            const text = msg.data;
-            try {
-              const json = JSON.parse(text);
-              const delta = apiClient.extractMessage(json);
-
-              if (delta) {
-                remainText += delta;
-              }
-
-              const blockReason = json?.promptFeedback?.blockReason;
-              if (blockReason) {
-                // being blocked
-                console.log(`[Google] [Safety Ratings] result:`, blockReason);
-              }
-            } catch (e) {
-              console.error("[Request] parse error", text, msg);
-            }
-          },
-          onclose() {
-            finish();
-          },
-          onerror(e) {
-            options.onError?.(e);
-            throw e;
-          },
-          openWhenHidden: true,
-        });
+          options,
+        );
       } else {
         const res = await fetch(chatPath, chatPayload);
         clearTimeout(requestTimeoutId);
@@ -292,7 +301,7 @@ export class GeminiProApi implements LLMApi {
           );
         }
         const message = apiClient.extractMessage(resJson);
-        options.onFinish(message);
+        options.onFinish(message, res);
       }
     } catch (e) {
       console.log("[Request] failed to make a chat request", e);

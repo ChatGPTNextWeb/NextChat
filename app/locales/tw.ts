@@ -1,14 +1,20 @@
 import { getClientConfig } from "../config/client";
 import { SubmitKey } from "../store/config";
-
+import { SAAS_CHAT_UTM_URL } from "@/app/constant";
 const isApp = !!getClientConfig()?.isApp;
 
 const tw = {
   WIP: "此功能仍在開發中……",
   Error: {
     Unauthorized: isApp
-      ? "偵測到無效的 API Key，請前往[設定](/#/settings)頁面檢查 API Key 是否設定正確。"
-      : "存取密碼不正確或尚未填寫，請前往[登入](/#/auth)頁面輸入正確的存取密碼，或者在[設定](/#/settings)頁面填入你自己的 OpenAI API Key。",
+      ? `😆 對話遇到了一些問題，不用慌:
+    \\ 1️⃣ 想要無須設定開箱即用，[點選這裡立刻開啟對話 🚀](${SAAS_CHAT_UTM_URL})
+    \\ 2️⃣ 如果你想消耗自己的 OpenAI 資源，點選[這裡](/#/settings)修改設定 ⚙️`
+      : `😆 對話遇到了一些問題，不用慌:
+    \ 1️⃣ 想要無須設定開箱即用，[點選這裡立刻開啟對話 🚀](${SAAS_CHAT_UTM_URL})
+    \ 2️⃣ 如果你正在使用私有部署版本，點選[這裡](/#/auth)輸入存取金鑰 🔑
+    \ 3️⃣ 如果你想消耗自己的 OpenAI 資源，點選[這裡](/#/settings)修改設定 ⚙️
+ `,
   },
 
   Auth: {
@@ -18,6 +24,10 @@ const tw = {
     Input: "在此處填寫存取密碼",
     Confirm: "確認",
     Later: "稍候再說",
+    Return: "返回",
+    SaasTips: "設定太麻煩，想要立即使用",
+    TopTips:
+      "🥳 NextChat AI 首發優惠，立刻解鎖 OpenAI o1, GPT-4o, Claude-3.5 等最新的大型語言模型",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} 則對話`,
@@ -43,8 +53,8 @@ const tw = {
       PinToastAction: "檢視",
       Delete: "刪除",
       Edit: "編輯",
-      RefreshTitle: "刷新標題",
-      RefreshToast: "已發送刷新標題請求",
+      RefreshTitle: "重新整理標題",
+      RefreshToast: "已傳送重新整理標題請求",
     },
     Commands: {
       new: "新建聊天",
@@ -85,11 +95,12 @@ const tw = {
     IsContext: "預設提示詞",
     ShortcutKey: {
       Title: "鍵盤快捷方式",
-      newChat: "打開新聊天",
+      newChat: "開啟新聊天",
       focusInput: "聚焦輸入框",
       copyLastMessage: "複製最後一個回覆",
-      copyLastCode: "複製最後一個代碼塊",
+      copyLastCode: "複製最後一個程式碼區塊",
       showShortcutKey: "顯示快捷方式",
+      clearContext: "清除上下文",
     },
   },
   Export: {
@@ -164,9 +175,9 @@ const tw = {
       SubTitle: "聊天內容的字型大小",
     },
     FontFamily: {
-      Title: "聊天字體",
-      SubTitle: "聊天內容的字體，若置空則應用全局默認字體",
-      Placeholder: "字體名稱",
+      Title: "聊天字型",
+      SubTitle: "聊天內容的字型，若留空則套用全域預設字型",
+      Placeholder: "字型名稱",
     },
     InjectSystemPrompts: {
       Title: "匯入系統提示",
@@ -287,6 +298,14 @@ const tw = {
     },
 
     Access: {
+      SaasStart: {
+        Title: "使用 NextChat AI",
+        Label: "(性價比最高的方案)",
+        SubTitle:
+          "由 NextChat 官方維護，無須設定開箱即用，支援 OpenAI o1、GPT-4o、Claude-3.5 等最新的大型語言模型",
+        ChatNow: "立刻開始對話",
+      },
+
       AccessCode: {
         Title: "存取密碼",
         SubTitle: "管理員已開啟加密存取",
@@ -361,6 +380,17 @@ const tw = {
         ApiVersion: {
           Title: "API 版本（僅適用於 gemini-pro）",
           SubTitle: "選擇一個特定的 API 版本",
+        },
+      },
+      AI302: {
+        ApiKey: {
+          Title: "API 金鑰",
+          SubTitle: "使用自訂 302.AI API 金鑰",
+          Placeholder: "302.AI API 金鑰",
+        },
+        Endpoint: {
+          Title: "端點位址",
+          SubTitle: "範例：",
         },
       },
       CustomModel: {
@@ -467,18 +497,18 @@ const tw = {
     },
   },
   SearchChat: {
-    Name: "搜索",
+    Name: "搜尋聊天記錄",
     Page: {
-      Title: "搜索聊天記錄",
-      Search: "輸入搜索關鍵詞",
+      Title: "搜尋聊天記錄",
+      Search: "輸入搜尋關鍵詞",
       NoResult: "沒有找到結果",
-      NoData: "沒有數據",
-      Loading: "加載中",
+      NoData: "沒有資料",
+      Loading: "載入中",
 
       SubTitle: (count: number) => `找到 ${count} 條結果`,
     },
     Item: {
-      View: "查看",
+      View: "檢視",
     },
   },
   NewChat: {

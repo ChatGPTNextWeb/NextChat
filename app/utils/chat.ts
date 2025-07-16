@@ -3,13 +3,14 @@ import {
   UPLOAD_URL,
   REQUEST_TIMEOUT_MS,
 } from "@/app/constant";
-import { RequestMessage } from "@/app/client/api";
+import { MultimodalContent, RequestMessage } from "@/app/client/api";
 import Locale from "@/app/locales";
 import {
   EventStreamContentType,
   fetchEventSource,
 } from "@fortaine/fetch-event-source";
 import { prettyObject } from "./format";
+import { fetch as tauriFetch } from "./stream";
 
 export function compressImage(file: Blob, maxSize: number): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -69,8 +70,9 @@ export function compressImage(file: Blob, maxSize: number): Promise<string> {
   });
 }
 
-export async function preProcessImageContent(
+export async function preProcessImageContentBase(
   content: RequestMessage["content"],
+  transformImageUrl: (url: string) => Promise<{ [key: string]: any }>,
 ) {
   if (typeof content === "string") {
     return content;
@@ -80,7 +82,7 @@ export async function preProcessImageContent(
     if (part?.type == "image_url" && part?.image_url?.url) {
       try {
         const url = await cacheImageToBase64Image(part?.image_url?.url);
-        result.push({ type: part.type, image_url: { url } });
+        result.push(await transformImageUrl(url));
       } catch (error) {
         console.error("Error processing image URL:", error);
       }
@@ -89,6 +91,23 @@ export async function preProcessImageContent(
     }
   }
   return result;
+}
+
+export async function preProcessImageContent(
+  content: RequestMessage["content"],
+) {
+  return preProcessImageContentBase(content, async (url) => ({
+    type: "image_url",
+    image_url: { url },
+  })) as Promise<MultimodalContent[] | string>;
+}
+
+export async function preProcessImageContentForAlibabaDashScope(
+  content: RequestMessage["content"],
+) {
+  return preProcessImageContentBase(content, async (url) => ({
+    image: url,
+  }));
 }
 
 const imageCaches: Record<string, string> = {};
@@ -137,7 +156,7 @@ export function uploadImage(file: Blob): Promise<string> {
   })
     .then((res) => res.json())
     .then((res) => {
-      console.log("res", res);
+      // console.log("res", res);
       if (res?.code == 0 && res?.data) {
         return res?.data;
       }
@@ -173,6 +192,7 @@ export function stream(
   let finished = false;
   let running = false;
   let runTools: any[] = [];
+  let responseRes: Response;
 
   // animate response to make it looks smooth
   function animateResponseText() {
@@ -221,7 +241,12 @@ export function stream(
               ),
             )
               .then((res) => {
-                const content = JSON.stringify(res.data);
+                let content = res.data || res?.statusText;
+                // hotfix #5614
+                content =
+                  typeof content === "string"
+                    ? content
+                    : JSON.stringify(content);
                 if (res.status >= 300) {
                   return Promise.reject(content);
                 }
@@ -236,10 +261,15 @@ export function stream(
                 return content;
               })
               .catch((e) => {
-                options?.onAfterTool?.({ ...tool, isError: true });
+                options?.onAfterTool?.({
+                  ...tool,
+                  isError: true,
+                  errorMsg: e.toString(),
+                });
                 return e.toString();
               })
               .then((content) => ({
+                name: tool.function.name,
                 role: "tool",
                 content,
                 tool_call_id: tool.id,
@@ -261,7 +291,7 @@ export function stream(
       }
       console.debug("[ChatAPI] end");
       finished = true;
-      options.onFinish(responseText + remainText);
+      options.onFinish(responseText + remainText, responseRes); // 将res传递给onFinish
     }
   };
 
@@ -287,11 +317,13 @@ export function stream(
       REQUEST_TIMEOUT_MS,
     );
     fetchEventSource(chatPath, {
+      fetch: tauriFetch as any,
       ...chatPayload,
       async onopen(res) {
         clearTimeout(requestTimeoutId);
         const contentType = res.headers.get("content-type");
         console.log("[Request] response content type: ", contentType);
+        responseRes = res;
 
         if (contentType?.startsWith("text/plain")) {
           responseText = await res.clone().text();
@@ -330,13 +362,294 @@ export function stream(
           return finish();
         }
         const text = msg.data;
+        // Skip empty messages
+        if (!text || text.trim().length === 0) {
+          return;
+        }
         try {
-          const chunk = parseSSE(msg.data, runTools);
+          const chunk = parseSSE(text, runTools);
           if (chunk) {
             remainText += chunk;
           }
         } catch (e) {
           console.error("[Request] parse error", text, msg, e);
+        }
+      },
+      onclose() {
+        finish();
+      },
+      onerror(e) {
+        options?.onError?.(e);
+        throw e;
+      },
+      openWhenHidden: true,
+    });
+  }
+  console.debug("[ChatAPI] start");
+  chatApi(chatPath, headers, requestPayload, tools); // call fetchEventSource
+}
+
+export function streamWithThink(
+  chatPath: string,
+  requestPayload: any,
+  headers: any,
+  tools: any[],
+  funcs: Record<string, Function>,
+  controller: AbortController,
+  parseSSE: (
+    text: string,
+    runTools: any[],
+  ) => {
+    isThinking: boolean;
+    content: string | undefined;
+  },
+  processToolMessage: (
+    requestPayload: any,
+    toolCallMessage: any,
+    toolCallResult: any[],
+  ) => void,
+  options: any,
+) {
+  let responseText = "";
+  let remainText = "";
+  let finished = false;
+  let running = false;
+  let runTools: any[] = [];
+  let responseRes: Response;
+  let isInThinkingMode = false;
+  let lastIsThinking = false;
+  let lastIsThinkingTagged = false; //between <think> and </think> tags
+
+  // animate response to make it looks smooth
+  function animateResponseText() {
+    if (finished || controller.signal.aborted) {
+      responseText += remainText;
+      console.log("[Response Animation] finished");
+      if (responseText?.length === 0) {
+        options.onError?.(new Error("empty response from server"));
+      }
+      return;
+    }
+
+    if (remainText.length > 0) {
+      const fetchCount = Math.max(1, Math.round(remainText.length / 60));
+      const fetchText = remainText.slice(0, fetchCount);
+      responseText += fetchText;
+      remainText = remainText.slice(fetchCount);
+      options.onUpdate?.(responseText, fetchText);
+    }
+
+    requestAnimationFrame(animateResponseText);
+  }
+
+  // start animaion
+  animateResponseText();
+
+  const finish = () => {
+    if (!finished) {
+      if (!running && runTools.length > 0) {
+        const toolCallMessage = {
+          role: "assistant",
+          tool_calls: [...runTools],
+        };
+        running = true;
+        runTools.splice(0, runTools.length); // empty runTools
+        return Promise.all(
+          toolCallMessage.tool_calls.map((tool) => {
+            options?.onBeforeTool?.(tool);
+            return Promise.resolve(
+              // @ts-ignore
+              funcs[tool.function.name](
+                // @ts-ignore
+                tool?.function?.arguments
+                  ? JSON.parse(tool?.function?.arguments)
+                  : {},
+              ),
+            )
+              .then((res) => {
+                let content = res.data || res?.statusText;
+                // hotfix #5614
+                content =
+                  typeof content === "string"
+                    ? content
+                    : JSON.stringify(content);
+                if (res.status >= 300) {
+                  return Promise.reject(content);
+                }
+                return content;
+              })
+              .then((content) => {
+                options?.onAfterTool?.({
+                  ...tool,
+                  content,
+                  isError: false,
+                });
+                return content;
+              })
+              .catch((e) => {
+                options?.onAfterTool?.({
+                  ...tool,
+                  isError: true,
+                  errorMsg: e.toString(),
+                });
+                return e.toString();
+              })
+              .then((content) => ({
+                name: tool.function.name,
+                role: "tool",
+                content,
+                tool_call_id: tool.id,
+              }));
+          }),
+        ).then((toolCallResult) => {
+          processToolMessage(requestPayload, toolCallMessage, toolCallResult);
+          setTimeout(() => {
+            // call again
+            console.debug("[ChatAPI] restart");
+            running = false;
+            chatApi(chatPath, headers, requestPayload, tools); // call fetchEventSource
+          }, 60);
+        });
+        return;
+      }
+      if (running) {
+        return;
+      }
+      console.debug("[ChatAPI] end");
+      finished = true;
+      options.onFinish(responseText + remainText, responseRes);
+    }
+  };
+
+  controller.signal.onabort = finish;
+
+  function chatApi(
+    chatPath: string,
+    headers: any,
+    requestPayload: any,
+    tools: any,
+  ) {
+    const chatPayload = {
+      method: "POST",
+      body: JSON.stringify({
+        ...requestPayload,
+        tools: tools && tools.length ? tools : undefined,
+      }),
+      signal: controller.signal,
+      headers,
+    };
+    const requestTimeoutId = setTimeout(
+      () => controller.abort(),
+      REQUEST_TIMEOUT_MS,
+    );
+    fetchEventSource(chatPath, {
+      fetch: tauriFetch as any,
+      ...chatPayload,
+      async onopen(res) {
+        clearTimeout(requestTimeoutId);
+        const contentType = res.headers.get("content-type");
+        console.log("[Request] response content type: ", contentType);
+        responseRes = res;
+
+        if (contentType?.startsWith("text/plain")) {
+          responseText = await res.clone().text();
+          return finish();
+        }
+
+        if (
+          !res.ok ||
+          !res.headers
+            .get("content-type")
+            ?.startsWith(EventStreamContentType) ||
+          res.status !== 200
+        ) {
+          const responseTexts = [responseText];
+          let extraInfo = await res.clone().text();
+          try {
+            const resJson = await res.clone().json();
+            extraInfo = prettyObject(resJson);
+          } catch {}
+
+          if (res.status === 401) {
+            responseTexts.push(Locale.Error.Unauthorized);
+          }
+
+          if (extraInfo) {
+            responseTexts.push(extraInfo);
+          }
+
+          responseText = responseTexts.join("\n\n");
+
+          return finish();
+        }
+      },
+      onmessage(msg) {
+        if (msg.data === "[DONE]" || finished) {
+          return finish();
+        }
+        const text = msg.data;
+        // Skip empty messages
+        if (!text || text.trim().length === 0) {
+          return;
+        }
+        try {
+          const chunk = parseSSE(text, runTools);
+          // Skip if content is empty
+          if (!chunk?.content || chunk.content.length === 0) {
+            return;
+          }
+
+          // deal with <think> and </think> tags start
+          if (!chunk.isThinking) {
+            if (chunk.content.startsWith("<think>")) {
+              chunk.isThinking = true;
+              chunk.content = chunk.content.slice(7).trim();
+              lastIsThinkingTagged = true;
+            } else if (chunk.content.endsWith("</think>")) {
+              chunk.isThinking = false;
+              chunk.content = chunk.content.slice(0, -8).trim();
+              lastIsThinkingTagged = false;
+            } else if (lastIsThinkingTagged) {
+              chunk.isThinking = true;
+            }
+          }
+          // deal with <think> and </think> tags start
+
+          // Check if thinking mode changed
+          const isThinkingChanged = lastIsThinking !== chunk.isThinking;
+          lastIsThinking = chunk.isThinking;
+
+          if (chunk.isThinking) {
+            // If in thinking mode
+            if (!isInThinkingMode || isThinkingChanged) {
+              // If this is a new thinking block or mode changed, add prefix
+              isInThinkingMode = true;
+              if (remainText.length > 0) {
+                remainText += "\n";
+              }
+              remainText += "> " + chunk.content;
+            } else {
+              // Handle newlines in thinking content
+              if (chunk.content.includes("\n\n")) {
+                const lines = chunk.content.split("\n\n");
+                remainText += lines.join("\n\n> ");
+              } else {
+                remainText += chunk.content;
+              }
+            }
+          } else {
+            // If in normal mode
+            if (isInThinkingMode || isThinkingChanged) {
+              // If switching from thinking mode to normal mode
+              isInThinkingMode = false;
+              remainText += "\n\n" + chunk.content;
+            } else {
+              remainText += chunk.content;
+            }
+          }
+        } catch (e) {
+          console.error("[Request] parse error", text, msg, e);
+          // Don't throw error for parse failures, just log them
         }
       },
       onclose() {

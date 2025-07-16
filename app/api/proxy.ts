@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getServerSideConfig } from "@/app/config/server";
 
 export async function handle(
   req: NextRequest,
@@ -9,6 +10,7 @@ export async function handle(
   if (req.method === "OPTIONS") {
     return NextResponse.json({ body: "OK" }, { status: 200 });
   }
+  const serverConfig = getServerSideConfig();
 
   // remove path params from searchParams
   req.nextUrl.searchParams.delete("path");
@@ -31,6 +33,18 @@ export async function handle(
       return true;
     }),
   );
+  // if dalle3 use openai api key
+    const baseUrl = req.headers.get("x-base-url");
+    if (baseUrl?.includes("api.openai.com")) {
+      if (!serverConfig.apiKey) {
+        return NextResponse.json(
+          { error: "OpenAI API key not configured" },
+          { status: 500 },
+        );
+      }
+      headers.set("Authorization", `Bearer ${serverConfig.apiKey}`);
+    }
+
   const controller = new AbortController();
   const fetchOptions: RequestInit = {
     headers,

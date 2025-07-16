@@ -37,7 +37,7 @@ import Locale, { AllLangs, ALL_LANG_OPTIONS, Lang } from "../locales";
 import { useNavigate } from "react-router-dom";
 
 import chatStyle from "./chat.module.scss";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   copyToClipboard,
   downloadAs,
@@ -48,7 +48,6 @@ import { Updater } from "../typing";
 import { ModelConfigList } from "./model-config";
 import { FileName, Path } from "../constant";
 import { BUILTIN_MASK_STORE } from "../masks";
-import { nanoid } from "nanoid";
 import {
   DragDropContext,
   Droppable,
@@ -56,6 +55,7 @@ import {
   OnDragEndResponder,
 } from "@hello-pangea/dnd";
 import { getMessageTextContent } from "../utils";
+import clsx from "clsx";
 
 // drag and drop helper function
 function reorder<T>(list: T[], startIndex: number, endIndex: number): T[] {
@@ -167,21 +167,40 @@ export function MaskConfig(props: {
           ></input>
         </ListItem>
 
-        <ListItem
-          title={Locale.Mask.Config.Artifacts.Title}
-          subTitle={Locale.Mask.Config.Artifacts.SubTitle}
-        >
-          <input
-            aria-label={Locale.Mask.Config.Artifacts.Title}
-            type="checkbox"
-            checked={props.mask.enableArtifacts !== false}
-            onChange={(e) => {
-              props.updateMask((mask) => {
-                mask.enableArtifacts = e.currentTarget.checked;
-              });
-            }}
-          ></input>
-        </ListItem>
+        {globalConfig.enableArtifacts && (
+          <ListItem
+            title={Locale.Mask.Config.Artifacts.Title}
+            subTitle={Locale.Mask.Config.Artifacts.SubTitle}
+          >
+            <input
+              aria-label={Locale.Mask.Config.Artifacts.Title}
+              type="checkbox"
+              checked={props.mask.enableArtifacts !== false}
+              onChange={(e) => {
+                props.updateMask((mask) => {
+                  mask.enableArtifacts = e.currentTarget.checked;
+                });
+              }}
+            ></input>
+          </ListItem>
+        )}
+        {globalConfig.enableCodeFold && (
+          <ListItem
+            title={Locale.Mask.Config.CodeFold.Title}
+            subTitle={Locale.Mask.Config.CodeFold.SubTitle}
+          >
+            <input
+              aria-label={Locale.Mask.Config.CodeFold.Title}
+              type="checkbox"
+              checked={props.mask.enableCodeFold !== false}
+              onChange={(e) => {
+                props.updateMask((mask) => {
+                  mask.enableCodeFold = e.currentTarget.checked;
+                });
+              }}
+            ></input>
+          </ListItem>
+        )}
 
         {!props.shouldSyncFromGlobal ? (
           <ListItem
@@ -570,7 +589,7 @@ export function MaskPage() {
                   </div>
                   <div className={styles["mask-title"]}>
                     <div className={styles["mask-name"]}>{m.name}</div>
-                    <div className={styles["mask-info"] + " one-line"}>
+                    <div className={clsx(styles["mask-info"], "one-line")}>
                       {`${Locale.Mask.Item.Info(m.context.length)} / ${
                         ALL_LANG_OPTIONS[m.lang]
                       } / ${m.modelConfig.model}`}

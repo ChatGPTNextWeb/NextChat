@@ -1,15 +1,21 @@
 import { SubmitKey } from "../store/config";
 import type { PartialLocaleType } from "./index";
 import { getClientConfig } from "../config/client";
-
+import { SAAS_CHAT_UTM_URL } from "@/app/constant";
 const isApp = !!getClientConfig()?.isApp;
 
 const id: PartialLocaleType = {
   WIP: "Coming Soon...",
   Error: {
     Unauthorized: isApp
-      ? "API Key tidak valid terdeteksi, silakan periksa apakah API Key telah dikonfigurasi dengan benar di halaman [Pengaturan](/#/settings)."
-      : "Kata sandi akses tidak benar atau kosong, silakan masukkan kata sandi akses yang benar di halaman [Masuk](/#/auth), atau masukkan OpenAI API Key Anda di halaman [Pengaturan](/#/settings).",
+      ? `😆 Percakapan mengalami beberapa masalah, tidak perlu khawatir:
+   \\ 1️⃣ Jika Anda ingin memulai tanpa konfigurasi, [klik di sini untuk mulai mengobrol segera 🚀](${SAAS_CHAT_UTM_URL})
+   \\ 2️⃣ Jika Anda ingin menggunakan sumber daya OpenAI Anda sendiri, klik [di sini](/#/settings) untuk mengubah pengaturan ⚙️`
+      : `😆 Percakapan mengalami beberapa masalah, tidak perlu khawatir:
+   \ 1️⃣ Jika Anda ingin memulai tanpa konfigurasi, [klik di sini untuk mulai mengobrol segera 🚀](${SAAS_CHAT_UTM_URL})
+   \ 2️⃣ Jika Anda menggunakan versi penyebaran pribadi, klik [di sini](/#/auth) untuk memasukkan kunci akses 🔑
+   \ 3️⃣ Jika Anda ingin menggunakan sumber daya OpenAI Anda sendiri, klik [di sini](/#/settings) untuk mengubah pengaturan ⚙️
+`,
   },
   Auth: {
     Title: "Kebutuhan Kata Sandi",
@@ -18,6 +24,10 @@ const id: PartialLocaleType = {
     Input: "Masukkan kode akses di sini",
     Confirm: "Konfirmasi",
     Later: "Nanti",
+    Return: "Kembali",
+    SaasTips: "Konfigurasi terlalu rumit, saya ingin menggunakannya segera",
+    TopTips:
+      "🥳 Penawaran Peluncuran NextChat AI, buka OpenAI o1, GPT-4o, Claude-3.5 dan model besar terbaru sekarang",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} percakapan`,
@@ -285,6 +295,14 @@ const id: PartialLocaleType = {
     },
 
     Access: {
+      SaasStart: {
+        Title: "Gunakan NextChat AI",
+        Label: "(Solusi paling hemat biaya)",
+        SubTitle:
+          "Dikelola secara resmi oleh NextChat, siap digunakan tanpa konfigurasi, mendukung model besar terbaru seperti OpenAI o1, GPT-4o, dan Claude-3.5",
+        ChatNow: "Chat Sekarang",
+      },
+
       AccessCode: {
         Title: "Kata Sandi Akses",
         SubTitle: "Administrator telah mengaktifkan akses terenkripsi",
@@ -400,6 +418,17 @@ const id: PartialLocaleType = {
           Title: "Kunci Antarmuka",
           SubTitle: "Gunakan Alibaba Cloud API Key kustom",
           Placeholder: "Alibaba Cloud API Key",
+        },
+        Endpoint: {
+          Title: "Alamat Antarmuka",
+          SubTitle: "Contoh:",
+        },
+      },
+      AI302: {
+        ApiKey: {
+          Title: "Kunci Antarmuka",
+          SubTitle: "Gunakan 302.AI API Key kustom",
+          Placeholder: "302.AI API Key",
         },
         Endpoint: {
           Title: "Alamat Antarmuka",

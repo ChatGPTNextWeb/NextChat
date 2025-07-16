@@ -1,15 +1,21 @@
 import { SubmitKey } from "../store/config";
 import type { PartialLocaleType } from "./index";
 import { getClientConfig } from "../config/client";
-
+import { SAAS_CHAT_UTM_URL } from "@/app/constant";
 const isApp = !!getClientConfig()?.isApp;
 
 const it: PartialLocaleType = {
   WIP: "Work in progress...",
   Error: {
     Unauthorized: isApp
-      ? "API Key non valido rilevato. Vai alla pagina [Impostazioni](/#/settings) per controllare se l'API Key è configurata correttamente."
-      : "La password di accesso è errata o mancante. Vai alla pagina [Login](/#/auth) per inserire la password corretta o inserisci la tua API Key OpenAI nella pagina [Impostazioni](/#/settings).",
+      ? `😆 La conversazione ha incontrato alcuni problemi, non preoccuparti:
+    \\ 1️⃣ Se vuoi iniziare senza configurazione, [clicca qui per iniziare a chattare immediatamente 🚀](${SAAS_CHAT_UTM_URL})
+    \\ 2️⃣ Se vuoi utilizzare le tue risorse OpenAI, clicca [qui](/#/settings) per modificare le impostazioni ⚙️`
+      : `😆 La conversazione ha incontrato alcuni problemi, non preoccuparti:
+    \ 1️⃣ Se vuoi iniziare senza configurazione, [clicca qui per iniziare a chattare immediatamente 🚀](${SAAS_CHAT_UTM_URL})
+    \ 2️⃣ Se stai utilizzando una versione di distribuzione privata, clicca [qui](/#/auth) per inserire la chiave di accesso 🔑
+    \ 3️⃣ Se vuoi utilizzare le tue risorse OpenAI, clicca [qui](/#/settings) per modificare le impostazioni ⚙️
+ `,
   },
   Auth: {
     Title: "Password richiesta",
@@ -18,6 +24,11 @@ const it: PartialLocaleType = {
     Input: "Inserisci il codice di accesso qui",
     Confirm: "Conferma",
     Later: "Più tardi",
+    Return: "Ritorna",
+    SaasTips:
+      "La configurazione è troppo complicata, voglio usarlo immediatamente",
+    TopTips:
+      "🥳 Offerta di lancio NextChat AI, sblocca OpenAI o1, GPT-4o, Claude-3.5 e i più recenti modelli di grandi dimensioni",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} conversazioni`,
@@ -295,6 +306,14 @@ const it: PartialLocaleType = {
     },
 
     Access: {
+      SaasStart: {
+        Title: "Usa NextChat AI",
+        Label: "(La soluzione più conveniente)",
+        SubTitle:
+          "Mantenuto ufficialmente da NextChat, pronto all'uso senza configurazione, supporta i modelli più recenti come OpenAI o1, GPT-4o e Claude-3.5",
+        ChatNow: "Chatta ora",
+      },
+
       AccessCode: {
         Title: "Password di accesso",
         SubTitle: "L'amministratore ha abilitato l'accesso criptato",
@@ -411,6 +430,17 @@ const it: PartialLocaleType = {
           Title: "Chiave dell'interfaccia",
           SubTitle: "Utilizza una chiave API Alibaba Cloud personalizzata",
           Placeholder: "API Key Alibaba Cloud",
+        },
+        Endpoint: {
+          Title: "Indirizzo dell'interfaccia",
+          SubTitle: "Esempio:",
+        },
+      },
+      AI302: {
+        ApiKey: {
+          Title: "Chiave dell'interfaccia",
+          SubTitle: "Utilizza una chiave API 302.AI personalizzata",
+          Placeholder: "Chiave API 302.AI",
         },
         Endpoint: {
           Title: "Indirizzo dell'interfaccia",

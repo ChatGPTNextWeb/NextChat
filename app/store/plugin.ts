@@ -1,10 +1,13 @@
 import OpenAPIClientAxios from "openapi-client-axios";
-import { getLang, Lang } from "../locales";
 import { StoreKey } from "../constant";
 import { nanoid } from "nanoid";
 import { createPersistStore } from "../utils/store";
+import { getClientConfig } from "../config/client";
 import yaml from "js-yaml";
-import { adapter } from "../utils";
+import { adapter, getOperationId } from "../utils";
+import { useAccessStore } from "./access";
+
+const isApp = getClientConfig()?.isApp !== false;
 
 export type Plugin = {
   id: string;
@@ -17,7 +20,6 @@ export type Plugin = {
   authLocation?: string;
   authHeader?: string;
   authToken?: string;
-  usingProxy?: boolean;
 };
 
 export type FunctionToolItem = {
@@ -47,17 +49,24 @@ export const FunctionToolService = {
       plugin?.authType == "basic"
         ? `Basic ${plugin?.authToken}`
         : plugin?.authType == "bearer"
-        ? ` Bearer ${plugin?.authToken}`
+        ? `Bearer ${plugin?.authToken}`
         : plugin?.authToken;
     const authLocation = plugin?.authLocation || "header";
     const definition = yaml.load(plugin.content) as any;
     const serverURL = definition?.servers?.[0]?.url;
-    const baseURL = !!plugin?.usingProxy ? "/api/proxy" : serverURL;
+    const baseURL = !isApp ? "/api/proxy" : serverURL;
     const headers: Record<string, string | undefined> = {
-      "X-Base-URL": !!plugin?.usingProxy ? serverURL : undefined,
+      "X-Base-URL": !isApp ? serverURL : undefined,
     };
     if (authLocation == "header") {
       headers[headerName] = tokenValue;
+    }
+    // try using openaiApiKey for Dalle3 Plugin.
+    if (!tokenValue && plugin.id === "dalle3") {
+      const openaiApiKey = useAccessStore.getState().openaiApiKey;
+      if (openaiApiKey) {
+        headers[headerName] = `Bearer ${openaiApiKey}`;
+      }
     }
     const api = new OpenAPIClientAxios({
       definition: yaml.load(plugin.content) as any,
@@ -107,7 +116,7 @@ export const FunctionToolService = {
         return {
           type: "function",
           function: {
-            name: o.operationId,
+            name: getOperationId(o),
             description: o.description || o.summary,
             parameters: parameters,
           },
@@ -115,7 +124,7 @@ export const FunctionToolService = {
       }),
       funcs: operations.reduce((s, o) => {
         // @ts-ignore
-        s[o.operationId] = function (args) {
+        s[getOperationId(o)] = function (args) {
           const parameters: Record<string, any> = {};
           if (o.parameters instanceof Array) {
             o.parameters.forEach((p) => {
@@ -130,8 +139,8 @@ export const FunctionToolService = {
           } else if (authLocation == "body") {
             args[headerName] = tokenValue;
           }
-          // @ts-ignore
-          return api.client[o.operationId](
+          // @ts-ignore if o.operationId is null, then using o.path and o.method
+          return api.client.paths[o.path][o.method](
             parameters,
             args,
             api.axiosConfigDefaults,
@@ -166,7 +175,7 @@ export const usePluginStore = createPersistStore(
   (set, get) => ({
     create(plugin?: Partial<Plugin>) {
       const plugins = get().plugins;
-      const id = nanoid();
+      const id = plugin?.id || nanoid();
       plugins[id] = {
         ...createEmptyPlugin(),
         ...plugin,
@@ -221,5 +230,42 @@ export const usePluginStore = createPersistStore(
   {
     name: StoreKey.Plugin,
     version: 1,
+    onRehydrateStorage(state) {
+      // Skip store rehydration on server side
+      if (typeof window === "undefined") {
+        return;
+      }
+
+      fetch("./plugins.json")
+        .then((res) => res.json())
+        .then((res) => {
+          Promise.all(
+            res.map((item: any) =>
+              // skip get schema
+              state.get(item.id)
+                ? item
+                : fetch(item.schema)
+                    .then((res) => res.text())
+                    .then((content) => ({
+                      ...item,
+                      content,
+                    }))
+                    .catch((e) => item),
+            ),
+          ).then((builtinPlugins: any) => {
+            builtinPlugins
+              .filter((item: any) => item?.content)
+              .forEach((item: any) => {
+                const plugin = state.create(item);
+                state.updatePlugin(plugin.id, (plugin) => {
+                  const tool = FunctionToolService.add(plugin, true);
+                  plugin.title = tool.api.definition.info.title;
+                  plugin.version = tool.api.definition.info.version;
+                  plugin.builtin = true;
+                });
+              });
+          });
+        });
+    },
   },
 );

@@ -1,15 +1,21 @@
 import { SubmitKey } from "../store/config";
 import type { PartialLocaleType } from "./index";
 import { getClientConfig } from "../config/client";
-
+import { SAAS_CHAT_UTM_URL } from "@/app/constant";
 const isApp = !!getClientConfig()?.isApp;
 
 const jp: PartialLocaleType = {
   WIP: "この機能は開発中です",
   Error: {
     Unauthorized: isApp
-      ? "無効なAPIキーが検出されました。[設定](/#/settings)ページでAPIキーが正しく設定されているか確認してください。"
-      : "アクセスパスワードが正しくないか空です。[ログイン](/#/auth)ページで正しいアクセスパスワードを入力するか、[設定](/#/settings)ページで自分のOpenAI APIキーを入力してください。",
+      ? `😆 会話中に問題が発生しましたが、心配しないでください:
+    \\ 1️⃣ 設定なしで始めたい場合は、[ここをクリックしてすぐにチャットを開始 🚀](${SAAS_CHAT_UTM_URL})
+    \\ 2️⃣ 自分のOpenAIリソースを使用したい場合は、[ここをクリックして](/#/settings)設定を変更してください ⚙️`
+      : `😆 会話中に問題が発生しましたが、心配しないでください:
+    \ 1️⃣ 設定なしで始めたい場合は、[ここをクリックしてすぐにチャットを開始 🚀](${SAAS_CHAT_UTM_URL})
+    \ 2️⃣ プライベートデプロイ版を使用している場合は、[ここをクリックして](/#/auth)アクセストークンを入力してください 🔑
+    \ 3️⃣ 自分のOpenAIリソースを使用したい場合は、[ここをクリックして](/#/settings)設定を変更してください ⚙️
+ `,
   },
   Auth: {
     Title: "パスワードが必要です",
@@ -18,6 +24,10 @@ const jp: PartialLocaleType = {
     Input: "ここにアクセスコードを入力",
     Confirm: "確認",
     Later: "後で",
+    Return: "戻る",
+    SaasTips: "設定が面倒すぎる、すぐに使いたい",
+    TopTips:
+      "🥳 NextChat AIの発売特典で、OpenAI o1、GPT-4o、Claude-3.5などの最新の大規模モデルを今すぐアンロック",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count}件の会話`,
@@ -282,6 +292,14 @@ const jp: PartialLocaleType = {
     },
 
     Access: {
+      SaasStart: {
+        Title: "NextChat AIを使用する",
+        Label: "(コストパフォーマンスの最も高いソリューション)",
+        SubTitle:
+          "NextChatによって公式に管理されており、設定なしですぐに使用でき、OpenAI o1、GPT-4o、Claude-3.5などの最新の大規模モデルをサポートしています",
+        ChatNow: "今すぐチャット",
+      },
+
       AccessCode: {
         Title: "アクセスパスワード",
         SubTitle: "管理者が暗号化アクセスを有効にしました",
@@ -396,6 +414,17 @@ const jp: PartialLocaleType = {
           Title: "APIキー",
           SubTitle: "カスタムAlibaba Cloud APIキーを使用",
           Placeholder: "Alibaba Cloud APIキー",
+        },
+        Endpoint: {
+          Title: "エンドポイント",
+          SubTitle: "例：",
+        },
+      },
+      AI302: {
+        ApiKey: {
+          Title: "APIキー",
+          SubTitle: "カスタム302.AI APIキーを使用",
+          Placeholder: "302.AI APIキー",
         },
         Endpoint: {
           Title: "エンドポイント",

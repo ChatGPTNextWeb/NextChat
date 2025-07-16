@@ -6,17 +6,26 @@
 
 <h1 align="center">NextChat</h1>
 
-一键免费部署你的私人 ChatGPT 网页应用，支持 GPT3, GPT4 & Gemini Pro 模型。
+一键免费部署你的私人 ChatGPT 网页应用，支持 Claude, GPT4 & Gemini Pro 模型。
 
-[企业版](#%E4%BC%81%E4%B8%9A%E7%89%88) /[演示 Demo](https://chat-gpt-next-web.vercel.app/) / [反馈 Issues](https://github.com/Yidadaa/ChatGPT-Next-Web/issues) / [加入 Discord](https://discord.gg/zrhvHCr79N)
+[NextChatAI](https://nextchat.club?utm_source=readme) / [企业版](#%E4%BC%81%E4%B8%9A%E7%89%88) / [演示 Demo](https://chat-gpt-next-web.vercel.app/) / [反馈 Issues](https://github.com/Yidadaa/ChatGPT-Next-Web/issues) / [加入 Discord](https://discord.gg/zrhvHCr79N)
 
-[<img src="https://vercel.com/button" alt="Deploy on Zeabur" height="30">](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FChatGPTNextWeb%2FChatGPT-Next-Web&env=OPENAI_API_KEY&env=CODE&project-name=nextchat&repository-name=NextChat) [<img src="https://zeabur.com/button.svg" alt="Deploy on Zeabur" height="30">](https://zeabur.com/templates/ZBUEFA)  [<img src="https://gitpod.io/button/open-in-gitpod.svg" alt="Open in Gitpod" height="30">](https://gitpod.io/#https://github.com/Yidadaa/ChatGPT-Next-Web)
+[<img src="https://vercel.com/button" alt="Deploy on Zeabur" height="30">](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FChatGPTNextWeb%2FChatGPT-Next-Web&env=OPENAI_API_KEY&env=CODE&project-name=nextchat&repository-name=NextChat) [<img src="https://zeabur.com/button.svg" alt="Deploy on Zeabur" height="30">](https://zeabur.com/templates/ZBUEFA) [<img src="https://gitpod.io/button/open-in-gitpod.svg" alt="Open in Gitpod" height="30">](https://gitpod.io/#https://github.com/Yidadaa/ChatGPT-Next-Web)
 
 </div>
+
+## Sponsor AI API
+
+<a href='https://302.ai/'>
+  <img src="https://github.com/user-attachments/assets/d8c0c513-1e18-4d3b-a2a9-ff3696aec0d4" width="100%" alt="icon"/>
+</a>
+
+[302.AI](https://302.ai/) 是一个按需付费的AI应用平台，提供市面上最全的AI API和AI在线应用。
 
 ## 企业版
 
 满足您公司私有化部署和定制需求
+
 - **品牌定制**：企业量身定制 VI/UI，与企业品牌形象无缝契合
 - **资源集成**：由企业管理人员统一配置和管理数十种 AI 资源，团队成员开箱即用
 - **权限管理**：成员权限、资源权限、知识库权限层级分明，企业级 Admin Panel 统一控制
@@ -27,7 +36,7 @@
 
 企业版咨询: **business@nextchat.dev**
 
-<img width="300" src="https://github.com/user-attachments/assets/3daeb7b6-ab63-4542-9141-2e4a12c80601">
+<img width="300" src="https://github.com/user-attachments/assets/bb29a11d-ff75-48a8-b1f8-d2d7238cf987">
 
 ## 开始使用
 
@@ -54,7 +63,7 @@
 
 ### 打开自动更新
 
-> 如果你遇到了 Upstream Sync 执行错误，请手动 Sync Fork 一次！
+> 如果你遇到了 Upstream Sync 执行错误，请[手动 Sync Fork 一次](./README_CN.md#手动更新代码)！
 
 当你 fork 项目之后，由于 Github 的限制，需要手动去你 fork 后的项目的 Actions 页面启用 Workflows，并启用 Upstream Sync Action，启用之后即可开启每小时定时自动更新：
 
@@ -88,7 +97,7 @@ code1,code2,code3
 
 ### `OPENAI_API_KEY` （必填项）
 
-OpanAI 密钥，你在 openai 账户页面申请的 api key，使用英文逗号隔开多个 key，这样可以随机轮询这些 key。
+OpenAI 密钥，你在 openai 账户页面申请的 api key，使用英文逗号隔开多个 key，这样可以随机轮询这些 key。
 
 ### `CODE` （可选）
 
@@ -184,7 +193,21 @@ ByteDance Api Url.
 
 讯飞星火Api Secret.
 
+### `CHATGLM_API_KEY` (可选)
 
+ChatGLM Api Key.
+
+### `CHATGLM_URL` (可选)
+
+ChatGLM Api Url.
+
+### `DEEPSEEK_API_KEY` (可选)
+
+DeepSeek Api Key.
+
+### `DEEPSEEK_URL` (可选)
+
+DeepSeek Api Url.
 
 ### `HIDE_USER_API_KEY` （可选）
 
@@ -202,11 +225,12 @@ ByteDance Api Url.
 
 如果你想禁用从链接解析预制设置，将此环境变量设置为 1 即可。
 
-### `WHITE_WEBDEV_ENDPOINTS` (可选)
+### `WHITE_WEBDAV_ENDPOINTS` (可选)
 
 如果你想增加允许访问的webdav服务地址，可以使用该选项，格式要求：
+
 - 每一个地址必须是一个完整的 endpoint
-> `https://xxxx/xxx`
+  > `https://xxxx/xxx`
 - 多个地址以`,`相连
 
 ### `CUSTOM_MODELS` （可选）
@@ -216,17 +240,25 @@ ByteDance Api Url.
 
 用来控制模型列表，使用 `+` 增加一个模型，使用 `-` 来隐藏一个模型，使用 `模型名=展示名` 来自定义模型的展示名，用英文逗号隔开。
 
-在Azure的模式下，支持使用`modelName@azure=deploymentName`的方式配置模型名称和部署名称(deploy-name)
-> 示例：`+gpt-3.5-turbo@azure=gpt35`这个配置会在模型列表显示一个`gpt35(Azure)`的选项。
-> 如果你只能使用Azure模式，那么设置 `-all,+gpt-3.5-turbo@azure=gpt35` 则可以让对话的默认使用 `gpt35(Azure)`
+在Azure的模式下，支持使用`modelName@Azure=deploymentName`的方式配置模型名称和部署名称(deploy-name)
+
+> 示例：`+gpt-3.5-turbo@Azure=gpt35`这个配置会在模型列表显示一个`gpt35(Azure)`的选项。
+> 如果你只能使用Azure模式，那么设置 `-all,+gpt-3.5-turbo@Azure=gpt35` 则可以让对话的默认使用 `gpt35(Azure)`
 
 在ByteDance的模式下，支持使用`modelName@bytedance=deploymentName`的方式配置模型名称和部署名称(deploy-name)
-> 示例: `+Doubao-lite-4k@bytedance=ep-xxxxx-xxx`这个配置会在模型列表显示一个`Doubao-lite-4k(ByteDance)`的选项
 
+> 示例: `+Doubao-lite-4k@bytedance=ep-xxxxx-xxx`这个配置会在模型列表显示一个`Doubao-lite-4k(ByteDance)`的选项
 
 ### `DEFAULT_MODEL` （可选）
 
 更改默认模型
+
+### `VISION_MODELS` (可选)
+
+> 默认值：空
+> 示例：`gpt-4-vision,claude-3-opus,my-custom-model` 表示为这些模型添加视觉能力，作为对默认模式匹配的补充（默认会检测包含"vision"、"claude-3"、"gemini-1.5"等关键词的模型）。
+
+在默认模式匹配之外，添加更多具有视觉能力的模型。多个模型用逗号分隔。
 
 ### `DEFAULT_INPUT_TEMPLATE` （可选）
 
@@ -240,6 +272,25 @@ Stability API密钥
 
 自定义的Stability API请求地址
 
+### `ENABLE_MCP` (optional)
+
+启用MCP（Model Context Protocol）功能
+
+### `SILICONFLOW_API_KEY` (optional)
+
+SiliconFlow API Key.
+
+### `SILICONFLOW_URL` (optional)
+
+SiliconFlow API URL.
+
+### `AI302_API_KEY` (optional)
+
+302.AI API Key.
+
+### `AI302_URL` (optional)
+
+302.AI API URL.
 
 ## 开发
 
@@ -264,6 +315,10 @@ BASE_URL=https://b.nextweb.fun/api/proxy
 
 ## 部署
 
+### 宝塔面板部署
+
+> [简体中文 > 如何通过宝塔一键部署](./docs/bt-cn.md)
+
 ### 容器部署 （推荐）
 
 > Docker 版本需要在 20 及其以上，否则会提示找不到镜像。
@@ -287,6 +342,16 @@ docker run -d -p 3000:3000 \
    -e CODE=页面访问密码 \
    --net=host \
    -e PROXY_URL=http://127.0.0.1:7890 \
+   yidadaa/chatgpt-next-web
+```
+
+如需启用 MCP 功能，可以使用：
+
+```shell
+docker run -d -p 3000:3000 \
+   -e OPENAI_API_KEY=sk-xxxx \
+   -e CODE=页面访问密码 \
+   -e ENABLE_MCP=true \
    yidadaa/chatgpt-next-web
 ```
 

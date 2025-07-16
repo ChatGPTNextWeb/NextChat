@@ -1,7 +1,7 @@
 import Fuse from "fuse.js";
-import { getLang } from "../locales";
-import { StoreKey } from "../constant";
 import { nanoid } from "nanoid";
+import { StoreKey } from "../constant";
+import { getLang } from "../locales";
 import { createPersistStore } from "../utils/store";
 
 export interface Prompt {
@@ -147,6 +147,11 @@ export const usePromptStore = createPersistStore(
     },
 
     onRehydrateStorage(state) {
+      // Skip store rehydration on server side
+      if (typeof window === "undefined") {
+        return;
+      }
+
       const PROMPT_URL = "./prompts.json";
 
       type PromptList = Array<[string, string]>;

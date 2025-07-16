@@ -7,7 +7,6 @@ import {
   useImperativeHandle,
 } from "react";
 import { useParams } from "react-router";
-import { useWindowSize } from "@/app/utils";
 import { IconButton } from "./button";
 import { nanoid } from "nanoid";
 import ExportIcon from "../icons/share.svg";

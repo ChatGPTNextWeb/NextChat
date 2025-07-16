@@ -2,11 +2,9 @@
 // azure and openai, using same models. so using same LLMApi.
 import {
   ApiPath,
-  DEFAULT_API_HOST,
-  DEFAULT_MODELS,
+  MOONSHOT_BASE_URL,
   Moonshot,
   REQUEST_TIMEOUT_MS,
-  ServiceProvider,
 } from "@/app/constant";
 import {
   useAccessStore,
@@ -15,28 +13,18 @@ import {
   ChatMessageTool,
   usePluginStore,
 } from "@/app/store";
-import { collectModelsWithDefaultModel } from "@/app/utils/model";
-import { preProcessImageContent, stream } from "@/app/utils/chat";
-import { cloudflareAIGatewayUrl } from "@/app/utils/cloudflare";
-
+import { stream } from "@/app/utils/chat";
 import {
   ChatOptions,
   getHeaders,
   LLMApi,
   LLMModel,
-  LLMUsage,
-  MultimodalContent,
+  SpeechOptions,
 } from "../api";
-import Locale from "../../locales";
-import {
-  EventStreamContentType,
-  fetchEventSource,
-} from "@fortaine/fetch-event-source";
-import { prettyObject } from "@/app/utils/format";
 import { getClientConfig } from "@/app/config/client";
 import { getMessageTextContent } from "@/app/utils";
-
-import { OpenAIListModelResponse, RequestPayload } from "./openai";
+import { RequestPayload } from "./openai";
+import { fetch } from "@/app/utils/stream";
 
 export class MoonshotApi implements LLMApi {
   private disableListModels = true;
@@ -53,7 +41,7 @@ export class MoonshotApi implements LLMApi {
     if (baseUrl.length === 0) {
       const isApp = !!getClientConfig()?.isApp;
       const apiPath = ApiPath.Moonshot;
-      baseUrl = isApp ? DEFAULT_API_HOST + "/proxy" + apiPath : apiPath;
+      baseUrl = isApp ? MOONSHOT_BASE_URL : apiPath;
     }
 
     if (baseUrl.endsWith("/")) {
@@ -70,6 +58,10 @@ export class MoonshotApi implements LLMApi {
 
   extractMessage(res: any) {
     return res.choices?.at(0)?.message?.content ?? "";
+  }
+
+  speech(options: SpeechOptions): Promise<ArrayBuffer> {
+    throw new Error("Method not implemented.");
   }
 
   async chat(options: ChatOptions) {
@@ -188,7 +180,7 @@ export class MoonshotApi implements LLMApi {
 
         const resJson = await res.json();
         const message = this.extractMessage(resJson);
-        options.onFinish(message);
+        options.onFinish(message, res);
       }
     } catch (e) {
       console.log("[Request] failed to make a chat request", e);

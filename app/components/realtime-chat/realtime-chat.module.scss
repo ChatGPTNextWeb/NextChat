@@ -1,0 +1,74 @@
+.realtime-chat {
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+  .circle-mic {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background: linear-gradient(to bottom right, #a0d8ef, #f0f8ff);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .icon-center {
+    font-size: 24px;
+  }
+
+  .bottom-icons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    position: absolute;
+    bottom: 20px;
+    box-sizing: border-box;
+    padding: 0 20px;
+  }
+
+  .icon-left,
+  .icon-right {
+    width: 46px;
+    height: 46px;
+    font-size: 36px;
+    background: var(--second);
+    border-radius: 50%;
+    padding: 2px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+
+  &.mobile {
+    display: none;
+  }
+}
+
+.pulse {
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+}

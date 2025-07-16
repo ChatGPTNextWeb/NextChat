@@ -10,7 +10,29 @@
     max-height: 240px;
     overflow-y: auto;
     white-space: pre-wrap;
-    min-width: 300px;
+    min-width: 280px;
   }
 }
 
+.plugin-schema {
+  display: flex;
+  justify-content: flex-end;
+  flex-direction: row;
+
+  input {
+    margin-right: 20px;
+
+    @media screen and (max-width: 600px) {
+        margin-right: 0px;
+      }
+  }
+
+  @media screen and (max-width: 600px) {
+    flex-direction: column;
+    gap: 5px;
+
+    button {
+      padding: 10px;
+    }
+  }
+}

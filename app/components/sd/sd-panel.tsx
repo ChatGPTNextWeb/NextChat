@@ -4,6 +4,7 @@ import { Select } from "@/app/components/ui-lib";
 import { IconButton } from "@/app/components/button";
 import Locale from "@/app/locales";
 import { useSdStore } from "@/app/store/sd";
+import clsx from "clsx";
 
 export const params = [
   {
@@ -136,7 +137,7 @@ export function ControlParamItem(props: {
   className?: string;
 }) {
   return (
-    <div className={styles["ctrl-param-item"] + ` ${props.className || ""}`}>
+    <div className={clsx(styles["ctrl-param-item"], props.className)}>
       <div className={styles["ctrl-param-item-header"]}>
         <div className={styles["ctrl-param-item-title"]}>
           <div>

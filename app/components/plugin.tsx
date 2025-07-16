@@ -12,7 +12,6 @@ import EditIcon from "../icons/edit.svg";
 import AddIcon from "../icons/add.svg";
 import CloseIcon from "../icons/close.svg";
 import DeleteIcon from "../icons/delete.svg";
-import EyeIcon from "../icons/eye.svg";
 import ConfirmIcon from "../icons/confirm.svg";
 import ReloadIcon from "../icons/reload.svg";
 import GithubIcon from "../icons/github.svg";
@@ -28,8 +27,8 @@ import {
 } from "./ui-lib";
 import Locale from "../locales";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { getClientConfig } from "../config/client";
+import { useState } from "react";
+import clsx from "clsx";
 
 export function PluginPage() {
   const navigate = useNavigate();
@@ -201,7 +200,7 @@ export function PluginPage() {
                     <div className={styles["mask-name"]}>
                       {m.title}@<small>{m.version}</small>
                     </div>
-                    <div className={styles["mask-info"] + " one-line"}>
+                    <div className={clsx(styles["mask-info"], "one-line")}>
                       {Locale.Plugin.Item.Info(
                         FunctionToolService.add(m).length,
                       )}
@@ -209,19 +208,11 @@ export function PluginPage() {
                   </div>
                 </div>
                 <div className={styles["mask-actions"]}>
-                  {m.builtin ? (
-                    <IconButton
-                      icon={<EyeIcon />}
-                      text={Locale.Plugin.Item.View}
-                      onClick={() => setEditingPluginId(m.id)}
-                    />
-                  ) : (
-                    <IconButton
-                      icon={<EditIcon />}
-                      text={Locale.Plugin.Item.Edit}
-                      onClick={() => setEditingPluginId(m.id)}
-                    />
-                  )}
+                  <IconButton
+                    icon={<EditIcon />}
+                    text={Locale.Plugin.Item.Edit}
+                    onClick={() => setEditingPluginId(m.id)}
+                  />
                   {!m.builtin && (
                     <IconButton
                       icon={<DeleteIcon />}
@@ -325,30 +316,13 @@ export function PluginPage() {
                   ></PasswordInput>
                 </ListItem>
               )}
-              {!getClientConfig()?.isApp && (
-                <ListItem
-                  title={Locale.Plugin.Auth.Proxy}
-                  subTitle={Locale.Plugin.Auth.ProxyDescription}
-                >
-                  <input
-                    type="checkbox"
-                    checked={editingPlugin?.usingProxy}
-                    style={{ minWidth: 16 }}
-                    onChange={(e) => {
-                      pluginStore.updatePlugin(editingPlugin.id, (plugin) => {
-                        plugin.usingProxy = e.currentTarget.checked;
-                      });
-                    }}
-                  ></input>
-                </ListItem>
-              )}
             </List>
             <List>
               <ListItem title={Locale.Plugin.EditModal.Content}>
-                <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                <div className={pluginStyles["plugin-schema"]}>
                   <input
                     type="text"
-                    style={{ minWidth: 200, marginRight: 20 }}
+                    style={{ minWidth: 200 }}
                     onInput={(e) => setLoadUrl(e.currentTarget.value)}
                   ></input>
                   <IconButton
@@ -362,7 +336,10 @@ export function PluginPage() {
               <ListItem
                 subTitle={
                   <div
-                    className={`markdown-body ${pluginStyles["plugin-content"]}`}
+                    className={clsx(
+                      "markdown-body",
+                      pluginStyles["plugin-content"],
+                    )}
                     dir="auto"
                   >
                     <pre>

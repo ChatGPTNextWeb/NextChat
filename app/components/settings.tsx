@@ -9,6 +9,7 @@ import CopyIcon from "../icons/copy.svg";
 import ClearIcon from "../icons/clear.svg";
 import LoadingIcon from "../icons/three-dots.svg";
 import EditIcon from "../icons/edit.svg";
+import FireIcon from "../icons/fire.svg";
 import EyeIcon from "../icons/eye.svg";
 import DownloadIcon from "../icons/download.svg";
 import UploadIcon from "../icons/upload.svg";
@@ -18,7 +19,7 @@ import ConfirmIcon from "../icons/confirm.svg";
 import ConnectionIcon from "../icons/connection.svg";
 import CloudSuccessIcon from "../icons/cloud-success.svg";
 import CloudFailIcon from "../icons/cloud-fail.svg";
-
+import { trackSettingsPageGuideToCPaymentClick } from "../utils/auth-settings-events";
 import {
   Input,
   List,
@@ -48,7 +49,7 @@ import Locale, {
   changeLang,
   getLang,
 } from "../locales";
-import { copyToClipboard } from "../utils";
+import { copyToClipboard, clientUpdate, semverCompare } from "../utils";
 import Link from "next/link";
 import {
   Anthropic,
@@ -58,6 +59,7 @@ import {
   ByteDance,
   Alibaba,
   Moonshot,
+  XAI,
   Google,
   GoogleSafetySettingsThreshold,
   OPENAI_BASE_URL,
@@ -69,6 +71,11 @@ import {
   UPDATE_URL,
   Stability,
   Iflytek,
+  SAAS_CHAT_URL,
+  ChatGLM,
+  DeepSeek,
+  SiliconFlow,
+  AI302,
 } from "../constant";
 import { Prompt, SearchService, usePromptStore } from "../store/prompt";
 import { ErrorBoundary } from "./error";
@@ -80,6 +87,8 @@ import { useSyncStore } from "../store/sync";
 import { nanoid } from "nanoid";
 import { useMaskStore } from "../store/mask";
 import { ProviderType } from "../utils/cloud";
+import { TTSConfigList } from "./tts-config";
+import { RealtimeConfigList } from "./realtime-chat/realtime-config";
 
 function EditPromptModal(props: { id: string; onClose: () => void }) {
   const promptStore = usePromptStore();
@@ -582,7 +591,7 @@ export function Settings() {
   const [checkingUpdate, setCheckingUpdate] = useState(false);
   const currentVersion = updateStore.formatVersion(updateStore.version);
   const remoteId = updateStore.formatVersion(updateStore.remoteVersion);
-  const hasNewVersion = currentVersion !== remoteId;
+  const hasNewVersion = semverCompare(currentVersion, remoteId) === -1;
   const updateUrl = getClientConfig()?.isApp ? RELEASE_URL : UPDATE_URL;
 
   function checkUpdate(force = false) {
@@ -680,6 +689,31 @@ export function Settings() {
           accessStore.update(
             (access) => (access.accessCode = e.currentTarget.value),
           );
+        }}
+      />
+    </ListItem>
+  );
+
+  const saasStartComponent = (
+    <ListItem
+      className={styles["subtitle-button"]}
+      title={
+        Locale.Settings.Access.SaasStart.Title +
+        `${Locale.Settings.Access.SaasStart.Label}`
+      }
+      subTitle={Locale.Settings.Access.SaasStart.SubTitle}
+    >
+      <IconButton
+        aria={
+          Locale.Settings.Access.SaasStart.Title +
+          Locale.Settings.Access.SaasStart.ChatNow
+        }
+        icon={<FireIcon />}
+        type={"primary"}
+        text={Locale.Settings.Access.SaasStart.ChatNow}
+        onClick={() => {
+          trackSettingsPageGuideToCPaymentClick();
+          window.location.href = SAAS_CHAT_URL;
         }}
       />
     </ListItem>
@@ -1166,6 +1200,167 @@ export function Settings() {
     </>
   );
 
+  const deepseekConfigComponent = accessStore.provider ===
+    ServiceProvider.DeepSeek && (
+    <>
+      <ListItem
+        title={Locale.Settings.Access.DeepSeek.Endpoint.Title}
+        subTitle={
+          Locale.Settings.Access.DeepSeek.Endpoint.SubTitle +
+          DeepSeek.ExampleEndpoint
+        }
+      >
+        <input
+          aria-label={Locale.Settings.Access.DeepSeek.Endpoint.Title}
+          type="text"
+          value={accessStore.deepseekUrl}
+          placeholder={DeepSeek.ExampleEndpoint}
+          onChange={(e) =>
+            accessStore.update(
+              (access) => (access.deepseekUrl = e.currentTarget.value),
+            )
+          }
+        ></input>
+      </ListItem>
+      <ListItem
+        title={Locale.Settings.Access.DeepSeek.ApiKey.Title}
+        subTitle={Locale.Settings.Access.DeepSeek.ApiKey.SubTitle}
+      >
+        <PasswordInput
+          aria-label={Locale.Settings.Access.DeepSeek.ApiKey.Title}
+          value={accessStore.deepseekApiKey}
+          type="text"
+          placeholder={Locale.Settings.Access.DeepSeek.ApiKey.Placeholder}
+          onChange={(e) => {
+            accessStore.update(
+              (access) => (access.deepseekApiKey = e.currentTarget.value),
+            );
+          }}
+        />
+      </ListItem>
+    </>
+  );
+
+  const XAIConfigComponent = accessStore.provider === ServiceProvider.XAI && (
+    <>
+      <ListItem
+        title={Locale.Settings.Access.XAI.Endpoint.Title}
+        subTitle={
+          Locale.Settings.Access.XAI.Endpoint.SubTitle + XAI.ExampleEndpoint
+        }
+      >
+        <input
+          aria-label={Locale.Settings.Access.XAI.Endpoint.Title}
+          type="text"
+          value={accessStore.xaiUrl}
+          placeholder={XAI.ExampleEndpoint}
+          onChange={(e) =>
+            accessStore.update(
+              (access) => (access.xaiUrl = e.currentTarget.value),
+            )
+          }
+        ></input>
+      </ListItem>
+      <ListItem
+        title={Locale.Settings.Access.XAI.ApiKey.Title}
+        subTitle={Locale.Settings.Access.XAI.ApiKey.SubTitle}
+      >
+        <PasswordInput
+          aria-label={Locale.Settings.Access.XAI.ApiKey.Title}
+          value={accessStore.xaiApiKey}
+          type="text"
+          placeholder={Locale.Settings.Access.XAI.ApiKey.Placeholder}
+          onChange={(e) => {
+            accessStore.update(
+              (access) => (access.xaiApiKey = e.currentTarget.value),
+            );
+          }}
+        />
+      </ListItem>
+    </>
+  );
+
+  const chatglmConfigComponent = accessStore.provider ===
+    ServiceProvider.ChatGLM && (
+    <>
+      <ListItem
+        title={Locale.Settings.Access.ChatGLM.Endpoint.Title}
+        subTitle={
+          Locale.Settings.Access.ChatGLM.Endpoint.SubTitle +
+          ChatGLM.ExampleEndpoint
+        }
+      >
+        <input
+          aria-label={Locale.Settings.Access.ChatGLM.Endpoint.Title}
+          type="text"
+          value={accessStore.chatglmUrl}
+          placeholder={ChatGLM.ExampleEndpoint}
+          onChange={(e) =>
+            accessStore.update(
+              (access) => (access.chatglmUrl = e.currentTarget.value),
+            )
+          }
+        ></input>
+      </ListItem>
+      <ListItem
+        title={Locale.Settings.Access.ChatGLM.ApiKey.Title}
+        subTitle={Locale.Settings.Access.ChatGLM.ApiKey.SubTitle}
+      >
+        <PasswordInput
+          aria-label={Locale.Settings.Access.ChatGLM.ApiKey.Title}
+          value={accessStore.chatglmApiKey}
+          type="text"
+          placeholder={Locale.Settings.Access.ChatGLM.ApiKey.Placeholder}
+          onChange={(e) => {
+            accessStore.update(
+              (access) => (access.chatglmApiKey = e.currentTarget.value),
+            );
+          }}
+        />
+      </ListItem>
+    </>
+  );
+  const siliconflowConfigComponent = accessStore.provider ===
+    ServiceProvider.SiliconFlow && (
+    <>
+      <ListItem
+        title={Locale.Settings.Access.SiliconFlow.Endpoint.Title}
+        subTitle={
+          Locale.Settings.Access.SiliconFlow.Endpoint.SubTitle +
+          SiliconFlow.ExampleEndpoint
+        }
+      >
+        <input
+          aria-label={Locale.Settings.Access.SiliconFlow.Endpoint.Title}
+          type="text"
+          value={accessStore.siliconflowUrl}
+          placeholder={SiliconFlow.ExampleEndpoint}
+          onChange={(e) =>
+            accessStore.update(
+              (access) => (access.siliconflowUrl = e.currentTarget.value),
+            )
+          }
+        ></input>
+      </ListItem>
+      <ListItem
+        title={Locale.Settings.Access.SiliconFlow.ApiKey.Title}
+        subTitle={Locale.Settings.Access.SiliconFlow.ApiKey.SubTitle}
+      >
+        <PasswordInput
+          aria-label={Locale.Settings.Access.SiliconFlow.ApiKey.Title}
+          value={accessStore.siliconflowApiKey}
+          type="text"
+          placeholder={Locale.Settings.Access.SiliconFlow.ApiKey.Placeholder}
+          onChange={(e) => {
+            accessStore.update(
+              (access) => (access.siliconflowApiKey = e.currentTarget.value),
+            );
+          }}
+        />
+      </ListItem>
+    </>
+  );
+
   const stabilityConfigComponent = accessStore.provider ===
     ServiceProvider.Stability && (
     <>
@@ -1264,6 +1459,46 @@ export function Settings() {
     </>
   );
 
+  const ai302ConfigComponent = accessStore.provider === ServiceProvider["302.AI"] && (
+    <>
+      <ListItem
+          title={Locale.Settings.Access.AI302.Endpoint.Title}
+          subTitle={
+            Locale.Settings.Access.AI302.Endpoint.SubTitle +
+            AI302.ExampleEndpoint
+          }
+        >
+          <input
+            aria-label={Locale.Settings.Access.AI302.Endpoint.Title}
+            type="text"
+            value={accessStore.ai302Url}
+            placeholder={AI302.ExampleEndpoint}
+            onChange={(e) =>
+              accessStore.update(
+                (access) => (access.ai302Url = e.currentTarget.value),
+              )
+            }
+          ></input>
+        </ListItem>
+        <ListItem
+          title={Locale.Settings.Access.AI302.ApiKey.Title}
+          subTitle={Locale.Settings.Access.AI302.ApiKey.SubTitle}
+        >
+          <PasswordInput
+            aria-label={Locale.Settings.Access.AI302.ApiKey.Title}
+            value={accessStore.ai302ApiKey}
+            type="text"
+            placeholder={Locale.Settings.Access.AI302.ApiKey.Placeholder}
+            onChange={(e) => {
+              accessStore.update(
+                (access) => (access.ai302ApiKey = e.currentTarget.value),
+              );
+            }}
+          />
+        </ListItem>
+      </>
+  );
+
   return (
     <ErrorBoundary>
       <div className="window-header" data-tauri-drag-region>
@@ -1329,9 +1564,17 @@ export function Settings() {
             {checkingUpdate ? (
               <LoadingIcon />
             ) : hasNewVersion ? (
-              <Link href={updateUrl} target="_blank" className="link">
-                {Locale.Settings.Update.GoToUpdate}
-              </Link>
+              clientConfig?.isApp ? (
+                <IconButton
+                  icon={<ResetIcon></ResetIcon>}
+                  text={Locale.Settings.Update.GoToUpdate}
+                  onClick={() => clientUpdate()}
+                />
+              ) : (
+                <Link href={updateUrl} target="_blank" className="link">
+                  {Locale.Settings.Update.GoToUpdate}
+                </Link>
+              )
             ) : (
               <IconButton
                 icon={<ResetIcon></ResetIcon>}
@@ -1464,6 +1707,39 @@ export function Settings() {
               }
             ></input>
           </ListItem>
+
+          <ListItem
+            title={Locale.Mask.Config.Artifacts.Title}
+            subTitle={Locale.Mask.Config.Artifacts.SubTitle}
+          >
+            <input
+              aria-label={Locale.Mask.Config.Artifacts.Title}
+              type="checkbox"
+              checked={config.enableArtifacts}
+              onChange={(e) =>
+                updateConfig(
+                  (config) =>
+                    (config.enableArtifacts = e.currentTarget.checked),
+                )
+              }
+            ></input>
+          </ListItem>
+          <ListItem
+            title={Locale.Mask.Config.CodeFold.Title}
+            subTitle={Locale.Mask.Config.CodeFold.SubTitle}
+          >
+            <input
+              aria-label={Locale.Mask.Config.CodeFold.Title}
+              type="checkbox"
+              checked={config.enableCodeFold}
+              data-testid="enable-code-fold-checkbox"
+              onChange={(e) =>
+                updateConfig(
+                  (config) => (config.enableCodeFold = e.currentTarget.checked),
+                )
+              }
+            ></input>
+          </ListItem>
         </List>
 
         <SyncItems />
@@ -1540,6 +1816,7 @@ export function Settings() {
         </List>
 
         <List id={SlotID.CustomModel}>
+          {saasStartComponent}
           {accessCodeComponent}
 
           {!accessStore.hideUserApiKey && (
@@ -1580,8 +1857,13 @@ export function Settings() {
                   {alibabaConfigComponent}
                   {tencentConfigComponent}
                   {moonshotConfigComponent}
+                  {deepseekConfigComponent}
                   {stabilityConfigComponent}
                   {lflytekConfigComponent}
+                  {XAIConfigComponent}
+                  {chatglmConfigComponent}
+                  {siliconflowConfigComponent}
+                  {ai302ConfigComponent}
                 </>
               )}
             </>
@@ -1616,9 +1898,11 @@ export function Settings() {
           <ListItem
             title={Locale.Settings.Access.CustomModel.Title}
             subTitle={Locale.Settings.Access.CustomModel.SubTitle}
+            vertical={true}
           >
             <input
               aria-label={Locale.Settings.Access.CustomModel.Title}
+              style={{ width: "100%", maxWidth: "unset", textAlign: "left" }}
               type="text"
               value={config.customModels}
               placeholder="model1,model2,model3"
@@ -1645,6 +1929,28 @@ export function Settings() {
         {shouldShowPromptModal && (
           <UserPromptModal onClose={() => setShowPromptModal(false)} />
         )}
+        <List>
+          <RealtimeConfigList
+            realtimeConfig={config.realtimeConfig}
+            updateConfig={(updater) => {
+              const realtimeConfig = { ...config.realtimeConfig };
+              updater(realtimeConfig);
+              config.update(
+                (config) => (config.realtimeConfig = realtimeConfig),
+              );
+            }}
+          />
+        </List>
+        <List>
+          <TTSConfigList
+            ttsConfig={config.ttsConfig}
+            updateConfig={(updater) => {
+              const ttsConfig = { ...config.ttsConfig };
+              updater(ttsConfig);
+              config.update((config) => (config.ttsConfig = ttsConfig));
+            }}
+          />
+        </List>
 
         <DangerItems />
       </div>

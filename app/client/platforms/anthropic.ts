@@ -1,5 +1,5 @@
-import { ACCESS_CODE_PREFIX, Anthropic, ApiPath } from "@/app/constant";
-import { ChatOptions, getHeaders, LLMApi, MultimodalContent } from "../api";
+import { Anthropic, ApiPath } from "@/app/constant";
+import { ChatOptions, getHeaders, LLMApi, SpeechOptions } from "../api";
 import {
   useAccessStore,
   useAppConfig,
@@ -8,18 +8,12 @@ import {
   ChatMessageTool,
 } from "@/app/store";
 import { getClientConfig } from "@/app/config/client";
-import { DEFAULT_API_HOST } from "@/app/constant";
-import {
-  EventStreamContentType,
-  fetchEventSource,
-} from "@fortaine/fetch-event-source";
-
-import Locale from "../../locales";
-import { prettyObject } from "@/app/utils/format";
+import { ANTHROPIC_BASE_URL } from "@/app/constant";
 import { getMessageTextContent, isVisionModel } from "@/app/utils";
 import { preProcessImageContent, stream } from "@/app/utils/chat";
 import { cloudflareAIGatewayUrl } from "@/app/utils/cloudflare";
 import { RequestPayload } from "./openai";
+import { fetch } from "@/app/utils/stream";
 
 export type MultiBlockContent = {
   type: "image" | "text";
@@ -80,6 +74,10 @@ const ClaudeMapper = {
 const keys = ["claude-2, claude-instant-1"];
 
 export class ClaudeApi implements LLMApi {
+  speech(options: SpeechOptions): Promise<ArrayBuffer> {
+    throw new Error("Method not implemented.");
+  }
+
   extractMessage(res: any) {
     console.log("[Response] claude response: ", res);
 
@@ -226,7 +224,7 @@ export class ClaudeApi implements LLMApi {
           let chunkJson:
             | undefined
             | {
-                type: "content_block_delta" | "content_block_stop";
+                type: "content_block_delta" | "content_block_stop" | "message_delta" | "message_stop";
                 content_block?: {
                   type: "tool_use";
                   id: string;
@@ -236,10 +234,19 @@ export class ClaudeApi implements LLMApi {
                   type: "text_delta" | "input_json_delta";
                   text?: string;
                   partial_json?: string;
+                  stop_reason?: string;
                 };
                 index: number;
               };
           chunkJson = JSON.parse(text);
+
+          // Handle refusal stop reason in message_delta
+          if (chunkJson?.delta?.stop_reason === "refusal") {
+            // Return a message to display to the user
+            const refusalMessage = "\n\n[Assistant refused to respond. Please modify your request and try again.]";
+            options.onError?.(new Error("Content policy violation: " + refusalMessage));
+            return refusalMessage;
+          }
 
           if (chunkJson?.content_block?.type == "tool_use") {
             index += 1;
@@ -319,13 +326,14 @@ export class ClaudeApi implements LLMApi {
       };
 
       try {
-        controller.signal.onabort = () => options.onFinish("");
+        controller.signal.onabort = () =>
+          options.onFinish("", new Response(null, { status: 400 }));
 
         const res = await fetch(path, payload);
         const resJson = await res.json();
 
         const message = this.extractMessage(resJson);
-        options.onFinish(message);
+        options.onFinish(message, res);
       } catch (e) {
         console.error("failed to chat", e);
         options.onError?.(e as Error);
@@ -391,9 +399,7 @@ export class ClaudeApi implements LLMApi {
     if (baseUrl.trim().length === 0) {
       const isApp = !!getClientConfig()?.isApp;
 
-      baseUrl = isApp
-        ? DEFAULT_API_HOST + "/api/proxy/anthropic"
-        : ApiPath.Anthropic;
+      baseUrl = isApp ? ANTHROPIC_BASE_URL : ApiPath.Anthropic;
     }
 
     if (!baseUrl.startsWith("http") && !baseUrl.startsWith("/api")) {

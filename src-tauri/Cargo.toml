@@ -37,6 +37,10 @@ tauri = { version = "1.5.4", features = [ "http-all",
     "window-unminimize",
 ] }
 tauri-plugin-window-state = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "v1" }
+percent-encoding = "2.3.1"
+reqwest = "0.11.18"
+futures-util = "0.3.30"
+bytes = "1.7.2"
 
 [features]
 # this feature is used for production builds or when `devPath` points to the filesystem and the built-in dev server is disabled.
