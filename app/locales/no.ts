@@ -9,8 +9,8 @@ const no: PartialLocaleType = {
   Error: {
     Unauthorized: isApp
       ? `😆 Samtalen har støtt på noen problemer, ikke bekymre deg:
-    \\ 1️⃣ Hvis du vil starte uten konfigurasjon, [klikk her for å begynne å chatte umiddelbart 🚀](${SAAS_CHAT_UTM_URL})
-    \\ 2️⃣ Hvis du vil bruke dine egne OpenAI-ressurser, klikk [her](/#/settings) for å endre innstillingene ⚙️`
+    \ 1️⃣ Hvis du vil starte uten konfigurasjon, [klikk her for å begynne å chatte umiddelbart 🚀](${SAAS_CHAT_UTM_URL})
+    \ 2️⃣ Hvis du vil bruke dine egne OpenAI-ressurser, klikk [her](/#/settings) for å endre innstillingene ⚙️`
       : `😆 Samtalen har støtt på noen problemer, ikke bekymre deg:
     \ 1️⃣ Hvis du vil starte uten konfigurasjon, [klikk her for å begynne å chatte umiddelbart 🚀](${SAAS_CHAT_UTM_URL})
     \ 2️⃣ Hvis du bruker en privat distribusjonsversjon, klikk [her](/#/auth) for å skrive inn tilgangsnøkkelen 🔑
