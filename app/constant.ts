@@ -555,6 +555,7 @@ const googleModels = [
   "gemini-2.0-pro-exp",
   "gemini-2.0-pro-exp-02-05",
   "gemini-2.5-pro-preview-06-05",
+  "gemini-2.5-pro"
 ];
 
 const anthropicModels = [
