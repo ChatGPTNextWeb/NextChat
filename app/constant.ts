@@ -25,7 +25,7 @@ export const ALIBABA_BASE_URL = "https://dashscope.aliyuncs.com/api/";
 
 export const TENCENT_BASE_URL = "https://hunyuan.tencentcloudapi.com";
 
-export const MOONSHOT_BASE_URL = "https://api.moonshot.cn";
+export const MOONSHOT_BASE_URL = "https://api.moonshot.ai";
 export const IFLYTEK_BASE_URL = "https://spark-api-open.xf-yun.com";
 
 export const DEEPSEEK_BASE_URL = "https://api.deepseek.com";
@@ -623,7 +623,18 @@ const tencentModels = [
   "hunyuan-vision",
 ];
 
-const moonshotModes = ["moonshot-v1-8k", "moonshot-v1-32k", "moonshot-v1-128k"];
+const moonshotModels = [
+  "moonshot-v1-auto",
+  "moonshot-v1-8k",
+  "moonshot-v1-32k",
+  "moonshot-v1-128k",
+  "moonshot-v1-8k-vision-preview",
+  "moonshot-v1-32k-vision-preview",
+  "moonshot-v1-128k-vision-preview",
+  "kimi-thinking-preview",
+  "kimi-k2-0711-preview",
+  "kimi-latest",
+];
 
 const iflytekModels = [
   "general",
@@ -810,7 +821,7 @@ export const DEFAULT_MODELS = [
       sorted: 8,
     },
   })),
-  ...moonshotModes.map((name) => ({
+  ...moonshotModels.map((name) => ({
     name,
     available: true,
     sorted: seq++,
