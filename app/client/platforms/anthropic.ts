@@ -224,7 +224,7 @@ export class ClaudeApi implements LLMApi {
           let chunkJson:
             | undefined
             | {
-                type: "content_block_delta" | "content_block_stop";
+                type: "content_block_delta" | "content_block_stop" | "message_delta" | "message_stop";
                 content_block?: {
                   type: "tool_use";
                   id: string;
@@ -234,10 +234,19 @@ export class ClaudeApi implements LLMApi {
                   type: "text_delta" | "input_json_delta";
                   text?: string;
                   partial_json?: string;
+                  stop_reason?: string;
                 };
                 index: number;
               };
           chunkJson = JSON.parse(text);
+
+          // Handle refusal stop reason in message_delta
+          if (chunkJson?.delta?.stop_reason === "refusal") {
+            // Return a message to display to the user
+            const refusalMessage = "\n\n[Assistant refused to respond. Please modify your request and try again.]";
+            options.onError?.(new Error("Content policy violation: " + refusalMessage));
+            return refusalMessage;
+          }
 
           if (chunkJson?.content_block?.type == "tool_use") {
             index += 1;

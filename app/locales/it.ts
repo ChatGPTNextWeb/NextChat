@@ -436,6 +436,17 @@ const it: PartialLocaleType = {
           SubTitle: "Esempio:",
         },
       },
+      AI302: {
+        ApiKey: {
+          Title: "Chiave dell'interfaccia",
+          SubTitle: "Utilizza una chiave API 302.AI personalizzata",
+          Placeholder: "Chiave API 302.AI",
+        },
+        Endpoint: {
+          Title: "Indirizzo dell'interfaccia",
+          SubTitle: "Esempio:",
+        },
+      },
       CustomModel: {
         Title: "Nome del modello personalizzato",
         SubTitle:

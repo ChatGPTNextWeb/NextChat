@@ -416,6 +416,17 @@ const ar: PartialLocaleType = {
           SubTitle: "مثال:",
         },
       },
+      AI302: {
+        ApiKey: {
+          Title: "مفتاح 302.AI API",
+          SubTitle: "استخدم مفتاح 302.AI API مخصص",
+          Placeholder: "مفتاح 302.AI API",
+        },
+        Endpoint: {
+          Title: "عنوان الواجهة",
+          SubTitle: "مثال:",
+        },
+      },
       CustomModel: {
         Title: "اسم النموذج المخصص",
         SubTitle: "أضف خيارات نموذج مخصص، مفصولة بفواصل إنجليزية",

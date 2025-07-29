@@ -422,6 +422,17 @@ const vi: PartialLocaleType = {
           SubTitle: "Ví dụ:",
         },
       },
+      AI302: {
+        ApiKey: {
+          Title: "Khóa API 302.AI",
+          SubTitle: "Sử dụng khóa API 302.AI tùy chỉnh",
+          Placeholder: "302.AI API Key",
+        },
+        Endpoint: {
+          Title: "Địa chỉ giao diện",
+          SubTitle: "Ví dụ:",
+        },
+      },
       CustomModel: {
         Title: "Tên mô hình tùy chỉnh",
         SubTitle:

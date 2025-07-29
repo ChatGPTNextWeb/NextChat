@@ -4,17 +4,13 @@
   <img src="https://github.com/user-attachments/assets/83bdcc07-ae5e-4954-a53a-ac151ba6ccf3" width="1000" alt="icon"/>
 </a>
 
-
-
-
 <h1 align="center">NextChat</h1>
 
 English / [简体中文](./README_CN.md)
 
 <a href="https://trendshift.io/repositories/5973" target="_blank"><img src="https://trendshift.io/api/badge/repositories/5973" alt="ChatGPTNextWeb%2FChatGPT-Next-Web | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a>
 
-
-✨ Light and Fast AI Assistant,with Claude, DeepSeek, GPT4 & Gemini Pro support. 
+✨ Light and Fast AI Assistant,with Claude, DeepSeek, GPT4 & Gemini Pro support.
 
 [![Saas][Saas-image]][saas-url]
 [![Web][Web-image]][web-url]
@@ -22,41 +18,49 @@ English / [简体中文](./README_CN.md)
 [![MacOS][MacOS-image]][download-url]
 [![Linux][Linux-image]][download-url]
 
-[NextChatAI](https://nextchat.club?utm_source=readme) / [iOS APP](https://apps.apple.com/us/app/nextchat-ai/id6743085599) / [Web App Demo](https://app.nextchat.dev) / [Desktop App](https://github.com/Yidadaa/ChatGPT-Next-Web/releases) / [Enterprise Edition](#enterprise-edition) 
-
+[NextChatAI](https://nextchat.club?utm_source=readme) / [iOS APP](https://apps.apple.com/us/app/nextchat-ai/id6743085599) / [Web App Demo](https://app.nextchat.club) / [Desktop App](https://github.com/Yidadaa/ChatGPT-Next-Web/releases) / [Enterprise Edition](#enterprise-edition)
 
 [saas-url]: https://nextchat.club?utm_source=readme
 [saas-image]: https://img.shields.io/badge/NextChat-Saas-green?logo=microsoftedge
-[web-url]: https://app.nextchat.dev/
+[web-url]: https://app.nextchat.club/
 [download-url]: https://github.com/Yidadaa/ChatGPT-Next-Web/releases
 [Web-image]: https://img.shields.io/badge/Web-PWA-orange?logo=microsoftedge
 [Windows-image]: https://img.shields.io/badge/-Windows-blue?logo=windows
 [MacOS-image]: https://img.shields.io/badge/-MacOS-black?logo=apple
 [Linux-image]: https://img.shields.io/badge/-Linux-333?logo=ubuntu
 
-[<img src="https://zeabur.com/button.svg" alt="Deploy on Zeabur" height="30">](https://zeabur.com/templates/ZBUEFA) [<img src="https://vercel.com/button" alt="Deploy on Vercel" height="30">](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FChatGPTNextWeb%2FChatGPT-Next-Web&env=OPENAI_API_KEY&env=CODE&project-name=nextchat&repository-name=NextChat)  [<img src="https://gitpod.io/button/open-in-gitpod.svg" alt="Open in Gitpod" height="30">](https://gitpod.io/#https://github.com/ChatGPTNextWeb/NextChat) 
+[<img src="https://zeabur.com/button.svg" alt="Deploy on Zeabur" height="30">](https://zeabur.com/templates/ZBUEFA) [<img src="https://vercel.com/button" alt="Deploy on Vercel" height="30">](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FChatGPTNextWeb%2FChatGPT-Next-Web&env=OPENAI_API_KEY&env=CODE&project-name=nextchat&repository-name=NextChat) [<img src="https://gitpod.io/button/open-in-gitpod.svg" alt="Open in Gitpod" height="30">](https://gitpod.io/#https://github.com/ChatGPTNextWeb/NextChat)
 
 [<img src="https://github.com/user-attachments/assets/903482d4-3e87-4134-9af1-f2588fa90659" height="50" width="" >](https://monica.im/?utm=nxcrp)
 
 </div>
 
+## ❤️ Sponsor AI API
+
+<a href='https://302.ai/'>
+  <img src="https://github.com/user-attachments/assets/a03edf82-2031-4f23-bdb8-bfc0bfd168a4" width="100%" alt="icon"/>
+</a>
+
+[302.AI](https://302.ai/) is a pay-as-you-go AI application platform that offers the most comprehensive AI APIs and online applications available.
+
 ## 🥳 Cheer for NextChat iOS Version Online!
+
 > [👉 Click Here to Install Now](https://apps.apple.com/us/app/nextchat-ai/id6743085599)
 
 > [❤️ Source Code Coming Soon](https://github.com/ChatGPTNextWeb/NextChat-iOS)
 
 ![Github iOS Image](https://github.com/user-attachments/assets/e0aa334f-4c13-4dc9-8310-e3b09fa4b9f3)
 
- 
-## 🫣 NextChat Support MCP  ! 
+## 🫣 NextChat Support MCP !
+
 > Before build, please set env ENABLE_MCP=true
 
 <img src="https://github.com/user-attachments/assets/d8851f40-4e36-4335-b1a4-ec1e11488c7e"/>
 
-
 ## Enterprise Edition
 
 Meeting Your Company's Privatization and Customization Deployment Requirements:
+
 - **Brand Customization**: Tailored VI/UI to seamlessly align with your corporate brand image.
 - **Resource Integration**: Unified configuration and management of dozens of AI resources by company administrators, ready for use by team members.
 - **Permission Control**: Clearly defined member permissions, resource permissions, and knowledge base permissions, all controlled via a corporate-grade Admin Panel.
@@ -72,7 +76,6 @@ For enterprise inquiries, please contact: **business@nextchat.dev**
 ![Settings](./docs/images/settings.png)
 
 ![More](./docs/images/more.png)
-
 
 ## Features
 
@@ -109,10 +112,11 @@ For enterprise inquiries, please contact: **business@nextchat.dev**
 - [ ] local knowledge base
 
 ## What's New
+
 - 🚀 v2.15.8 Now supports Realtime Chat [#5672](https://github.com/ChatGPTNextWeb/ChatGPT-Next-Web/issues/5672)
 - 🚀 v2.15.4 The Application supports using Tauri fetch LLM API, MORE SECURITY! [#5379](https://github.com/ChatGPTNextWeb/ChatGPT-Next-Web/issues/5379)
 - 🚀 v2.15.0 Now supports Plugins! Read this: [NextChat-Awesome-Plugins](https://github.com/ChatGPTNextWeb/NextChat-Awesome-Plugins)
-- 🚀 v2.14.0 Now supports  Artifacts & SD 
+- 🚀 v2.14.0 Now supports Artifacts & SD
 - 🚀 v2.10.1 support Google Gemini Pro model.
 - 🚀 v2.9.11 you can use azure endpoint now.
 - 🚀 v2.8 now we have a client that runs across all platforms!
@@ -312,10 +316,12 @@ To control custom models, use `+` to add a custom model, use `-` to hide a model
 User `-all` to disable all default models, `+all` to enable all default models.
 
 For Azure: use `modelName@Azure=deploymentName` to customize model name and deployment name.
+
 > Example: `+gpt-3.5-turbo@Azure=gpt35` will show option `gpt35(Azure)` in model list.
 > If you only can use Azure model, `-all,+gpt-3.5-turbo@Azure=gpt35` will `gpt35(Azure)` the only option in model list.
 
 For ByteDance: use `modelName@bytedance=deploymentName` to customize model name and deployment name.
+
 > Example: `+Doubao-lite-4k@bytedance=ep-xxxxx-xxx` will show option `Doubao-lite-4k(ByteDance)` in model list.
 
 ### `DEFAULT_MODEL` （optional）
@@ -332,8 +338,9 @@ Add additional models to have vision capabilities, beyond the default pattern ma
 ### `WHITE_WEBDAV_ENDPOINTS` (optional)
 
 You can use this option if you want to increase the number of webdav service addresses you are allowed to access, as required by the format：
-- Each address must be a complete endpoint 
-> `https://xxxx/yyy`
+
+- Each address must be a complete endpoint
+  > `https://xxxx/yyy`
 - Multiple addresses are connected by ', '
 
 ### `DEFAULT_INPUT_TEMPLATE` (optional)
@@ -348,7 +355,6 @@ Stability API key.
 
 Customize Stability API url.
 
-
 ### `ENABLE_MCP` (optional)
 
 Enable MCP（Model Context Protocol）Feature
@@ -361,12 +367,19 @@ SiliconFlow API Key.
 
 SiliconFlow API URL.
 
+### `AI302_API_KEY` (optional)
+
+302.AI API Key.
+
+### `AI302_URL` (optional)
+
+302.AI API URL.
+
 ## Requirements
 
 NodeJS >= 18, Docker >= 20
 
 ## Development
-
 
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/Yidadaa/ChatGPT-Next-Web)
 
@@ -390,7 +403,6 @@ yarn dev
 ```
 
 ## Deployment
-
 
 ### Docker (Recommended)
 
@@ -449,8 +461,6 @@ bash <(curl -s https://raw.githubusercontent.com/Yidadaa/ChatGPT-Next-Web/main/s
 - [How to use Vercel (No English)](./docs/vercel-cn.md)
 - [User Manual (Only Chinese, WIP)](./docs/user-manual-cn.md)
 
-
-
 ## Translation
 
 If you want to add a new translation, read this [document](./docs/translation.md).
@@ -460,8 +470,6 @@ If you want to add a new translation, read this [document](./docs/translation.md
 [Buy Me a Coffee](https://www.buymeacoffee.com/yidadaa)
 
 ## Special Thanks
-
-
 
 ### Contributors
 
