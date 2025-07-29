@@ -10,6 +10,11 @@ import { clientUpdate } from "../utils";
 import ChatGptIcon from "../icons/chatgpt.png";
 import Locale from "../locales";
 import { ClientApi } from "../client/api";
+import {
+  isPermissionGranted,
+  requestPermission,
+  sendNotification,
+} from "@tauri-apps/plugin-notification";
 
 const ONE_MINUTE = 60 * 1000;
 const isApp = !!getClientConfig()?.isApp;
@@ -90,42 +95,39 @@ export const useUpdateStore = createPersistStore(
           remoteVersion: remoteId,
         }));
         if (window.__TAURI__?.notification && isApp) {
-          // Check if notification permission is granted
-          await window.__TAURI__?.notification
-            .isPermissionGranted()
-            .then((granted) => {
-              if (!granted) {
-                return;
-              } else {
-                // Request permission to show notifications
-                window.__TAURI__?.notification
-                  .requestPermission()
-                  .then((permission) => {
-                    if (permission === "granted") {
-                      if (version === remoteId) {
-                        // Show a notification using Tauri
-                        window.__TAURI__?.notification.sendNotification({
-                          title: "NextChat",
-                          body: `${Locale.Settings.Update.IsLatest}`,
-                          icon: `${ChatGptIcon.src}`,
-                          sound: "Default",
-                        });
-                      } else {
-                        const updateMessage =
-                          Locale.Settings.Update.FoundUpdate(`${remoteId}`);
-                        // Show a notification for the new version using Tauri
-                        window.__TAURI__?.notification.sendNotification({
-                          title: "NextChat",
-                          body: updateMessage,
-                          icon: `${ChatGptIcon.src}`,
-                          sound: "Default",
-                        });
-                        clientUpdate();
-                      }
-                    }
-                  });
-              }
-            });
+          try {
+            // Check if notification permission is granted
+            const granted = await isPermissionGranted();
+            if (!granted) {
+              // Request permission to show notifications
+              const permission = await requestPermission();
+              if (permission !== "granted") return;
+            }
+
+            if (version === remoteId) {
+              // Show a notification using Tauri
+              await sendNotification({
+                title: "NextChat",
+                body: `${Locale.Settings.Update.IsLatest}`,
+                icon: `${ChatGptIcon.src}`,
+                sound: "Default",
+              });
+            } else {
+              const updateMessage = Locale.Settings.Update.FoundUpdate(
+                `${remoteId}`,
+              );
+              // Show a notification for the new version using Tauri
+              await sendNotification({
+                title: "NextChat",
+                body: updateMessage,
+                icon: `${ChatGptIcon.src}`,
+                sound: "Default",
+              });
+              clientUpdate();
+            }
+          } catch (error) {
+            console.error("[Notification Error]", error);
+          }
         }
         console.log("[Got Upstream] ", remoteId);
       } catch (error) {
