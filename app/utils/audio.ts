@@ -13,13 +13,17 @@ export function createTTSPlayer(): TTSPlayer {
     audioContext.suspend();
   };
 
-  const play = async (audioBuffer: ArrayBuffer, onended: () => void | null) => {
+  const play = async (audioBuffer: ArrayBuffer | AudioBuffer, onended: () => void | null) => {
     if (audioBufferSourceNode) {
       audioBufferSourceNode.stop();
       audioBufferSourceNode.disconnect();
     }
-
-    const buffer = await audioContext!.decodeAudioData(audioBuffer);
+    let buffer: AudioBuffer;
+    if (audioBuffer instanceof AudioBuffer) {
+      buffer = audioBuffer;
+    } else {
+      buffer = await audioContext!.decodeAudioData(audioBuffer);
+    }
     audioBufferSourceNode = audioContext!.createBufferSource();
     audioBufferSourceNode.buffer = buffer;
     audioBufferSourceNode.connect(audioContext!.destination);

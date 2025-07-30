@@ -93,5 +93,9 @@
   "resolutions": {
     "lint-staged/yaml": "^2.2.2"
   },
-  "packageManager": "yarn@1.22.19"
+  "packageManager": "yarn@1.22.19",
+  "volta": {
+    "node": "20.19.4",
+    "yarn": "1.22.22"
+  }
 }

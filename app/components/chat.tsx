@@ -1293,14 +1293,15 @@ function _Chat() {
       setSpeechStatus(false);
     } else {
       var api: ClientApi;
-      api = new ClientApi(ModelProvider.GPT);
       const config = useAppConfig.getState();
+      api = new ClientApi(config.ttsConfig.modelProvider);
       setSpeechLoading(true);
       ttsPlayer.init();
       let audioBuffer: ArrayBuffer;
       const { markdownToTxt } = require("markdown-to-txt");
       const textContent = markdownToTxt(text);
-      if (config.ttsConfig.engine !== DEFAULT_TTS_ENGINE) {
+      console.log("[OpenAI Speech] textContent: ", config, textContent);
+      if (config.ttsConfig.engine === "Edge") {
         const edgeVoiceName = accessStore.edgeVoiceName();
         const tts = new MsEdgeTTS();
         await tts.setMetadata(

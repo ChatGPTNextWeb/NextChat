@@ -22,6 +22,7 @@ export const BAIDU_OATUH_URL = `${BAIDU_BASE_URL}/oauth/2.0/token`;
 export const BYTEDANCE_BASE_URL = "https://ark.cn-beijing.volces.com";
 
 export const ALIBABA_BASE_URL = "https://dashscope.aliyuncs.com/api/";
+export const ALIBABA_RUNTIEM_TTS_URL = "wss://dashscope.aliyuncs.com/api-ws/v1/realtime";
 
 export const TENCENT_BASE_URL = "https://hunyuan.tencentcloudapi.com";
 
@@ -232,6 +233,7 @@ export const Alibaba = {
     }
     return `v1/services/aigc/text-generation/generation`;
   },
+  SpeechPath: "v1/services/aigc/multimodal-generation/generation",
 };
 
 export const Tencent = {
@@ -461,19 +463,53 @@ export const KnowledgeCutOffDate: Record<string, string> = {
   "deepseek-coder": "2024-07",
 };
 
-export const DEFAULT_TTS_ENGINE = "OpenAI-TTS";
-export const DEFAULT_TTS_ENGINES = ["OpenAI-TTS", "Edge-TTS"];
+export const DEFAULT_TTS_ENGINE = ServiceProvider.OpenAI;
 export const DEFAULT_TTS_MODEL = "tts-1";
 export const DEFAULT_TTS_VOICE = "alloy";
-export const DEFAULT_TTS_MODELS = ["tts-1", "tts-1-hd"];
-export const DEFAULT_TTS_VOICES = [
-  "alloy",
-  "echo",
-  "fable",
-  "onyx",
-  "nova",
-  "shimmer",
-];
+
+export const OPENAI_TTS = {
+    Provider: ServiceProvider.OpenAI,
+    ModelProvider: ModelProvider.GPT,
+    Model: ["tts-1", "tts-1-hd"],
+    Voices: ["alloy", "echo", "fable", "onyx", "nova", "shimmer"],
+} as const;
+
+export const ALIBABA_TTS = {
+    Provider: ServiceProvider.Alibaba,
+    ModelProvider: ModelProvider.Qwen,
+    Model: ["qwen-tts", "qwen-tts-latest"],
+    Voices: ["Chelsie", "Cherry", "Ethan", "Serena", "Dylan", "Jada", "Sunny"],
+} as const;
+
+export const EDGE_TTS = {
+    Provider: "Edge" as const,
+    ModelProvider: ModelProvider.GPT,
+    Model: [] as string[],
+    Voices: [] as string[],
+} as const;
+
+// 定义支持的 TTS 引擎类型
+export type TTSEngineType = ServiceProvider.OpenAI | ServiceProvider.Alibaba | "Edge";
+
+// 从 TTS_CONFIGS 中提取所有可用的引擎、模型和声音
+export const DEFAULT_TTS_ENGINES = [ServiceProvider.OpenAI, ServiceProvider.Alibaba, "Edge"] as const;
+export const DEFAULT_TTS_MODELS = [...OPENAI_TTS.Model, ...ALIBABA_TTS.Model] as const;
+export const DEFAULT_TTS_VOICES = [...OPENAI_TTS.Voices, ...ALIBABA_TTS.Voices] as const;
+
+// TTS 配置接口
+interface TTSConfigItem {
+    Provider: ServiceProvider | "Edge";
+    Model: readonly string[];
+    Voices: readonly string[];
+    ModelProvider: ModelProvider;
+}
+
+// 使用完整的 Record 而不是 Partial，确保类型安全
+export const TTS_CONFIGS: Record<TTSEngineType, TTSConfigItem> = {
+    [ServiceProvider.OpenAI]: OPENAI_TTS,
+    [ServiceProvider.Alibaba]: ALIBABA_TTS,
+    Edge: EDGE_TTS,
+} as const;
 
 export const VISION_MODEL_REGEXES = [
   /vision/,
@@ -496,6 +532,16 @@ export const VISION_MODEL_REGEXES = [
 ];
 
 export const EXCLUDE_VISION_MODEL_REGEXES = [/claude-3-5-haiku-20241022/];
+
+export const RUNTIME_TTS_OPENAI = {
+    ExampleEndpoint: XAI_BASE_URL,
+}
+
+export const REALTIME_TTS_MODELS = {
+    [ServiceProvider.OpenAI]: ["gpt-4o-realtime-preview-2024-10-01"],
+    [ServiceProvider.Azure]: ["gpt-4o-realtime-preview-2024-10-01"],
+    [ServiceProvider.Alibaba]: ["qwen-omni-turbo-realtime"],
+};
 
 const openaiModels = [
   // As of July 2024, gpt-4o-mini should be used in place of gpt-3.5-turbo,
@@ -920,3 +966,4 @@ export const DEFAULT_GA_ID = "G-89WN60ZK2E";
 
 export const SAAS_CHAT_URL = "https://nextchat.club";
 export const SAAS_CHAT_UTM_URL = "https://nextchat.club?utm=github";
+
