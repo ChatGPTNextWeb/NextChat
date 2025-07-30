@@ -1,5 +1,10 @@
 "use client";
-import { ApiPath, Alibaba, ALIBABA_BASE_URL, REQUEST_TIMEOUT_MS } from "@/app/constant";
+import {
+  ApiPath,
+  Alibaba,
+  ALIBABA_BASE_URL,
+  REQUEST_TIMEOUT_MS,
+} from "@/app/constant";
 import {
   useAccessStore,
   useAppConfig,
@@ -89,66 +94,71 @@ export class QwenApi implements LLMApi {
     return res?.output?.choices?.at(0)?.message?.content ?? "";
   }
 
-  async speech(options: SpeechOptions): Promise<AudioBuffer> {
+  async speech(options: SpeechOptions): Promise<ArrayBuffer> {
+    throw new Error("Method not implemented.");
+  }
+
+  async *streamSpeech(options: SpeechOptions): AsyncGenerator<AudioBuffer> {
     const requestPayload = {
-        model: options.model,
-        input: {
-            text: options.input,
-            voice: options.voice,
-        },
-        speed: options.speed,
-        response_format: options.response_format,
+      model: options.model,
+      input: {
+        text: options.input,
+        voice: options.voice,
+      },
+      speed: options.speed,
+      response_format: options.response_format,
     };
     console.log("[Request] alibaba speech payload: ", requestPayload);
     const controller = new AbortController();
     options.onController?.(controller);
     try {
-        const speechPath = this.path(Alibaba.SpeechPath);
-        const speechPayload = {
-          method: "POST",
-          body: JSON.stringify(requestPayload),
-          signal: controller.signal,
-          headers: {
-            ...getHeaders(),
-            "X-DashScope-SSE": "enable",
-          },
-        };
-  
-        // make a fetch request
-        const requestTimeoutId = setTimeout(
-          () => controller.abort(),
-          REQUEST_TIMEOUT_MS,
-        );
-  
-        const res = await fetch(speechPath, speechPayload);
+      const speechPath = this.path(Alibaba.SpeechPath);
+      const speechPayload = {
+        method: "POST",
+        body: JSON.stringify(requestPayload),
+        signal: controller.signal,
+        headers: {
+          ...getHeaders(),
+          "X-DashScope-SSE": "enable",
+        },
+      };
 
-        const reader = res.body!.getReader();
-        const decoder = new TextDecoder();
-        let buffer = "";
-        let base64 = "";
-        while (true) {
-            const { done, value } = await reader.read();
-            if (done) break;
-            buffer += decoder.decode(value, { stream: true, });
-                const lines = buffer.split('\n');
-                buffer = lines.pop() || '';
+      // make a fetch request
+      const requestTimeoutId = setTimeout(
+        () => controller.abort(),
+        REQUEST_TIMEOUT_MS,
+      );
 
-                for (const line of lines) {
-                    if (line.startsWith('data:')) {
-                        const data = line.slice(5);
-                        const json = JSON.parse(data);
-                        base64 += json.output.audio.data;
-                    }
-                }
+      const res = await fetch(speechPath, speechPayload);
+
+      const reader = res.body!.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) {
+          break;
         }
-        const audioBuffer = await this.PCMBase64ToAudioBuffer(base64);
-        clearTimeout(requestTimeoutId);
-        reader.releaseLock();
-        return audioBuffer;
-      } catch (e) {
-        console.log("[Request] failed to make a speech request", e);
-        throw e;
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split("\n");
+        buffer = lines.pop() || "";
+
+        for (const line of lines) {
+          if (line.startsWith("data:")) {
+            const data = line.slice(5);
+            const json = JSON.parse(data);
+            if (json.output.audio.data) {
+              yield this.PCMBase64ToAudioBuffer(json.output.audio.data);
+            }
+          }
+        }
       }
+      clearTimeout(requestTimeoutId);
+      reader.releaseLock();
+    } catch (e) {
+      console.log("[Request] failed to make a speech request", e);
+      throw e;
+    }
   }
 
   async chat(options: ChatOptions) {
@@ -335,67 +345,68 @@ export class QwenApi implements LLMApi {
   // 播放 PCM base64 数据
   private async PCMBase64ToAudioBuffer(base64Data: string) {
     try {
-        // 解码 base64
-        const binaryString = atob(base64Data);
-        const bytes = new Uint8Array(binaryString.length);
-        for (let i = 0; i < binaryString.length; i++) {
-            bytes[i] = binaryString.charCodeAt(i);
-        }
+      // 解码 base64
+      const binaryString = atob(base64Data);
+      const bytes = new Uint8Array(binaryString.length);
+      for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+      }
 
-        // 转换为 AudioBuffer
-        const audioBuffer = await this.convertToAudioBuffer(bytes);
-        
-        return audioBuffer;
+      // 转换为 AudioBuffer
+      const audioBuffer = await this.convertToAudioBuffer(bytes);
+
+      return audioBuffer;
     } catch (error) {
-        console.error('播放 PCM 数据失败:', error);
-        throw error;
+      console.error("播放 PCM 数据失败:", error);
+      throw error;
     }
   }
-  
-   // 将 PCM 字节数据转换为 AudioBuffer
-   private convertToAudioBuffer(pcmData: Uint8Array) {
-    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+  // 将 PCM 字节数据转换为 AudioBuffer
+  private convertToAudioBuffer(pcmData: Uint8Array) {
+    const audioContext = new (window.AudioContext ||
+      window.webkitAudioContext)();
     const channels = 1;
     const sampleRate = 24000;
     return new Promise<AudioBuffer>((resolve, reject) => {
-        try {
-            let float32Array;
-            // 16位 PCM 转换为 32位浮点数
-            float32Array = this.pcm16ToFloat32(pcmData);
+      try {
+        let float32Array;
+        // 16位 PCM 转换为 32位浮点数
+        float32Array = this.pcm16ToFloat32(pcmData);
 
-            // 创建 AudioBuffer
-            const audioBuffer = audioContext.createBuffer(
-                channels,
-                float32Array.length / channels,
-                sampleRate
-            );
+        // 创建 AudioBuffer
+        const audioBuffer = audioContext.createBuffer(
+          channels,
+          float32Array.length / channels,
+          sampleRate,
+        );
 
-            // 复制数据到 AudioBuffer
-            for (let channel = 0; channel < channels; channel++) {
-                const channelData = audioBuffer.getChannelData(channel);
-                for (let i = 0; i < channelData.length; i++) {
-                    channelData[i] = float32Array[i * channels + channel];
-                }
-            }
-
-            resolve(audioBuffer);
-        } catch (error) {
-            reject(error);
+        // 复制数据到 AudioBuffer
+        for (let channel = 0; channel < channels; channel++) {
+          const channelData = audioBuffer.getChannelData(channel);
+          for (let i = 0; i < channelData.length; i++) {
+            channelData[i] = float32Array[i * channels + channel];
+          }
         }
+
+        resolve(audioBuffer);
+      } catch (error) {
+        reject(error);
+      }
     });
   }
-    // 16位 PCM 转 32位浮点数
-    private pcm16ToFloat32(pcmData: Uint8Array) {
-        const length = pcmData.length / 2;
-        const float32Array = new Float32Array(length);
-        
-        for (let i = 0; i < length; i++) {
-            const int16 = (pcmData[i * 2 + 1] << 8) | pcmData[i * 2];
-            const int16Signed = int16 > 32767 ? int16 - 65536 : int16;
-            float32Array[i] = int16Signed / 32768;
-        }
-        
-        return float32Array;
+  // 16位 PCM 转 32位浮点数
+  private pcm16ToFloat32(pcmData: Uint8Array) {
+    const length = pcmData.length / 2;
+    const float32Array = new Float32Array(length);
+
+    for (let i = 0; i < length; i++) {
+      const int16 = (pcmData[i * 2 + 1] << 8) | pcmData[i * 2];
+      const int16Signed = int16 > 32767 ? int16 - 65536 : int16;
+      float32Array[i] = int16Signed / 32768;
     }
+
+    return float32Array;
+  }
 }
 export { Alibaba };

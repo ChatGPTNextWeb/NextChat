@@ -101,8 +101,6 @@ import {
 import { useNavigate } from "react-router-dom";
 import {
   CHAT_PAGE_SIZE,
-  DEFAULT_TTS_ENGINE,
-  ModelProvider,
   Path,
   REQUEST_TIMEOUT_MS,
   ServiceProvider,
@@ -1286,6 +1284,7 @@ function _Chat() {
   const accessStore = useAccessStore();
   const [speechStatus, setSpeechStatus] = useState(false);
   const [speechLoading, setSpeechLoading] = useState(false);
+  const [speechCooldown, setSpeechCooldown] = useState(false);
 
   async function openaiSpeech(text: string) {
     if (speechStatus) {
@@ -1297,10 +1296,10 @@ function _Chat() {
       api = new ClientApi(config.ttsConfig.modelProvider);
       setSpeechLoading(true);
       ttsPlayer.init();
-      let audioBuffer: ArrayBuffer;
+      let audioBuffer: ArrayBuffer | AudioBuffer;
       const { markdownToTxt } = require("markdown-to-txt");
       const textContent = markdownToTxt(text);
-      console.log("[OpenAI Speech] textContent: ", config, textContent);
+      console.log("[OpenAI Speech] textContent: ", textContent);
       if (config.ttsConfig.engine === "Edge") {
         const edgeVoiceName = accessStore.edgeVoiceName();
         const tts = new MsEdgeTTS();
@@ -1309,26 +1308,59 @@ function _Chat() {
           OUTPUT_FORMAT.AUDIO_24KHZ_96KBITRATE_MONO_MP3,
         );
         audioBuffer = await tts.toArrayBuffer(textContent);
+        playSpeech(audioBuffer);
       } else {
-        audioBuffer = await api.llm.speech({
-          model: config.ttsConfig.model,
-          input: textContent,
-          voice: config.ttsConfig.voice,
-          speed: config.ttsConfig.speed,
-        });
+        if (api.llm.streamSpeech) {
+          // 使用流式播放，边接收边播放
+          setSpeechStatus(true);
+          ttsPlayer.startStreamPlay(() => {
+            setSpeechStatus(false);
+          });
+
+          try {
+            for await (const chunk of api.llm.streamSpeech({
+              model: config.ttsConfig.model,
+              input: textContent,
+              voice: config.ttsConfig.voice,
+              speed: config.ttsConfig.speed,
+            })) {
+              console.log("[Stream Speech] add to queue", chunk);
+              ttsPlayer.addToQueue(chunk);
+            }
+            ttsPlayer.finishStreamPlay();
+          } catch (e) {
+            console.error("[Stream Speech]", e);
+            showToast(prettyObject(e));
+            setSpeechStatus(false);
+            ttsPlayer.stop();
+          } finally {
+            setSpeechLoading(false);
+          }
+        } else {
+          audioBuffer = await api.llm.speech({
+            model: config.ttsConfig.model,
+            input: textContent,
+            voice: config.ttsConfig.voice,
+            speed: config.ttsConfig.speed,
+          });
+          playSpeech(audioBuffer);
+        }
       }
-      setSpeechStatus(true);
-      ttsPlayer
-        .play(audioBuffer, () => {
-          setSpeechStatus(false);
-        })
-        .catch((e) => {
-          console.error("[OpenAI Speech]", e);
-          showToast(prettyObject(e));
-          setSpeechStatus(false);
-        })
-        .finally(() => setSpeechLoading(false));
     }
+  }
+
+  function playSpeech(audioBuffer: ArrayBuffer | AudioBuffer) {
+    setSpeechStatus(true);
+    ttsPlayer
+      .play(audioBuffer, () => {
+        setSpeechStatus(false);
+      })
+      .catch((e) => {
+        console.error("[OpenAI Speech]", e);
+        showToast(prettyObject(e));
+        setSpeechStatus(false);
+      })
+      .finally(() => setSpeechLoading(false));
   }
 
   const context: RenderMessage[] = useMemo(() => {
