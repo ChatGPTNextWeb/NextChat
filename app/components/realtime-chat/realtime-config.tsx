@@ -5,9 +5,9 @@ import { ListItem, Select, PasswordInput } from "@/app/components/ui-lib";
 
 import { InputRange } from "@/app/components/input-range";
 import { Voice } from "rt-client";
-import { REALTIME_TTS_MODELS, ServiceProvider } from "@/app/constant";
+import { ServiceProvider } from "@/app/constant";
 
-const providers = Object.keys(REALTIME_TTS_MODELS) as ServiceProvider[];
+const providers = [ServiceProvider.OpenAI, ServiceProvider.Azure];
 
 const models = ["gpt-4o-realtime-preview-2024-10-01", "qwen-tts-realtime"];
 

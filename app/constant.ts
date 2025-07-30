@@ -488,15 +488,12 @@ export const EDGE_TTS = {
     Voices: [] as string[],
 } as const;
 
-// 定义支持的 TTS 引擎类型
 export type TTSEngineType = ServiceProvider.OpenAI | ServiceProvider.Alibaba | "Edge";
 
-// 从 TTS_CONFIGS 中提取所有可用的引擎、模型和声音
 export const DEFAULT_TTS_ENGINES = [ServiceProvider.OpenAI, ServiceProvider.Alibaba, "Edge"] as const;
 export const DEFAULT_TTS_MODELS = [...OPENAI_TTS.Model, ...ALIBABA_TTS.Model] as const;
 export const DEFAULT_TTS_VOICES = [...OPENAI_TTS.Voices, ...ALIBABA_TTS.Voices] as const;
 
-// TTS 配置接口
 interface TTSConfigItem {
     Provider: ServiceProvider | "Edge";
     Model: readonly string[];
@@ -504,7 +501,6 @@ interface TTSConfigItem {
     ModelProvider: ModelProvider;
 }
 
-// 使用完整的 Record 而不是 Partial，确保类型安全
 export const TTS_CONFIGS: Record<TTSEngineType, TTSConfigItem> = {
     [ServiceProvider.OpenAI]: OPENAI_TTS,
     [ServiceProvider.Alibaba]: ALIBABA_TTS,
@@ -532,16 +528,6 @@ export const VISION_MODEL_REGEXES = [
 ];
 
 export const EXCLUDE_VISION_MODEL_REGEXES = [/claude-3-5-haiku-20241022/];
-
-export const RUNTIME_TTS_OPENAI = {
-    ExampleEndpoint: XAI_BASE_URL,
-}
-
-export const REALTIME_TTS_MODELS = {
-    [ServiceProvider.OpenAI]: ["gpt-4o-realtime-preview-2024-10-01"],
-    [ServiceProvider.Azure]: ["gpt-4o-realtime-preview-2024-10-01"],
-    [ServiceProvider.Alibaba]: ["qwen-omni-turbo-realtime"],
-};
 
 const openaiModels = [
   // As of July 2024, gpt-4o-mini should be used in place of gpt-3.5-turbo,
