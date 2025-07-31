@@ -64,6 +64,7 @@ interface RequestPayload {
 }
 
 export class QwenApi implements LLMApi {
+  private audioContext?: AudioContext;
   path(path: string): string {
     const accessStore = useAccessStore.getState();
 
@@ -363,8 +364,11 @@ export class QwenApi implements LLMApi {
 
   // 将 PCM 字节数据转换为 AudioBuffer
   private convertToAudioBuffer(pcmData: Uint8Array) {
-    const audioContext = new (window.AudioContext ||
-      window.webkitAudioContext)();
+    if (!this.audioContext) {
+      this.audioContext = new (window.AudioContext ||
+        window.webkitAudioContext)();
+    }
+    const audioContext = this.audioContext;
     const channels = 1;
     const sampleRate = 24000;
     return new Promise<AudioBuffer>((resolve, reject) => {
