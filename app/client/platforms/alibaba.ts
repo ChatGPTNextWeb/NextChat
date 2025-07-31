@@ -108,7 +108,6 @@ export class QwenApi implements LLMApi {
       speed: options.speed,
       response_format: options.response_format,
     };
-    console.log("[Request] alibaba speech payload: ", requestPayload);
     const controller = new AbortController();
     options.onController?.(controller);
     try {

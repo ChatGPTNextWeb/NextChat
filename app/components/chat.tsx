@@ -1299,7 +1299,6 @@ function _Chat() {
       let audioBuffer: ArrayBuffer | AudioBuffer;
       const { markdownToTxt } = require("markdown-to-txt");
       const textContent = markdownToTxt(text);
-      console.log("[OpenAI Speech] textContent: ", textContent);
       if (config.ttsConfig.engine === "Edge") {
         const edgeVoiceName = accessStore.edgeVoiceName();
         const tts = new MsEdgeTTS();
@@ -1324,7 +1323,6 @@ function _Chat() {
               voice: config.ttsConfig.voice,
               speed: config.ttsConfig.speed,
             })) {
-              console.log("[Stream Speech] add to queue", chunk);
               ttsPlayer.addToQueue(chunk);
             }
             ttsPlayer.finishStreamPlay();
