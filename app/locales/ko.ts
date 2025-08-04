@@ -264,6 +264,10 @@ const ko: PartialLocaleType = {
       },
       ImportFailed: "가져오기 실패",
     },
+    AutoScrollMessage: {
+      Title: "자동 스크롤 답장",
+      SubTitle: "답장하는 동안 메시지 스크롤",
+    },
     Mask: {
       Splash: {
         Title: "마스크 시작 페이지",

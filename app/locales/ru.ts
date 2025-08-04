@@ -246,6 +246,10 @@ const ru: PartialLocaleType = {
       },
       ImportFailed: "Не удалось импортировать",
     },
+    AutoScrollMessage: {
+      Title: "Автопрокрутка ответа",
+      SubTitle: "Прокрутка сообщения во время ответа",
+    },
     Mask: {
       Splash: {
         Title: "Стартовая страница масок",

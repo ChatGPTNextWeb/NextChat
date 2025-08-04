@@ -244,6 +244,10 @@ const tr: PartialLocaleType = {
       },
       ImportFailed: "İçeri aktarma başarısız",
     },
+    AutoScrollMessage: {
+      Title: "Otomatik Kaydırma Yanıtı",
+      SubTitle: "Yanıt verirken mesajı kaydır",
+    },
     Mask: {
       Splash: {
         Title: "Maske Başlangıç Sayfası",

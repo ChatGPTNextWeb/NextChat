@@ -203,6 +203,10 @@ const tw = {
       Title: "預覽氣泡",
       SubTitle: "在預覽氣泡中預覽 Markdown 內容",
     },
+    AutoScrollMessage: {
+      Title: "自動滾動回覆",
+      SubTitle: "回覆時滾動訊息",
+    },
     AutoGenerateTitle: {
       Title: "自動產生標題",
       SubTitle: "根據對話內容產生合適的標題",
