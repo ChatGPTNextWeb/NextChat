@@ -49,7 +49,7 @@
     "rehype-highlight": "^6.0.0",
     "rehype-katex": "^6.0.3",
     "remark-breaks": "^3.0.2",
-    "remark-gfm": "^3.0.1",
+    "remark-gfm": "^4.0.1",
     "remark-math": "^5.1.1",
     "rt-client": "https://github.com/Azure-Samples/aoai-realtime-audio-sdk/releases/download/js/v0.5.0/rt-client-0.5.0.tgz",
     "sass": "^1.59.2",
