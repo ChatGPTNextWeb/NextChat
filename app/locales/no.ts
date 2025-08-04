@@ -206,6 +206,11 @@ const no: PartialLocaleType = {
       Title: "Automatisk generere tittel",
       SubTitle: "Generer en passende tittel basert på samtaleinnholdet",
     },
+    AutoScroll: {
+      Title: "Aktiver automatisk rulling",
+      SubTitle:
+        "Rull automatisk chatten til bunnen ved fokus på tekstfelt eller sending av melding",
+    },
     Sync: {
       CloudState: "Skydatasynkronisering",
       NotSyncYet: "Har ikke blitt synkronisert ennå",

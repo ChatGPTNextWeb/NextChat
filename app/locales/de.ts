@@ -205,6 +205,11 @@ const de: PartialLocaleType = {
       SubTitle:
         "Basierend auf dem Chat-Inhalt einen passenden Titel generieren",
     },
+    AutoScroll: {
+      Title: "Automatisches Scrollen aktivieren",
+      SubTitle:
+        "Chat automatisch nach unten scrollen bei Fokus auf Texteingabe oder Nachrichtensenden",
+    },
     Sync: {
       CloudState: "Cloud-Daten",
       NotSyncYet: "Noch nicht synchronisiert",

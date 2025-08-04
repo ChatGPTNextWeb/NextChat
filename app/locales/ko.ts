@@ -220,6 +220,11 @@ const ko: PartialLocaleType = {
       Title: "제목 자동 생성",
       SubTitle: "대화 내용에 따라 적절한 제목 생성",
     },
+    AutoScroll: {
+      Title: "자동 스크롤 활성화",
+      SubTitle:
+        "텍스트 영역에 포커스하거나 메시지를 전송하면 채팅이 자동으로 아래로 스크롤됩니다",
+    },
     Sync: {
       CloudState: "클라우드 데이터",
       NotSyncYet: "아직 동기화되지 않았습니다.",
