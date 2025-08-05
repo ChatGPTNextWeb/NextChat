@@ -11,6 +11,7 @@ import {
   useChatStore,
   ChatMessageTool,
   usePluginStore,
+  FunctionToolItem,
 } from "@/app/store";
 import {
   preProcessImageContentForAlibabaDashScope,
@@ -56,6 +57,7 @@ interface RequestParam {
   repetition_penalty?: number;
   top_p: number;
   max_tokens?: number;
+  tools?: FunctionToolItem[];
 }
 interface RequestPayload {
   model: string;
@@ -229,11 +231,16 @@ export class QwenApi implements LLMApi {
           .getAsTools(
             useChatStore.getState().currentSession().mask?.plugin || [],
           );
+        // console.log("getAsTools", tools, funcs);
+        const _tools = tools as unknown as FunctionToolItem[];
+        if (_tools && _tools.length > 0) {
+          requestPayload.parameters.tools = _tools;
+        }
         return streamWithThink(
           chatPath,
           requestPayload,
           headers,
-          tools as any,
+          [],
           funcs,
           controller,
           // parseSSE
@@ -266,7 +273,7 @@ export class QwenApi implements LLMApi {
                 });
               } else {
                 // @ts-ignore
-                runTools[index]["function"]["arguments"] += args;
+                runTools[index]["function"]["arguments"] += args || "";
               }
             }
 

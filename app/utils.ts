@@ -347,6 +347,12 @@ export function showPlugins(provider: ServiceProvider, model: string) {
   if (provider == ServiceProvider.Google && !model.includes("vision")) {
     return true;
   }
+  if (
+    provider == ServiceProvider.Alibaba &&
+    (model.includes("qwen") || model.includes("deepseek"))
+  ) {
+    return true;
+  }
   return false;
 }
 
