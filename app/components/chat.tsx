@@ -512,7 +512,7 @@ export function ChatActions(props: {
 
   // switch themes
   const theme = config.theme;
-  const enableNetWork = config.modelConfig.enableNetWork;
+  const enableNetWork = session.mask.modelConfig.enableNetWork || false;
 
   function nextTheme() {
     const themes = [Theme.Auto, Theme.Light, Theme.Dark];
@@ -523,10 +523,10 @@ export function ChatActions(props: {
   }
 
   function nextNetWork() {
-    config.update(
-      (config) =>
-        (config.modelConfig.enableNetWork = !config.modelConfig.enableNetWork),
-    );
+    chatStore.updateTargetSession(session, (session) => {
+      session.mask.modelConfig.enableNetWork =
+        !session.mask.modelConfig.enableNetWork;
+    });
   }
 
   // stop all responses
