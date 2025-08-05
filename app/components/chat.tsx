@@ -707,6 +707,9 @@ export function ChatActions(props: {
                 session.mask.modelConfig.providerName =
                   providerName as ServiceProvider;
                 session.mask.syncGlobalConfig = false;
+                session.mask.modelConfig.enableNetWork = canUseNetWork(model)
+                  ? session.mask.modelConfig.enableNetWork
+                  : false;
               });
               if (providerName == "ByteDance") {
                 const selectedModel = models.find(
