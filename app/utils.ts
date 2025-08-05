@@ -296,6 +296,15 @@ export function isDalle3(model: string) {
   return "dall-e-3" === model;
 }
 
+export function canUseNetWork(model: string) {
+  return (
+    model.includes("qwen-max") ||
+    model.includes("qwen-plus") ||
+    model.includes("qwen-turbo") ||
+    model.includes("qwq")
+  );
+}
+
 export function getTimeoutMSByModel(model: string) {
   model = model.toLowerCase();
   if (

@@ -48,6 +48,7 @@ import PluginIcon from "../icons/plugin.svg";
 import ShortcutkeyIcon from "../icons/shortcutkey.svg";
 import McpToolIcon from "../icons/tool.svg";
 import HeadphoneIcon from "../icons/headphone.svg";
+import NetWorkIcon from "../icons/network.svg";
 import {
   BOT_HELLO,
   ChatMessage,
@@ -75,6 +76,7 @@ import {
   useMobileScreen,
   selectOrCopy,
   showPlugins,
+  canUseNetWork,
 } from "../utils";
 
 import { uploadImage as uploadImageRemote } from "@/app/utils/chat";
@@ -510,6 +512,7 @@ export function ChatActions(props: {
 
   // switch themes
   const theme = config.theme;
+  const enableNetWork = config.modelConfig.enableNetWork;
 
   function nextTheme() {
     const themes = [Theme.Auto, Theme.Light, Theme.Dark];
@@ -517,6 +520,13 @@ export function ChatActions(props: {
     const nextIndex = (themeIndex + 1) % themes.length;
     const nextTheme = themes[nextIndex];
     config.update((config) => (config.theme = nextTheme));
+  }
+
+  function nextNetWork() {
+    config.update(
+      (config) =>
+        (config.modelConfig.enableNetWork = !config.modelConfig.enableNetWork),
+    );
   }
 
   // stop all responses
@@ -831,6 +841,16 @@ export function ChatActions(props: {
           />
         )}
         {!isMobileScreen && <MCPAction />}
+
+        {canUseNetWork(currentModel) && (
+          <ChatAction
+            onClick={nextNetWork}
+            text={
+              Locale.Chat.InputActions.NetWork[enableNetWork ? "on" : "off"]
+            }
+            icon={<NetWorkIcon />}
+          />
+        )}
       </>
       <div className={styles["chat-input-actions-end"]}>
         {config.realtimeConfig.enable && (

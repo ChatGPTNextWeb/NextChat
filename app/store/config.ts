@@ -6,7 +6,6 @@ import {
   DEFAULT_MODELS,
   DEFAULT_SIDEBAR_WIDTH,
   DEFAULT_TTS_ENGINE,
-  DEFAULT_TTS_ENGINES,
   DEFAULT_TTS_MODEL,
   DEFAULT_TTS_MODELS,
   DEFAULT_TTS_VOICE,
@@ -82,6 +81,7 @@ export const DEFAULT_CONFIG = {
     size: "1024x1024" as ModelSize,
     quality: "standard" as DalleQuality,
     style: "vivid" as DalleStyle,
+    enableNetWork: false,
   },
 
   ttsConfig: {

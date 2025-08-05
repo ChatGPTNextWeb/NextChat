@@ -58,6 +58,7 @@ interface RequestParam {
   top_p: number;
   max_tokens?: number;
   tools?: FunctionToolItem[];
+  enable_search?: boolean;
 }
 interface RequestPayload {
   model: string;
@@ -199,6 +200,7 @@ export class QwenApi implements LLMApi {
         temperature: modelConfig.temperature,
         // max_tokens: modelConfig.max_tokens,
         top_p: modelConfig.top_p === 1 ? 0.99 : modelConfig.top_p, // qwen top_p is should be < 1
+        enable_search: modelConfig.enableNetWork,
       },
     };
 
