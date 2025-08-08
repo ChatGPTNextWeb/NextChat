@@ -453,6 +453,9 @@ export const KnowledgeCutOffDate: Record<string, string> = {
   o1: "2023-10",
   "o3-mini-2025-01-31": "2023-10",
   "o3-mini": "2023-10",
+  // temporary stub
+  "gpt-5-mini": "2099-09",
+  "gpt-5": "2099-09",
   // After improvements,
   // it's now easier to add "KnowledgeCutOffDate" instead of stupid hardcoding it, as was done previously.
   "gemini-pro": "2023-12",
@@ -533,6 +536,8 @@ const openaiModels = [
   "o3-mini",
   "o3",
   "o4-mini",
+  "gpt-5-mini",
+  "gpt-5",
 ];
 
 const googleModels = [
