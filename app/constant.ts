@@ -493,6 +493,7 @@ export const VISION_MODEL_REGEXES = [
   /o3/,
   /o4-mini/,
   /grok-4/i,
+  /gpt-5/
 ];
 
 export const EXCLUDE_VISION_MODEL_REGEXES = [/claude-3-5-haiku-20241022/];
@@ -517,6 +518,11 @@ const openaiModels = [
   "gpt-4.1-nano-2025-04-14",
   "gpt-4.5-preview",
   "gpt-4.5-preview-2025-02-27",
+  "gpt-5-chat",
+  "gpt-5-mini",
+  "gpt-5-nano",
+  "gpt-5",
+  "gpt-5-chat-2025-01-01-preview",
   "gpt-4o",
   "gpt-4o-2024-05-13",
   "gpt-4o-2024-08-06",
