@@ -18,7 +18,6 @@ import ReturnIcon from "../icons/return.svg";
 import CopyIcon from "../icons/copy.svg";
 import SpeakIcon from "../icons/speak.svg";
 import SpeakStopIcon from "../icons/speak-stop.svg";
-import LoadingIcon from "../icons/three-dots.svg";
 import LoadingButtonIcon from "../icons/loading.svg";
 import PromptIcon from "../icons/prompt.svg";
 import MaskIcon from "../icons/mask.svg";
@@ -79,8 +78,6 @@ import {
 
 import { uploadImage as uploadImageRemote } from "@/app/utils/chat";
 
-import dynamic from "next/dynamic";
-
 import { ChatControllerPool } from "../client/controller";
 import { DalleQuality, DalleStyle, ModelSize } from "../typing";
 import { Prompt, usePromptStore } from "../store/prompt";
@@ -125,14 +122,15 @@ import { getModelProvider } from "../utils/model";
 import { RealtimeChat } from "@/app/components/realtime-chat";
 import clsx from "clsx";
 import { getAvailableClientsCount, isMcpEnabled } from "../mcp/actions";
+import { Markdown } from "./markdown";
 
 const localStorage = safeLocalStorage();
 
 const ttsPlayer = createTTSPlayer();
 
-const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
-  loading: () => <LoadingIcon />,
-});
+// const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
+//   loading: () => <LoadingIcon />,
+// });
 
 const MCPAction = () => {
   const navigate = useNavigate();
@@ -1984,6 +1982,8 @@ function _Chat() {
                               fontFamily={fontFamily}
                               parentRef={scrollRef}
                               defaultShow={i >= messages.length - 6}
+                              immediatelyRender={i >= messages.length - 3}
+                              streaming={message.streaming}
                             />
                             {getMessageImages(message).length == 1 && (
                               <img

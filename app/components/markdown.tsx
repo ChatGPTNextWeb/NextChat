@@ -267,6 +267,136 @@ function tryWrapHtmlCode(text: string) {
     );
 }
 
+// Split content into paragraphs while preserving code blocks
+function splitContentIntoParagraphs(content: string) {
+  // Check for unclosed code blocks
+  const codeBlockStartCount = (content.match(/```/g) || []).length;
+  let processedContent = content;
+
+  // Add closing tag if there's an odd number of code block markers
+  if (codeBlockStartCount % 2 !== 0) {
+    processedContent = content + "\n```";
+  }
+
+  // Extract code blocks
+  const codeBlockRegex = /```[\s\S]*?```/g;
+  const codeBlocks: string[] = [];
+  let codeBlockCounter = 0;
+
+  // Replace code blocks with placeholders
+  const contentWithPlaceholders = processedContent.replace(
+    codeBlockRegex,
+    (match) => {
+      codeBlocks.push(match);
+      const placeholder = `__CODE_BLOCK_${codeBlockCounter++}__`;
+      return placeholder;
+    },
+  );
+
+  // Split by double newlines
+  const paragraphs = contentWithPlaceholders
+    .split(/\n\n+/)
+    .filter((p) => p.trim());
+
+  // Restore code blocks
+  return paragraphs.map((p) => {
+    if (p.match(/__CODE_BLOCK_\d+__/)) {
+      return p.replace(/__CODE_BLOCK_\d+__/g, (match) => {
+        const index = parseInt(match.match(/\d+/)?.[0] || "0");
+        return codeBlocks[index] || match;
+      });
+    }
+    return p;
+  });
+}
+
+// Lazy-loaded paragraph component
+function MarkdownParagraph({
+  content,
+  onLoad,
+}: {
+  content: string;
+  onLoad?: () => void;
+}) {
+  const [isLoaded, setIsLoaded] = useState(false);
+  const placeholderRef = useRef<HTMLDivElement>(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    let observer: IntersectionObserver;
+    if (placeholderRef.current) {
+      observer = new IntersectionObserver(
+        (entries) => {
+          if (entries[0].isIntersecting) {
+            setIsVisible(true);
+          }
+        },
+        { threshold: 0.1, rootMargin: "200px 0px" },
+      );
+      observer.observe(placeholderRef.current);
+    }
+    return () => observer?.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (isVisible && !isLoaded) {
+      setIsLoaded(true);
+      onLoad?.();
+    }
+  }, [isVisible, isLoaded, onLoad]);
+
+  // Generate preview content
+  const previewContent = useMemo(() => {
+    if (content.startsWith("```")) {
+      return "```" + (content.split("\n")[0] || "").slice(3) + "...```";
+    }
+    return content.length > 60 ? content.slice(0, 60) + "..." : content;
+  }, [content]);
+
+  return (
+    <div className="markdown-paragraph" ref={placeholderRef}>
+      {!isLoaded ? (
+        <div className="markdown-paragraph-placeholder">{previewContent}</div>
+      ) : (
+        <_MarkDownContent content={content} />
+      )}
+    </div>
+  );
+}
+
+// Memoized paragraph component to prevent unnecessary re-renders
+const MemoizedMarkdownParagraph = React.memo(
+  ({ content }: { content: string }) => {
+    return <_MarkDownContent content={content} />;
+  },
+  (prevProps, nextProps) => prevProps.content === nextProps.content,
+);
+
+MemoizedMarkdownParagraph.displayName = "MemoizedMarkdownParagraph";
+
+// Specialized component for streaming content
+function StreamingMarkdownContent({ content }: { content: string }) {
+  const paragraphs = useMemo(
+    () => splitContentIntoParagraphs(content),
+    [content],
+  );
+  const lastParagraphRef = useRef<HTMLDivElement>(null);
+
+  return (
+    <div className="markdown-streaming-content">
+      {paragraphs.map((paragraph, index) => (
+        <div
+          key={`p-${index}-${paragraph.substring(0, 20)}`}
+          className="markdown-paragraph markdown-streaming-paragraph"
+          ref={index === paragraphs.length - 1 ? lastParagraphRef : null}
+        >
+          <MemoizedMarkdownParagraph content={paragraph} />
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function _MarkDownContent(props: { content: string }) {
   const escapedContent = useMemo(() => {
     return tryWrapHtmlCode(escapeBrackets(props.content));
@@ -326,9 +456,27 @@ export function Markdown(
     fontFamily?: string;
     parentRef?: RefObject<HTMLDivElement>;
     defaultShow?: boolean;
+    immediatelyRender?: boolean;
+    streaming?: boolean; // Whether this is a streaming response
   } & React.DOMAttributes<HTMLDivElement>,
 ) {
   const mdRef = useRef<HTMLDivElement>(null);
+  const paragraphs = useMemo(
+    () => splitContentIntoParagraphs(props.content),
+    [props.content],
+  );
+  const [loadedCount, setLoadedCount] = useState(0);
+
+  // Determine rendering strategy based on props
+  const shouldAsyncRender =
+    !props.immediatelyRender && !props.streaming && paragraphs.length > 1;
+
+  useEffect(() => {
+    // Immediately render all paragraphs if specified
+    if (props.immediatelyRender) {
+      setLoadedCount(paragraphs.length);
+    }
+  }, [props.immediatelyRender, paragraphs.length]);
 
   return (
     <div
@@ -344,6 +492,24 @@ export function Markdown(
     >
       {props.loading ? (
         <LoadingIcon />
+      ) : props.streaming ? (
+        // Use specialized component for streaming content
+        <StreamingMarkdownContent content={props.content} />
+      ) : shouldAsyncRender ? (
+        <div className="markdown-content">
+          {paragraphs.map((paragraph, index) => (
+            <MarkdownParagraph
+              key={index}
+              content={paragraph}
+              onLoad={() => setLoadedCount((prev) => prev + 1)}
+            />
+          ))}
+          {loadedCount < paragraphs.length && loadedCount > 0 && (
+            <div className="markdown-paragraph-loading">
+              <LoadingIcon />
+            </div>
+          )}
+        </div>
       ) : (
         <MarkdownContent content={props.content} />
       )}
