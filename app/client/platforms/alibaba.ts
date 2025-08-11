@@ -1,10 +1,5 @@
 "use client";
-import {
-  ApiPath,
-  Alibaba,
-  ALIBABA_BASE_URL,
-  REQUEST_TIMEOUT_MS,
-} from "@/app/constant";
+import { ApiPath, Alibaba, ALIBABA_BASE_URL } from "@/app/constant";
 import {
   useAccessStore,
   useAppConfig,
@@ -103,6 +98,9 @@ export class QwenApi implements LLMApi {
   }
 
   async *streamSpeech(options: SpeechOptions): AsyncGenerator<AudioBuffer> {
+    if (!options.input || !options.model) {
+      throw new Error("Missing required parameters: input and model");
+    }
     const requestPayload = {
       model: options.model,
       input: {
@@ -129,7 +127,7 @@ export class QwenApi implements LLMApi {
       // make a fetch request
       const requestTimeoutId = setTimeout(
         () => controller.abort(),
-        REQUEST_TIMEOUT_MS,
+        getTimeoutMSByModel(options.model),
       );
 
       const res = await fetch(speechPath, speechPayload);
@@ -148,12 +146,20 @@ export class QwenApi implements LLMApi {
         buffer = lines.pop() || "";
 
         for (const line of lines) {
-          if (line.startsWith("data:")) {
-            const data = line.slice(5);
-            const json = JSON.parse(data);
-            if (json.output?.audio?.data) {
-              yield this.PCMBase64ToAudioBuffer(json.output.audio.data);
+          const data = line.slice(5);
+          try {
+            if (line.startsWith("data:")) {
+              const json = JSON.parse(data);
+              if (json.output?.audio?.data) {
+                yield this.PCMBase64ToAudioBuffer(json.output.audio.data);
+              }
             }
+          } catch (parseError) {
+            console.warn(
+              "[StreamSpeech] Failed to parse SSE data:",
+              parseError,
+            );
+            continue;
           }
         }
       }
