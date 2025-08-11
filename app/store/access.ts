@@ -250,7 +250,12 @@ export const useAccessStore = createPersistStore(
       );
     },
     fetch() {
-      if (fetchState > 0 || getClientConfig()?.buildMode === "export") return;
+      const clientConfig = getClientConfig();
+      if (!(fetchState > 0) && clientConfig?.buildMode === "export") {
+        set(clientConfig);
+        fetchState = 2;
+      }
+      if (fetchState > 0 || clientConfig?.buildMode === "export") return;
       fetchState = 1;
       fetch("/api/config", {
         method: "post",
