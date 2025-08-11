@@ -53,7 +53,7 @@ describe("isModelNotavailableInServer", () => {
     expect(result).toBe(true);
   });
 
-  // FIXME: 这个测试用例有问题，需要修复
+  // FIXME: 这个测试用例有问题，需要修复 ？？？
   //   test("support passing multiple providers, model available on one of the providers will return false", () => {
   //     const customModels = "-all,gpt-4@google";
   //     const modelName = "gpt-4";
@@ -69,7 +69,19 @@ describe("isModelNotavailableInServer", () => {
   test("test custom model without setting provider", () => {
     const customModels = "-all,mistral-large";
     const modelName = "mistral-large";
-    const providerNames = modelName;
+    const providerNames = "custom";
+    const result = isModelNotavailableInServer(
+      customModels,
+      modelName,
+      providerNames,
+    );
+    expect(result).toBe(false);
+  });
+
+  test("test custom model with non-standard provider", () => {
+    const customModels = "-all,deepseek-chat@DeepSeek";
+    const modelName = "deepseek-chat";
+    const providerNames = "custom";
     const result = isModelNotavailableInServer(
       customModels,
       modelName,

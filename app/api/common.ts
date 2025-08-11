@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSideConfig } from "../config/server";
-import { OPENAI_BASE_URL, ServiceProvider } from "../constant";
+import { OPENAI_BASE_URL, ServiceProvider, OpenaiPath } from "../constant";
 import { cloudflareAIGatewayUrl } from "../utils/cloudflare";
 import { getModelProvider, isModelNotavailableInServer } from "../utils/model";
 
@@ -26,8 +26,8 @@ export async function requestOpenai(req: NextRequest) {
     authValue = req.headers.get("Authorization") ?? "";
     authHeaderName = "Authorization";
   }
-
   let path = `${req.nextUrl.pathname}`.replaceAll("/api/openai/", "");
+  let isChatRequest = path.includes(OpenaiPath.ChatPath);
 
   let baseUrl =
     (isAzure ? serverConfig.azureUrl : serverConfig.baseUrl) || OPENAI_BASE_URL;
@@ -117,14 +117,14 @@ export async function requestOpenai(req: NextRequest) {
       const jsonBody = JSON.parse(clonedBody) as { model?: string };
 
       // not undefined and is false
-      if (
+      if ( isChatRequest &&
         isModelNotavailableInServer(
           serverConfig.customModels,
           jsonBody?.model as string,
           [
             ServiceProvider.OpenAI,
             ServiceProvider.Azure,
-            jsonBody?.model as string, // support provider-unspecified model
+            "custom" as string, // support provider-unspecified model
           ],
         )
       ) {
