@@ -107,7 +107,8 @@ export interface LLMModelProvider {
 
 export abstract class LLMApi {
   abstract chat(options: ChatOptions): Promise<void>;
-  abstract speech(options: SpeechOptions): Promise<ArrayBuffer>;
+  abstract speech(options: SpeechOptions): Promise<ArrayBuffer | AudioBuffer>;
+  abstract streamSpeech?(options: SpeechOptions): AsyncGenerator<AudioBuffer>;
   abstract usage(): Promise<LLMUsage>;
   abstract models(): Promise<LLMModel[]>;
 }

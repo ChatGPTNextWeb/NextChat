@@ -73,6 +73,10 @@ const fr: PartialLocaleType = {
         light: "Mode clair",
         dark: "Mode sombre",
       },
+      NetWork: {
+        on: "Activer la recherche web",
+        off: "Désactiver la recherche web",
+      },
       Prompt: "Commandes rapides",
       Masks: "Tous les masques",
       Clear: "Effacer la discussion",

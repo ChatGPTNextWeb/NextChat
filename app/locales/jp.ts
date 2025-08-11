@@ -72,6 +72,10 @@ const jp: PartialLocaleType = {
         light: "ライトモード",
         dark: "ダークモード",
       },
+      NetWork: {
+        on: "ウェブ検索を有効化",
+        off: "ウェブ検索を無効化",
+      },
       Prompt: "クイックコマンド",
       Masks: "すべてのマスク",
       Clear: "チャットをクリア",
