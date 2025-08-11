@@ -282,6 +282,14 @@ DeepSeek Api Key.
 
 DeepSeek Api Url.
 
+### `XAI_API_KEY` (optional)
+
+Grok Api Key.
+
+### `XAI_URL` (optional)
+
+Grok Api Url.
+
 ### `HIDE_USER_API_KEY` (optional)
 
 > Default: Empty
