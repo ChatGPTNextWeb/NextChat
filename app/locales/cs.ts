@@ -200,6 +200,11 @@ const cs: PartialLocaleType = {
       Title: "Automatické generování názvu",
       SubTitle: "Generovat vhodný název na základě obsahu konverzace",
     },
+    AutoScroll: {
+      Title: "Povolit automatické posouvání",
+      SubTitle:
+        "Automaticky posunout chat dolů při zaměření na textové pole nebo odeslání zprávy",
+    },
     Sync: {
       CloudState: "Data na cloudu",
       NotSyncYet: "Ještě nebylo synchronizováno",

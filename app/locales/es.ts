@@ -208,6 +208,11 @@ const es: PartialLocaleType = {
       Title: "Generar título automáticamente",
       SubTitle: "Generar un título adecuado basado en el contenido del chat",
     },
+    AutoScroll: {
+      Title: "Habilitar desplazamiento automático",
+      SubTitle:
+        "Desplazar el chat automáticamente hacia abajo al enfocar el área de texto o enviar un mensaje",
+    },
     Sync: {
       CloudState: "Datos en la nube",
       NotSyncYet: "Aún no se ha sincronizado",

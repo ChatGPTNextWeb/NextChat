@@ -207,6 +207,10 @@ const tw = {
       Title: "自動產生標題",
       SubTitle: "根據對話內容產生合適的標題",
     },
+    AutoScroll: {
+      Title: "啟用自動捲動",
+      SubTitle: "在文字區域聚焦或送出訊息時，自動將聊天捲動至底部",
+    },
     Sync: {
       CloudState: "雲端資料",
       NotSyncYet: "還沒有進行過同步",

@@ -1,7 +1,6 @@
 import { useDebouncedCallback } from "use-debounce";
 import React, {
   Fragment,
-  RefObject,
   useCallback,
   useEffect,
   useMemo,
@@ -450,53 +449,12 @@ export function ChatAction(props: {
   );
 }
 
-function useScrollToBottom(
-  scrollRef: RefObject<HTMLDivElement>,
-  detach: boolean = false,
-  messages: ChatMessage[],
-) {
-  // for auto-scroll
-  const [autoScroll, setAutoScroll] = useState(true);
-  const scrollDomToBottom = useCallback(() => {
-    const dom = scrollRef.current;
-    if (dom) {
-      requestAnimationFrame(() => {
-        setAutoScroll(true);
-        dom.scrollTo(0, dom.scrollHeight);
-      });
-    }
-  }, [scrollRef]);
-
-  // auto scroll
-  useEffect(() => {
-    if (autoScroll && !detach) {
-      scrollDomToBottom();
-    }
-  });
-
-  // auto scroll when messages length changes
-  const lastMessagesLength = useRef(messages.length);
-  useEffect(() => {
-    if (messages.length > lastMessagesLength.current && !detach) {
-      scrollDomToBottom();
-    }
-    lastMessagesLength.current = messages.length;
-  }, [messages.length, detach, scrollDomToBottom]);
-
-  return {
-    scrollRef,
-    autoScroll,
-    setAutoScroll,
-    scrollDomToBottom,
-  };
-}
-
 export function ChatActions(props: {
   uploadImage: () => void;
   setAttachImages: (images: string[]) => void;
   setUploading: (uploading: boolean) => void;
   showPromptModal: () => void;
-  scrollToBottom: () => void;
+  scrollChatToBottom: () => void;
   showPromptHints: () => void;
   hitBottom: boolean;
   uploading: boolean;
@@ -608,7 +566,7 @@ export function ChatActions(props: {
         )}
         {!props.hitBottom && (
           <ChatAction
-            onClick={props.scrollToBottom}
+            onClick={props.scrollChatToBottom}
             text={Locale.Chat.InputActions.ToBottom}
             icon={<BottomIcon />}
           />
@@ -997,37 +955,12 @@ function _Chat() {
 
   const [showExport, setShowExport] = useState(false);
 
+  const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const [userInput, setUserInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { submitKey, shouldSubmit } = useSubmitHandler();
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const isScrolledToBottom = scrollRef?.current
-    ? Math.abs(
-        scrollRef.current.scrollHeight -
-          (scrollRef.current.scrollTop + scrollRef.current.clientHeight),
-      ) <= 1
-    : false;
-  const isAttachWithTop = useMemo(() => {
-    const lastMessage = scrollRef.current?.lastElementChild as HTMLElement;
-    // if scrolllRef is not ready or no message, return false
-    if (!scrollRef?.current || !lastMessage) return false;
-    const topDistance =
-      lastMessage!.getBoundingClientRect().top -
-      scrollRef.current.getBoundingClientRect().top;
-    // leave some space for user question
-    return topDistance < 100;
-  }, [scrollRef?.current?.scrollHeight]);
 
-  const isTyping = userInput !== "";
-
-  // if user is typing, should auto scroll to bottom
-  // if user is not typing, should auto scroll to bottom only if already at bottom
-  const { setAutoScroll, scrollDomToBottom } = useScrollToBottom(
-    scrollRef,
-    (isScrolledToBottom || isAttachWithTop) && !isTyping,
-    session.messages,
-  );
   const [hitBottom, setHitBottom] = useState(true);
   const isMobileScreen = useMobileScreen();
   const navigate = useNavigate();
@@ -1104,6 +1037,7 @@ function _Chat() {
 
   const doSubmit = (userInput: string) => {
     if (userInput.trim() === "" && isEmpty(attachImages)) return;
+
     const matchCommand = chatCommands.match(userInput);
     if (matchCommand.matched) {
       setUserInput("");
@@ -1111,16 +1045,19 @@ function _Chat() {
       matchCommand.invoke();
       return;
     }
+
     setIsLoading(true);
-    chatStore
-      .onUserInput(userInput, attachImages)
-      .then(() => setIsLoading(false));
+
+    chatStore.onUserInput(userInput, attachImages).then(() => {
+      setIsLoading(false);
+      autoScrollChatToBottom();
+    });
+
     setAttachImages([]);
     chatStore.setLastInput(userInput);
     setUserInput("");
     setPromptHints([]);
-    if (!isMobileScreen) inputRef.current?.focus();
-    setAutoScroll(true);
+    autoScrollChatToBottom();
   };
 
   const onPromptSelect = (prompt: RenderPrompt) => {
@@ -1420,13 +1357,32 @@ function _Chat() {
     }
 
     setHitBottom(isHitBottom);
-    setAutoScroll(isHitBottom);
   };
 
-  function scrollToBottom() {
-    setMsgRenderIndex(renderMessages.length - CHAT_PAGE_SIZE);
-    scrollDomToBottom();
+  function scrollChatToBottom() {
+    const dom = scrollRef.current;
+    if (dom) {
+      setMsgRenderIndex(renderMessages.length - CHAT_PAGE_SIZE);
+      requestAnimationFrame(() => {
+        dom.scrollTo(0, dom.scrollHeight);
+      });
+    }
   }
+
+  // scroll if auto-scroll is enabled in the settings
+  function autoScrollChatToBottom() {
+    if (config.enableAutoScroll) scrollChatToBottom();
+  }
+
+  // scroll to the bottom on mount
+  useEffect(() => {
+    scrollChatToBottom();
+  }, []);
+
+  // keep scroll the chat as it gets longer, but only if the chat is already scrolled to the bottom (sticky bottom)
+  useEffect(() => {
+    if (hitBottom) scrollChatToBottom();
+  });
 
   // clear context index = context length + index in messages
   const clearContextIndex =
@@ -1775,10 +1731,7 @@ function _Chat() {
               ref={scrollRef}
               onScroll={(e) => onChatBodyScroll(e.currentTarget)}
               onMouseDown={() => inputRef.current?.blur()}
-              onTouchStart={() => {
-                inputRef.current?.blur();
-                setAutoScroll(false);
-              }}
+              onTouchStart={() => inputRef.current?.blur()}
             >
               {messages
                 // TODO
@@ -2050,7 +2003,7 @@ function _Chat() {
                 setAttachImages={setAttachImages}
                 setUploading={setUploading}
                 showPromptModal={() => setShowPromptModal(true)}
-                scrollToBottom={scrollToBottom}
+                scrollChatToBottom={scrollChatToBottom}
                 hitBottom={hitBottom}
                 uploading={uploading}
                 showPromptHints={() => {
@@ -2083,8 +2036,8 @@ function _Chat() {
                   onInput={(e) => onInput(e.currentTarget.value)}
                   value={userInput}
                   onKeyDown={onInputKeyDown}
-                  onFocus={scrollToBottom}
-                  onClick={scrollToBottom}
+                  onFocus={autoScrollChatToBottom}
+                  onClick={autoScrollChatToBottom}
                   onPaste={handlePaste}
                   rows={inputRows}
                   autoFocus={autoFocus}

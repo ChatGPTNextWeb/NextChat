@@ -219,6 +219,11 @@ const da: PartialLocaleType = {
       Title: "Lav titel automatisk",
       SubTitle: "Foreslå en titel ud fra chatten",
     },
+    AutoScroll: {
+      Title: "Aktivér automatisk rulning",
+      SubTitle:
+        "Rul automatisk chatten til bunden ved fokus på tekstfelt eller afsendelse af besked",
+    },
     Sync: {
       CloudState: "Seneste opdatering",
       NotSyncYet: "Endnu ikke synkroniseret",

@@ -200,6 +200,11 @@ const sk: PartialLocaleType = {
       Title: "Automaticky generovať názov",
       SubTitle: "Generovať vhodný názov na základe obsahu konverzácie",
     },
+    AutoScroll: {
+      Title: "Povoliť automatické posúvanie",
+      SubTitle:
+        "Automaticky posunúť chat nadol pri zameraní na textové pole alebo odoslaní správy",
+    },
     Sync: {
       CloudState: "Posledná aktualizácia",
       NotSyncYet: "Zatiaľ nesynchronizované",
