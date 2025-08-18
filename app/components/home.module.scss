@@ -52,13 +52,10 @@
   .sidebar-header-bar {
     display: flex;
     margin-bottom: 20px;
+    gap: 10px;
 
     .sidebar-bar-button {
       flex-grow: 1;
-
-      &:not(:last-child) {
-        margin-right: 10px;
-      }
     }
   }
 
@@ -252,13 +249,6 @@
 
   .sidebar-header-bar {
     flex-direction: column;
-
-    .sidebar-bar-button {
-      &:not(:last-child) {
-        margin-right: 0;
-        margin-bottom: 10px;
-      }
-    }
   }
 
   .chat-item {
@@ -308,15 +298,10 @@
   .sidebar-tail {
     flex-direction: column-reverse;
     align-items: center;
+    gap: 15px;
 
     .sidebar-actions {
-      flex-direction: column-reverse;
-      align-items: center;
-
-      .sidebar-action {
-        margin-right: 0;
-        margin-top: 15px;
-      }
+      display: contents;
     }
   }
 }
@@ -329,10 +314,7 @@
 
 .sidebar-actions {
   display: inline-flex;
-}
-
-.sidebar-action:not(:last-child) {
-  margin-right: 15px;
+  gap: 15px;
 }
 
 .loading-content {
@@ -346,4 +328,9 @@
 
 .rtl-screen {
   direction: rtl;
+
+  .sidebar-drag {
+    right: unset;
+    left: 0;
+  }
 }
