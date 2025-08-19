@@ -166,7 +166,7 @@ const tw = {
       },
     },
     Lang: {
-      Name: "Language", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`
+      Name: "Language", // 注意：如果您想添加新的翻譯，請不要翻譯此值，保持為 Language
       All: "所有語言",
     },
     Avatar: "大頭貼",
@@ -198,6 +198,11 @@ const tw = {
     },
     SendKey: "傳送鍵",
     Theme: "主題",
+    ThemeOptions: {
+      auto: "自動",
+      light: "亮色",
+      dark: "深色",
+    },
     TightBorder: "緊湊邊框",
     SendPreviewBubble: {
       Title: "預覽氣泡",

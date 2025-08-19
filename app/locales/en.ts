@@ -213,6 +213,11 @@ const en: LocaleType = {
     },
     SendKey: "Send Key",
     Theme: "Theme",
+    ThemeOptions: {
+      auto: "Auto",
+      light: "Light",
+      dark: "Dark",
+    },
     TightBorder: "Tight Border",
     SendPreviewBubble: {
       Title: "Send Preview Bubble",
