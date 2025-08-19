@@ -52,12 +52,18 @@ export async function copyToClipboard(text: string) {
 
 export async function downloadAs(text: string, filename: string) {
   if (window.__TAURI__) {
+    /**
+     * Fixed client app [Tauri]
+     * Resolved the issue where files couldn't be saved when there was a `:` in the dialog.
+    **/
+    const fileName = filename.replace(/:/g, '');
+    const fileExtension = fileName.split('.').pop();
     const result = await window.__TAURI__.dialog.save({
-      defaultPath: `${filename}`,
+      defaultPath: `${fileName}`,
       filters: [
         {
-          name: `${filename.split(".").pop()} files`,
-          extensions: [`${filename.split(".").pop()}`],
+          name: `${fileExtension} files`,
+          extensions: [`${fileExtension}`],
         },
         {
           name: "All Files",
