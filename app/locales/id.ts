@@ -245,6 +245,10 @@ const id: PartialLocaleType = {
       },
       ImportFailed: "Impor Gagal",
     },
+    AutoScrollMessage: {
+      Title: "Balasan Auto-Scroll",
+      SubTitle: "Gulir pesan saat membalas",
+    },
     Mask: {
       Splash: {
         Title: "Halaman Awal Masker",

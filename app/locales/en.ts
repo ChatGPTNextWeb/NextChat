@@ -218,6 +218,10 @@ const en: LocaleType = {
       Title: "Send Preview Bubble",
       SubTitle: "Preview markdown in bubble",
     },
+    AutoScrollMessage: {
+      Title: "Auto-Scroll Reply",
+      SubTitle: "Scroll the message during reply",
+    },
     AutoGenerateTitle: {
       Title: "Auto Generate Title",
       SubTitle: "Generate a suitable title based on the conversation content",

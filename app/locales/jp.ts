@@ -244,6 +244,10 @@ const jp: PartialLocaleType = {
       },
       ImportFailed: "インポートに失敗しました",
     },
+    AutoScrollMessage: {
+      Title: "オートスクロール返信",
+      SubTitle: "返信中にメッセージをスクロール",
+    },
     Mask: {
       Splash: {
         Title: "マスク起動画面",

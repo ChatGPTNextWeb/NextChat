@@ -244,6 +244,10 @@ const vi: PartialLocaleType = {
       },
       ImportFailed: "Nhập không thành công",
     },
+    AutoScrollMessage: {
+      Title: "Trả lời Tự động Cuộn",
+      SubTitle: "Cuộn tin nhắn khi trả lời",
+    },
     Mask: {
       Splash: {
         Title: "Trang khởi động mặt nạ",

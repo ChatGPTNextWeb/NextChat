@@ -244,6 +244,10 @@ const cs: PartialLocaleType = {
       },
       ImportFailed: "Import selhal",
     },
+    AutoScrollMessage: {
+      Title: "Automatické rolování odpovědi",
+      SubTitle: "Rolovat zprávu při odpovídání",
+    },
     Mask: {
       Splash: {
         Title: "Úvodní stránka masky",

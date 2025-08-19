@@ -245,6 +245,10 @@ const bn: PartialLocaleType = {
       },
       ImportFailed: "আমদানি ব্যর্থ",
     },
+    AutoScrollMessage: {
+      Title: "অটো-স্ক্রল উত্তর",
+      SubTitle: "উত্তর দেওয়ার সময় বার্তা স্ক্রল করুন",
+    },
     Mask: {
       Splash: {
         Title: "মাস্ক লঞ্চ পেজ",
