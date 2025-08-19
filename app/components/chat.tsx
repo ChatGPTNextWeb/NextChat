@@ -1186,7 +1186,7 @@ function _Chat() {
       e.preventDefault();
       return;
     }
-    if (shouldSubmit(e) && promptHints.length === 0) {
+    if (!isMobileScreen && shouldSubmit(e) && promptHints.length === 0) {
       doSubmit(userInput);
       e.preventDefault();
     }
