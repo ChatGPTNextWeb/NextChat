@@ -48,6 +48,7 @@ import PluginIcon from "../icons/plugin.svg";
 import ShortcutkeyIcon from "../icons/shortcutkey.svg";
 import McpToolIcon from "../icons/tool.svg";
 import HeadphoneIcon from "../icons/headphone.svg";
+import NetWorkIcon from "../icons/network.svg";
 import {
   BOT_HELLO,
   ChatMessage,
@@ -75,6 +76,7 @@ import {
   useMobileScreen,
   selectOrCopy,
   showPlugins,
+  canUseNetWork,
 } from "../utils";
 
 import { uploadImage as uploadImageRemote } from "@/app/utils/chat";
@@ -101,8 +103,6 @@ import {
 import { useNavigate } from "react-router-dom";
 import {
   CHAT_PAGE_SIZE,
-  DEFAULT_TTS_ENGINE,
-  ModelProvider,
   Path,
   REQUEST_TIMEOUT_MS,
   ServiceProvider,
@@ -512,6 +512,7 @@ export function ChatActions(props: {
 
   // switch themes
   const theme = config.theme;
+  const enableNetWork = session.mask.modelConfig.enableNetWork || false;
 
   function nextTheme() {
     const themes = [Theme.Auto, Theme.Light, Theme.Dark];
@@ -519,6 +520,13 @@ export function ChatActions(props: {
     const nextIndex = (themeIndex + 1) % themes.length;
     const nextTheme = themes[nextIndex];
     config.update((config) => (config.theme = nextTheme));
+  }
+
+  function nextNetWork() {
+    chatStore.updateTargetSession(session, (session) => {
+      session.mask.modelConfig.enableNetWork =
+        !session.mask.modelConfig.enableNetWork;
+    });
   }
 
   // stop all responses
@@ -699,6 +707,9 @@ export function ChatActions(props: {
                 session.mask.modelConfig.providerName =
                   providerName as ServiceProvider;
                 session.mask.syncGlobalConfig = false;
+                session.mask.modelConfig.enableNetWork = canUseNetWork(model)
+                  ? session.mask.modelConfig.enableNetWork
+                  : false;
               });
               if (providerName == "ByteDance") {
                 const selectedModel = models.find(
@@ -833,6 +844,16 @@ export function ChatActions(props: {
           />
         )}
         {!isMobileScreen && <MCPAction />}
+
+        {canUseNetWork(currentModel) && (
+          <ChatAction
+            onClick={nextNetWork}
+            text={
+              Locale.Chat.InputActions.NetWork[enableNetWork ? "on" : "off"]
+            }
+            icon={<NetWorkIcon />}
+          />
+        )}
       </>
       <div className={styles["chat-input-actions-end"]}>
         {config.realtimeConfig.enable && (
@@ -1286,6 +1307,7 @@ function _Chat() {
   const accessStore = useAccessStore();
   const [speechStatus, setSpeechStatus] = useState(false);
   const [speechLoading, setSpeechLoading] = useState(false);
+  const [speechCooldown, setSpeechCooldown] = useState(false);
 
   async function openaiSpeech(text: string) {
     if (speechStatus) {
@@ -1293,14 +1315,14 @@ function _Chat() {
       setSpeechStatus(false);
     } else {
       var api: ClientApi;
-      api = new ClientApi(ModelProvider.GPT);
       const config = useAppConfig.getState();
+      api = new ClientApi(config.ttsConfig.modelProvider);
       setSpeechLoading(true);
       ttsPlayer.init();
-      let audioBuffer: ArrayBuffer;
+      let audioBuffer: ArrayBuffer | AudioBuffer;
       const { markdownToTxt } = require("markdown-to-txt");
       const textContent = markdownToTxt(text);
-      if (config.ttsConfig.engine !== DEFAULT_TTS_ENGINE) {
+      if (config.ttsConfig.engine === "Edge") {
         const edgeVoiceName = accessStore.edgeVoiceName();
         const tts = new MsEdgeTTS();
         await tts.setMetadata(
@@ -1308,26 +1330,61 @@ function _Chat() {
           OUTPUT_FORMAT.AUDIO_24KHZ_96KBITRATE_MONO_MP3,
         );
         audioBuffer = await tts.toArrayBuffer(textContent);
+        playSpeech(audioBuffer);
       } else {
-        audioBuffer = await api.llm.speech({
-          model: config.ttsConfig.model,
-          input: textContent,
-          voice: config.ttsConfig.voice,
-          speed: config.ttsConfig.speed,
-        });
+        if (api.llm.streamSpeech) {
+          // 使用流式播放，边接收边播放
+          setSpeechStatus(true);
+          ttsPlayer.startStreamPlay(() => {
+            setSpeechStatus(false);
+          });
+
+          try {
+            for await (const chunk of api.llm.streamSpeech(
+              {
+                model: config.ttsConfig.model,
+                input: textContent,
+                voice: config.ttsConfig.voice,
+                speed: config.ttsConfig.speed,
+              },
+              ttsPlayer,
+            )) {
+              ttsPlayer.addToQueue(chunk);
+            }
+            ttsPlayer.finishStreamPlay();
+          } catch (e) {
+            console.error("[Stream Speech]", e);
+            showToast(prettyObject(e));
+            setSpeechStatus(false);
+            ttsPlayer.stop();
+          } finally {
+            setSpeechLoading(false);
+          }
+        } else {
+          audioBuffer = await api.llm.speech({
+            model: config.ttsConfig.model,
+            input: textContent,
+            voice: config.ttsConfig.voice,
+            speed: config.ttsConfig.speed,
+          });
+          playSpeech(audioBuffer);
+        }
       }
-      setSpeechStatus(true);
-      ttsPlayer
-        .play(audioBuffer, () => {
-          setSpeechStatus(false);
-        })
-        .catch((e) => {
-          console.error("[OpenAI Speech]", e);
-          showToast(prettyObject(e));
-          setSpeechStatus(false);
-        })
-        .finally(() => setSpeechLoading(false));
     }
+  }
+
+  function playSpeech(audioBuffer: ArrayBuffer | AudioBuffer) {
+    setSpeechStatus(true);
+    ttsPlayer
+      .play(audioBuffer, () => {
+        setSpeechStatus(false);
+      })
+      .catch((e) => {
+        console.error("[OpenAI Speech]", e);
+        showToast(prettyObject(e));
+        setSpeechStatus(false);
+      })
+      .finally(() => setSpeechLoading(false));
   }
 
   const context: RenderMessage[] = useMemo(() => {

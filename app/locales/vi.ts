@@ -72,6 +72,10 @@ const vi: PartialLocaleType = {
         light: "Chế độ sáng",
         dark: "Chế độ tối",
       },
+      NetWork: {
+        on: "Bật tìm kiếm web",
+        off: "Tắt tìm kiếm web",
+      },
       Prompt: "Lệnh tắt",
       Masks: "Tất cả mặt nạ",
       Clear: "Xóa cuộc trò chuyện",

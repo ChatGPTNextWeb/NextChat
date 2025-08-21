@@ -6,7 +6,9 @@ import {
   useChatStore,
   ChatMessageTool,
   usePluginStore,
+  FunctionToolItem,
 } from "@/app/store";
+import { TTSPlayManager } from "@/app/utils/audio";
 import {
   preProcessImageContentForAlibabaDashScope,
   streamWithThink,
@@ -51,6 +53,8 @@ interface RequestParam {
   repetition_penalty?: number;
   top_p: number;
   max_tokens?: number;
+  tools?: FunctionToolItem[];
+  enable_search?: boolean;
 }
 interface RequestPayload {
   model: string;
@@ -89,8 +93,100 @@ export class QwenApi implements LLMApi {
     return res?.output?.choices?.at(0)?.message?.content ?? "";
   }
 
-  speech(options: SpeechOptions): Promise<ArrayBuffer> {
+  async speech(options: SpeechOptions): Promise<ArrayBuffer> {
     throw new Error("Method not implemented.");
+  }
+
+  async *streamSpeech(
+    options: SpeechOptions,
+    audioManager?: TTSPlayManager,
+  ): AsyncGenerator<AudioBuffer> {
+    if (!options.input || !options.model) {
+      throw new Error("Missing required parameters: input and model");
+    }
+    const requestPayload = {
+      model: options.model,
+      input: {
+        text: options.input,
+        voice: options.voice,
+      },
+      speed: options.speed,
+      response_format: options.response_format,
+    };
+    const controller = new AbortController();
+    options.onController?.(controller);
+
+    if (audioManager) {
+      audioManager.setStreamController(controller);
+    }
+    try {
+      const speechPath = this.path(Alibaba.SpeechPath);
+      const speechPayload = {
+        method: "POST",
+        body: JSON.stringify(requestPayload),
+        signal: controller.signal,
+        headers: {
+          ...getHeaders(),
+          "X-DashScope-SSE": "enable",
+        },
+      };
+
+      // make a fetch request
+      const requestTimeoutId = setTimeout(
+        () => controller.abort(),
+        getTimeoutMSByModel(options.model),
+      );
+
+      const res = await fetch(speechPath, speechPayload);
+      clearTimeout(requestTimeoutId); // Clear timeout on successful connection
+
+      const reader = res.body!.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) {
+          break;
+        }
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split("\n");
+        buffer = lines.pop() || "";
+
+        for (const line of lines) {
+          const data = line.slice(5);
+          try {
+            if (line.startsWith("data:")) {
+              const json = JSON.parse(data);
+              if (json.output?.audio?.data) {
+                yield await audioManager!.pcmBase64ToAudioBuffer(
+                  json.output.audio.data,
+                  { channels: 1, sampleRate: 24000, bitDepth: 16 },
+                );
+              }
+            }
+          } catch (parseError) {
+            console.warn(
+              "[StreamSpeech] Failed to parse SSE data:",
+              parseError,
+            );
+            continue;
+          }
+        }
+      }
+      reader.releaseLock();
+    } catch (e) {
+      // 如果是用户主动取消（AbortError），则不作为错误处理
+      if (e instanceof Error && e.name === "AbortError") {
+        console.log("[Request] Stream speech was aborted by user");
+        return; // 正常退出，不抛出错误
+      }
+      console.log("[Request] failed to make a speech request", e);
+      throw e;
+    } finally {
+      if (audioManager) {
+        audioManager.clearStreamController();
+      }
+    }
   }
 
   async chat(options: ChatOptions) {
@@ -129,6 +225,7 @@ export class QwenApi implements LLMApi {
         temperature: modelConfig.temperature,
         // max_tokens: modelConfig.max_tokens,
         top_p: modelConfig.top_p === 1 ? 0.99 : modelConfig.top_p, // qwen top_p is should be < 1
+        enable_search: modelConfig.enableNetWork,
       },
     };
 
@@ -161,11 +258,16 @@ export class QwenApi implements LLMApi {
           .getAsTools(
             useChatStore.getState().currentSession().mask?.plugin || [],
           );
+        // console.log("getAsTools", tools, funcs);
+        const _tools = tools as unknown as FunctionToolItem[];
+        if (_tools && _tools.length > 0) {
+          requestPayload.parameters.tools = _tools;
+        }
         return streamWithThink(
           chatPath,
           requestPayload,
           headers,
-          tools as any,
+          [],
           funcs,
           controller,
           // parseSSE
@@ -198,7 +300,7 @@ export class QwenApi implements LLMApi {
                 });
               } else {
                 // @ts-ignore
-                runTools[index]["function"]["arguments"] += args;
+                runTools[index]["function"]["arguments"] += args || "";
               }
             }
 

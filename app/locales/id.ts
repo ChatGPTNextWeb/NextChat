@@ -72,6 +72,10 @@ const id: PartialLocaleType = {
         light: "Mode Terang",
         dark: "Mode Gelap",
       },
+      NetWork: {
+        on: "Aktifkan pencarian web",
+        off: "Nonaktifkan pencarian web",
+      },
       Prompt: "Perintah Cepat",
       Masks: "Semua Masker",
       Clear: "Hapus Obrolan",

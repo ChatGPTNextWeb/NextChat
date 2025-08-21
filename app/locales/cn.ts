@@ -76,6 +76,10 @@ const cn = {
         light: "亮色模式",
         dark: "深色模式",
       },
+      NetWork: {
+        on: "开启联网搜索",
+        off: "关闭联网搜索",
+      },
       Prompt: "快捷指令",
       Masks: "所有面具",
       Clear: "清除聊天",

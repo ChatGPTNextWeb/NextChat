@@ -74,6 +74,10 @@ const es: PartialLocaleType = {
         light: "Modo claro",
         dark: "Modo oscuro",
       },
+      NetWork: {
+        on: "Habilitar búsqueda web",
+        off: "Deshabilitar búsqueda web",
+      },
       Prompt: "Comandos rápidos",
       Masks: "Todas las máscaras",
       Clear: "Limpiar chat",
