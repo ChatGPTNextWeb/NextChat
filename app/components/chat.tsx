@@ -1340,12 +1340,15 @@ function _Chat() {
           });
 
           try {
-            for await (const chunk of api.llm.streamSpeech({
-              model: config.ttsConfig.model,
-              input: textContent,
-              voice: config.ttsConfig.voice,
-              speed: config.ttsConfig.speed,
-            })) {
+            for await (const chunk of api.llm.streamSpeech(
+              {
+                model: config.ttsConfig.model,
+                input: textContent,
+                voice: config.ttsConfig.voice,
+                speed: config.ttsConfig.speed,
+              },
+              ttsPlayer,
+            )) {
               ttsPlayer.addToQueue(chunk);
             }
             ttsPlayer.finishStreamPlay();

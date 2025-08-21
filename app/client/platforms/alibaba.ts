@@ -8,6 +8,7 @@ import {
   usePluginStore,
   FunctionToolItem,
 } from "@/app/store";
+import { TTSPlayManager } from "@/app/utils/audio";
 import {
   preProcessImageContentForAlibabaDashScope,
   streamWithThink,
@@ -62,7 +63,6 @@ interface RequestPayload {
 }
 
 export class QwenApi implements LLMApi {
-  private static audioContext: AudioContext | null = null;
   path(path: string): string {
     const accessStore = useAccessStore.getState();
 
@@ -97,7 +97,10 @@ export class QwenApi implements LLMApi {
     throw new Error("Method not implemented.");
   }
 
-  async *streamSpeech(options: SpeechOptions): AsyncGenerator<AudioBuffer> {
+  async *streamSpeech(
+    options: SpeechOptions,
+    audioManager?: TTSPlayManager,
+  ): AsyncGenerator<AudioBuffer> {
     if (!options.input || !options.model) {
       throw new Error("Missing required parameters: input and model");
     }
@@ -112,6 +115,10 @@ export class QwenApi implements LLMApi {
     };
     const controller = new AbortController();
     options.onController?.(controller);
+
+    if (audioManager) {
+      audioManager.setStreamController(controller);
+    }
     try {
       const speechPath = this.path(Alibaba.SpeechPath);
       const speechPayload = {
@@ -151,7 +158,10 @@ export class QwenApi implements LLMApi {
             if (line.startsWith("data:")) {
               const json = JSON.parse(data);
               if (json.output?.audio?.data) {
-                yield this.PCMBase64ToAudioBuffer(json.output.audio.data);
+                yield await audioManager!.pcmBase64ToAudioBuffer(
+                  json.output.audio.data,
+                  { channels: 1, sampleRate: 24000, bitDepth: 16 },
+                );
               }
             }
           } catch (parseError) {
@@ -165,8 +175,17 @@ export class QwenApi implements LLMApi {
       }
       reader.releaseLock();
     } catch (e) {
+      // 如果是用户主动取消（AbortError），则不作为错误处理
+      if (e instanceof Error && e.name === "AbortError") {
+        console.log("[Request] Stream speech was aborted by user");
+        return; // 正常退出，不抛出错误
+      }
       console.log("[Request] failed to make a speech request", e);
       throw e;
+    } finally {
+      if (audioManager) {
+        audioManager.clearStreamController();
+      }
     }
   }
 
@@ -355,80 +374,6 @@ export class QwenApi implements LLMApi {
 
   async models(): Promise<LLMModel[]> {
     return [];
-  }
-
-  // 播放 PCM base64 数据
-  private async PCMBase64ToAudioBuffer(base64Data: string) {
-    try {
-      // 解码 base64
-      const binaryString = atob(base64Data);
-      const bytes = new Uint8Array(binaryString.length);
-      for (let i = 0; i < binaryString.length; i++) {
-        bytes[i] = binaryString.charCodeAt(i);
-      }
-
-      // 转换为 AudioBuffer
-      const audioBuffer = await this.convertToAudioBuffer(bytes);
-
-      return audioBuffer;
-    } catch (error) {
-      console.error("播放 PCM 数据失败:", error);
-      throw error;
-    }
-  }
-
-  private static getAudioContext(): AudioContext {
-    if (!QwenApi.audioContext) {
-      QwenApi.audioContext = new (window.AudioContext ||
-        window.webkitAudioContext)();
-    }
-    return QwenApi.audioContext;
-  }
-
-  // 将 PCM 字节数据转换为 AudioBuffer
-  private convertToAudioBuffer(pcmData: Uint8Array) {
-    const audioContext = QwenApi.getAudioContext();
-    const channels = 1;
-    const sampleRate = 24000;
-    return new Promise<AudioBuffer>((resolve, reject) => {
-      try {
-        let float32Array;
-        // 16位 PCM 转换为 32位浮点数
-        float32Array = this.pcm16ToFloat32(pcmData);
-
-        // 创建 AudioBuffer
-        const audioBuffer = audioContext.createBuffer(
-          channels,
-          float32Array.length / channels,
-          sampleRate,
-        );
-
-        // 复制数据到 AudioBuffer
-        for (let channel = 0; channel < channels; channel++) {
-          const channelData = audioBuffer.getChannelData(channel);
-          for (let i = 0; i < channelData.length; i++) {
-            channelData[i] = float32Array[i * channels + channel];
-          }
-        }
-
-        resolve(audioBuffer);
-      } catch (error) {
-        reject(error);
-      }
-    });
-  }
-  // 16位 PCM 转 32位浮点数
-  private pcm16ToFloat32(pcmData: Uint8Array) {
-    const length = pcmData.length / 2;
-    const float32Array = new Float32Array(length);
-
-    for (let i = 0; i < length; i++) {
-      const int16 = (pcmData[i * 2 + 1] << 8) | pcmData[i * 2];
-      const int16Signed = int16 > 32767 ? int16 - 65536 : int16;
-      float32Array[i] = int16Signed / 32768;
-    }
-
-    return float32Array;
   }
 }
 export { Alibaba };
