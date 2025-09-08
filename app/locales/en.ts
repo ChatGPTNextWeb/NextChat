@@ -520,7 +520,7 @@ const en: LocaleType = {
       },
       CustomModel: {
         Title: "Custom Models",
-        SubTitle: "Custom model options, seperated by comma",
+        SubTitle: "Custom model options, separated by comma",
       },
       Google: {
         ApiKey: {
