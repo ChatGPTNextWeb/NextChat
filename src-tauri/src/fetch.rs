@@ -1,5 +1,5 @@
 //
-// 普通 HTTP 请求处理模块
+// HTTP request handler module
 //
 
 use std::time::Duration;
@@ -18,14 +18,6 @@ pub struct FetchResponse {
   status_text: String,
   headers: HashMap<String, String>,
   body: Vec<u8>,
-}
-
-#[derive(Debug, Clone, serde::Serialize)]
-pub struct ErrorResponse {
-  request_id: u32,
-  status: u16,
-  status_text: String,
-  error: String,
 }
 
 #[tauri::command]
@@ -57,11 +49,11 @@ pub async fn http_fetch(
     }
   }
 
-  // 解析 HTTP 方法
+  // Parse HTTP method
   let method = method.parse::<reqwest::Method>()
     .map_err(|err| format!("failed to parse method: {}", err))?;
 
-  // 创建客户端
+  // Create client
   let client = Client::builder()
     .default_headers(_headers)
     .redirect(reqwest::redirect::Policy::limited(3))
@@ -70,14 +62,14 @@ pub async fn http_fetch(
     .build()
     .map_err(|err| format!("failed to create client: {}", err))?;
 
-  // 构建请求
+  // Build request
   let mut request = client.request(
     method.clone(),
     url.parse::<reqwest::Url>()
       .map_err(|err| format!("failed to parse url: {}", err))?
   );
 
-  // 对于需要 body 的请求方法，添加请求体
+  // For request methods that need a body, add the request body
   if method == reqwest::Method::POST 
     || method == reqwest::Method::PUT 
     || method == reqwest::Method::PATCH 
@@ -88,7 +80,7 @@ pub async fn http_fetch(
     }
   }
 
-  // 发送请求
+  // Send request
   let response = request.send().await
     .map_err(|err| {
       let error_msg = err.source()
@@ -97,7 +89,7 @@ pub async fn http_fetch(
       format!("request failed: {}", error_msg)
     })?;
 
-  // 获取响应状态和头部
+  // Get response status and headers
   let status = response.status().as_u16();
   let status_text = response.status().canonical_reason()
     .unwrap_or("Unknown")
@@ -113,7 +105,7 @@ pub async fn http_fetch(
     );
   }
 
-  // 读取响应体
+  // Read response body
   let response_body = response.bytes().await
     .map_err(|err| format!("failed to read response body: {}", err))?;
 
@@ -134,13 +126,13 @@ pub async fn http_fetch_text(
   body: String,
 ) -> Result<String, String> {
   
-  // 将字符串 body 转换为字节
+  // Convert string body to bytes
   let body_bytes = body.into_bytes();
   
-  // 调用主要的 fetch 方法
+  // Call the main fetch method
   let response = http_fetch(method, url, headers, body_bytes).await?;
   
-  // 将响应体转换为字符串
+  // Convert response body to string
   let response_text = String::from_utf8(response.body)
     .map_err(|err| format!("failed to convert response to text: {}", err))?;
   
@@ -155,21 +147,21 @@ pub async fn http_fetch_json(
   body: serde_json::Value,
 ) -> Result<serde_json::Value, String> {
   
-  // 将 JSON 转换为字符串再转换为字节
+  // Convert JSON to string and then to bytes
   let body_string = serde_json::to_string(&body)
     .map_err(|err| format!("failed to serialize JSON body: {}", err))?;
   let body_bytes = body_string.into_bytes();
   
-  // 确保设置了正确的 Content-Type
+  // Ensure the correct Content-Type is set
   let mut json_headers = headers;
   if !json_headers.contains_key("content-type") && !json_headers.contains_key("Content-Type") {
     json_headers.insert("Content-Type".to_string(), "application/json".to_string());
   }
   
-  // 调用主要的 fetch 方法
+  // Call the main fetch method
   let response = http_fetch(method, url, json_headers, body_bytes).await?;
   
-  // 将响应体解析为 JSON
+  // Parse response body as JSON
   let response_json: serde_json::Value = serde_json::from_slice(&response.body)
     .map_err(|err| format!("failed to parse response as JSON: {}", err))?;
   
