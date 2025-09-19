@@ -398,7 +398,7 @@
     ],
     [
       "担任高级前端开发人员",
-      "我希望你担任高级前端开发人员。我将描述您将使用以下工具编写项目代码的项目详细信息：Create React App、yarn、Ant Design、List、Redux Toolkit、createSlice、thunk、axios。您应该将文件合并到单个 index.js 文件中，别无其他。不要写解释。我的第一个请求是“创建 Pokemon 应用程序，列出带有来自 PokeAPI 精灵端点的图像的宠物小精灵”\n"
+      "我希望你担任高级前端开发人员。我将描述您将使用以下工具编写项目代码的项目详细信息：Vite、yarn、Ant Design、List、Redux Toolkit、createSlice、thunk、axios。您应该将文件合并到单个 index.js 文件中，别无其他。不要写解释。我的第一个请求是“创建 Pokemon 应用程序，列出带有来自 PokeAPI 精灵端点的图像的宠物小精灵”\n"
     ],
     [
       "充当 Solr 搜索引擎",
@@ -884,7 +884,7 @@
     ],
     [
       "擔任資深前端開發人員",
-      "我希望你擔任資深前端開發人員。我將介紹你將使用以下工具撰寫專案程式碼的專案細節：Create React App、yarn、Ant Design、List、Redux Toolkit、createSlice、thunk、axios。你應該將檔案整合到單一 index.js 檔案中，別無其他。不需撰寫解釋。我的第一個請求是「建立 Pokemon 應用程式，列出帶有來自 PokeAPI 精靈端點的圖片的寶可夢」\n"
+      "我希望你擔任資深前端開發人員。我將介紹你將使用以下工具撰寫專案程式碼的專案細節：Vite、yarn、Ant Design、List、Redux Toolkit、createSlice、thunk、axios。你應該將檔案整合到單一 index.js 檔案中，別無其他。不需撰寫解釋。我的第一個請求是「建立 Pokemon 應用程式，列出帶有來自 PokeAPI 精靈端點的圖片的寶可夢」\n"
     ],
     [
       "模擬 Solr 搜尋引擎",
@@ -1502,7 +1502,7 @@
     ],
     [
       "Senior Frontend Developer",
-      "I want you to act as a Senior Frontend developer. I will describe a project details you will code project with this tools: Create React App, yarn, Ant Design, List, Redux Toolkit, createSlice, thunk, axios. You should merge files in single index.js file and nothing else. Do not write explanations. My first request is Create Pokemon App that lists pokemons with images that come from PokeAPI sprites endpoint"
+      "I want you to act as a Senior Frontend developer. I will describe a project details you will code project with this tools: Vite, yarn, Ant Design, List, Redux Toolkit, createSlice, thunk, axios. You should merge files in single index.js file and nothing else. Do not write explanations. My first request is Create Pokemon App that lists pokemons with images that come from PokeAPI sprites endpoint"
     ],
     [
       "Solr Search Engine",

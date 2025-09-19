@@ -7,14 +7,22 @@
 
 [NextChatAI](https://nextchat.club?utm_source=readme) / [企業版](#企業版) / [デモ](https://chat-gpt-next-web.vercel.app/) / [フィードバック](https://github.com/Yidadaa/ChatGPT-Next-Web/issues) / [Discordに参加](https://discord.gg/zrhvHCr79N)
 
-[<img src="https://vercel.com/button" alt="Zeaburでデプロイ" height="30">](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FChatGPTNextWeb%2FChatGPT-Next-Web&env=OPENAI_API_KEY&env=CODE&project-name=nextchat&repository-name=NextChat) [<img src="https://zeabur.com/button.svg" alt="Zeaburでデプロイ" height="30">](https://zeabur.com/templates/ZBUEFA)  [<img src="https://gitpod.io/button/open-in-gitpod.svg" alt="Gitpodで開く" height="30">](https://gitpod.io/#https://github.com/Yidadaa/ChatGPT-Next-Web)
-
+[<img src="https://vercel.com/button" alt="Zeaburでデプロイ" height="30">](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FChatGPTNextWeb%2FChatGPT-Next-Web&env=OPENAI_API_KEY&env=CODE&project-name=nextchat&repository-name=NextChat) [<img src="https://zeabur.com/button.svg" alt="Zeaburでデプロイ" height="30">](https://zeabur.com/templates/ZBUEFA) [<img src="https://gitpod.io/button/open-in-gitpod.svg" alt="Gitpodで開く" height="30">](https://gitpod.io/#https://github.com/Yidadaa/ChatGPT-Next-Web)
 
 </div>
+
+## Sponsor AI API
+
+<a href='https://302.ai/'>
+  <img src="https://github.com/user-attachments/assets/6cf24233-1010-43e0-9a83-a11159866175" width="100%" alt="icon"/>
+</a>
+
+[302.AI](https://302.ai/) は、オンデマンドで支払うAIアプリケーションプラットフォームで、最も安全なAI APIとAIオンラインアプリケーションを提供します。
 
 ## 企業版
 
 あなたの会社のプライベートデプロイとカスタマイズのニーズに応える
+
 - **ブランドカスタマイズ**：企業向けに特別に設計された VI/UI、企業ブランドイメージとシームレスにマッチ
 - **リソース統合**：企業管理者が数十種類のAIリソースを統一管理、チームメンバーはすぐに使用可能
 - **権限管理**：メンバーの権限、リソースの権限、ナレッジベースの権限を明確にし、企業レベルのAdmin Panelで統一管理
@@ -24,7 +32,6 @@
 - **継続的な更新**：マルチモーダル、エージェントなどの最先端機能を継続的に更新し、常に最新であり続ける
 
 企業版のお問い合わせ: **business@nextchat.dev**
-
 
 ## 始めに
 
@@ -40,7 +47,6 @@
 
 </div>
 
-
 ## 更新を維持する
 
 もし上記の手順に従ってワンクリックでプロジェクトをデプロイした場合、「更新があります」というメッセージが常に表示されることがあります。これは、Vercel がデフォルトで新しいプロジェクトを作成するためで、本プロジェクトを fork していないことが原因です。そのため、正しく更新を検出できません。
@@ -50,7 +56,6 @@
 - 元のリポジトリを削除する
 - ページ右上の fork ボタンを使って、本プロジェクトを fork する
 - Vercel で再度選択してデプロイする、[詳細な手順はこちらを参照してください](./docs/vercel-ja.md)。
-
 
 ### 自動更新を開く
 
@@ -62,14 +67,11 @@
 
 ![自動更新を有効にする](./docs/images/enable-actions-sync.jpg)
 
-
 ### 手動でコードを更新する
 
 手動で即座に更新したい場合は、[GitHub のドキュメント](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/syncing-a-fork)を参照して、fork したプロジェクトを上流のコードと同期する方法を確認してください。
 
 このプロジェクトをスターまたはウォッチしたり、作者をフォローすることで、新機能の更新通知をすぐに受け取ることができます。
-
-
 
 ## ページアクセスパスワードを設定する
 
@@ -84,7 +86,6 @@ code1,code2,code3
 ```
 
 この環境変数を追加または変更した後、**プロジェクトを再デプロイ**して変更を有効にしてください。
-
 
 ## 環境変数
 
@@ -196,8 +197,9 @@ ByteDance API の URL。
 ### `WHITE_WEBDAV_ENDPOINTS` (オプション)
 
 アクセス許可を与える WebDAV サービスのアドレスを追加したい場合、このオプションを使用します。フォーマット要件：
+
 - 各アドレスは完全なエンドポイントでなければなりません。
-> `https://xxxx/xxx`
+  > `https://xxxx/xxx`
 - 複数のアドレスは `,` で接続します。
 
 ### `CUSTOM_MODELS` （オプション）
@@ -208,9 +210,11 @@ ByteDance API の URL。
 モデルリストを管理します。`+` でモデルを追加し、`-` でモデルを非表示にし、`モデル名=表示名` でモデルの表示名をカスタマイズし、カンマで区切ります。
 
 Azure モードでは、`modelName@Azure=deploymentName` 形式でモデル名とデプロイ名（deploy-name）を設定できます。
+
 > 例：`+gpt-3.5-turbo@Azure=gpt35` この設定でモデルリストに `gpt35(Azure)` のオプションが表示されます。
 
 ByteDance モードでは、`modelName@bytedance=deploymentName` 形式でモデル名とデプロイ名（deploy-name）を設定できます。
+
 > 例: `+Doubao-lite-4k@bytedance=ep-xxxxx-xxx` この設定でモデルリストに `Doubao-lite-4k(ByteDance)` のオプションが表示されます。
 
 ### `DEFAULT_MODEL` （オプション）
@@ -228,6 +232,13 @@ ByteDance モードでは、`modelName@bytedance=deploymentName` 形式でモデ
 
 『設定』の『ユーザー入力前処理』の初期設定に使用するテンプレートをカスタマイズします。
 
+### `AI302_API_KEY` （オプション）
+
+302.AI API キー.
+
+### `AI302_URL` （オプション）
+
+302.AI API の URL.
 
 ## 開発
 
@@ -241,13 +252,11 @@ ByteDance モードでは、`modelName@bytedance=deploymentName` 形式でモデ
 OPENAI_API_KEY=<your api key here>
 ```
 
-
 ### ローカル開発
 
 1. Node.js 18 と Yarn をインストールします。具体的な方法は ChatGPT にお尋ねください。
 2. `yarn install && yarn dev` を実行します。⚠️ 注意：このコマンドはローカル開発用であり、デプロイには使用しないでください。
 3. ローカルでデプロイしたい場合は、`yarn install && yarn build && yarn start` コマンドを使用してください。プロセスを守るために pm2 を使用することもできます。詳細は ChatGPT にお尋ねください。
-
 
 ## デプロイ
 
@@ -285,7 +294,6 @@ docker run -d -p 3000:3000 \
 
 他の環境変数を指定する必要がある場合は、上記のコマンドに `-e 環境変数=環境変数値` を追加して指定してください。
 
-
 ### ローカルデプロイ
 
 コンソールで以下のコマンドを実行します：
@@ -295,7 +303,6 @@ bash <(curl -s https://raw.githubusercontent.com/Yidadaa/ChatGPT-Next-Web/main/s
 ```
 
 ⚠️ 注意：インストール中に問題が発生した場合は、Docker を使用してデプロイしてください。
-
 
 ## 謝辞
 
@@ -310,7 +317,6 @@ bash <(curl -s https://raw.githubusercontent.com/Yidadaa/ChatGPT-Next-Web/main/s
 ### 関連プロジェクト
 
 - [one-api](https://github.com/songquanpeng/one-api): 一つのプラットフォームで大規模モデルのクォータ管理を提供し、市場に出回っているすべての主要な大規模言語モデルをサポートします。
-
 
 ## オープンソースライセンス
 
