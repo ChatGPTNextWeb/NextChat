@@ -1,3 +1,4 @@
+$$
 #### 💻 变更类型 | Change Type
 
 <!-- For change type, change [ ] to [x]. -->
@@ -26,3 +27,5 @@ Thank you for your Pull Request. Please provide a description above.
 请添加与此 Pull Request 相关的补充信息
 Add any other context about the Pull Request here.
 -->
+
+$$
