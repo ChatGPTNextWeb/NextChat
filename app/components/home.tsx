@@ -23,6 +23,7 @@ import {
   useLocation,
 } from "react-router-dom";
 import { SideBar } from "./sidebar";
+import AskTalkCard from "./ask-talk-card/AskTalkCard";
 import { useAppConfig } from "../store/config";
 import { AuthPage } from "./auth";
 import { getClientConfig } from "../config/client";
@@ -194,7 +195,15 @@ function Screen() {
         />
         <WindowContent>
           <Routes>
-            <Route path={Path.Home} element={<Chat />} />
+            <Route
+  path={Path.Home}
+  element={
+    <>
+      <AskTalkCard />
+      <Chat />
+    </>
+  }
+/>
             <Route path={Path.NewChat} element={<NewChat />} />
             <Route path={Path.Masks} element={<MaskPage />} />
             <Route path={Path.Plugins} element={<PluginPage />} />
