@@ -283,16 +283,28 @@ export function SideBar(props: { className?: string }) {
         <ChatList narrow={shouldNarrow} />
       </SideBarBody>
       <SideBarTail
-        
-        secondaryAction={
-          <IconButton
-            icon={<AddIcon />}
-            text={shouldNarrow ? undefined : Locale.Home.NewChat}
-            onClick={() => {
-  chatStore.newSession();
-  navigate(Path.Chat);
-}}
-shadow
+  primaryAction={
+    <div className={styles["sidebar-action"]}>
+      <Link to={Path.Settings}>
+        <IconButton
+          aria={Locale.Settings.Title}
+          icon={<SettingsIcon />}
+          shadow
+        />
+      </Link>
+    </div>
+  }
+  secondaryAction={
+    <IconButton
+      icon={<AddIcon />}
+      text={shouldNarrow ? undefined : Locale.Home.NewChat}
+      onClick={() => {
+        chatStore.newSession();
+        navigate(Path.Chat);
+      }}
+      shadow
+    />
+  }
 />
     </SideBarContainer>
   );
