@@ -292,6 +292,8 @@ export function SideBar(props: { className?: string }) {
   chatStore.newSession();
   navigate(Path.Chat);
 }}
+shadow
+/>
     </SideBarContainer>
   );
 }
