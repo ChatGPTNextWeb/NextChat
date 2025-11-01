@@ -23,8 +23,10 @@ import {
   useLocation,
 } from "react-router-dom";
 import { SideBar } from "./sidebar";
-import AskTalkCard from "./ask-talk-card/AskTalkCard";
-import { useAppConfig } from "../store/config";
+import AskTalkCard from "./
+ask-talk-card/AskTalkCard";
+import { useAppConfig } from "../store/
+config";
 import { AuthPage } from "./auth";
 import { getClientConfig } from "../config/client";
 import { type ClientApi, getClientApi } from "../client/api";
