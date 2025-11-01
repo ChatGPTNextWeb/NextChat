@@ -186,28 +186,7 @@ function Screen() {
     if (isAuth) return <AuthPage />;
     if (isSd) return <Sd />;
     if (isSdNew) return <Sd />;
-    return (
-      <>
-        <WindowContent>
-  <Routes>
-    <Route
-      path={Path.Home}
-      element={<MainCharacter />}
-    />
-    ...
-  </Routes>
-</WindowContent>
-            <Route path={Path.NewChat} element={<NewChat />} />
-            <Route path={Path.Masks} element={<MaskPage />} />
-            <Route path={Path.Plugins} element={<PluginPage />} />
-            <Route path={Path.SearchChat} element={<SearchChat />} />
-            <Route path={Path.Chat} element={<Chat />} />
-            <Route path={Path.Settings} element={<Settings />} />
-            <Route path={Path.McpMarket} element={<McpMarketPage />} />
-          </Routes>
-        </WindowContent>
-      </>
-    );
+    
   };
 
   return (
@@ -223,7 +202,20 @@ function Screen() {
 }
 
 export function useLoadData() {
-  const config = useAppConfig();
+  const return (
+  <WindowContent>
+    <Routes>
+      <Route path={Path.Home} element={<MainCharacter />} />
+      <Route path={Path.NewChat} element={<NewChat />} />
+      <Route path={Path.Masks} element={<MaskPage />} />
+      <Route path={Path.Plugins} element={<PluginPage />} />
+      <Route path={Path.SearchChat} element={<SearchChat />} />
+      <Route path={Path.Chat} element={<Chat />} />
+      <Route path={Path.Settings} element={<Settings />} />
+      <Route path={Path.McpMarket} element={<McpMarketPage />} />
+    </Routes>
+  </WindowContent>
+);config = useAppConfig();
 
   const api: ClientApi = getClientApi(config.modelConfig.providerName);
 
