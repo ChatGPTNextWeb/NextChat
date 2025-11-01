@@ -1,0 +1,9 @@
+import React from "react";
+
+export default function SoulSyncAICharacter() {
+  return (
+    <div style={{ textAlign: "center", margin: "20px 0" }}>
+      <img src="/avatar-placeholder.png" alt="SoulSyncAI" />
+    </div>
+  );
+}
