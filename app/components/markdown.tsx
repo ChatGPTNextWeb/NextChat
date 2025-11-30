@@ -20,6 +20,7 @@ import {
   HTMLPreviewHandler,
 } from "./artifacts";
 import { useChatStore } from "../store";
+import { useArtifactsStore } from "../store/artifacts";
 import { IconButton } from "./button";
 
 import { useAppConfig } from "../store/config";
@@ -79,6 +80,7 @@ export function PreCode(props: { children: any }) {
   const { height } = useWindowSize();
   const chatStore = useChatStore();
   const session = chatStore.currentSession();
+  const artifactsStore = useArtifactsStore();
 
   const renderArtifacts = useDebouncedCallback(() => {
     if (!ref.current) return;
@@ -87,9 +89,15 @@ export function PreCode(props: { children: any }) {
       setMermaidCode((mermaidDom as HTMLElement).innerText);
     }
     const htmlDom = ref.current.querySelector("code.language-html");
+    const svgDom = ref.current.querySelector("code.language-svg");
+    const reactDom = ref.current.querySelector("code.language-react");
     const refText = ref.current.querySelector("code")?.innerText;
     if (htmlDom) {
       setHtmlCode((htmlDom as HTMLElement).innerText);
+    } else if (svgDom) {
+      setHtmlCode((svgDom as HTMLElement).innerText);
+    } else if (reactDom) {
+      setHtmlCode((reactDom as HTMLElement).innerText);
     } else if (
       refText?.startsWith("<!DOCTYPE") ||
       refText?.startsWith("<svg") ||
@@ -149,25 +157,43 @@ export function PreCode(props: { children: any }) {
         <Mermaid code={mermaidCode} key={mermaidCode} />
       )}
       {htmlCode.length > 0 && enableArtifacts && (
-        <FullScreen className="no-dark html" right={70}>
-          <ArtifactsShareButton
-            style={{ position: "absolute", right: 20, top: 10 }}
-            getCode={() => htmlCode}
-          />
+        <>
           <IconButton
-            style={{ position: "absolute", right: 120, top: 10 }}
+            style={{ marginLeft: "10px", marginTop: "10px" }}
             bordered
-            icon={<ReloadButtonIcon />}
-            shadow
-            onClick={() => previewRef.current?.reload()}
+            text="👁️ 预览"
+            onClick={() => {
+              // 检测代码类型
+              let viewMode: "html" | "svg" | "react" = "html";
+              const codeElement = ref.current?.querySelector("code");
+              if (codeElement?.className.includes("language-svg")) {
+                viewMode = "svg";
+              } else if (codeElement?.className.includes("language-react")) {
+                viewMode = "react";
+              }
+              artifactsStore.open(htmlCode, viewMode);
+            }}
           />
-          <HTMLPreview
-            ref={previewRef}
-            code={htmlCode}
-            autoHeight={!document.fullscreenElement}
-            height={!document.fullscreenElement ? 600 : height}
-          />
-        </FullScreen>
+          <FullScreen className="no-dark html" right={70}>
+            <ArtifactsShareButton
+              style={{ position: "absolute", right: 20, top: 10 }}
+              getCode={() => htmlCode}
+            />
+            <IconButton
+              style={{ position: "absolute", right: 120, top: 10 }}
+              bordered
+              icon={<ReloadButtonIcon />}
+              shadow
+              onClick={() => previewRef.current?.reload()}
+            />
+            <HTMLPreview
+              ref={previewRef}
+              code={htmlCode}
+              autoHeight={!document.fullscreenElement}
+              height={!document.fullscreenElement ? 600 : height}
+            />
+          </FullScreen>
+        </>
       )}
     </>
   );

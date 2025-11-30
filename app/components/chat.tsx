@@ -1,13 +1,9 @@
 import { useDebouncedCallback } from "use-debounce";
-import React, {
-  Fragment,
-  RefObject,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { Fragment, RefObject, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useArtifactsStore } from "../store/artifacts";
+import { Preview } from "./artifacts/preview";
+import { IconButton } from "./button";
+import CloseIcon from "../icons/close.svg";
 
 import SendWhiteIcon from "../icons/send-white.svg";
 import BrainIcon from "../icons/brain.svg";
@@ -994,6 +990,11 @@ function _Chat() {
   const config = useAppConfig();
   const fontSize = config.fontSize;
   const fontFamily = config.fontFamily;
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const [showExport, setShowExport] = useState(false);
 
@@ -1769,7 +1770,9 @@ function _Chat() {
           />
         </div>
         <div className={styles["chat-main"]}>
-          <div className={styles["chat-body-container"]}>
+          {/* 左边聊天内容 */}
+          <div style={{ flex: artifactsStore.isOpen ? 1 : 2, overflow: "auto" }}>
+          <div className={styles["chat-body-container"]} style={{ height: "100%" }}>
             <div
               className={styles["chat-body"]}
               ref={scrollRef}
@@ -2126,12 +2129,46 @@ function _Chat() {
               </label>
             </div>
           </div>
+          {/* 右边预览内容 */}
+          {isMounted && artifactsStore.isOpen && ( 
+            <div style={{ 
+              flex: 1, 
+              borderLeft: "1px solid #e5e7eb", 
+              overflow: "auto",
+              position: "relative",
+              backgroundColor: "white"
+            }}>
+              {/* 预览头部 */}
+              <div style={{ 
+                padding: "10px 20px", 
+                borderBottom: "1px solid #e5e7eb",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center"
+              }}>
+                <h3 style={{ margin: 0, fontSize: "16px", fontWeight: 600 }}>👁️ 预览</h3>
+                <IconButton
+                  icon={<CloseIcon />}
+                  bordered
+                  onClick={() => artifactsStore.close()}
+                />
+              </div>
+              {/* 预览内容 */}
+              <div style={{ padding: "20px", height: "calc(100% - 50px)" }}>
+                <Preview
+                  code={artifactsStore.codeContent}
+                  viewMode={artifactsStore.viewMode}
+                  height="100%"
+                />
+              </div>
+            </div>
+          )}
           <div
             className={clsx(styles["chat-side-panel"], {
               [styles["mobile"]]: isMobileScreen,
               [styles["chat-side-panel-show"]]: showChatSidePanel,
-            })}
-          >
+            })
+          }>
             {showChatSidePanel && (
               <RealtimeChat
                 onClose={() => {
