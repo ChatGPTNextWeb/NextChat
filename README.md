@@ -375,6 +375,77 @@ SiliconFlow API URL.
 
 302.AI API URL.
 
+## Using OpenAI-Compatible Backends
+
+NextChat is compatible with any OpenAI-compatible API by overriding the `BASE_URL` environment variable. This allows you to use alternative backends like AI Badgr.
+
+### AI Badgr Example
+
+[AI Badgr](https://aibadgr.com) is an OpenAI-compatible backend. To use it with NextChat, set:
+
+```bash
+BASE_URL=https://aibadgr.com/api/v1
+OPENAI_API_KEY=YOUR_API_KEY
+```
+
+You can also use AI Badgr directly with OpenAI SDKs:
+
+#### cURL
+
+```bash
+curl https://aibadgr.com/api/v1/chat/completions \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "gpt-3.5-turbo",
+    "messages": [{"role": "user", "content": "Hello!"}],
+    "max_tokens": 200
+  }'
+```
+
+#### Python
+
+```python
+from openai import OpenAI
+
+client = OpenAI(
+    api_key="YOUR_API_KEY",
+    base_url="https://aibadgr.com/api/v1"
+)
+
+response = client.chat.completions.create(
+    model="gpt-3.5-turbo",
+    messages=[{"role": "user", "content": "Hello!"}],
+    max_tokens=200
+)
+
+print(response.choices[0].message.content)
+```
+
+#### Node.js
+
+```javascript
+import OpenAI from 'openai';
+
+const client = new OpenAI({
+    apiKey: 'YOUR_API_KEY',
+    baseURL: 'https://aibadgr.com/api/v1'
+});
+
+const response = await client.chat.completions.create({
+    model: 'gpt-3.5-turbo',
+    messages: [{ role: 'user', content: 'Hello!' }],
+    max_tokens: 200
+});
+
+console.log(response.choices[0].message.content);
+```
+
+#### Additional Features
+
+- **Streaming**: Add `"stream": true` to enable streaming responses
+- **JSON Mode**: Add `"response_format": {"type": "json_object"}` for JSON-formatted responses
+
 ## Requirements
 
 NodeJS >= 18, Docker >= 20
