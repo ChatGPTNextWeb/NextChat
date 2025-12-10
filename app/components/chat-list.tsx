@@ -93,7 +93,7 @@ export function ChatItem(props: {
             onClickCapture={(e) => {
               e.preventDefault();
               e.stopPropagation();
-              const rect = e.target.getBoundingClientRect();
+              const rect = (e.target as HTMLDivElement).getBoundingClientRect();
 
               props.onShowChatActions(rect);
             }}
