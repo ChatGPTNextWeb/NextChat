@@ -15,13 +15,16 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Path } from "../constant";
 import { MaskAvatar } from "./mask";
 import { Mask } from "../store/mask";
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { useMobileScreen } from "../utils";
 import clsx from "clsx";
 
+import { ChatActionsModal } from "./chat-actions";
+
 export function ChatItem(props: {
   onClick?: () => void;
-  onShowChatOptions?: () => void;
+  onDelete?: () => void;
+  onShowChatActions: (rect: DOMRect) => void;
   title: string;
   count: number;
   time: string;
@@ -86,10 +89,13 @@ export function ChatItem(props: {
           )}
 
           <div
-            className={styles["chat-item-delete"]}
+            className={styles["chat-item-actions"]}
             onClickCapture={(e) => {
               e.preventDefault();
               e.stopPropagation();
+              const rect = e.target.getBoundingClientRect();
+
+              props.onShowChatActions(rect);
             }}
           >
             <DotsIcon />
@@ -100,7 +106,12 @@ export function ChatItem(props: {
   );
 }
 
-export function ChatList(props: { narrow?: boolean }) {
+export function ChatList(props: {
+  narrow?: boolean;
+  onDelete?: () => void;
+  onShare?: () => void;
+  onRename?: () => void;
+}) {
   const [sessions, selectedIndex, selectSession, moveSession] = useChatStore(
     (state) => [
       state.sessions,
@@ -109,9 +120,16 @@ export function ChatList(props: { narrow?: boolean }) {
       state.moveSession,
     ],
   );
+
   const chatStore = useChatStore();
   const navigate = useNavigate();
   const isMobileScreen = useMobileScreen();
+
+  const [chatAnchorIndex, setChatAnchorIndex] = useState<number>(0);
+  const [showChatActions, setChatActions] = useState<boolean>(false);
+  const [chatActionsAnchor, setChatActionsAnchor] = useState<
+    DOMPoint | undefined
+  >(undefined);
 
   const onDragEnd: OnDragEndResponder = (result) => {
     const { destination, source } = result;
@@ -129,45 +147,76 @@ export function ChatList(props: { narrow?: boolean }) {
     moveSession(source.index, destination.index);
   };
 
+  const doShare = () =>
+    window.dispatchEvent(
+      new CustomEvent("share-chat-event", {
+        bubbles: true,
+        cancelable: true,
+      }),
+    );
+
+  const doRename = () =>
+    window.dispatchEvent(
+      new CustomEvent("edit-chat-event", {
+        bubbles: true,
+        cancelable: true,
+      }),
+    );
+
+  const doDelete = () =>
+    confirm(Locale.Home.DeleteChat) &&
+    chatStore.deleteSession(chatAnchorIndex) &&
+    setChatAnchorIndex(null);
+
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <Droppable droppableId="chat-list">
         {(provided) => (
-          <div
-            className={styles["chat-list"]}
-            ref={provided.innerRef}
-            {...provided.droppableProps}
-          >
-            {sessions.map((item, i) => (
-              <ChatItem
-                title={item.topic}
-                time={new Date(item.lastUpdate).toLocaleString()}
-                count={item.messages.length}
-                key={item.id}
-                id={item.id}
-                index={i}
-                selected={i === selectedIndex}
-                onClick={() => {
-                  navigate(Path.Chat);
-                  selectSession(i);
-                }}
-                onShowChatOptions={async () => {
-                  // if (!props.narrow && !isMobileScreen) {
-                  //   showChatOptions(i);
-                  // }
-                  // if (
-                  //   (!props.narrow && !isMobileScreen) ||
-                  //   (await showConfirm(Locale.Home.DeleteChat))
-                  // ) {
-                  //   chatStore.deleteSession(i);
-                  // }
-                }}
-                narrow={props.narrow}
-                mask={item.mask}
+          <>
+            {showChatActions && chatActionsAnchor && (
+              <ChatActionsModal
+                point={chatActionsAnchor}
+                onShare={doShare}
+                onRename={doRename}
+                onDelete={doDelete}
+                onClose={() => setChatActions(false)}
               />
-            ))}
-            {provided.placeholder}
-          </div>
+            )}
+
+            <div
+              className={styles["chat-list"]}
+              ref={provided.innerRef}
+              {...provided.droppableProps}
+            >
+              {sessions.map((item, i) => (
+                <ChatItem
+                  title={item.topic}
+                  time={new Date(item.lastUpdate).toLocaleString()}
+                  count={item.messages.length}
+                  key={item.id}
+                  id={item.id}
+                  index={i}
+                  selected={i === selectedIndex}
+                  onClick={() => {
+                    navigate(Path.Chat);
+                    selectSession(i);
+                  }}
+                  // onDelete={}
+                  onShowChatActions={(rect: DOMRect) => {
+                    setChatAnchorIndex(i);
+                    setChatActionsAnchor({
+                      x: rect.x,
+                      y: rect.y + rect.height,
+                    });
+                    setChatActions(true);
+                  }}
+                  narrow={props.narrow}
+                  mask={item.mask}
+                />
+              ))}
+              {provided.placeholder}
+            </div>
+          </>
         )}
       </Droppable>
     </DragDropContext>

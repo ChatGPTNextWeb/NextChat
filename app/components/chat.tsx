@@ -23,7 +23,6 @@ import PromptIcon from "../icons/prompt.svg";
 import MaxIcon from "../icons/max.svg";
 import MinIcon from "../icons/min.svg";
 import ResetIcon from "../icons/reload.svg";
-import ReloadIcon from "../icons/reload.svg";
 import BreakIcon from "../icons/break.svg";
 import DeleteIcon from "../icons/clear.svg";
 import PinIcon from "../icons/pin.svg";
@@ -1676,6 +1675,23 @@ function _Chat() {
 
   const [showChatSidePanel, setShowChatSidePanel] = useState(false);
 
+  useEffect(() => {
+    const shareChatEventListener = (e: CustomEvent) => {
+      setShowExport(true);
+    };
+    const editChatEventListener = (e: CustomEvent) => {
+      setIsEditingMessage(true);
+    };
+
+    window.addEventListener("share-chat-event", shareChatEventListener);
+    window.addEventListener("edit-chat-event", editChatEventListener);
+
+    return () => {
+      window.removeEventListener("share-chat-event", shareChatEventListener);
+      window.removeEventListener("edit-chat-event", editChatEventListener);
+    };
+  }, []);
+
   return (
     <>
       <div className={styles.chat} key={session.id}>
@@ -1710,17 +1726,18 @@ function _Chat() {
             </div>
           </div>
           <div className="window-actions">
-            <div className="window-action-button">
-              <IconButton
-                icon={<ReloadIcon />}
-                bordered
-                title={Locale.Chat.Actions.RefreshTitle}
-                onClick={() => {
-                  showToast(Locale.Chat.Actions.RefreshToast);
-                  chatStore.summarizeSession(true, session);
-                }}
-              />
-            </div>
+            {/*<div className="window-action-button">*/}
+            {/*  <IconButton*/}
+            {/*    icon={<ReloadIcon />}*/}
+            {/*    bordered*/}
+            {/*    title={Locale.Chat.Actions.RefreshTitle}*/}
+            {/*    onClick={() => {*/}
+            {/*      showToast(Locale.Chat.Actions.RefreshToast);*/}
+            {/*      chatStore.summarizeSession(true, session);*/}
+            {/*    }}*/}
+            {/*  />*/}
+            {/*</div>*/}
+
             {!isMobileScreen && (
               <div className="window-action-button">
                 <IconButton

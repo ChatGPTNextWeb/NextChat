@@ -27,7 +27,7 @@ const cs: PartialLocaleType = {
     Return: "Návrat",
     SaasTips: "Konfigurace je příliš složitá, chci okamžitě začít používat",
     TopTips:
-      "🥳 Uvítací nabídka Santa AI AI, okamžitě odemkněte OpenAI o1, GPT-4o, Claude-3.5 a nejnovější velké modely",
+      "🥳 Uvítací nabídka Santa AI, okamžitě odemkněte OpenAI o1, GPT-4o, Claude-3.5 a nejnovější velké modely",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} konverzací`,
@@ -295,7 +295,7 @@ const cs: PartialLocaleType = {
 
     Access: {
       SaasStart: {
-        Title: "Použití Santa AI AI",
+        Title: "Použití Santa AI",
         Label: "(Nejlepší nákladově efektivní řešení)",
         SubTitle:
           "Oficiálně udržováno Santa AI, připraveno k použití bez konfigurace, podporuje nejnovější velké modely jako OpenAI o1, GPT-4o, Claude-3.5",

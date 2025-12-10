@@ -27,7 +27,7 @@ const ar: PartialLocaleType = {
     Return: "عودة",
     SaasTips: "الإعدادات معقدة، أريد استخدامه على الفور",
     TopTips:
-      "🥳 عرض Santa AI AI الأول، افتح الآن OpenAI o1, GPT-4o, Claude-3.5 وأحدث النماذج الكبيرة",
+      "🥳 عرض Santa AI الأول، افتح الآن OpenAI o1, GPT-4o, Claude-3.5 وأحدث النماذج الكبيرة",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} محادثة`,
@@ -292,7 +292,7 @@ const ar: PartialLocaleType = {
 
     Access: {
       SaasStart: {
-        Title: "استخدام Santa AI AI",
+        Title: "استخدام Santa AI",
         Label: "(أفضل حل من حيث التكلفة)",
         SubTitle:
           "مدعوم رسميًا من Santa AI، جاهز للاستخدام بدون إعداد، يدعم أحدث النماذج الكبيرة مثل OpenAI o1 و GPT-4o و Claude-3.5",

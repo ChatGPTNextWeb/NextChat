@@ -28,7 +28,7 @@ const en: LocaleType = {
     Later: "Later",
     SaasTips: "Too Complex, Use Immediately Now",
     TopTips:
-      "🥳 Santa AI AI launch promotion: Instantly unlock the latest models like OpenAI o1, GPT-4o, Claude-3.5!",
+      "🥳 Santa AI launch promotion: Instantly unlock the latest models like OpenAI o1, GPT-4o, Claude-3.5!",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} messages`,
@@ -315,7 +315,7 @@ const en: LocaleType = {
     },
     Access: {
       SaasStart: {
-        Title: "Use Santa AI AI",
+        Title: "Use Santa AI",
         Label: " (Most Cost-Effective Option)",
         SubTitle:
           "Maintained by Santa AI, zero setup needed, unlock OpenAI o1, GPT-4o," +

@@ -89,6 +89,30 @@
   border: 0;
 }
 
+
+.menu-container {
+  position: absolute;
+  box-shadow: var(--card-shadow);
+  background-color: var(--white);
+  border-radius: 12px;
+  //min-width: 300px;
+  animation: slide-in ease 0.3s;
+
+  --menu-padding: 12px;
+
+  .menu-content {
+    padding: var(--menu-padding);
+    overflow: auto;
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+    }
+  }
+}
+
 .modal-container {
   box-shadow: var(--card-shadow);
   background-color: var(--white);

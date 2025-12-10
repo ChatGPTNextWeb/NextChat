@@ -212,7 +212,7 @@
   animation: slide-in ease 0.3s;
 }
 
-.chat-item-delete {
+.chat-item-actions {
   position: absolute;
   top: 0;
   right: 0;
@@ -221,12 +221,12 @@
   cursor: pointer;
 }
 
-.chat-item:hover > .chat-item-delete {
+.chat-item:hover > .chat-item-actions {
   opacity: 0.5;
   transform: translateX(-4px);
 }
 
-.chat-item:hover > .chat-item-delete:hover {
+.chat-item:hover > .chat-item-actions:hover {
   opacity: 1;
 }
 

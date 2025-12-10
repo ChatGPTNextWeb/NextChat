@@ -111,6 +111,56 @@ export function Loading() {
   );
 }
 
+interface MenuProps {
+  children?: any;
+  point: DOMPoint;
+  onClose?: () => void;
+}
+export function Menu(props: MenuProps) {
+  const [style, setStyle] = useState<CSSProperties>({
+    left: `${props.point.x}px`,
+    top: `${props.point.y}px`,
+  });
+
+  const menuRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!menuRef.current) {
+      return;
+    }
+
+    const menuRect = menuRef.current?.getBoundingClientRect();
+    const newStyle = {
+      top: `${props.point.y}px`,
+      left: `${props.point.x - menuRect.width}px`,
+    };
+
+    setStyle(newStyle);
+  }, [menuRef]);
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        props.onClose?.();
+      }
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", onKeyDown);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  return (
+    <div className={clsx(styles["menu-container"])} style={style}>
+      <div ref={menuRef} className={styles["menu-content"]}>
+        {props.children}
+      </div>
+    </div>
+  );
+}
+
 interface ModalProps {
   title: string;
   children?: any;
