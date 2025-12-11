@@ -14,6 +14,12 @@
   --bar-color: rgba(0, 0, 0, 0.1);
   --theme-color: var(--gray);
 
+  --bg-main: #FFF;
+  --bg-chat-item: #EEF2FF;
+  --border-chat-item: 1px solid #7495FF;
+  --shadow-chat-item: 0 1px 1px 0 rgba(0, 0, 0, 0.09);
+  --bg-chat-item-hover: #FAFAFA;
+
   /* shadow */
   --shadow: 50px 50px 100px 10px rgb(0, 0, 0, 0.1);
   --card-shadow: 0px 2px 4px 0px rgb(0, 0, 0, 0.05);
@@ -27,11 +33,17 @@
 
   /* color */
   --white: rgb(30, 30, 30);
-  --black: rgb(187, 187, 187);
+  --black: #FFF;
   --gray: rgb(21, 21, 21);
   --primary: rgb(29, 147, 171);
   --second: rgb(27 38 42);
   --hover-color: #323232;
+
+  --bg-main: linear-gradient(0deg, #171717 0%, #171717 100%);
+  --bg-chat-item: #000;
+  --border-color-chat-item: #616161;
+  --shadow-chat-item: 0 0 4px 0 rgba(0, 0, 0, 0.06);
+  --bg-chat-item-hover: #0D0D0D;
 
   --bar-color: rgba(255, 255, 255, 0.1);
 
@@ -272,7 +284,7 @@ div.math {
 
 pre {
   position: relative;
-  
+
   &:hover .copy-code-button {
     pointer-events: all;
     transform: translateX(0px);
@@ -326,9 +338,9 @@ pre {
       text-align: center;
       color: white;
       background: #464e4e;
-    } 
+    }
   }
-  
+
   .expanded {
     background-image: none;
   }

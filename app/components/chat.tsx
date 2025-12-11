@@ -2060,29 +2060,29 @@ function _Chat() {
                 onPromptSelect={onPromptSelect}
               />
 
-              <ChatActions
-                uploadImage={uploadImage}
-                setAttachImages={setAttachImages}
-                setUploading={setUploading}
-                showPromptModal={() => setShowPromptModal(true)}
-                scrollToBottom={scrollToBottom}
-                hitBottom={hitBottom}
-                uploading={uploading}
-                showPromptHints={() => {
-                  // Click again to close
-                  if (promptHints.length > 0) {
-                    setPromptHints([]);
-                    return;
-                  }
+              {/*<ChatActions*/}
+              {/*  uploadImage={uploadImage}*/}
+              {/*  setAttachImages={setAttachImages}*/}
+              {/*  setUploading={setUploading}*/}
+              {/*  showPromptModal={() => setShowPromptModal(true)}*/}
+              {/*  scrollToBottom={scrollToBottom}*/}
+              {/*  hitBottom={hitBottom}*/}
+              {/*  uploading={uploading}*/}
+              {/*  showPromptHints={() => {*/}
+              {/*    // Click again to close*/}
+              {/*    if (promptHints.length > 0) {*/}
+              {/*      setPromptHints([]);*/}
+              {/*      return;*/}
+              {/*    }*/}
 
-                  inputRef.current?.focus();
-                  setUserInput("/");
-                  onSearch("");
-                }}
-                setShowShortcutKeyModal={setShowShortcutKeyModal}
-                setUserInput={setUserInput}
-                setShowChatSidePanel={setShowChatSidePanel}
-              />
+              {/*    inputRef.current?.focus();*/}
+              {/*    setUserInput("/");*/}
+              {/*    onSearch("");*/}
+              {/*  }}*/}
+              {/*  setShowShortcutKeyModal={setShowShortcutKeyModal}*/}
+              {/*  setUserInput={setUserInput}*/}
+              {/*  setShowChatSidePanel={setShowChatSidePanel}*/}
+              {/*/>*/}
               <label
                 className={clsx(styles["chat-input-panel-inner"], {
                   [styles["chat-input-panel-inner-attach"]]:

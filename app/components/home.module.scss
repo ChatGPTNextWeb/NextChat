@@ -1,10 +1,9 @@
 @mixin container {
-  background-color: var(--white);
+  background: var(--bg-main);
   border: var(--border-in-light);
   border-radius: 20px;
   box-shadow: var(--shadow);
   color: var(--black);
-  background-color: var(--white);
   min-width: 600px;
   min-height: 370px;
   max-width: 1200px;
@@ -41,8 +40,8 @@
   top: 0;
   width: var(--sidebar-width);
   box-sizing: border-box;
-  padding: 20px;
-  background-color: var(--second);
+  padding: 18px;
+  background: var(--bg-main);
   display: flex;
   flex-direction: column;
   box-shadow: inset -2px 0px 2px 0px rgb(0, 0, 0, 0.05);
@@ -51,7 +50,7 @@
 
   .sidebar-header-bar {
     display: flex;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
 
     .sidebar-bar-button {
       flex-grow: 1;
@@ -147,8 +146,8 @@
 
 @media only screen and (max-width: 600px) {
   .sidebar-header {
-    padding-top: 5px;
-    padding-bottom: 5px;
+    padding-top: 0px;
+    padding-bottom: 0px;
   }
 }
 
@@ -180,25 +179,26 @@
 }
 
 .chat-item {
-  padding: 10px 14px;
-  background-color: var(--white);
-  border-radius: 10px;
+  padding: 10px;
+  background-color: var(--bg-chat-item);
+  border-radius: 12px;
   margin-bottom: 10px;
-  box-shadow: var(--card-shadow);
+  box-shadow: var(--shadow-chat-item);
   transition: background-color 0.3s ease;
   cursor: pointer;
   user-select: none;
-  border: 2px solid transparent;
+  border: 0.5px solid transparent;
   position: relative;
   content-visibility: auto;
 }
 
 .chat-item:hover {
-  background-color: var(--hover-color);
+  background-color: var(--bg-chat-item-hover);
+  border-color: var(--border-color-chat-item);
 }
 
 .chat-item-selected {
-  border-color: var(--primary);
+  border-color: var(--border-color-chat-item);
 }
 
 .chat-item-title {

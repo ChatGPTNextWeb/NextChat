@@ -20,6 +20,7 @@ import { useMobileScreen } from "../utils";
 import clsx from "clsx";
 
 import { ChatActionsModal } from "./chat-actions";
+import { formatTimestamp } from "@/app/utils/format";
 
 export function ChatItem(props: {
   onClick?: () => void;
@@ -81,9 +82,11 @@ export function ChatItem(props: {
               <div className={styles["chat-item-title"]}>{props.title}</div>
               <div className={styles["chat-item-info"]}>
                 <div className={styles["chat-item-count"]}>
-                  {Locale.ChatItem.ChatItemCount(props.count)}
+                  {/*{Locale.ChatItem.ChatItemCount(props.count)}*/}
                 </div>
-                <div className={styles["chat-item-date"]}>{props.time}</div>
+                <div className={styles["chat-item-date"]}>
+                  {formatTimestamp(Date.parse(props.time))}
+                </div>
               </div>
             </>
           )}
