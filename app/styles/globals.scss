@@ -1,5 +1,7 @@
 @import "./animation.scss";
 @import "./window.scss";
+@import "./poppins.scss";
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
 
 @mixin light {
   --theme: light;
@@ -19,6 +21,15 @@
   --border-chat-item: 1px solid #7495FF;
   --shadow-chat-item: 0 1px 1px 0 rgba(0, 0, 0, 0.09);
   --bg-chat-item-hover: #FAFAFA;
+
+  --color-chat-input: rgba(0, 0, 0, 0.50);
+  --bg-chat-input: #EEF2FF;
+  --border-chat-input: 1px solid rgba(98, 98, 98, 0.50);
+
+  --color-chat-item-title: #000;
+  --color-chat-item-info: rgba(0, 0, 0, 0.30);
+  --color-window-header-title: #000;
+  --color-window-header-sub-title: rgba(0, 0, 0, 0.50);
 
   /* shadow */
   --shadow: 50px 50px 100px 10px rgb(0, 0, 0, 0.1);
@@ -44,6 +55,15 @@
   --border-color-chat-item: #616161;
   --shadow-chat-item: 0 0 4px 0 rgba(0, 0, 0, 0.06);
   --bg-chat-item-hover: #0D0D0D;
+
+  --color-chat-input: rgba(255, 255, 255, 0.50);;
+  --bg-chat-input: #252424;
+  --border-chat-input: 1px solid rgba(98, 98, 98, 0.50);
+
+  --color-chat-item-title: rgba(255, 255, 255, 0.80);
+  --color-chat-item-info: rgba(255, 255, 255, 0.50);;
+  --color-window-header-title: #E9E9E9;
+  --color-window-header-sub-title: rgba(255, 255, 255, 0.50);
 
   --bar-color: rgba(255, 255, 255, 0.1);
 

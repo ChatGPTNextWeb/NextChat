@@ -7,7 +7,9 @@ import styles from "./home.module.scss";
 
 // import BotIcon from "../icons/bot.svg";
 import SantaIcon from "../icons/santa.svg";
+import LoadingSantaIcon from "../icons/loading-santa.svg";
 import LoadingIcon from "../icons/three-dots.svg";
+import LoadingEffect1 from "../icons/effects/loading-1.svg";
 
 import { getCSSVar, useMobileScreen } from "../utils";
 
@@ -32,11 +34,33 @@ import { useAccessStore } from "../store";
 import clsx from "clsx";
 import { initializeMcpSystem, isMcpEnabled } from "../mcp/actions";
 
-export function Loading(props: { noLogo?: boolean }) {
+export function Loading(props: { noLogo?: boolean; mainLoader?: boolean }) {
   return (
     <div className={clsx("no-dark", styles["loading-content"])}>
       {!props.noLogo && <SantaIcon />}
+      {props.mainLoader && <LoadingSantaIcon />}
       <LoadingIcon />
+    </div>
+  );
+}
+
+function LoadingScreen() {
+  return (
+    <div className={styles["loading-screen"]}>
+      <div className={styles["loading-screen-logo"]}>Santa AI</div>
+
+      <LoadingSantaIcon />
+
+      <div className={styles["loading-screen-slide-glow"]}>
+        <div className={styles["loading-screen-slide-glow-el1"]}></div>
+        <div className={styles["loading-screen-slide-glow-el2"]}>
+          <LoadingEffect1></LoadingEffect1>
+        </div>
+      </div>
+
+      <div className={styles["loading-screen-message"]}>
+        Ask Sant AI anything
+      </div>
     </div>
   );
 }
@@ -260,7 +284,7 @@ export function Home() {
   }, []);
 
   if (!useHasHydrated()) {
-    return <Loading />;
+    return <LoadingScreen />;
   }
 
   return (

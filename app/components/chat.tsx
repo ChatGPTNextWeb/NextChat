@@ -9,19 +9,15 @@ import React, {
   useState,
 } from "react";
 
-import SendWhiteIcon from "../icons/send-white.svg";
+import SendSantaIcon from "../icons/send-santa.svg";
 import BrainIcon from "../icons/brain.svg";
-import RenameIcon from "../icons/rename.svg";
-import ExportIcon from "../icons/share.svg";
-import ReturnIcon from "../icons/return.svg";
+import ReturnIcon2 from "../icons/return2.svg";
 import CopyIcon from "../icons/copy.svg";
 import SpeakIcon from "../icons/speak.svg";
 import SpeakStopIcon from "../icons/speak-stop.svg";
 import LoadingIcon from "../icons/three-dots.svg";
 import LoadingButtonIcon from "../icons/loading.svg";
 import PromptIcon from "../icons/prompt.svg";
-import MaxIcon from "../icons/max.svg";
-import MinIcon from "../icons/min.svg";
 import ResetIcon from "../icons/reload.svg";
 import BreakIcon from "../icons/break.svg";
 import DeleteIcon from "../icons/clear.svg";
@@ -82,6 +78,7 @@ import { Prompt, usePromptStore } from "../store/prompt";
 import Locale from "../locales";
 
 import { IconButton } from "./button";
+import { IconButton2 } from "./button2";
 import styles from "./chat.module.scss";
 
 import {
@@ -1706,9 +1703,9 @@ function _Chat() {
           {isMobileScreen && (
             <div className="window-actions">
               <div className={"window-action-button"}>
-                <IconButton
-                  icon={<ReturnIcon />}
-                  bordered
+                <IconButton2
+                  type="secondary"
+                  icon={<ReturnIcon2 />}
                   title={Locale.Chat.Actions.ChatList}
                   onClick={() => navigate(Path.Home)}
                 />
@@ -1732,56 +1729,57 @@ function _Chat() {
               {Locale.Chat.SubTitle(session.messages.length)}
             </div>
           </div>
-          <div className="window-actions">
-            {/*<div className="window-action-button">*/}
-            {/*  <IconButton*/}
-            {/*    icon={<ReloadIcon />}*/}
-            {/*    bordered*/}
-            {/*    title={Locale.Chat.Actions.RefreshTitle}*/}
-            {/*    onClick={() => {*/}
-            {/*      showToast(Locale.Chat.Actions.RefreshToast);*/}
-            {/*      chatStore.summarizeSession(true, session);*/}
-            {/*    }}*/}
-            {/*  />*/}
-            {/*</div>*/}
 
-            {!isMobileScreen && (
-              <div className="window-action-button">
-                <IconButton
-                  icon={<RenameIcon />}
-                  bordered
-                  title={Locale.Chat.EditMessage.Title}
-                  aria={Locale.Chat.EditMessage.Title}
-                  onClick={() => setIsEditingMessage(true)}
-                />
-              </div>
-            )}
-            <div className="window-action-button">
-              <IconButton
-                icon={<ExportIcon />}
-                bordered
-                title={Locale.Chat.Actions.Export}
-                onClick={() => {
-                  setShowExport(true);
-                }}
-              />
-            </div>
-            {showMaxIcon && (
-              <div className="window-action-button">
-                <IconButton
-                  icon={config.tightBorder ? <MinIcon /> : <MaxIcon />}
-                  bordered
-                  title={Locale.Chat.Actions.FullScreen}
-                  aria={Locale.Chat.Actions.FullScreen}
-                  onClick={() => {
-                    config.update(
-                      (config) => (config.tightBorder = !config.tightBorder),
-                    );
-                  }}
-                />
-              </div>
-            )}
-          </div>
+          {/*<div className="window-actions">*/}
+          {/*<div className="window-action-button">*/}
+          {/*  <IconButton*/}
+          {/*    icon={<ReloadIcon />}*/}
+          {/*    bordered*/}
+          {/*    title={Locale.Chat.Actions.RefreshTitle}*/}
+          {/*    onClick={() => {*/}
+          {/*      showToast(Locale.Chat.Actions.RefreshToast);*/}
+          {/*      chatStore.summarizeSession(true, session);*/}
+          {/*    }}*/}
+          {/*  />*/}
+          {/*</div>*/}
+          {/**/}
+          {/*  {!isMobileScreen && (*/}
+          {/*    <div className="window-action-button">*/}
+          {/*      <IconButton*/}
+          {/*        icon={<RenameIcon />}*/}
+          {/*        bordered*/}
+          {/*        title={Locale.Chat.EditMessage.Title}*/}
+          {/*        aria={Locale.Chat.EditMessage.Title}*/}
+          {/*        onClick={() => setIsEditingMessage(true)}*/}
+          {/*      />*/}
+          {/*    </div>*/}
+          {/*  )}*/}
+          {/*  <div className="window-action-button">*/}
+          {/*    <IconButton*/}
+          {/*      icon={<ExportIcon />}*/}
+          {/*      bordered*/}
+          {/*      title={Locale.Chat.Actions.Export}*/}
+          {/*      onClick={() => {*/}
+          {/*        setShowExport(true);*/}
+          {/*      }}*/}
+          {/*    />*/}
+          {/*  </div>*/}
+          {/*  {showMaxIcon && (*/}
+          {/*    <div className="window-action-button">*/}
+          {/*      <IconButton*/}
+          {/*        icon={config.tightBorder ? <MinIcon /> : <MaxIcon />}*/}
+          {/*        bordered*/}
+          {/*        title={Locale.Chat.Actions.FullScreen}*/}
+          {/*        aria={Locale.Chat.Actions.FullScreen}*/}
+          {/*        onClick={() => {*/}
+          {/*          config.update(*/}
+          {/*            (config) => (config.tightBorder = !config.tightBorder),*/}
+          {/*          );*/}
+          {/*        }}*/}
+          {/*      />*/}
+          {/*    </div>*/}
+          {/*  )}*/}
+          {/*</div>*/}
 
           <PromptToast
             showToast={!hitBottom}
@@ -2138,11 +2136,16 @@ function _Chat() {
                     })}
                   </div>
                 )}
-                <IconButton
-                  icon={<SendWhiteIcon />}
-                  text={Locale.Chat.Send}
+                <IconButton2
+                  style={{
+                    position: "absolute",
+                    right: "20px",
+                    bottom: "20px",
+                  }}
+                  icon={<SendSantaIcon />}
                   className={styles["chat-input-send"]}
                   type="primary"
+                  round={true}
                   onClick={() => doSubmit(userInput)}
                 />
               </label>

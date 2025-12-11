@@ -139,6 +139,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+
   &-narrow {
     justify-content: center;
   }
@@ -161,9 +162,11 @@
 }
 
 .sidebar-title {
-  font-size: 20px;
-  font-weight: bold;
+  font-family: Poppins, Arial, sans-serif;
+  font-size: 16px;
+  font-weight: 500;
   animation: slide-in ease 0.3s;
+  letter-spacing: -0.64px;
 }
 
 .sidebar-sub-title {
@@ -202,8 +205,10 @@
 }
 
 .chat-item-title {
+  font-family: "DM Sans", sans-serif;
   font-size: 14px;
-  font-weight: bolder;
+  color: var(--color-chat-item-title);
+  font-weight: 400;
   display: block;
   width: calc(100% - 15px);
   overflow: hidden;
@@ -215,7 +220,7 @@
 .chat-item-actions {
   position: absolute;
   top: 0;
-  right: 0;
+  right: 4px;
   transition: all ease 0.3s;
   opacity: 0;
   cursor: pointer;
@@ -233,7 +238,7 @@
 .chat-item-info {
   display: flex;
   justify-content: space-between;
-  color: rgb(166, 166, 166);
+  color: var(--color-chat-item-info);
   font-size: 12px;
   margin-top: 8px;
   animation: slide-in ease 0.3s;
@@ -251,6 +256,7 @@
   .sidebar-sub-title {
     display: none;
   }
+
   .sidebar-logo {
     position: relative;
     display: flex;
@@ -340,6 +346,73 @@
 
 .sidebar-action:not(:last-child) {
   margin-right: 15px;
+}
+
+.loading-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  .loading-screen-logo {
+    color: var(--black);
+    position: absolute;
+    left: 18px;
+    top: 16px;
+
+    font-family: Poppins, Arial, sans-serif;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    letter-spacing: -0.64px;
+  }
+
+  .loading-screen-slide-glow {
+    position: absolute;
+    top: -377px;
+    left: 259.0002px;
+
+    transform: rotateX(-180);
+    width: 894.897px;
+    height: 1282.913px;
+
+    .loading-screen-slide-glow-el1 {
+      width: 408.454px;
+      height: 1063.586px;
+      transform: rotate(-17.925deg);
+
+      border-radius: 1063.586px;
+      background: rgba(147, 104, 183, 0.11);
+      filter: blur(99.5px);
+    }
+
+    .loading-screen-slide-glow-el2 {
+      position: absolute;
+      top: -377px;
+      left: 259.0002px;
+
+      width: 452.108px;
+      height: 1149.553px;
+      transform: rotate(29.206deg);
+
+      fill: rgba(177, 52, 52, 0.50);
+      filter: blur(99.5px);
+    }
+  }
+
+  .loading-screen-message {
+    color: rgba(255, 255, 255, 0.80);
+
+    text-align: center;
+    font-family: Arial, sans-serif;
+    font-size: 22px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 40px;
+    letter-spacing: -0.22px;
+
+    margin-top: 3rem;
+  }
 }
 
 .loading-content {

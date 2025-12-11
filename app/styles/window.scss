@@ -1,11 +1,11 @@
 .window-header {
-  padding: 14px 20px;
-  border-bottom: rgba(0, 0, 0, 0.1) 1px solid;
+  background: var(--bg-chat-item);
+  padding: 14px;
   position: relative;
 
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  gap: 7px;
 }
 
 .window-header-title {
@@ -13,8 +13,10 @@
   overflow: hidden;
 
   .window-header-main-title {
-    font-size: 20px;
-    font-weight: bolder;
+    font-family: Poppins, Arial, sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--color-window-header-title);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -23,16 +25,19 @@
   }
 
   .window-header-sub-title {
-    font-size: 14px;
+    font-family: Poppins, Arial, sans-serif;
+    font-size: 12px;
+    font-weight: 300;
+    color: var(--color-window-header-sub-title);
   }
 }
 
 @media only screen and (max-width: 600px) {
-  .window-header-title { 
+  .window-header-title {
     .window-header-main-title {
       font-size: 14px;
     }
-    
+
     .window-header-sub-title {
       font-size: 12px;
     }

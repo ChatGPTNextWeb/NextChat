@@ -5,7 +5,7 @@ import styles from "./home.module.scss";
 import { IconButton } from "./button";
 // import SettingsIcon from "../icons/settings.svg";
 // import GithubIcon from "../icons/github.svg";
-import AddIcon from "../icons/add.svg";
+import AddIcon2 from "../icons/add2.svg";
 import McpIcon from "../icons/mcp.svg";
 import DragIcon from "../icons/drag.svg";
 // import DiscoveryIcon from "../icons/discovery.svg";
@@ -28,6 +28,7 @@ import dynamic from "next/dynamic";
 import { Selector } from "./ui-lib";
 import clsx from "clsx";
 import { isMcpEnabled } from "../mcp/actions";
+import { IconButton2 } from "@/app/components/button2";
 
 const DISCOVERY = [
   { name: Locale.Plugin.Name, path: Path.Plugins },
@@ -343,8 +344,9 @@ export function SideBar(props: { className?: string }) {
           </>
         }
         secondaryAction={
-          <IconButton
-            icon={<AddIcon />}
+          <IconButton2
+            icon={<AddIcon2 />}
+            type="primary"
             text={shouldNarrow ? undefined : Locale.Home.NewChat}
             onClick={() => {
               // if (config.dontShowMaskSplashScreen) {
@@ -354,7 +356,6 @@ export function SideBar(props: { className?: string }) {
               //   navigate(Path.NewChat);
               // }
             }}
-            shadow
           />
         }
       />
