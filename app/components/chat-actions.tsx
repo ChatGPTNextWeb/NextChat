@@ -5,7 +5,7 @@ import ShareIcon from "../icons/share.svg";
 import styles from "@/app/components/ui-lib.module.scss";
 
 export function ChatActionsModal(props: {
-  point: DOMPoint;
+  point: Pick<DOMPoint, "x" | "y">;
   onClose: () => void;
   onShare: () => void;
   onRename: () => void;

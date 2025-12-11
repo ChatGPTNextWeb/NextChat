@@ -113,7 +113,7 @@ export function Loading() {
 
 interface MenuProps {
   children?: any;
-  point: DOMPoint;
+  point: Pick<DOMPoint, "x" | "y">;
   onClose?: () => void;
 }
 export function Menu(props: MenuProps) {

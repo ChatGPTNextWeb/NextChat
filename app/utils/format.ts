@@ -27,10 +27,10 @@ export function* chunks(s: string, maxBytes = 1000 * 1000) {
   }
 }
 
-export function formatTimestamp(timestamp?: string | number): string {
+export function formatTimestamp(timestamp: string | number): string {
   // Convert timestamp to milliseconds if it's in seconds
   const timestampMs =
-    typeof timestamp === "string" ? Number(timestamp) || Date.now() : timestamp;
+    typeof timestamp === "string" ? Number(timestamp) : timestamp;
   const currentTime = Date.now();
   const diff = currentTime - timestampMs;
 

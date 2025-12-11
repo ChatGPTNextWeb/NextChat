@@ -24,7 +24,6 @@ import { formatTimestamp } from "@/app/utils/format";
 
 export function ChatItem(props: {
   onClick?: () => void;
-  onDelete?: () => void;
   onShowChatActions: (rect: DOMRect) => void;
   title: string;
   count: number;
@@ -131,7 +130,7 @@ export function ChatList(props: {
   const [chatAnchorIndex, setChatAnchorIndex] = useState<number>(0);
   const [showChatActions, setChatActions] = useState<boolean>(false);
   const [chatActionsAnchor, setChatActionsAnchor] = useState<
-    DOMPoint | undefined
+    Pick<DOMPoint, "x" | "y"> | undefined
   >(undefined);
 
   const onDragEnd: OnDragEndResponder = (result) => {
@@ -166,10 +165,12 @@ export function ChatList(props: {
       }),
     );
 
-  const doDelete = () =>
-    confirm(Locale.Home.DeleteChat) &&
-    chatStore.deleteSession(chatAnchorIndex) &&
-    setChatAnchorIndex(null);
+  const doDelete = () => {
+    if (confirm(Locale.Home.DeleteChat)) {
+      chatStore.deleteSession(chatAnchorIndex);
+      setChatAnchorIndex(0);
+    }
+  };
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
@@ -204,7 +205,6 @@ export function ChatList(props: {
                     navigate(Path.Chat);
                     selectSession(i);
                   }}
-                  // onDelete={}
                   onShowChatActions={(rect: DOMRect) => {
                     setChatAnchorIndex(i);
                     setChatActionsAnchor({

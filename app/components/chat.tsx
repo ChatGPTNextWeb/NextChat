@@ -120,6 +120,13 @@ import { RealtimeChat } from "@/app/components/realtime-chat";
 import clsx from "clsx";
 import { getAvailableClientsCount, isMcpEnabled } from "../mcp/actions";
 
+// declare global {
+//   interface Window {
+//     addEventListener(type: 'share-chat-event', listener: (ev: CustomEvent) => void, options?: boolean | AddEventListenerOptions): void;
+//     addEventListener(type: 'edit-chat-event', listener: (ev: CustomEvent) => void, options?: boolean | AddEventListenerOptions): void;
+//   }
+// }
+
 const localStorage = safeLocalStorage();
 
 const ttsPlayer = createTTSPlayer();
@@ -1676,10 +1683,10 @@ function _Chat() {
   const [showChatSidePanel, setShowChatSidePanel] = useState(false);
 
   useEffect(() => {
-    const shareChatEventListener = (e: CustomEvent) => {
+    const shareChatEventListener = (e: Event) => {
       setShowExport(true);
     };
-    const editChatEventListener = (e: CustomEvent) => {
+    const editChatEventListener = (e: Event) => {
       setIsEditingMessage(true);
     };
 
