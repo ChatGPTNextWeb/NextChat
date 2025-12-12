@@ -20,7 +20,7 @@ export function ChatActionsModal(props: {
   };
 
   return (
-    <div className="modal-mask">
+    <div className="modal-mask" onMouseDown={() => props.onClose?.()}>
       <Menu point={props.point} onClose={props.onClose}>
         <div
           className={styles["menu-item"]}

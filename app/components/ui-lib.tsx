@@ -137,6 +137,7 @@ export function Menu(props: MenuProps) {
 
     setStyle(newStyle);
   }, [menuRef]);
+
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {

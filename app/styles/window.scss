@@ -10,6 +10,7 @@
 
 .window-header-title {
   max-width: calc(100% - 100px);
+  flex-grow: 1;
   overflow: hidden;
 
   .window-header-main-title {

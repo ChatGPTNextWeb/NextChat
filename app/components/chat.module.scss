@@ -327,7 +327,7 @@
 .chat-message-header {
   margin-top: 20px;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
 
   .chat-message-actions {
     display: flex;
@@ -348,9 +348,10 @@
   }
 
   .chat-model-name {
+    font-family: "Poppins", sans-serif;
     font-size: 12px;
-    color: var(--black);
-    margin-left: 6px;
+    line-height: 12px;
+    color: var(--color-chat-model-name);
   }
 }
 
