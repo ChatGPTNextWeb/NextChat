@@ -101,6 +101,12 @@
   --menu-padding: 12px;
 
   .menu-content {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-family: Poppins, sans-serif;
+    font-size: 14px;
+    font-weight: 300;
     padding: var(--menu-padding);
     overflow: auto;
 
@@ -109,6 +115,12 @@
       align-items: center;
       gap: 6px;
       cursor: pointer;
+      color: var(--text-secondary);
+
+      &:hover {
+        filter: brightness(1.5);
+        color: var(--text-secondary-hover);
+      }
     }
   }
 }

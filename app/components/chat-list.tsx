@@ -208,7 +208,7 @@ export function ChatList(props: {
                   onShowChatActions={(rect: DOMRect) => {
                     setChatAnchorIndex(i);
                     setChatActionsAnchor({
-                      x: rect.x,
+                      x: rect.x + rect.width,
                       y: rect.y + rect.height,
                     });
                     setChatActions(true);

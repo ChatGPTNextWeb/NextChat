@@ -116,6 +116,7 @@ import { getModelProvider } from "../utils/model";
 import { RealtimeChat } from "@/app/components/realtime-chat";
 import clsx from "clsx";
 import { getAvailableClientsCount, isMcpEnabled } from "../mcp/actions";
+import { formatDateToTime } from "@/app/utils/date";
 
 // declare global {
 //   interface Window {
@@ -1867,9 +1868,7 @@ function _Chat() {
                                   }}
                                 ></IconButton>
                               </div> */}
-                              {isUser ? (
-                                <Avatar avatar={config.avatar} />
-                              ) : (
+                              {!isUser && (
                                 <>
                                   {["system"].includes(message.role) ? (
                                     <Avatar avatar="2699-fe0f" />
@@ -2050,7 +2049,7 @@ function _Chat() {
                           <div className={styles["chat-message-action-date"]}>
                             {isContext
                               ? Locale.Chat.IsContext
-                              : message.date.toLocaleString()}
+                              : formatDateToTime(message.date)}
                           </div>
                         </div>
                       </div>
