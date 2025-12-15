@@ -112,26 +112,18 @@
 :root {
   @include light;
 
-  --window-width: 90vw;
-  --window-height: 90vh;
-  --sidebar-width: 300px;
-  --window-content-width: calc(100% - var(--sidebar-width));
-  --message-max-width: 80%;
+
   --full-height: 100%;
+
+  --window-width: 100vw;
+  --window-height: var(--full-height);
+  --sidebar-width: 100vw;
+  --window-content-width: var(--window-width);
+  --message-max-width: 100%;
 }
 
-@media only screen and (max-width: 600px) {
-  :root {
-    --window-width: 100vw;
-    --window-height: var(--full-height);
-    --sidebar-width: 100vw;
-    --window-content-width: var(--window-width);
-    --message-max-width: 100%;
-  }
-
-  .no-mobile {
+.no-mobile {
     display: none;
-  }
 }
 
 @media (prefers-color-scheme: dark) {

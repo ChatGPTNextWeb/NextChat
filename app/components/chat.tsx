@@ -1723,18 +1723,16 @@ function _Chat() {
 
       <div className={styles.chat} key={session.id}>
         <div className="window-header" data-tauri-drag-region>
-          {isMobileScreen && (
-            <div className="window-actions">
-              <div className={"window-action-button"}>
-                <IconButton2
-                  type="secondary"
-                  icon={<ReturnIcon2 />}
-                  title={Locale.Chat.Actions.ChatList}
-                  onClick={() => navigate(Path.Home)}
-                />
-              </div>
+          <div className="window-actions">
+            <div className={"window-action-button"}>
+              <IconButton2
+                type="secondary"
+                icon={<ReturnIcon2 />}
+                title={Locale.Chat.Actions.ChatList}
+                onClick={() => navigate(Path.Home)}
+              />
             </div>
-          )}
+          </div>
 
           <div
             className={clsx("window-header-title", styles["chat-body-title"])}

@@ -15,7 +15,7 @@
 
   .window-header-main-title {
     font-family: Poppins, Arial, sans-serif;
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 500;
     color: var(--color-window-header-title);
     overflow: hidden;
@@ -28,20 +28,9 @@
   .window-header-sub-title {
     font-family: Poppins, Arial, sans-serif;
     font-size: 12px;
+
     font-weight: 300;
     color: var(--color-window-header-sub-title);
-  }
-}
-
-@media only screen and (max-width: 600px) {
-  .window-header-title {
-    .window-header-main-title {
-      font-size: 14px;
-    }
-
-    .window-header-sub-title {
-      font-size: 12px;
-    }
   }
 }
 

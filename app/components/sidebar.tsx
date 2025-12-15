@@ -120,11 +120,7 @@ export function useDragSideBar() {
     !isMobileScreen && config.sidebarWidth < MIN_SIDEBAR_WIDTH;
 
   useEffect(() => {
-    const barWidth = shouldNarrow
-      ? NARROW_SIDEBAR_WIDTH
-      : limit(config.sidebarWidth ?? DEFAULT_SIDEBAR_WIDTH);
-    const sideBarWidth = isMobileScreen ? "100vw" : `${barWidth}px`;
-    document.documentElement.style.setProperty("--sidebar-width", sideBarWidth);
+    document.documentElement.style.setProperty("--sidebar-width", "100vw");
   }, [config.sidebarWidth, isMobileScreen, shouldNarrow]);
 
   return {

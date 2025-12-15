@@ -11,7 +11,7 @@ import LoadingSantaIcon from "../icons/loading-santa.svg";
 import LoadingIcon from "../icons/three-dots.svg";
 import LoadingEffect1 from "../icons/effects/loading-1.svg";
 
-import { getCSSVar, useMobileScreen } from "../utils";
+import { getCSSVar } from "../utils";
 
 import dynamic from "next/dynamic";
 import { Path, SlotID } from "../constant";
@@ -191,9 +191,7 @@ function Screen() {
   const isSd = location.pathname === Path.Sd;
   const isSdNew = location.pathname === Path.SdNew;
 
-  const isMobileScreen = useMobileScreen();
-  const shouldTightBorder =
-    getClientConfig()?.isApp || (config.tightBorder && !isMobileScreen);
+  const shouldTightBorder = true;
 
   useEffect(() => {
     loadAsyncGoogleFont();
