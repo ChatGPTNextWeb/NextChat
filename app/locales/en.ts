@@ -554,6 +554,17 @@ const en: LocaleType = {
           SubTitle: "Example: ",
         },
       },
+      Baichuan: {
+        ApiKey: {
+          Title: "Baichuan API Key",
+          SubTitle: "Use a custom Baichuan API Key",
+          Placeholder: "Baichuan API Key",
+        },
+        Endpoint: {
+          Title: "Endpoint Address",
+          SubTitle: "Example: ",
+        },
+      },
     },
 
     Model: "Model",

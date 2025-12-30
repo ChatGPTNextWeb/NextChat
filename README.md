@@ -282,6 +282,14 @@ DeepSeek Api Key.
 
 DeepSeek Api Url.
 
+### `BAICHUAN_API_KEY` (optional)
+
+Baichuan AI Api Key.
+
+### `BAICHUAN_URL` (optional)
+
+Baichuan Api Url, default: `https://api.baichuan-ai.com`.
+
 ### `HIDE_USER_API_KEY` (optional)
 
 > Default: Empty
