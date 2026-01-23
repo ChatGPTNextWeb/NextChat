@@ -119,11 +119,22 @@ pub async fn stream_fetch(
       }
     }
     Err(err) => {
-      println!("Error response: {:?}", err.source().expect("REASON").to_string());
+      let error: String = err.source()
+        .map(|e| e.to_string())
+        .unwrap_or_else(|| "Unknown error occurred".to_string());
+      println!("Error response: {:?}", error);
+      tauri::async_runtime::spawn( async move {
+        if let Err(e) = window.emit(event_name, ChunkPayload{ request_id, chunk: error.into() }) {
+          println!("Failed to emit chunk payload: {:?}", e);
+        }
+        if let Err(e) = window.emit(event_name, EndPayload{ request_id, status: 0 }) {
+          println!("Failed to emit end payload: {:?}", e);
+        }
+      });
       StreamResponse {
         request_id,
         status: 599,
-        status_text: err.source().expect("REASON").to_string(),
+        status_text: "Error".to_string(),
         headers: HashMap::new(),
       }
     }

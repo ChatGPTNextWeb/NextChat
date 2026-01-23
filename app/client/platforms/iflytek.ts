@@ -117,6 +117,7 @@ export class SparkApi implements LLMApi {
         let responseText = "";
         let remainText = "";
         let finished = false;
+        let responseRes: Response;
 
         // Animate response text to make it look smooth
         function animateResponseText() {
@@ -143,7 +144,7 @@ export class SparkApi implements LLMApi {
         const finish = () => {
           if (!finished) {
             finished = true;
-            options.onFinish(responseText + remainText);
+            options.onFinish(responseText + remainText, responseRes);
           }
         };
 
@@ -156,7 +157,7 @@ export class SparkApi implements LLMApi {
             clearTimeout(requestTimeoutId);
             const contentType = res.headers.get("content-type");
             console.log("[Spark] request response content type: ", contentType);
-
+            responseRes = res;
             if (contentType?.startsWith("text/plain")) {
               responseText = await res.clone().text();
               return finish();
@@ -231,7 +232,7 @@ export class SparkApi implements LLMApi {
 
         const resJson = await res.json();
         const message = this.extractMessage(resJson);
-        options.onFinish(message);
+        options.onFinish(message, res);
       }
     } catch (e) {
       console.log("[Request] failed to make a chat request", e);

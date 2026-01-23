@@ -359,6 +359,17 @@ const pt: PartialLocaleType = {
           SubTitle: "Verifique sua versão API do console Anthropic",
         },
       },
+      AI302: {
+        ApiKey: {
+          Title: "Chave API 302.AI",
+          SubTitle: "Use uma chave API 302.AI personalizada",
+          Placeholder: "302.AI API Key",
+        },
+        Endpoint: {
+          Title: "Endpoint Address",
+          SubTitle: "Exemplo: ",
+        },
+      },
       CustomModel: {
         Title: "Modelos Personalizados",
         SubTitle: "Opções de modelo personalizado, separados por vírgula",

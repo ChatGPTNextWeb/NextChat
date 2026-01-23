@@ -55,6 +55,7 @@ import {
   OnDragEndResponder,
 } from "@hello-pangea/dnd";
 import { getMessageTextContent } from "../utils";
+import clsx from "clsx";
 
 // drag and drop helper function
 function reorder<T>(list: T[], startIndex: number, endIndex: number): T[] {
@@ -178,6 +179,23 @@ export function MaskConfig(props: {
               onChange={(e) => {
                 props.updateMask((mask) => {
                   mask.enableArtifacts = e.currentTarget.checked;
+                });
+              }}
+            ></input>
+          </ListItem>
+        )}
+        {globalConfig.enableCodeFold && (
+          <ListItem
+            title={Locale.Mask.Config.CodeFold.Title}
+            subTitle={Locale.Mask.Config.CodeFold.SubTitle}
+          >
+            <input
+              aria-label={Locale.Mask.Config.CodeFold.Title}
+              type="checkbox"
+              checked={props.mask.enableCodeFold !== false}
+              onChange={(e) => {
+                props.updateMask((mask) => {
+                  mask.enableCodeFold = e.currentTarget.checked;
                 });
               }}
             ></input>
@@ -571,7 +589,7 @@ export function MaskPage() {
                   </div>
                   <div className={styles["mask-title"]}>
                     <div className={styles["mask-name"]}>{m.name}</div>
-                    <div className={styles["mask-info"] + " one-line"}>
+                    <div className={clsx(styles["mask-info"], "one-line")}>
                       {`${Locale.Mask.Item.Info(m.context.length)} / ${
                         ALL_LANG_OPTIONS[m.lang]
                       } / ${m.modelConfig.model}`}

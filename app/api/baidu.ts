@@ -8,7 +8,7 @@ import {
 import { prettyObject } from "@/app/utils/format";
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/app/api/auth";
-import { isModelAvailableInServer } from "@/app/utils/model";
+import { isModelNotavailableInServer } from "@/app/utils/model";
 import { getAccessToken } from "@/app/utils/baidu";
 
 const serverConfig = getServerSideConfig();
@@ -104,7 +104,7 @@ async function request(req: NextRequest) {
 
       // not undefined and is false
       if (
-        isModelAvailableInServer(
+        isModelNotavailableInServer(
           serverConfig.customModels,
           jsonBody?.model as string,
           ServiceProvider.Baidu as string,

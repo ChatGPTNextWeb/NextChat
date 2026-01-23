@@ -2,9 +2,16 @@ import { useEffect, useState } from "react";
 import { showToast } from "./components/ui-lib";
 import Locale from "./locales";
 import { RequestMessage } from "./client/api";
-import { ServiceProvider } from "./constant";
+import {
+  REQUEST_TIMEOUT_MS,
+  REQUEST_TIMEOUT_MS_FOR_THINKING,
+  ServiceProvider,
+} from "./constant";
 // import { fetch as tauriFetch, ResponseType } from "@tauri-apps/api/http";
 import { fetch as tauriStreamFetch } from "./utils/stream";
+import { VISION_MODEL_REGEXES, EXCLUDE_VISION_MODEL_REGEXES } from "./constant";
+import { useAccessStore } from "./store";
+import { ModelSize } from "./typing";
 
 export function trimTopic(topic: string) {
   // Fix an issue where double quotes still show in the Indonesian language
@@ -238,6 +245,28 @@ export function getMessageTextContent(message: RequestMessage) {
   return "";
 }
 
+export function getMessageTextContentWithoutThinking(message: RequestMessage) {
+  let content = "";
+
+  if (typeof message.content === "string") {
+    content = message.content;
+  } else {
+    for (const c of message.content) {
+      if (c.type === "text") {
+        content = c.text ?? "";
+        break;
+      }
+    }
+  }
+
+  // Filter out thinking lines (starting with "> ")
+  return content
+    .split("\n")
+    .filter((line) => !line.startsWith("> ") && line.trim() !== "")
+    .join("\n")
+    .trim();
+}
+
 export function getMessageImages(message: RequestMessage): string[] {
   if (typeof message.content === "string") {
     return [];
@@ -252,21 +281,14 @@ export function getMessageImages(message: RequestMessage): string[] {
 }
 
 export function isVisionModel(model: string) {
-  // Note: This is a better way using the TypeScript feature instead of `&&` or `||` (ts v5.5.0-dev.20240314 I've been using)
-
-  const visionKeywords = [
-    "vision",
-    "claude-3",
-    "gemini-1.5-pro",
-    "gemini-1.5-flash",
-    "gpt-4o",
-    "gpt-4o-mini",
-  ];
-  const isGpt4Turbo =
-    model.includes("gpt-4-turbo") && !model.includes("preview");
-
+  const visionModels = useAccessStore.getState().visionModels;
+  const envVisionModels = visionModels?.split(",").map((m) => m.trim());
+  if (envVisionModels?.includes(model)) {
+    return true;
+  }
   return (
-    visionKeywords.some((keyword) => model.includes(keyword)) || isGpt4Turbo
+    !EXCLUDE_VISION_MODEL_REGEXES.some((regex) => regex.test(model)) &&
+    VISION_MODEL_REGEXES.some((regex) => regex.test(model))
   );
 }
 
@@ -274,11 +296,48 @@ export function isDalle3(model: string) {
   return "dall-e-3" === model;
 }
 
+export function getTimeoutMSByModel(model: string) {
+  model = model.toLowerCase();
+  if (
+    model.startsWith("dall-e") ||
+    model.startsWith("dalle") ||
+    model.startsWith("o1") ||
+    model.startsWith("o3") ||
+    model.includes("deepseek-r") ||
+    model.includes("-thinking")
+  )
+    return REQUEST_TIMEOUT_MS_FOR_THINKING;
+  return REQUEST_TIMEOUT_MS;
+}
+
+export function getModelSizes(model: string): ModelSize[] {
+  if (isDalle3(model)) {
+    return ["1024x1024", "1792x1024", "1024x1792"];
+  }
+  if (model.toLowerCase().includes("cogview")) {
+    return [
+      "1024x1024",
+      "768x1344",
+      "864x1152",
+      "1344x768",
+      "1152x864",
+      "1440x720",
+      "720x1440",
+    ];
+  }
+  return [];
+}
+
+export function supportsCustomSize(model: string): boolean {
+  return getModelSizes(model).length > 0;
+}
+
 export function showPlugins(provider: ServiceProvider, model: string) {
   if (
     provider == ServiceProvider.OpenAI ||
     provider == ServiceProvider.Azure ||
-    provider == ServiceProvider.Moonshot
+    provider == ServiceProvider.Moonshot ||
+    provider == ServiceProvider.ChatGLM
   ) {
     return true;
   }
@@ -385,4 +444,38 @@ export function getOperationId(operation: {
     operation?.operationId ||
     `${operation.method.toUpperCase()}${operation.path.replaceAll("/", "_")}`
   );
+}
+
+export function clientUpdate() {
+  // this a wild for updating client app
+  return window.__TAURI__?.updater
+    .checkUpdate()
+    .then((updateResult) => {
+      if (updateResult.shouldUpdate) {
+        window.__TAURI__?.updater
+          .installUpdate()
+          .then((result) => {
+            showToast(Locale.Settings.Update.Success);
+          })
+          .catch((e) => {
+            console.error("[Install Update Error]", e);
+            showToast(Locale.Settings.Update.Failed);
+          });
+      }
+    })
+    .catch((e) => {
+      console.error("[Check Update Error]", e);
+      showToast(Locale.Settings.Update.Failed);
+    });
+}
+
+// https://gist.github.com/iwill/a83038623ba4fef6abb9efca87ae9ccb
+export function semverCompare(a: string, b: string) {
+  if (a.startsWith(b + "-")) return -1;
+  if (b.startsWith(a + "-")) return 1;
+  return a.localeCompare(b, undefined, {
+    numeric: true,
+    sensitivity: "case",
+    caseFirst: "upper",
+  });
 }

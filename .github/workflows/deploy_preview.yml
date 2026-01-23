@@ -3,9 +3,7 @@ name: VercelPreviewDeployment
 on:
   pull_request_target:
     types:
-      - opened
-      - synchronize
-      - reopened
+      - review_requested
 
 env:
   VERCEL_TEAM: ${{ secrets.VERCEL_TEAM }}

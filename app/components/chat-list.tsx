@@ -18,6 +18,7 @@ import { Mask } from "../store/mask";
 import { useRef, useEffect } from "react";
 import { showConfirm } from "./ui-lib";
 import { useMobileScreen } from "../utils";
+import clsx from "clsx";
 
 export function ChatItem(props: {
   onClick?: () => void;
@@ -45,11 +46,11 @@ export function ChatItem(props: {
     <Draggable draggableId={`${props.id}`} index={props.index}>
       {(provided) => (
         <div
-          className={`${styles["chat-item"]} ${
-            props.selected &&
-            (currentPath === Path.Chat || currentPath === Path.Home) &&
-            styles["chat-item-selected"]
-          }`}
+          className={clsx(styles["chat-item"], {
+            [styles["chat-item-selected"]]:
+              props.selected &&
+              (currentPath === Path.Chat || currentPath === Path.Home),
+          })}
           onClick={props.onClick}
           ref={(ele) => {
             draggableRef.current = ele;
@@ -63,7 +64,7 @@ export function ChatItem(props: {
         >
           {props.narrow ? (
             <div className={styles["chat-item-narrow"]}>
-              <div className={styles["chat-item-avatar"] + " no-dark"}>
+              <div className={clsx(styles["chat-item-avatar"], "no-dark")}>
                 <MaskAvatar
                   avatar={props.mask.avatar}
                   model={props.mask.modelConfig.model}

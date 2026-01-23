@@ -426,6 +426,17 @@ const tr: PartialLocaleType = {
           SubTitle: "Örnek:",
         },
       },
+      AI302: {
+        ApiKey: {
+          Title: "API Anahtarı",
+          SubTitle: "Özelleştirilmiş 302.AI API Anahtarı kullanın",
+          Placeholder: "302.AI API Anahtarı",
+        },
+        Endpoint: {
+          Title: "API Adresi",
+          SubTitle: "Örnek:",
+        },
+      },
       CustomModel: {
         Title: "Özelleştirilmiş Model Adı",
         SubTitle:

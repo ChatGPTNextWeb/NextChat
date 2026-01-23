@@ -106,6 +106,7 @@ const cn = {
       copyLastMessage: "复制最后一个回复",
       copyLastCode: "复制最后一个代码块",
       showShortcutKey: "显示快捷方式",
+      clearContext: "清除上下文",
     },
   },
   Export: {
@@ -176,7 +177,7 @@ const cn = {
       },
     },
     Lang: {
-      Name: "Language", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`
+      Name: "Language", // 注意：如果要添加新的翻译，请不要翻译此值，将它保留为 `Language`
       All: "所有语言",
     },
     Avatar: "头像",
@@ -205,6 +206,8 @@ const cn = {
       IsChecking: "正在检查更新...",
       FoundUpdate: (x: string) => `发现新版本：${x}`,
       GoToUpdate: "前往更新",
+      Success: "更新成功！",
+      Failed: "更新失败",
     },
     SendKey: "发送键",
     Theme: "主题",
@@ -460,6 +463,50 @@ const cn = {
           SubTitle: "样例：",
         },
       },
+      DeepSeek: {
+        ApiKey: {
+          Title: "接口密钥",
+          SubTitle: "使用自定义DeepSeek API Key",
+          Placeholder: "DeepSeek API Key",
+        },
+        Endpoint: {
+          Title: "接口地址",
+          SubTitle: "样例：",
+        },
+      },
+      XAI: {
+        ApiKey: {
+          Title: "接口密钥",
+          SubTitle: "使用自定义XAI API Key",
+          Placeholder: "XAI API Key",
+        },
+        Endpoint: {
+          Title: "接口地址",
+          SubTitle: "样例：",
+        },
+      },
+      ChatGLM: {
+        ApiKey: {
+          Title: "接口密钥",
+          SubTitle: "使用自定义 ChatGLM API Key",
+          Placeholder: "ChatGLM API Key",
+        },
+        Endpoint: {
+          Title: "接口地址",
+          SubTitle: "样例：",
+        },
+      },
+      SiliconFlow: {
+        ApiKey: {
+          Title: "接口密钥",
+          SubTitle: "使用自定义硅基流动 API Key",
+          Placeholder: "硅基流动 API Key",
+        },
+        Endpoint: {
+          Title: "接口地址",
+          SubTitle: "样例：",
+        },
+      },
       Stability: {
         ApiKey: {
           Title: "接口密钥",
@@ -491,12 +538,23 @@ const cn = {
         Title: "自定义模型名",
         SubTitle: "增加自定义模型可选项，使用英文逗号隔开",
       },
+      AI302: {
+        ApiKey: {
+          Title: "接口密钥",
+          SubTitle: "使用自定义302.AI API Key",
+          Placeholder: "302.AI API Key",
+        },
+        Endpoint: {
+          Title: "接口地址",
+          SubTitle: "样例：",
+        },
+      },
     },
 
     Model: "模型 (model)",
     CompressModel: {
-      Title: "压缩模型",
-      SubTitle: "用于压缩历史记录的模型",
+      Title: "对话摘要模型",
+      SubTitle: "用于压缩历史记录、生成对话标题的模型",
     },
     Temperature: {
       Title: "随机性 (temperature)",
@@ -538,6 +596,39 @@ const cn = {
         SubTitle: "生成语音的速度",
       },
     },
+    Realtime: {
+      Enable: {
+        Title: "实时聊天",
+        SubTitle: "开启实时聊天功能",
+      },
+      Provider: {
+        Title: "模型服务商",
+        SubTitle: "切换不同的服务商",
+      },
+      Model: {
+        Title: "模型",
+        SubTitle: "选择一个模型",
+      },
+      ApiKey: {
+        Title: "API Key",
+        SubTitle: "API Key",
+        Placeholder: "API Key",
+      },
+      Azure: {
+        Endpoint: {
+          Title: "接口地址",
+          SubTitle: "接口地址",
+        },
+        Deployment: {
+          Title: "部署名称",
+          SubTitle: "部署名称",
+        },
+      },
+      Temperature: {
+        Title: "随机性 (temperature)",
+        SubTitle: "值越大，回复越随机",
+      },
+    },
   },
   Store: {
     DefaultTopic: "新的聊天",
@@ -569,11 +660,14 @@ const cn = {
   Discovery: {
     Name: "发现",
   },
+  Mcp: {
+    Name: "MCP",
+  },
   FineTuned: {
     Sysmessage: "你是一个助手",
   },
   SearchChat: {
-    Name: "搜索",
+    Name: "搜索聊天记录",
     Page: {
       Title: "搜索聊天记录",
       Search: "输入搜索关键词",
@@ -664,6 +758,10 @@ const cn = {
       Artifacts: {
         Title: "启用Artifacts",
         SubTitle: "启用之后可以直接渲染HTML页面",
+      },
+      CodeFold: {
+        Title: "启用代码折叠",
+        SubTitle: "启用之后可以自动折叠/展开过长的代码块",
       },
       Share: {
         Title: "分享此面具",

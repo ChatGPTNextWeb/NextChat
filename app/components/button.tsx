@@ -2,6 +2,7 @@ import * as React from "react";
 
 import styles from "./button.module.scss";
 import { CSSProperties } from "react";
+import clsx from "clsx";
 
 export type ButtonType = "primary" | "danger" | null;
 
@@ -22,12 +23,16 @@ export function IconButton(props: {
 }) {
   return (
     <button
-      className={
-        styles["icon-button"] +
-        ` ${props.bordered && styles.border} ${props.shadow && styles.shadow} ${
-          props.className ?? ""
-        } clickable ${styles[props.type ?? ""]}`
-      }
+      className={clsx(
+        "clickable",
+        styles["icon-button"],
+        {
+          [styles.border]: props.bordered,
+          [styles.shadow]: props.shadow,
+        },
+        styles[props.type ?? ""],
+        props.className,
+      )}
       onClick={props.onClick}
       title={props.title}
       disabled={props.disabled}
@@ -40,10 +45,9 @@ export function IconButton(props: {
       {props.icon && (
         <div
           aria-label={props.text || props.title}
-          className={
-            styles["icon-button-icon"] +
-            ` ${props.type === "primary" && "no-dark"}`
-          }
+          className={clsx(styles["icon-button-icon"], {
+            "no-dark": props.type === "primary",
+          })}
         >
           {props.icon}
         </div>

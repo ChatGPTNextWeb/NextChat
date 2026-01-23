@@ -1,0 +1,11 @@
+.voice-print {
+  width: 100%;
+  height: 60px;
+  margin: 20px 0;
+
+  canvas {
+    width: 100%;
+    height: 100%;
+    filter: brightness(1.2); // 增加整体亮度
+  }
+}

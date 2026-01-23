@@ -435,6 +435,17 @@ const fr: PartialLocaleType = {
           SubTitle: "Exemple :",
         },
       },
+      AI302: {
+        ApiKey: {
+          Title: "Clé d'interface",
+          SubTitle: "Utiliser une clé API 302.AI personnalisée",
+          Placeholder: "Clé API 302.AI",
+        },
+        Endpoint: {
+          Title: "Adresse de l'endpoint",
+          SubTitle: "Exemple :",
+        },
+      },
       CustomModel: {
         Title: "Nom du modèle personnalisé",
         SubTitle:

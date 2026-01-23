@@ -9,10 +9,10 @@ const ko: PartialLocaleType = {
   Error: {
     Unauthorized: isApp
       ? `😆 대화 중 문제가 발생했습니다, 걱정하지 마세요:
-    \\ 1️⃣ 제로 구성으로 시작하고 싶다면, [여기를 클릭하여 즉시 대화를 시작하세요 🚀](${SAAS_CHAT_UTM_URL})
+    \\ 1️⃣ 세팅 없이 시작하고 싶다면, [여기를 클릭하여 즉시 대화를 시작하세요 🚀](${SAAS_CHAT_UTM_URL})
     \\ 2️⃣ 자신의 OpenAI 리소스를 사용하고 싶다면, [여기를 클릭하여](/#/settings) 설정을 수정하세요 ⚙️`
       : `😆 대화 중 문제가 발생했습니다, 걱정하지 마세요:
-    \ 1️⃣ 제로 구성으로 시작하고 싶다면, [여기를 클릭하여 즉시 대화를 시작하세요 🚀](${SAAS_CHAT_UTM_URL})
+    \ 1️⃣ 세팅 없이 시작하고 싶다면, [여기를 클릭하여 즉시 대화를 시작하세요 🚀](${SAAS_CHAT_UTM_URL})
     \ 2️⃣ 개인 배포 버전을 사용하고 있다면, [여기를 클릭하여](/#/auth) 접근 키를 입력하세요 🔑
     \ 3️⃣ 자신의 OpenAI 리소스를 사용하고 싶다면, [여기를 클릭하여](/#/settings) 설정을 수정하세요 ⚙️
  `,
@@ -27,7 +27,7 @@ const ko: PartialLocaleType = {
     Return: "돌아가기",
     SaasTips: "설정이 너무 복잡합니다. 즉시 사용하고 싶습니다.",
     TopTips:
-      "🥳 NextChat AI 출시 기념 할인, 지금 OpenAI o1, GPT-4o, Claude-3.5 및 최신 대형 모델을 해제하세요",
+      "🥳 NextChat AI 출시 기념 할인: 지금 OpenAI o1, GPT-4o, Claude-3.5 및 최신 대형 모델을 사용해보세요!",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} 개의 대화`,
@@ -53,8 +53,11 @@ const ko: PartialLocaleType = {
       PinToastAction: "보기",
       Delete: "삭제",
       Edit: "편집",
+      FullScreen: "전체 화면",
       RefreshTitle: "제목 새로고침",
       RefreshToast: "제목 새로고침 요청이 전송되었습니다",
+      Speech: "재생",
+      StopSpeech: "정지",
     },
     Commands: {
       new: "새 채팅",
@@ -62,6 +65,7 @@ const ko: PartialLocaleType = {
       next: "다음 채팅",
       prev: "이전 채팅",
       clear: "컨텍스트 지우기",
+      fork: "채팅 복사",
       del: "채팅 삭제",
     },
     InputActions: {
@@ -88,11 +92,22 @@ const ko: PartialLocaleType = {
       return inputHints + "，/ 자동 완성，: 명령어 입력";
     },
     Send: "전송",
+    StartSpeak: "재생 시작",
+    StopSpeak: "재생 정지",
     Config: {
       Reset: "기억 지우기",
       SaveAs: "마스크로 저장",
     },
     IsContext: "프롬프트 설정",
+    ShortcutKey: {
+      Title: "키보드 단축키",
+      newChat: "새 채팅 열기",
+      focusInput: "입력 필드 포커스",
+      copyLastMessage: "마지막 답변 복사",
+      copyLastCode: "마지막 코드 블록 복사",
+      showShortcutKey: "단축키 보기",
+      clearContext: "컨텍스트 지우기",
+    },
   },
   Export: {
     Title: "채팅 기록 공유",
@@ -114,8 +129,12 @@ const ko: PartialLocaleType = {
       Preview: "미리보기",
     },
     Image: {
-      Toast: "스크린샷 생성 중",
+      Toast: "스크린샷 생성 중...",
       Modal: "길게 누르거나 오른쪽 클릭하여 이미지를 저장하십시오.",
+    },
+    Artifacts: {
+      Title: "공유 아티팩트",
+      Error: "공유 오류",
     },
   },
   Select: {
@@ -141,7 +160,7 @@ const ko: PartialLocaleType = {
   Settings: {
     Title: "설정",
     SubTitle: "모든 설정 옵션",
-
+    ShowPassword: "비밀번호 보기",
     Danger: {
       Reset: {
         Title: "모든 설정 초기화",
@@ -187,8 +206,10 @@ const ko: PartialLocaleType = {
       IsChecking: "업데이트 확인 중...",
       FoundUpdate: (x: string) => `새 버전 발견: ${x}`,
       GoToUpdate: "업데이트로 이동",
+      Success: "업데이트 성공",
+      Failed: "업데이트 실패",
     },
-    SendKey: "전송 키",
+    SendKey: "키 전송",
     Theme: "테마",
     TightBorder: "테두리 없는 모드",
     SendPreviewBubble: {
@@ -221,7 +242,7 @@ const ko: PartialLocaleType = {
         },
         ProxyUrl: {
           Title: "프록시 주소",
-          SubTitle: "이 프로젝트에서 제공하는 교차 출처 프록시만 해당",
+          SubTitle: "이 프로젝트에서 제공하는 CORS 프록시만 해당",
         },
 
         WebDav: {
@@ -295,7 +316,7 @@ const ko: PartialLocaleType = {
         Title: "NextChat AI 사용하기",
         Label: "(가장 비용 효율적인 솔루션)",
         SubTitle:
-          "NextChat에 의해 공식적으로 유지 관리되며, 제로 구성으로 즉시 사용할 수 있으며, OpenAI o1, GPT-4o, Claude-3.5와 같은 최신 대형 모델을 지원합니다",
+          "NextChat에 의해 공식적으로 유지 관리되며, 설정 없이 즉시 사용할 수 있으며, OpenAI o1, GPT-4o, Claude-3.5와 같은 최신 대형 모델을 지원합니다",
         ChatNow: "지금 채팅하기",
       },
 
@@ -395,6 +416,22 @@ const ko: PartialLocaleType = {
           SubTitle: "커스터마이즈는 .env에서 설정",
         },
       },
+      Tencent: {
+        ApiKey: {
+          Title: "Tencent API 키",
+          SubTitle: "커스텀 Tencent API 키 사용",
+          Placeholder: "Tencent API 키",
+        },
+        SecretKey: {
+          Title: "Tencent Secret 키",
+          SubTitle: "커스텀 Tencent Secret 키 사용",
+          Placeholder: "Tencent Secret 키",
+        },
+        Endpoint: {
+          Title: "엔드포인트 주소",
+          SubTitle: "지원되지 않음, .env에서 설정",
+        },
+      },
       ByteDance: {
         ApiKey: {
           Title: "엔드포인트 키",
@@ -417,9 +454,102 @@ const ko: PartialLocaleType = {
           SubTitle: "예: ",
         },
       },
+      Moonshot: {
+        ApiKey: {
+          Title: "Moonshot API 키",
+          SubTitle: "커스텀 Moonshot API 키 사용",
+          Placeholder: "Moonshot API 키",
+        },
+        Endpoint: {
+          Title: "엔드포인트 주소",
+          SubTitle: "예: ",
+        },
+      },
+      DeepSeek: {
+        ApiKey: {
+          Title: "DeepSeek API 키",
+          SubTitle: "커스텀 DeepSeek API 키 사용",
+          Placeholder: "DeepSeek API 키",
+        },
+        Endpoint: {
+          Title: "엔드포인트 주소",
+          SubTitle: "예: ",
+        },
+      },
+      XAI: {
+        ApiKey: {
+          Title: "XAI API 키",
+          SubTitle: "커스텀 XAI API 키 사용",
+          Placeholder: "XAI API 키",
+        },
+        Endpoint: {
+          Title: "엔드포인트 주소",
+          SubTitle: "예: ",
+        },
+      },
+      ChatGLM: {
+        ApiKey: {
+          Title: "ChatGLM API 키",
+          SubTitle: "커스텀 ChatGLM API 키 사용",
+          Placeholder: "ChatGLM API 키",
+        },
+        Endpoint: {
+          Title: "엔드포인트 주소",
+          SubTitle: "예: ",
+        },
+      },
+      SiliconFlow: {
+        ApiKey: {
+          Title: "SiliconFlow API 키",
+          SubTitle: "커스텀 SiliconFlow API 키 사용",
+          Placeholder: "SiliconFlow API 키",
+        },
+        Endpoint: {
+          Title: "엔드포인트 주소",
+          SubTitle: "예: ",
+        },
+      },
+      Stability: {
+        ApiKey: {
+          Title: "Stability API 키",
+          SubTitle: "커스텀 Stability API 키 사용",
+          Placeholder: "Stability API 키",
+        },
+        Endpoint: {
+          Title: "엔드포인트 주소",
+          SubTitle: "예: ",
+        },
+      },
+      Iflytek: {
+        ApiKey: {
+          Title: "Iflytek API 키",
+          SubTitle: "커스텀 Iflytek API 키 사용",
+          Placeholder: "Iflytek API 키",
+        },
+        ApiSecret: {
+          Title: "Iflytek API Secret",
+          SubTitle: "커스텀 Iflytek API Secret 키 사용",
+          Placeholder: "Iflytek API Secret 키",
+        },
+        Endpoint: {
+          Title: "엔드포인트 주소",
+          SubTitle: "예: ",
+        },
+      },
       CustomModel: {
         Title: "커스텀 모델 이름",
         SubTitle: "커스텀 모델 옵션 추가, 영어 쉼표로 구분",
+      },
+      AI302: {
+        ApiKey: {
+          Title: "엔드포인트 키",
+          SubTitle: "커스텀 302.AI API 키 사용",
+          Placeholder: "302.AI API 키",
+        },
+        Endpoint: {
+          Title: "엔드포인트 주소",
+          SubTitle: "예: ",
+        },
       },
     },
 
@@ -448,13 +578,67 @@ const ko: PartialLocaleType = {
       Title: "빈도 벌점 (frequency_penalty)",
       SubTitle: "값이 클수록 중복 단어 감소 가능성 높음",
     },
+    TTS: {
+      Enable: {
+        Title: "TTS 활성화",
+        SubTitle: "TTS 서비스 활성화",
+      },
+      Autoplay: {
+        Title: "자동 재생 활성화",
+        SubTitle:
+          "자동으로 음성을 생성하고 재생, 먼저 TTS 스위치를 활성화해야 함",
+      },
+      Model: "모델",
+      Voice: {
+        Title: "음성",
+        SubTitle: "음성을 생성할 때 사용할 음성",
+      },
+      Speed: {
+        Title: "속도",
+        SubTitle: "생성된 음성의 속도",
+      },
+      Engine: "TTS Engine",
+    },
+    Realtime: {
+      Enable: {
+        Title: "실시간 채팅",
+        SubTitle: "실시간 채팅 기능 활성화",
+      },
+      Provider: {
+        Title: "모델 제공업체",
+        SubTitle: "다른 제공업체 간 전환",
+      },
+      Model: {
+        Title: "모델",
+        SubTitle: "모델 선택",
+      },
+      ApiKey: {
+        Title: "API 키",
+        SubTitle: "API 키",
+        Placeholder: "API 키",
+      },
+      Azure: {
+        Endpoint: {
+          Title: "엔드포인트",
+          SubTitle: "엔드포인트",
+        },
+        Deployment: {
+          Title: "배포 이름",
+          SubTitle: "배포 이름",
+        },
+      },
+      Temperature: {
+        Title: "무작위성 (temperature)",
+        SubTitle: "값이 클수록 응답이 더 무작위적",
+      },
+    },
   },
   Store: {
     DefaultTopic: "새 채팅",
     BotHello: "무엇을 도와드릴까요?",
     Error: "오류가 발생했습니다. 나중에 다시 시도해 주세요.",
     Prompt: {
-      History: (content: string) => "이것은 이전 채팅 요약입니다: " + content,
+      History: (content: string) => "이전 채팅 요약: " + content,
       Topic:
         "네 글자에서 다섯 글자로 이 문장의 간략한 주제를 반환하세요. 설명이나 문장 부호, 어미, 불필요한 텍스트, 굵은 글씨는 필요 없습니다. 주제가 없다면 '잡담'이라고만 반환하세요.",
       Summarize:
@@ -476,8 +660,11 @@ const ko: PartialLocaleType = {
     Clear: "컨텍스트가 지워졌습니다.",
     Revert: "컨텍스트 복원",
   },
-  Plugin: {
-    Name: "플러그인",
+  Discovery: {
+    Name: "디스커버리",
+  },
+  Mcp: {
+    Name: "MCP 플러그인",
   },
   FineTuned: {
     Sysmessage: "당신은 보조자입니다.",
@@ -489,12 +676,53 @@ const ko: PartialLocaleType = {
       Search: "검색어 입력",
       NoResult: "결과를 찾을 수 없습니다",
       NoData: "데이터가 없습니다",
-      Loading: "로딩 중",
+      Loading: "로딩 중...",
 
       SubTitle: (count: number) => `${count}개의 결과를 찾았습니다`,
     },
     Item: {
       View: "보기",
+    },
+  },
+  Plugin: {
+    Name: "플러그인",
+    Page: {
+      Title: "플러그인",
+      SubTitle: (count: number) => `${count} 개의 플러그인`,
+      Search: "플러그인 검색",
+      Create: "새로 만들기",
+      Find: "github에서 멋진 플러그인을 찾을 수 있습니다: ",
+    },
+    Item: {
+      Info: (count: number) => `${count} 개의 메서드`,
+      View: "보기",
+      Edit: "편집",
+      Delete: "삭제",
+      DeleteConfirm: "삭제하시겠습니까?",
+    },
+    Auth: {
+      None: "없음",
+      Basic: "기본",
+      Bearer: "Bearer",
+      Custom: "커스텀",
+      CustomHeader: "파라미터 이름",
+      Token: "토큰",
+      Proxy: "프록시 사용",
+      ProxyDescription: "CORS 오류 해결을 위해 프록시 사용",
+      Location: "위치",
+      LocationHeader: "헤더",
+      LocationQuery: "쿼리",
+      LocationBody: "바디",
+    },
+    EditModal: {
+      Title: (readonly: boolean) =>
+        `플러그인 편집 ${readonly ? "(읽기 전용)" : ""}`,
+      Download: "다운로드",
+      Auth: "인증 유형",
+      Content: "OpenAPI Schema",
+      Load: "URL에서 로드",
+      Method: "메서드",
+      Error: "OpenAPI Schema 오류",
     },
   },
   Mask: {
@@ -575,6 +803,61 @@ const ko: PartialLocaleType = {
     Messages: "메시지",
     Topic: "주제",
     Time: "시간",
+  },
+  SdPanel: {
+    Prompt: "프롬프트",
+    NegativePrompt: "부정적 프롬프트",
+    PleaseInput: (name: string) => `${name}을 입력하세요`,
+    AspectRatio: "비율",
+    ImageStyle: "이미지 스타일",
+    OutFormat: "출력 형식",
+    AIModel: "AI 모델",
+    ModelVersion: "모델 버전",
+    Submit: "제출",
+    ParamIsRequired: (name: string) => `${name}은 필수 입력 항목입니다`,
+    Styles: {
+      D3Model: "3d-model",
+      AnalogFilm: "analog-film",
+      Anime: "anime",
+      Cinematic: "cinematic",
+      ComicBook: "comic-book",
+      DigitalArt: "digital-art",
+      Enhance: "enhance",
+      FantasyArt: "fantasy-art",
+      Isometric: "isometric",
+      LineArt: "line-art",
+      LowPoly: "low-poly",
+      ModelingCompound: "modeling-compound",
+      NeonPunk: "neon-punk",
+      Origami: "origami",
+      Photographic: "photographic",
+      PixelArt: "pixel-art",
+      TileTexture: "tile-texture",
+    },
+  },
+  Sd: {
+    SubTitle: (count: number) => `${count} 개의 이미지`,
+    Actions: {
+      Params: "파라미터 보기",
+      Copy: "프롬프트 복사",
+      Delete: "삭제",
+      Retry: "다시 시도",
+      ReturnHome: "홈으로 돌아가기",
+      History: "기록",
+    },
+    EmptyRecord: "아직 이미지가 없습니다",
+    Status: {
+      Name: "상태",
+      Success: "성공",
+      Error: "오류",
+      Wait: "대기",
+      Running: "실행 중",
+    },
+    Danger: {
+      Delete: "삭제하시겠습니까?",
+    },
+    GenerateParams: "파라미터 생성",
+    Detail: "상세",
   },
 };
 

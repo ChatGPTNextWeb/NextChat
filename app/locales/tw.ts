@@ -100,6 +100,7 @@ const tw = {
       copyLastMessage: "複製最後一個回覆",
       copyLastCode: "複製最後一個程式碼區塊",
       showShortcutKey: "顯示快捷方式",
+      clearContext: "清除上下文",
     },
   },
   Export: {
@@ -381,6 +382,17 @@ const tw = {
           SubTitle: "選擇一個特定的 API 版本",
         },
       },
+      AI302: {
+        ApiKey: {
+          Title: "API 金鑰",
+          SubTitle: "使用自訂 302.AI API 金鑰",
+          Placeholder: "302.AI API 金鑰",
+        },
+        Endpoint: {
+          Title: "端點位址",
+          SubTitle: "範例：",
+        },
+      },
       CustomModel: {
         Title: "自訂模型名稱",
         SubTitle: "增加自訂模型可選擇項目，使用英文逗號隔開",
@@ -485,7 +497,7 @@ const tw = {
     },
   },
   SearchChat: {
-    Name: "搜尋",
+    Name: "搜尋聊天記錄",
     Page: {
       Title: "搜尋聊天記錄",
       Search: "輸入搜尋關鍵詞",

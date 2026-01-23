@@ -36,6 +36,7 @@ import { removeImage } from "@/app/utils/chat";
 import { SideBar } from "./sd-sidebar";
 import { WindowContent } from "@/app/components/home";
 import { params } from "./sd-panel";
+import clsx from "clsx";
 
 function getSdTaskStatus(item: any) {
   let s: string;
@@ -104,7 +105,7 @@ export function Sd() {
 
   return (
     <>
-      <SideBar className={isSd ? homeStyles["sidebar-show"] : ""} />
+      <SideBar className={clsx({ [homeStyles["sidebar-show"]]: isSd })} />
       <WindowContent>
         <div className={chatStyles.chat} key={"1"}>
           <div className="window-header" data-tauri-drag-region>
@@ -121,7 +122,10 @@ export function Sd() {
               </div>
             )}
             <div
-              className={`window-header-title ${chatStyles["chat-body-title"]}`}
+              className={clsx(
+                "window-header-title",
+                chatStyles["chat-body-title"],
+              )}
             >
               <div className={`window-header-main-title`}>Stability AI</div>
               <div className="window-header-sub-title">
