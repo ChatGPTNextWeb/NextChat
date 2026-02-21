@@ -353,8 +353,12 @@ export function stream(
           }
 
           responseText = responseTexts.join("\n\n");
-
-          return finish();
+          // Mark as finished and route through onError so that the
+          // user/bot messages get isError=true and are excluded from
+          // future request contexts (preventing extra token charges).
+          finished = true;
+          options?.onError?.(new Error(responseText));
+          return;
         }
       },
       onmessage(msg) {
@@ -579,8 +583,12 @@ export function streamWithThink(
           }
 
           responseText = responseTexts.join("\n\n");
-
-          return finish();
+          // Mark as finished and route through onError so that the
+          // user/bot messages get isError=true and are excluded from
+          // future request contexts (preventing extra token charges).
+          finished = true;
+          options?.onError?.(new Error(responseText));
+          return;
         }
       },
       onmessage(msg) {
