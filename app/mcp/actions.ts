@@ -118,24 +118,22 @@ async function initializeSingleClient(
     errorMsg: null, // null 表示正在初始化
   });
 
-  // 异步初始化
-  createClient(clientId, serverConfig)
-    .then(async (client) => {
-      const tools = await listTools(client);
-      logger.info(
-        `Supported tools for [${clientId}]: ${JSON.stringify(tools, null, 2)}`,
-      );
-      clientsMap.set(clientId, { client, tools, errorMsg: null });
-      logger.success(`Client [${clientId}] initialized successfully`);
-    })
-    .catch((error) => {
-      clientsMap.set(clientId, {
-        client: null,
-        tools: null,
-        errorMsg: error instanceof Error ? error.message : String(error),
-      });
-      logger.error(`Failed to initialize client [${clientId}]: ${error}`);
+  try {
+    const client = await createClient(clientId, serverConfig);
+    const tools = await listTools(client);
+    logger.info(
+      `Supported tools for [${clientId}]: ${JSON.stringify(tools, null, 2)}`,
+    );
+    clientsMap.set(clientId, { client, tools, errorMsg: null });
+    logger.success(`Client [${clientId}] initialized successfully`);
+  } catch (error) {
+    clientsMap.set(clientId, {
+      client: null,
+      tools: null,
+      errorMsg: error instanceof Error ? error.message : String(error),
     });
+    logger.error(`Failed to initialize client [${clientId}]: ${error}`);
+  }
 }
 
 // 初始化系统
@@ -149,10 +147,12 @@ export async function initializeMcpSystem() {
     }
 
     const config = await getMcpConfigFromFile();
-    // 初始化所有客户端
-    for (const [clientId, serverConfig] of Object.entries(config.mcpServers)) {
-      await initializeSingleClient(clientId, serverConfig);
-    }
+    // 并行初始化所有客户端
+    await Promise.all(
+      Object.entries(config.mcpServers).map(([clientId, serverConfig]) =>
+        initializeSingleClient(clientId, serverConfig),
+      ),
+    );
     return config;
   } catch (error) {
     logger.error(`Failed to initialize MCP system: ${error}`);
@@ -323,9 +323,11 @@ export async function restartAllClients() {
 
     // 重新初始化
     const config = await getMcpConfigFromFile();
-    for (const [clientId, serverConfig] of Object.entries(config.mcpServers)) {
-      await initializeSingleClient(clientId, serverConfig);
-    }
+    await Promise.all(
+      Object.entries(config.mcpServers).map(([clientId, serverConfig]) =>
+        initializeSingleClient(clientId, serverConfig),
+      ),
+    );
     return config;
   } catch (error) {
     logger.error(`Failed to restart clients: ${error}`);
