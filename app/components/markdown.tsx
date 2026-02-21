@@ -25,12 +25,22 @@ import { IconButton } from "./button";
 import { useAppConfig } from "../store/config";
 import clsx from "clsx";
 
+// Initialize mermaid once with v11-compatible config
+mermaid.initialize({
+  startOnLoad: false,
+  theme: "default",
+  securityLevel: "loose",
+  suppressErrorRendering: true,
+});
+
 export function Mermaid(props: { code: string }) {
   const ref = useRef<HTMLDivElement>(null);
   const [hasError, setHasError] = useState(false);
 
   useEffect(() => {
     if (props.code && ref.current) {
+      // Reset the element so mermaid v11 re-processes it on code changes
+      ref.current.removeAttribute("data-processed");
       mermaid
         .run({
           nodes: [ref.current],

@@ -37,7 +37,7 @@
     "idb-keyval": "^6.2.1",
     "lodash-es": "^4.17.21",
     "markdown-to-txt": "^2.0.1",
-    "mermaid": "^10.6.1",
+    "mermaid": "^11.12.3",
     "nanoid": "^5.0.3",
     "next": "^14.1.1",
     "node-fetch": "^3.3.1",
