@@ -310,7 +310,14 @@ export function stream(
         tools: tools && tools.length ? tools : undefined,
       }),
       signal: controller.signal,
-      headers,
+      headers: {
+        ...headers,
+        // Ensure the server returns SSE content type; @fortaine/fetch-event-source
+        // only sets Accept: text/event-stream when no Accept header is present,
+        // but getHeaders() provides Accept: application/json which would otherwise
+        // prevent proper SSE streaming on some servers/proxies.
+        Accept: "text/event-stream",
+      },
     };
     const requestTimeoutId = setTimeout(
       () => controller.abort(),
@@ -536,7 +543,14 @@ export function streamWithThink(
         tools: tools && tools.length ? tools : undefined,
       }),
       signal: controller.signal,
-      headers,
+      headers: {
+        ...headers,
+        // Ensure the server returns SSE content type; @fortaine/fetch-event-source
+        // only sets Accept: text/event-stream when no Accept header is present,
+        // but getHeaders() provides Accept: application/json which would otherwise
+        // prevent proper SSE streaming on some servers/proxies.
+        Accept: "text/event-stream",
+      },
     };
     const requestTimeoutId = setTimeout(
       () => controller.abort(),
