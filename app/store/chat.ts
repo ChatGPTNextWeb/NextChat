@@ -798,7 +798,7 @@ export const useChatStore = createPersistStore(
 
       updateStat(message: ChatMessage, session: ChatSession) {
         get().updateTargetSession(session, (session) => {
-          session.stat.charCount += message.content.length;
+          session.stat.charCount += getMessageTextContent(message).length;
           // TODO: should update chat count and word count
         });
       },
