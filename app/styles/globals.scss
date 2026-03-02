@@ -90,7 +90,7 @@
 html {
   height: var(--full-height);
 
-  font-family: "Noto Sans", "SF Pro SC", "SF Pro Text", "SF Pro Icons",
+  font-family: "Noto Sans SC", "SF Pro SC", "SF Pro Text", "SF Pro Icons",
     "PingFang SC", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
 }
 
@@ -101,12 +101,12 @@ body {
   padding: 0;
   height: var(--full-height);
   width: 100vw;
-  display: flex;
+  display: grid;
   justify-content: center;
   align-items: center;
   user-select: none;
   touch-action: pan-x pan-y;
-  overflow: hidden;
+  overflow: auto;
 
   @media only screen and (max-width: 600px) {
     background-color: var(--second);
