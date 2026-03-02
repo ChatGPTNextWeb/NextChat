@@ -1,0 +1,35 @@
+name: Upstream Sync all branch
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+
+jobs:
+  SyncBranch:
+    name: Sync All Branch from latest commits via upstream repo
+    runs-on: ubuntu-latest
+    if: ${{ github.event.repository.fork }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Fetch upstream
+        run: |
+          echo "Fetching upstream..."
+          git remote add upstream https://github.com/Yidadaa/ChatGPT-Next-Web.git
+        # if you have a special branch that is protected or any. rename "x0x0", you can exclude it from the synchronization process.
+        # the workflow will synchronize all branches from the owner repository except for the "x0x0" branch, providing an example of how it works.
+      - name: Sync branch from upstream to all branches
+        run: |
+          git checkout main
+          git pull upstream main
+          branches=$(git branch --format="%(refname:lstrip=2)")
+          for branch in $branches; do
+            if [[ "$branch" != "x0x0" ]]; then
+              git checkout "$branch"
+              git merge main --no-edit
+              git push origin "$branch"
+            fi
+          done
