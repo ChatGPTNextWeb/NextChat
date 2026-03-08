@@ -17,6 +17,7 @@ import {
   XAI_BASE_URL,
   CHATGLM_BASE_URL,
   SILICONFLOW_BASE_URL,
+  TENSORIX_BASE_URL,
   AI302_BASE_URL,
 } from "../constant";
 import { getHeaders } from "../client/api";
@@ -59,6 +60,10 @@ const DEFAULT_CHATGLM_URL = isApp ? CHATGLM_BASE_URL : ApiPath.ChatGLM;
 const DEFAULT_SILICONFLOW_URL = isApp
   ? SILICONFLOW_BASE_URL
   : ApiPath.SiliconFlow;
+
+const DEFAULT_TENSORIX_URL = isApp
+  ? TENSORIX_BASE_URL
+  : ApiPath.Tensorix;
 
 const DEFAULT_AI302_URL = isApp ? AI302_BASE_URL : ApiPath["302.AI"];
 
@@ -134,6 +139,10 @@ const DEFAULT_ACCESS_STATE = {
   // siliconflow
   siliconflowUrl: DEFAULT_SILICONFLOW_URL,
   siliconflowApiKey: "",
+
+  // tensorix
+  tensorixUrl: DEFAULT_TENSORIX_URL,
+  tensorixApiKey: "",
 
   // 302.AI
   ai302Url: DEFAULT_AI302_URL,
@@ -226,6 +235,10 @@ export const useAccessStore = createPersistStore(
       return ensure(get(), ["siliconflowApiKey"]);
     },
 
+    isValidTensorix() {
+      return ensure(get(), ["tensorixApiKey"]);
+    },
+
     isAuthorized() {
       this.fetch();
 
@@ -245,6 +258,7 @@ export const useAccessStore = createPersistStore(
         this.isValidXAI() ||
         this.isValidChatGLM() ||
         this.isValidSiliconFlow() ||
+        this.isValidTensorix() ||
         !this.enabledAccessControl() ||
         (this.enabledAccessControl() && ensure(get(), ["accessCode"]))
       );
