@@ -753,6 +753,8 @@ const ai302Models = [
 ];
 
 const minimaxModels = [
+  "MiniMax-M2.7",
+  "MiniMax-M2.7-highspeed",
   "MiniMax-M1",
   "MiniMax-M1-80k",
   "MiniMax-M2",
