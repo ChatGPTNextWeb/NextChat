@@ -100,6 +100,12 @@ declare global {
       DEFAULT_INPUT_TEMPLATE?: string;
 
       ENABLE_MCP?: string; // enable mcp functionality
+
+      ATTACHMENT_STORE_DIR?: string;
+      ATTACHMENT_URL_PREFIX?: string;
+      ATTACHMENT_TTL_HOURS?: string;
+      ATTACHMENT_MAX_SIZE_MB?: string;
+      ATTACHMENT_MAX_TEXT_LENGTH?: string;
     }
   }
 }
@@ -283,5 +289,11 @@ export const getServerSideConfig = () => {
     visionModels,
     allowedWebDavEndpoints,
     enableMcp: process.env.ENABLE_MCP === "true",
+
+    attachmentStoreDir: process.env.ATTACHMENT_STORE_DIR,
+    attachmentUrlPrefix: process.env.ATTACHMENT_URL_PREFIX,
+    attachmentTtlHours: process.env.ATTACHMENT_TTL_HOURS,
+    attachmentMaxSizeMb: process.env.ATTACHMENT_MAX_SIZE_MB,
+    attachmentMaxTextLength: process.env.ATTACHMENT_MAX_TEXT_LENGTH,
   };
 };

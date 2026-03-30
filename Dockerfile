@@ -7,6 +7,7 @@ RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
 COPY package.json yarn.lock ./
+COPY vendor/rt-client-0.5.0.tgz ./vendor/rt-client-0.5.0.tgz
 
 RUN yarn config set registry 'https://registry.npmmirror.com/'
 RUN yarn install
@@ -43,6 +44,7 @@ COPY --from=builder /app/.next/server ./.next/server
 
 RUN mkdir -p /app/app/mcp && chmod 777 /app/app/mcp
 COPY --from=builder /app/app/mcp/mcp_config.default.json /app/app/mcp/mcp_config.json
+RUN mkdir -p /app/data/attachments && chmod 777 /app/data/attachments
 
 EXPOSE 3000
 

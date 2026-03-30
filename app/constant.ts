@@ -78,6 +78,7 @@ export enum ApiPath {
   DeepSeek = "/api/deepseek",
   SiliconFlow = "/api/siliconflow",
   Huawei = "/api/huawei",
+  Attachments = "/api/attachments",
   "302.AI" = "/api/302ai",
 }
 
@@ -464,10 +465,28 @@ export const KnowledgeCutOffDate: Record<string, string> = {
   o1: "2023-10",
   "o3-mini-2025-01-31": "2023-10",
   "o3-mini": "2023-10",
+  // GPT-5系列模型
+  "gpt-5-codex": "2024-10",
+  "gpt-5-codex-mini": "2024-10",
+  "gpt-5-nano": "2024-10",
+  "gpt-5.1": "2024-12",
+  "gpt-5.1-codex": "2024-12",
+  "gpt-5.1-codex-max": "2024-12",
+  "gpt-5.1-codex-mini": "2024-12",
+  "gpt-5.2": "2025-01",
+  "gpt-5.2-codex": "2025-01",
+  "gpt-5.3-codex": "2025-03",
+  "gpt-5.3-codex-spark": "2025-03",
+  "gpt-5.4": "2025-06",
   // After improvements,
   // it's now easier to add "KnowledgeCutOffDate" instead of stupid hardcoding it, as was done previously.
   "gemini-pro": "2023-12",
   "gemini-pro-vision": "2023-12",
+  "gemini-2.0-flash": "2023-12",
+  "gemini-2.5-flash": "2024-06",
+  "gemini-2.5-pro": "2024-06",
+  "gemini-3-flash": "2024-12",
+  "gemini-3-pro-preview": "2025-01",
   "deepseek-chat": "2024-07",
   "deepseek-coder": "2024-07",
 };
@@ -490,10 +509,12 @@ export const VISION_MODEL_REGEXES = [
   /vision/,
   /gpt-4o/,
   /gpt-4\.1/,
+  /gpt-5/,  // 添加对gpt-5系列的支持
   /claude.*[34]/,
   /gemini-1\.5/,
-  /gemini-exp/,
   /gemini-2\.[05]/,
+  /gemini-3/,  // 添加对gemini-3系列的支持
+  /gemini-exp/,
   /learnlm/,
   /qwen-vl/,
   /qwen2-vl/,
@@ -504,7 +525,6 @@ export const VISION_MODEL_REGEXES = [
   /o3/,
   /o4-mini/,
   /grok-4/i,
-  /gpt-5/
 ];
 
 export const EXCLUDE_VISION_MODEL_REGEXES = [/claude-3-5-haiku-20241022/];
@@ -534,6 +554,18 @@ const openaiModels = [
   "gpt-5-nano",
   "gpt-5",
   "gpt-5-chat-2025-01-01-preview",
+  // 添加缺失的GPT-5系列模型
+  "gpt-5-codex",
+  "gpt-5-codex-mini",
+  "gpt-5.1",
+  "gpt-5.1-codex",
+  "gpt-5.1-codex-max",
+  "gpt-5.1-codex-mini",
+  "gpt-5.2",
+  "gpt-5.2-codex",
+  "gpt-5.3-codex",
+  "gpt-5.3-codex-spark",
+  "gpt-5.4",
   "gpt-4o",
   "gpt-4o-2024-05-13",
   "gpt-4o-2024-08-06",
@@ -565,14 +597,29 @@ const googleModels = [
   "gemini-exp-1206",
   "gemini-2.0-flash",
   "gemini-2.0-flash-exp",
+  "gemini-2.0-flash-lite",
   "gemini-2.0-flash-lite-preview-02-05",
   "gemini-2.0-flash-thinking-exp",
   "gemini-2.0-flash-thinking-exp-1219",
   "gemini-2.0-flash-thinking-exp-01-21",
   "gemini-2.0-pro-exp",
   "gemini-2.0-pro-exp-02-05",
+  "gemini-2.5-flash",
+  "gemini-2.5-flash-lite",
+  "gemini-2.5-flash-lite-preview-09-2025",
+  "gemini-2.5-flash-preview-09-2025",
+  "gemini-2.5-flash-preview-tts",
+  "gemini-2.5-pro",
   "gemini-2.5-pro-preview-06-05",
-  "gemini-2.5-pro"
+  "gemini-3-flash",
+  "gemini-3-flash-preview",
+  "gemini-3-pro-preview",
+  "gemini-embedding-001",
+  "gemini-flash-latest",
+  "gemini-flash-lite-latest",
+  "google/gemma-2-9b-it",
+  "google/gemma-3-12b-it",
+  "google/gemma-3-4b-it",
 ];
 
 const anthropicModels = [
@@ -615,11 +662,11 @@ const bytedanceModels = [
   "Doubao-pro-4k",
   "Doubao-pro-32k",
   "Doubao-pro-128k",
-  // "deepseek-r1-250120",
-  "deepseek-v3-241226",
+  "deepseek-v3-1-250821",
   "deepseek-v3-250324",
-  "deepseek-r1-distill-qwen-7b-250120",
-  "deepseek-r1-distill-qwen-32b-250120",
+  "deepseek-v3-2-251201",
+
+
 ];
 
 const alibabaModes = [
@@ -633,6 +680,16 @@ const alibabaModes = [
   "qwen-omni-turbo",
   "qwen-vl-plus",
   "qwen-vl-max",
+  "deepseek-v3.2",
+  "deepseek-v3.2-exp",
+  "deepseek-v3.1",
+  "deepseek-r1-0528",
+  "deepseek-v3",
+  "deepseek-r1",
+  "deepseek-r1-distill-llama-70b",
+  "deepseek-r1-distill-qwen-32b",
+  "deepseek-r1-distill-qwen-14b",
+  "deepseek-r1-distill-qwen-7b",
 ];
 
 const tencentModels = [

@@ -1,5 +1,8 @@
 import {
   getMessageTextContent,
+  getMessageTextContentForModel,
+  buildAttachmentsPrompt,
+  isVisionModel,
   isDalle3,
   safeLocalStorage,
   trimTopic,
@@ -38,6 +41,7 @@ import { collectModelsWithDefaultModel } from "../utils/model";
 import { createEmptyMask, Mask } from "./mask";
 import { executeMcpAction, getAllTools, isMcpEnabled } from "../mcp/actions";
 import { extractMcpJson, isMcpJson } from "../mcp/utils";
+import type { Attachment } from "../types/attachment";
 
 const localStorage = safeLocalStorage();
 
@@ -63,6 +67,7 @@ export type ChatMessage = RequestMessage & {
   tools?: ChatMessageTool[];
   audio_url?: string;
   isMcpResponse?: boolean;
+  attachments?: Attachment[];
 };
 
 export function createMessage(override: Partial<ChatMessage>): ChatMessage {
@@ -151,9 +156,54 @@ function getSummarizeModel(
   return [currentModel, providerName];
 }
 
+function prepareMessageContentForModel(
+  message: ChatMessage,
+  modelConfig: ModelConfig,
+) {
+  if (isVisionModel(modelConfig.model)) {
+    const prompt = buildAttachmentsPrompt(message.attachments);
+    if (!prompt) {
+      return message.content;
+    }
+    if (typeof message.content === "string") {
+      return [
+        {
+          type: "text" as const,
+          text: [message.content, prompt].filter(Boolean).join("\n\n"),
+        },
+      ];
+    }
+    const nextContent = [...message.content];
+    const firstTextIndex = nextContent.findIndex(
+      (part) => part.type === "text",
+    );
+    if (firstTextIndex >= 0) {
+      const firstText = nextContent[firstTextIndex].text ?? "";
+      nextContent[firstTextIndex] = {
+        ...nextContent[firstTextIndex],
+        text: [firstText, prompt].filter(Boolean).join("\n\n"),
+      };
+    } else {
+      nextContent.unshift({ type: "text", text: prompt });
+    }
+    return nextContent;
+  }
+  return getMessageTextContentForModel(message);
+}
+
+function prepareMessagesForModel(
+  messages: ChatMessage[],
+  modelConfig: ModelConfig,
+): RequestMessage[] {
+  return messages.map((message) => ({
+    role: message.role,
+    content: prepareMessageContentForModel(message, modelConfig),
+  }));
+}
+
 function countMessages(msgs: ChatMessage[]) {
   return msgs.reduce(
-    (pre, cur) => pre + estimateTokenLength(getMessageTextContent(cur)),
+    (pre, cur) => pre + estimateTokenLength(getMessageTextContentForModel(cur)),
     0,
   );
 }
@@ -407,6 +457,7 @@ export const useChatStore = createPersistStore(
       async onUserInput(
         content: string,
         attachImages?: string[],
+        attachFiles?: Attachment[],
         isMcpResponse?: boolean,
       ) {
         const session = get().currentSession();
@@ -431,6 +482,7 @@ export const useChatStore = createPersistStore(
           role: "user",
           content: mContent,
           isMcpResponse,
+          attachments: attachFiles?.length ? attachFiles : undefined,
         });
 
         const botMessage: ChatMessage = createMessage({
@@ -440,9 +492,12 @@ export const useChatStore = createPersistStore(
         });
 
         // get recent messages
-        const recentMessages = await get().getMessagesWithMemory();
-        const sendMessages = recentMessages.concat(userMessage);
-        const messageIndex = session.messages.length + 1;
+          const recentMessages = await get().getMessagesWithMemory();
+          const sendMessages = prepareMessagesForModel(
+            recentMessages.concat(userMessage),
+            modelConfig,
+          );
+          const messageIndex = session.messages.length + 1;
 
         // save user's and bot's message
         get().updateTargetSession(session, (session) => {
@@ -625,7 +680,7 @@ export const useChatStore = createPersistStore(
         ) {
           const msg = messages[i];
           if (!msg || msg.isError) continue;
-          tokenCount += estimateTokenLength(getMessageTextContent(msg));
+            tokenCount += estimateTokenLength(getMessageTextContentForModel(msg));
           reversedRecentMessages.push(msg);
         }
         // concat all messages
@@ -671,13 +726,17 @@ export const useChatStore = createPersistStore(
         }
 
         // if not config compressModel, then using getSummarizeModel
-        const [model, providerName] = modelConfig.compressModel
-          ? [modelConfig.compressModel, modelConfig.compressProviderName]
+        const [model, providerNameRaw] = modelConfig.compressModel
+          ? [
+              modelConfig.compressModel,
+              modelConfig.compressProviderName || modelConfig.providerName,
+            ]
           : getSummarizeModel(
               session.mask.modelConfig.model,
               session.mask.modelConfig.providerName,
             );
-        const api: ClientApi = getClientApi(providerName as ServiceProvider);
+        const providerName = providerNameRaw as ServiceProvider;
+        const api: ClientApi = getClientApi(providerName);
 
         // remove error messages if any
         const messages = session.messages;
@@ -705,13 +764,17 @@ export const useChatStore = createPersistStore(
                 content: Locale.Store.Prompt.Topic,
               }),
             );
-          api.llm.chat({
-            messages: topicMessages,
-            config: {
-              model,
-              stream: false,
-              providerName,
-            },
+            const topicMessagesForModel = prepareMessagesForModel(
+              topicMessages,
+              { ...modelConfig, model, providerName },
+            );
+            api.llm.chat({
+              messages: topicMessagesForModel,
+              config: {
+                model,
+                stream: false,
+                providerName,
+              },
             onFinish(message, responseRes) {
               if (responseRes?.status === 200) {
                 get().updateTargetSession(
@@ -763,20 +826,24 @@ export const useChatStore = createPersistStore(
            * this param is just shit
            **/
           const { max_tokens, ...modelcfg } = modelConfig;
-          api.llm.chat({
-            messages: toBeSummarizedMsgs.concat(
-              createMessage({
-                role: "system",
-                content: Locale.Store.Prompt.Summarize,
-                date: "",
-              }),
-            ),
-            config: {
-              ...modelcfg,
-              stream: true,
-              model,
-              providerName,
-            },
+            const summarizeMessagesForModel = prepareMessagesForModel(
+              toBeSummarizedMsgs.concat(
+                createMessage({
+                  role: "system",
+                  content: Locale.Store.Prompt.Summarize,
+                  date: "",
+                }),
+              ),
+              { ...modelcfg, model, providerName },
+            );
+            api.llm.chat({
+              messages: summarizeMessagesForModel,
+              config: {
+                ...modelcfg,
+                stream: true,
+                model,
+                providerName,
+              },
             onUpdate(message) {
               session.memoryPrompt = message;
             },
@@ -841,11 +908,12 @@ export const useChatStore = createPersistStore(
                     typeof result === "object"
                       ? JSON.stringify(result)
                       : String(result);
-                  get().onUserInput(
-                    `\`\`\`json:mcp-response:${mcpRequest.clientId}\n${mcpResponse}\n\`\`\``,
-                    [],
-                    true,
-                  );
+                    get().onUserInput(
+                      `\`\`\`json:mcp-response:${mcpRequest.clientId}\n${mcpResponse}\n\`\`\``,
+                      [],
+                      [],
+                      true,
+                    );
                 })
                 .catch((error) => showToast("MCP execution failed", error));
             }
