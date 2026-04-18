@@ -375,6 +375,14 @@ SiliconFlow API URL.
 
 302.AI API URL.
 
+### `HUGGINGFACE_API_KEY` (optional)
+
+HuggingFace API Key.
+
+### `HUGGINGFACE_URL` (optional)
+
+HuggingFace API URL. Default is `https://router.huggingface.co`.
+
 ## Requirements
 
 NodeJS >= 18, Docker >= 20

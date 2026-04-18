@@ -177,6 +177,9 @@ export class ClientApi {
       case ModelProvider["302.AI"]:
         this.llm = new Ai302Api();
         break;
+      case ModelProvider.HuggingFace:
+        this.llm = new ChatGPTApi();
+        break;
       default:
         this.llm = new ChatGPTApi();
     }
@@ -270,6 +273,8 @@ export function getHeaders(ignoreHeaders: boolean = false) {
     const isSiliconFlow =
       modelConfig.providerName === ServiceProvider.SiliconFlow;
     const isAI302 = modelConfig.providerName === ServiceProvider["302.AI"];
+    const isHuggingFace =
+      modelConfig.providerName === ServiceProvider.HuggingFace;
     const isEnabledAccessControl = accessStore.enabledAccessControl();
     const apiKey = isGoogle
       ? accessStore.googleApiKey
@@ -297,6 +302,8 @@ export function getHeaders(ignoreHeaders: boolean = false) {
         : ""
       : isAI302
       ? accessStore.ai302ApiKey
+      : isHuggingFace
+      ? accessStore.huggingfaceApiKey
       : accessStore.openaiApiKey;
     return {
       isGoogle,
@@ -393,6 +400,8 @@ export function getClientApi(provider: ServiceProvider): ClientApi {
       return new ClientApi(ModelProvider.SiliconFlow);
     case ServiceProvider["302.AI"]:
       return new ClientApi(ModelProvider["302.AI"]);
+    case ServiceProvider.HuggingFace:
+      return new ClientApi(ModelProvider.HuggingFace);
     default:
       return new ClientApi(ModelProvider.GPT);
   }

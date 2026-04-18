@@ -292,6 +292,14 @@ SiliconFlow API URL.
 
 302.AI API URL.
 
+### `HUGGINGFACE_API_KEY` (optional)
+
+HuggingFace API Key.
+
+### `HUGGINGFACE_URL` (optional)
+
+HuggingFace API URL，默认值为 `https://router.huggingface.co`。
+
 ## 开发
 
 点击下方按钮，开始二次开发：

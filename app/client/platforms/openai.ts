@@ -3,6 +3,7 @@
 import {
   ApiPath,
   OPENAI_BASE_URL,
+  HUGGINGFACE_BASE_URL,
   DEFAULT_MODELS,
   OpenaiPath,
   Azure,
@@ -84,6 +85,9 @@ export class ChatGPTApi implements LLMApi {
 
   path(path: string): string {
     const accessStore = useAccessStore.getState();
+    const modelConfig = useChatStore.getState().currentSession().mask.modelConfig;
+    const isHuggingFace =
+      modelConfig.providerName === ServiceProvider.HuggingFace;
 
     let baseUrl = "";
 
@@ -95,13 +99,22 @@ export class ChatGPTApi implements LLMApi {
         );
       }
 
-      baseUrl = isAzure ? accessStore.azureUrl : accessStore.openaiUrl;
+      baseUrl = isAzure
+        ? accessStore.azureUrl
+        : isHuggingFace
+        ? accessStore.huggingfaceUrl
+        : accessStore.openaiUrl;
     }
 
     if (baseUrl.length === 0) {
       const isApp = !!getClientConfig()?.isApp;
-      const apiPath = isAzure ? ApiPath.Azure : ApiPath.OpenAI;
-      baseUrl = isApp ? OPENAI_BASE_URL : apiPath;
+      const apiPath = isAzure
+        ? ApiPath.Azure
+        : isHuggingFace
+        ? ApiPath.HuggingFace
+        : ApiPath.OpenAI;
+      const defaultBaseUrl = isHuggingFace ? HUGGINGFACE_BASE_URL : OPENAI_BASE_URL;
+      baseUrl = isApp ? defaultBaseUrl : apiPath;
     }
 
     if (baseUrl.endsWith("/")) {
@@ -110,7 +123,8 @@ export class ChatGPTApi implements LLMApi {
     if (
       !baseUrl.startsWith("http") &&
       !isAzure &&
-      !baseUrl.startsWith(ApiPath.OpenAI)
+      !baseUrl.startsWith(ApiPath.OpenAI) &&
+      !baseUrl.startsWith(ApiPath.HuggingFace)
     ) {
       baseUrl = "https://" + baseUrl;
     }

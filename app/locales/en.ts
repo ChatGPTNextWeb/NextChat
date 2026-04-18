@@ -554,6 +554,17 @@ const en: LocaleType = {
           SubTitle: "Example: ",
         },
       },
+      HuggingFace: {
+        ApiKey: {
+          Title: "HuggingFace API Key",
+          SubTitle: "Use a custom HuggingFace API Key",
+          Placeholder: "hf_xxx",
+        },
+        Endpoint: {
+          Title: "Endpoint Address",
+          SubTitle: "Example: ",
+        },
+      },
     },
 
     Model: "Model",

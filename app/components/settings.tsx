@@ -76,6 +76,7 @@ import {
   DeepSeek,
   SiliconFlow,
   AI302,
+  HuggingFace,
 } from "../constant";
 import { Prompt, SearchService, usePromptStore } from "../store/prompt";
 import { ErrorBoundary } from "./error";
@@ -158,6 +159,7 @@ function UserPromptModal(props: { onClose?: () => void }) {
       setSearchPrompts([]);
     }
   }, [searchInput]);
+
 
   return (
     <div className="modal-mask">
@@ -1499,6 +1501,47 @@ export function Settings() {
       </>
   );
 
+  const huggingFaceConfigComponent =
+    accessStore.provider === ServiceProvider.HuggingFace && (
+      <>
+        <ListItem
+          title={Locale.Settings.Access.HuggingFace.Endpoint.Title}
+          subTitle={
+            Locale.Settings.Access.HuggingFace.Endpoint.SubTitle +
+            HuggingFace.ExampleEndpoint
+          }
+        >
+          <input
+            aria-label={Locale.Settings.Access.HuggingFace.Endpoint.Title}
+            type="text"
+            value={accessStore.huggingfaceUrl}
+            placeholder={HuggingFace.ExampleEndpoint}
+            onChange={(e) =>
+              accessStore.update(
+                (access) => (access.huggingfaceUrl = e.currentTarget.value),
+              )
+            }
+          ></input>
+        </ListItem>
+        <ListItem
+          title={Locale.Settings.Access.HuggingFace.ApiKey.Title}
+          subTitle={Locale.Settings.Access.HuggingFace.ApiKey.SubTitle}
+        >
+          <PasswordInput
+            aria-label={Locale.Settings.Access.HuggingFace.ApiKey.Title}
+            value={accessStore.huggingfaceApiKey}
+            type="text"
+            placeholder={Locale.Settings.Access.HuggingFace.ApiKey.Placeholder}
+            onChange={(e) => {
+              accessStore.update(
+                (access) => (access.huggingfaceApiKey = e.currentTarget.value),
+              );
+            }}
+          />
+        </ListItem>
+      </>
+    );
+
   return (
     <ErrorBoundary>
       <div className="window-header" data-tauri-drag-region>
@@ -1864,6 +1907,7 @@ export function Settings() {
                   {chatglmConfigComponent}
                   {siliconflowConfigComponent}
                   {ai302ConfigComponent}
+                  {huggingFaceConfigComponent}
                 </>
               )}
             </>

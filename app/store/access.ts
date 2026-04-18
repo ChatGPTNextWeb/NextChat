@@ -18,6 +18,7 @@ import {
   CHATGLM_BASE_URL,
   SILICONFLOW_BASE_URL,
   AI302_BASE_URL,
+  HUGGINGFACE_BASE_URL,
 } from "../constant";
 import { getHeaders } from "../client/api";
 import { getClientConfig } from "../config/client";
@@ -61,6 +62,9 @@ const DEFAULT_SILICONFLOW_URL = isApp
   : ApiPath.SiliconFlow;
 
 const DEFAULT_AI302_URL = isApp ? AI302_BASE_URL : ApiPath["302.AI"];
+const DEFAULT_HUGGINGFACE_URL = isApp
+  ? HUGGINGFACE_BASE_URL
+  : ApiPath.HuggingFace;
 
 const DEFAULT_ACCESS_STATE = {
   accessCode: "",
@@ -138,6 +142,10 @@ const DEFAULT_ACCESS_STATE = {
   // 302.AI
   ai302Url: DEFAULT_AI302_URL,
   ai302ApiKey: "",
+
+  // huggingface
+  huggingfaceUrl: DEFAULT_HUGGINGFACE_URL,
+  huggingfaceApiKey: "",
 
   // server config
   needCode: true,
@@ -226,6 +234,10 @@ export const useAccessStore = createPersistStore(
       return ensure(get(), ["siliconflowApiKey"]);
     },
 
+    isValidHuggingFace() {
+      return ensure(get(), ["huggingfaceApiKey"]);
+    },
+
     isAuthorized() {
       this.fetch();
 
@@ -245,6 +257,7 @@ export const useAccessStore = createPersistStore(
         this.isValidXAI() ||
         this.isValidChatGLM() ||
         this.isValidSiliconFlow() ||
+        this.isValidHuggingFace() ||
         !this.enabledAccessControl() ||
         (this.enabledAccessControl() && ensure(get(), ["accessCode"]))
       );
