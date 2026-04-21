@@ -117,6 +117,7 @@ import { useMaskStore } from "../store/mask";
 import { ChatCommandPrefix, useChatCommand, useCommand } from "../command";
 import { prettyObject } from "../utils/format";
 import { ExportMessageModal } from "./exporter";
+import { ChatSelectionBar } from "./chat-selection-bar";
 import { getClientConfig } from "../config/client";
 import { useAllModels } from "../utils/hooks";
 import { ClientApi, MultimodalContent } from "../client/api";
@@ -999,25 +1000,17 @@ function _Chat() {
   const fontFamily = config.fontFamily;
 
   const [showExport, setShowExport] = useState(false);
-  const [isSelectionMode, setIsSelectionMode] = useState(false);
-  const [selectedMessageIds, setSelectedMessageIds] = useState<Set<string>>(new Set());
+  const {
+    isSelectionMode,
+    selectedMessageIds,
+    enterSelectionMode,
+    toggleMessageSelection,
+    exitSelectionMode,
+  } = useChatStore();
 
-  const toggleMessageSelection = (messageId: string) => {
-    setSelectedMessageIds((prev) => {
-      const newSet = new Set(prev);
-      if (newSet.has(messageId)) {
-        newSet.delete(messageId);
-      } else {
-        newSet.add(messageId);
-      }
-      return newSet;
-    });
-  };
-
-  const exitSelectionMode = () => {
-    setIsSelectionMode(false);
-    setSelectedMessageIds(new Set());
-  };
+  useEffect(() => {
+    exitSelectionMode();
+  }, []);
 
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const [userInput, setUserInput] = useState("");
@@ -1762,9 +1755,7 @@ function _Chat() {
                 icon={<MenuIcon />}
                 bordered
                 title={Locale.Chat.Actions.SelectionMode}
-                onClick={() => {
-                  setIsSelectionMode(true);
-                }}
+                onClick={enterSelectionMode}
               />
             </div>
             <div className="window-action-button">
@@ -1884,7 +1875,7 @@ ${getMessageTextContent(m).trim()}
                           >
                             <input
                               type="checkbox"
-                              checked={selectedMessageIds.has(message.id)}
+                              checked={selectedMessageIds.includes(message.id)}
                               readOnly
                             ></input>
                           </div>
@@ -2212,63 +2203,7 @@ ${getMessageTextContent(m).trim()}
                 </label>
               </div>
             )}
-            {isSelectionMode && (
-              <div className={styles["chat-selection-panel"]}>
-                <div className={styles["chat-selection-info"]}>
-                  {Locale.Chat.Selection.SelectedCount(selectedMessageIds.size)}
-                </div>
-                <div className={styles["chat-selection-actions"]}>
-                  <IconButton
-                    icon={<CancelIcon />}
-                    text={Locale.Chat.Selection.Cancel}
-                    bordered
-                    onClick={exitSelectionMode}
-                  />
-                  <IconButton
-                    icon={<DownloadIcon />}
-                    text={Locale.Chat.Selection.ExportMarkdown}
-                    bordered
-                    onClick={() => {
-                      if (selectedMessageIds.size === 0) {
-                        showToast(Locale.Chat.Selection.NoSelection);
-                        return;
-                      }
-
-                      const selectedMessages = session.messages.filter((m) =>
-                        selectedMessageIds.has(m.id),
-                      );
-                      const topic = session.topic || DEFAULT_TOPIC;
-                      const model = session.mask.modelConfig.model;
-                      const today = new Date().toISOString().split("T")[0];
-
-                      let mdContent = `---
-title: "${topic}"
-date: "${today}"
-model: "${model}"
----
-
-# ${topic}
-
-`;
-
-                      selectedMessages.forEach((m) => {
-                        const role =
-                          m.role === "user"
-                            ? Locale.Export.MessageFromYou
-                            : Locale.Export.MessageFromChatGPT;
-                        mdContent += `## ${role}
-
-${getMessageTextContent(m).trim()}
-
-`;
-                      });
-
-                      downloadAs(mdContent, `${topic}.md`);
-                    }}
-                  />
-                </div>
-              </div>
-            )}
+            {isSelectionMode && <ChatSelectionBar session={session} />}
           </div>
           <div
             className={clsx(styles["chat-side-panel"], {
