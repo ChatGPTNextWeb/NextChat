@@ -45,6 +45,8 @@ const cn = {
       ChatList: "查看消息列表",
       CompressedHistory: "查看压缩后的历史 Prompt",
       Export: "导出聊天记录",
+      ExportMarkdown: "导出为 Markdown",
+      SelectionMode: "选择模式",
       Copy: "复制",
       Stop: "停止",
       Retry: "重试",
@@ -58,6 +60,12 @@ const cn = {
       RefreshToast: "已发送刷新标题请求",
       Speech: "朗读",
       StopSpeech: "停止",
+    },
+    Selection: {
+      SelectedCount: (count: number) => `已选择 ${count} 条消息`,
+      Cancel: "取消",
+      ExportMarkdown: "导出所选为 Markdown",
+      NoSelection: "请先选择消息",
     },
     Commands: {
       new: "新建聊天",
