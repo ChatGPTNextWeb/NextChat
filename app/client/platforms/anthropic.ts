@@ -179,6 +179,12 @@ export class ClaudeApi implements LLMApi {
       });
     }
 
+    // Claude 4 generation models (claude-opus-4* / claude-sonnet-4*) do not
+    // allow temperature and top_p to be specified simultaneously.
+    const isClaude4 =
+      /claude-opus-4/i.test(modelConfig.model) ||
+      /claude-sonnet-4/i.test(modelConfig.model);
+
     const requestBody: AnthropicChatRequest = {
       messages: prompt,
       stream: shouldStream,
@@ -186,7 +192,7 @@ export class ClaudeApi implements LLMApi {
       model: modelConfig.model,
       max_tokens: modelConfig.max_tokens,
       temperature: modelConfig.temperature,
-      top_p: modelConfig.top_p,
+      top_p: isClaude4 ? undefined : modelConfig.top_p,
       // top_k: modelConfig.top_k,
       top_k: 5,
     };
