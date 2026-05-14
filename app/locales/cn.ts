@@ -507,6 +507,17 @@ const cn = {
           SubTitle: "样例：",
         },
       },
+      Qiniu: {
+        ApiKey: {
+          Title: "接口密钥",
+          SubTitle: "使用自定义 Qiniu API Key",
+          Placeholder: "Qiniu API Key",
+        },
+        Endpoint: {
+          Title: "接口地址",
+          SubTitle: "样例：",
+        },
+      },
       Stability: {
         ApiKey: {
           Title: "接口密钥",

@@ -491,6 +491,17 @@ const en: LocaleType = {
           SubTitle: "Example: ",
         },
       },
+      Qiniu: {
+        ApiKey: {
+          Title: "Qiniu API Key",
+          SubTitle: "Use a custom Qiniu API Key",
+          Placeholder: "Qiniu API Key",
+        },
+        Endpoint: {
+          Title: "Endpoint Address",
+          SubTitle: "Example: ",
+        },
+      },
       Stability: {
         ApiKey: {
           Title: "Stability API Key",

@@ -38,6 +38,8 @@ export const SILICONFLOW_BASE_URL = "https://api.siliconflow.cn";
 
 export const AI302_BASE_URL = "https://api.302.ai";
 
+export const QINIU_BASE_URL = "https://api.qnaigc.com";
+
 export const CACHE_URL_PREFIX = "/api/cache";
 export const UPLOAD_URL = `${CACHE_URL_PREFIX}/upload`;
 
@@ -74,6 +76,7 @@ export enum ApiPath {
   ChatGLM = "/api/chatglm",
   DeepSeek = "/api/deepseek",
   SiliconFlow = "/api/siliconflow",
+  Qiniu = "/api/qiniu",
   "302.AI" = "/api/302ai",
 }
 
@@ -133,6 +136,7 @@ export enum ServiceProvider {
   ChatGLM = "ChatGLM",
   DeepSeek = "DeepSeek",
   SiliconFlow = "SiliconFlow",
+  Qiniu = "Qiniu",
   "302.AI" = "302.AI",
 }
 
@@ -160,6 +164,7 @@ export enum ModelProvider {
   ChatGLM = "ChatGLM",
   DeepSeek = "DeepSeek",
   SiliconFlow = "SiliconFlow",
+  Qiniu = "Qiniu",
   "302.AI" = "302.AI",
 }
 
@@ -276,6 +281,12 @@ export const AI302 = {
   ChatPath: "v1/chat/completions",
   EmbeddingsPath: "jina/v1/embeddings",
   ListModelPath: "v1/models?llm=1",
+};
+
+export const Qiniu = {
+  ExampleEndpoint: QINIU_BASE_URL,
+  ChatPath: "v1/chat/completions",
+  ListModelPath: "v1/models",
 };
 
 export const DEFAULT_INPUT_TEMPLATE = `{{input}}`; // input / time / model / lang
@@ -493,7 +504,7 @@ export const VISION_MODEL_REGEXES = [
   /o3/,
   /o4-mini/,
   /grok-4/i,
-  /gpt-5/
+  /gpt-5/,
 ];
 
 export const EXCLUDE_VISION_MODEL_REGEXES = [/claude-3-5-haiku-20241022/];
@@ -561,7 +572,7 @@ const googleModels = [
   "gemini-2.0-pro-exp",
   "gemini-2.0-pro-exp-02-05",
   "gemini-2.5-pro-preview-06-05",
-  "gemini-2.5-pro"
+  "gemini-2.5-pro",
 ];
 
 const anthropicModels = [
@@ -716,6 +727,8 @@ const siliconflowModels = [
   "Pro/deepseek-ai/DeepSeek-R1",
   "Pro/deepseek-ai/DeepSeek-V3",
 ];
+
+const qiniuModels = ["deepseek-v3"];
 
 const ai302Models = [
   "deepseek-chat",
@@ -907,6 +920,17 @@ export const DEFAULT_MODELS = [
       providerName: "302.AI",
       providerType: "ai302",
       sorted: 15,
+    },
+  })),
+  ...qiniuModels.map((name) => ({
+    name,
+    available: true,
+    sorted: seq++,
+    provider: {
+      id: "qiniu",
+      providerName: "Qiniu",
+      providerType: "qiniu",
+      sorted: 16,
     },
   })),
 ] as const;
