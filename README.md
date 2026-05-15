@@ -313,12 +313,15 @@ If you want to disable parse settings from url, set this to 1.
 
 To control custom models, use `+` to add a custom model, use `-` to hide a model, use `name=displayName` to customize model name, separated by comma.
 
-User `-all` to disable all default models, `+all` to enable all default models.
+Use `-all` to disable all default models, `+all` to enable all default models.
+Use `-*provider` to disable specified models. 
+Current valid providers: `openai,azure,google,anthropic,baidu,bytedance,alibaba,tencent,moonshot,iflytek,xai,chatglm` and more to come.
 
 For Azure: use `modelName@Azure=deploymentName` to customize model name and deployment name.
 
 > Example: `+gpt-3.5-turbo@Azure=gpt35` will show option `gpt35(Azure)` in model list.
 > If you only can use Azure model, `-all,+gpt-3.5-turbo@Azure=gpt35` will `gpt35(Azure)` the only option in model list.
+> If you don't want to use Azure model, using `-*azure` will prevent Azure models from appearing in the model list.
 
 For ByteDance: use `modelName@bytedance=deploymentName` to customize model name and deployment name.
 
