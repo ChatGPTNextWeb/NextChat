@@ -76,6 +76,8 @@ export const DEFAULT_CONFIG = {
     compressMessageLengthThreshold: 1000,
     compressModel: "",
     compressProviderName: "",
+    aimlapiApiKey: "",
+aimlapiBaseUrl: "https://api.aimlapi.com",
     enableInjectSystemPrompts: true,
     template: config?.template ?? DEFAULT_INPUT_TEMPLATE,
     size: "1024x1024" as ModelSize,
