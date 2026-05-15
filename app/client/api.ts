@@ -24,6 +24,7 @@ import { DeepSeekApi } from "./platforms/deepseek";
 import { XAIApi } from "./platforms/xai";
 import { ChatGLMApi } from "./platforms/glm";
 import { SiliconflowApi } from "./platforms/siliconflow";
+import { TensorixApi } from "./platforms/tensorix";
 import { Ai302Api } from "./platforms/ai302";
 
 export const ROLES = ["system", "user", "assistant"] as const;
@@ -174,6 +175,9 @@ export class ClientApi {
       case ModelProvider.SiliconFlow:
         this.llm = new SiliconflowApi();
         break;
+      case ModelProvider.Tensorix:
+        this.llm = new TensorixApi();
+        break;
       case ModelProvider["302.AI"]:
         this.llm = new Ai302Api();
         break;
@@ -269,6 +273,8 @@ export function getHeaders(ignoreHeaders: boolean = false) {
     const isChatGLM = modelConfig.providerName === ServiceProvider.ChatGLM;
     const isSiliconFlow =
       modelConfig.providerName === ServiceProvider.SiliconFlow;
+    const isTensorix =
+      modelConfig.providerName === ServiceProvider.Tensorix;
     const isAI302 = modelConfig.providerName === ServiceProvider["302.AI"];
     const isEnabledAccessControl = accessStore.enabledAccessControl();
     const apiKey = isGoogle
@@ -291,6 +297,8 @@ export function getHeaders(ignoreHeaders: boolean = false) {
       ? accessStore.chatglmApiKey
       : isSiliconFlow
       ? accessStore.siliconflowApiKey
+      : isTensorix
+      ? accessStore.tensorixApiKey
       : isIflytek
       ? accessStore.iflytekApiKey && accessStore.iflytekApiSecret
         ? accessStore.iflytekApiKey + ":" + accessStore.iflytekApiSecret
@@ -311,6 +319,7 @@ export function getHeaders(ignoreHeaders: boolean = false) {
       isXAI,
       isChatGLM,
       isSiliconFlow,
+      isTensorix,
       isAI302,
       apiKey,
       isEnabledAccessControl,
@@ -340,6 +349,7 @@ export function getHeaders(ignoreHeaders: boolean = false) {
     isXAI,
     isChatGLM,
     isSiliconFlow,
+    isTensorix,
     isAI302,
     apiKey,
     isEnabledAccessControl,
@@ -391,6 +401,8 @@ export function getClientApi(provider: ServiceProvider): ClientApi {
       return new ClientApi(ModelProvider.ChatGLM);
     case ServiceProvider.SiliconFlow:
       return new ClientApi(ModelProvider.SiliconFlow);
+    case ServiceProvider.Tensorix:
+      return new ClientApi(ModelProvider.Tensorix);
     case ServiceProvider["302.AI"]:
       return new ClientApi(ModelProvider["302.AI"]);
     default:

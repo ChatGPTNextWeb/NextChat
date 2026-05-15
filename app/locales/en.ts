@@ -491,6 +491,17 @@ const en: LocaleType = {
           SubTitle: "Example: ",
         },
       },
+      Tensorix: {
+        ApiKey: {
+          Title: "Tensorix API Key",
+          SubTitle: "Use a custom Tensorix API Key",
+          Placeholder: "Tensorix API Key",
+        },
+        Endpoint: {
+          Title: "Endpoint Address",
+          SubTitle: "Example: ",
+        },
+      },
       Stability: {
         ApiKey: {
           Title: "Stability API Key",

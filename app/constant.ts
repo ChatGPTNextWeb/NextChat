@@ -36,6 +36,8 @@ export const CHATGLM_BASE_URL = "https://open.bigmodel.cn";
 
 export const SILICONFLOW_BASE_URL = "https://api.siliconflow.cn";
 
+export const TENSORIX_BASE_URL = "https://api.tensorix.ai";
+
 export const AI302_BASE_URL = "https://api.302.ai";
 
 export const CACHE_URL_PREFIX = "/api/cache";
@@ -74,6 +76,7 @@ export enum ApiPath {
   ChatGLM = "/api/chatglm",
   DeepSeek = "/api/deepseek",
   SiliconFlow = "/api/siliconflow",
+  Tensorix = "/api/tensorix",
   "302.AI" = "/api/302ai",
 }
 
@@ -133,6 +136,7 @@ export enum ServiceProvider {
   ChatGLM = "ChatGLM",
   DeepSeek = "DeepSeek",
   SiliconFlow = "SiliconFlow",
+  Tensorix = "Tensorix",
   "302.AI" = "302.AI",
 }
 
@@ -160,6 +164,7 @@ export enum ModelProvider {
   ChatGLM = "ChatGLM",
   DeepSeek = "DeepSeek",
   SiliconFlow = "SiliconFlow",
+  Tensorix = "Tensorix",
   "302.AI" = "302.AI",
 }
 
@@ -269,6 +274,12 @@ export const SiliconFlow = {
   ExampleEndpoint: SILICONFLOW_BASE_URL,
   ChatPath: "v1/chat/completions",
   ListModelPath: "v1/models?&sub_type=chat",
+};
+
+export const Tensorix = {
+  ExampleEndpoint: TENSORIX_BASE_URL,
+  ChatPath: "v1/chat/completions",
+  ListModelPath: "v1/models",
 };
 
 export const AI302 = {
@@ -717,6 +728,16 @@ const siliconflowModels = [
   "Pro/deepseek-ai/DeepSeek-V3",
 ];
 
+const tensorixModels = [
+  "deepseek/deepseek-chat-v3.1",
+  "deepseek/deepseek-r1-0528",
+  "meta-llama/llama-4-maverick",
+  "meta-llama/llama-3.3-70b-instruct",
+  "z-ai/glm-4.7",
+  "minimax/minimax-m2.1",
+  "qwen/qwen3-235b-a22b",
+];
+
 const ai302Models = [
   "deepseek-chat",
   "gpt-4o",
@@ -896,6 +917,17 @@ export const DEFAULT_MODELS = [
       providerName: "SiliconFlow",
       providerType: "siliconflow",
       sorted: 14,
+    },
+  })),
+  ...tensorixModels.map((name) => ({
+    name,
+    available: true,
+    sorted: seq++,
+    provider: {
+      id: "tensorix",
+      providerName: "Tensorix",
+      providerType: "tensorix",
+      sorted: 15,
     },
   })),
   ...ai302Models.map((name) => ({
