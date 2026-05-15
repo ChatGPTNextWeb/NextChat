@@ -203,7 +203,10 @@ export const useAppConfig = createPersistStore(
       const models = currentState.models.slice();
       state.models.forEach((pModel) => {
         const idx = models.findIndex(
-          (v) => v.name === pModel.name && v.provider === pModel.provider,
+          (v) => v.name === pModel.name 
+            && v.provider.id === pModel.provider.id
+            && v.provider.providerName === pModel.provider.providerName
+            && v.provider.providerType === pModel.provider.providerType,
         );
         if (idx !== -1) models[idx] = pModel;
         else models.push(pModel);
