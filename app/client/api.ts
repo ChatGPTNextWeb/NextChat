@@ -174,7 +174,7 @@ export class ClientApi {
       case ModelProvider.SiliconFlow:
         this.llm = new SiliconflowApi();
         break;
-      case ModelProvider["302.AI"]:
+      case ModelProvider.AI302:
         this.llm = new Ai302Api();
         break;
       default:
@@ -269,7 +269,7 @@ export function getHeaders(ignoreHeaders: boolean = false) {
     const isChatGLM = modelConfig.providerName === ServiceProvider.ChatGLM;
     const isSiliconFlow =
       modelConfig.providerName === ServiceProvider.SiliconFlow;
-    const isAI302 = modelConfig.providerName === ServiceProvider["302.AI"];
+    const isAI302 = modelConfig.providerName === ServiceProvider.AI302;
     const isEnabledAccessControl = accessStore.enabledAccessControl();
     const apiKey = isGoogle
       ? accessStore.googleApiKey
@@ -391,8 +391,8 @@ export function getClientApi(provider: ServiceProvider): ClientApi {
       return new ClientApi(ModelProvider.ChatGLM);
     case ServiceProvider.SiliconFlow:
       return new ClientApi(ModelProvider.SiliconFlow);
-    case ServiceProvider["302.AI"]:
-      return new ClientApi(ModelProvider["302.AI"]);
+    case ServiceProvider.AI302:
+      return new ClientApi(ModelProvider.AI302);
     default:
       return new ClientApi(ModelProvider.GPT);
   }
