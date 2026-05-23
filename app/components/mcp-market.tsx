@@ -22,11 +22,12 @@ import {
   resumeMcpServer,
 } from "../mcp/actions";
 import {
-  ListToolsResponse,
+  ToolSchema,
   McpConfigData,
   PresetServer,
   ServerConfig,
   ServerStatusResponse,
+  isServerStdioConfig,
 } from "../mcp/types";
 import clsx from "clsx";
 import PlayIcon from "../icons/play.svg";
@@ -46,7 +47,7 @@ export function McpMarketPage() {
   const [searchText, setSearchText] = useState("");
   const [userConfig, setUserConfig] = useState<Record<string, any>>({});
   const [editingServerId, setEditingServerId] = useState<string | undefined>();
-  const [tools, setTools] = useState<ListToolsResponse["tools"] | null>(null);
+  const [tools, setTools] = useState<ToolSchema[] | null>(null);
   const [viewingServerId, setViewingServerId] = useState<string | undefined>();
   const [isLoading, setIsLoading] = useState(false);
   const [config, setConfig] = useState<McpConfigData>();
@@ -136,7 +137,7 @@ export function McpMarketPage() {
   useEffect(() => {
     if (!editingServerId || !config) return;
     const currentConfig = config.mcpServers[editingServerId];
-    if (currentConfig) {
+    if (isServerStdioConfig(currentConfig)) {
       // 从当前配置中提取用户配置
       const preset = presetServers.find((s) => s.id === editingServerId);
       if (preset?.configSchema) {
@@ -230,7 +231,7 @@ export function McpMarketPage() {
     try {
       const result = await getClientTools(id);
       if (result) {
-        setTools(result);
+        setTools(result?.tools);
       } else {
         throw new Error("Failed to load tools");
       }
@@ -731,17 +732,15 @@ export function McpMarketPage() {
               <div className={styles["tools-list"]}>
                 {isLoading ? (
                   <div>Loading...</div>
-                ) : tools?.tools ? (
-                  tools.tools.map(
-                    (tool: ListToolsResponse["tools"], index: number) => (
-                      <div key={index} className={styles["tool-item"]}>
-                        <div className={styles["tool-name"]}>{tool.name}</div>
-                        <div className={styles["tool-description"]}>
-                          {tool.description}
-                        </div>
+                ) : tools ? (
+                  tools.map((tool: ToolSchema, index: number) => (
+                    <div key={index} className={styles["tool-item"]}>
+                      <div className={styles["tool-name"]}>{tool.name}</div>
+                      <div className={styles["tool-description"]}>
+                        {tool.description}
                       </div>
-                    ),
-                  )
+                    </div>
+                  ))
                 ) : (
                   <div>No tools available</div>
                 )}
