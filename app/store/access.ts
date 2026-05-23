@@ -18,6 +18,7 @@ import {
   CHATGLM_BASE_URL,
   SILICONFLOW_BASE_URL,
   AI302_BASE_URL,
+  MINIMAX_BASE_URL,
 } from "../constant";
 import { getHeaders } from "../client/api";
 import { getClientConfig } from "../config/client";
@@ -59,6 +60,8 @@ const DEFAULT_CHATGLM_URL = isApp ? CHATGLM_BASE_URL : ApiPath.ChatGLM;
 const DEFAULT_SILICONFLOW_URL = isApp
   ? SILICONFLOW_BASE_URL
   : ApiPath.SiliconFlow;
+
+const DEFAULT_MINIMAX_URL = isApp ? MINIMAX_BASE_URL : ApiPath.MiniMax;
 
 const DEFAULT_AI302_URL = isApp ? AI302_BASE_URL : ApiPath["302.AI"];
 
@@ -134,6 +137,10 @@ const DEFAULT_ACCESS_STATE = {
   // siliconflow
   siliconflowUrl: DEFAULT_SILICONFLOW_URL,
   siliconflowApiKey: "",
+
+  // minimax
+  minimaxUrl: DEFAULT_MINIMAX_URL,
+  minimaxApiKey: "",
 
   // 302.AI
   ai302Url: DEFAULT_AI302_URL,
@@ -226,6 +233,10 @@ export const useAccessStore = createPersistStore(
       return ensure(get(), ["siliconflowApiKey"]);
     },
 
+    isValidMiniMax() {
+      return ensure(get(), ["minimaxApiKey"]);
+    },
+
     isAuthorized() {
       this.fetch();
 
@@ -245,6 +256,7 @@ export const useAccessStore = createPersistStore(
         this.isValidXAI() ||
         this.isValidChatGLM() ||
         this.isValidSiliconFlow() ||
+        this.isValidMiniMax() ||
         !this.enabledAccessControl() ||
         (this.enabledAccessControl() && ensure(get(), ["accessCode"]))
       );
