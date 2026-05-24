@@ -38,7 +38,7 @@ tauri = { version = "1.5.4", features = [ "http-all",
 ] }
 tauri-plugin-window-state = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "v1" }
 percent-encoding = "2.3.1"
-reqwest = "0.11.18"
+reqwest = { version = "0.11.18", features = ["socks"] }
 futures-util = "0.3.30"
 bytes = "1.7.2"
 
