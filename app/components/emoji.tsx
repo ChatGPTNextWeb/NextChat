@@ -21,6 +21,7 @@ import BotIconGrok from "../icons/llm-icons/grok.svg";
 import BotIconHunyuan from "../icons/llm-icons/hunyuan.svg";
 import BotIconDoubao from "../icons/llm-icons/doubao.svg";
 import BotIconChatglm from "../icons/llm-icons/chatglm.svg";
+import BotIconBaichuan from "../icons/llm-icons/baichuan.svg";
 
 export function getEmojiUrl(unified: string, style: EmojiStyle) {
   // Whoever owns this Content Delivery Network (CDN), I am using your CDN to serve emojis
@@ -90,6 +91,8 @@ export function Avatar(props: { model?: ModelType; avatar?: string }) {
       modelName.startsWith("cogvideox-")
     ) {
       LlmIcon = BotIconChatglm;
+    } else if (modelName.startsWith("baichuan")) {
+      LlmIcon = BotIconBaichuan;
     }
 
     return (

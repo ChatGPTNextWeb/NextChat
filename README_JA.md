@@ -178,6 +178,14 @@ ByteDance API の URL。
 
 アリババ（千问）API の URL。
 
+### `BAICHUAN_API_KEY` (オプション)
+
+Baichuan AI API キー。
+
+### `BAICHUAN_URL` (オプション)
+
+Baichuan API の URL。デフォルト: `https://api.baichuan-ai.com`。
+
 ### `HIDE_USER_API_KEY` （オプション）
 
 ユーザーが API キーを入力できないようにしたい場合は、この環境変数を 1 に設定します。

@@ -38,6 +38,8 @@ export const SILICONFLOW_BASE_URL = "https://api.siliconflow.cn";
 
 export const AI302_BASE_URL = "https://api.302.ai";
 
+export const BAICHUAN_BASE_URL = "https://api.baichuan-ai.com";
+
 export const CACHE_URL_PREFIX = "/api/cache";
 export const UPLOAD_URL = `${CACHE_URL_PREFIX}/upload`;
 
@@ -75,6 +77,7 @@ export enum ApiPath {
   DeepSeek = "/api/deepseek",
   SiliconFlow = "/api/siliconflow",
   "302.AI" = "/api/302ai",
+  Baichuan = "/api/baichuan",
 }
 
 export enum SlotID {
@@ -134,6 +137,7 @@ export enum ServiceProvider {
   DeepSeek = "DeepSeek",
   SiliconFlow = "SiliconFlow",
   "302.AI" = "302.AI",
+  Baichuan = "Baichuan",
 }
 
 // Google API safety settings, see https://ai.google.dev/gemini-api/docs/safety-settings
@@ -161,6 +165,7 @@ export enum ModelProvider {
   DeepSeek = "DeepSeek",
   SiliconFlow = "SiliconFlow",
   "302.AI" = "302.AI",
+  Baichuan = "Baichuan",
 }
 
 export const Stability = {
@@ -276,6 +281,11 @@ export const AI302 = {
   ChatPath: "v1/chat/completions",
   EmbeddingsPath: "jina/v1/embeddings",
   ListModelPath: "v1/models?llm=1",
+};
+
+export const Baichuan = {
+  ExampleEndpoint: BAICHUAN_BASE_URL,
+  ChatPath: "v1/chat/completions",
 };
 
 export const DEFAULT_INPUT_TEMPLATE = `{{input}}`; // input / time / model / lang
@@ -423,6 +433,7 @@ You are an AI assistant with access to system tools. Your role is to help users 
 export const SUMMARIZE_MODEL = "gpt-4o-mini";
 export const GEMINI_SUMMARIZE_MODEL = "gemini-pro";
 export const DEEPSEEK_SUMMARIZE_MODEL = "deepseek-chat";
+export const BAICHUAN_SUMMARIZE_MODEL = "Baichuan4-Turbo";
 
 export const KnowledgeCutOffDate: Record<string, string> = {
   default: "2021-09",
@@ -459,6 +470,14 @@ export const KnowledgeCutOffDate: Record<string, string> = {
   "gemini-pro-vision": "2023-12",
   "deepseek-chat": "2024-07",
   "deepseek-coder": "2024-07",
+  "Baichuan-M2-Plus": "2025-10",
+  "Baichuan-M2": "2025-08",
+  "Baichuan4-Turbo": "2024-10",
+  "Baichuan4-Air": "2024-10",
+  Baichuan4: "2024-05",
+  "Baichuan3-Turbo": "2024-05",
+  "Baichuan3-Turbo-128k": "2024-05",
+  "Baichuan2-Turbo": "2024-02",
 };
 
 export const DEFAULT_TTS_ENGINE = "OpenAI-TTS";
@@ -493,7 +512,7 @@ export const VISION_MODEL_REGEXES = [
   /o3/,
   /o4-mini/,
   /grok-4/i,
-  /gpt-5/
+  /gpt-5/,
 ];
 
 export const EXCLUDE_VISION_MODEL_REGEXES = [/claude-3-5-haiku-20241022/];
@@ -561,7 +580,7 @@ const googleModels = [
   "gemini-2.0-pro-exp",
   "gemini-2.0-pro-exp-02-05",
   "gemini-2.5-pro-preview-06-05",
-  "gemini-2.5-pro"
+  "gemini-2.5-pro",
 ];
 
 const anthropicModels = [
@@ -651,6 +670,17 @@ const iflytekModels = [
 ];
 
 const deepseekModels = ["deepseek-chat", "deepseek-coder", "deepseek-reasoner"];
+
+const baichuanModels = [
+  "Baichuan-M2-Plus",
+  "Baichuan-M2",
+  "Baichuan4-Turbo",
+  "Baichuan4-Air",
+  "Baichuan4",
+  "Baichuan3-Turbo",
+  "Baichuan3-Turbo-128k",
+  "Baichuan2-Turbo",
+];
 
 const xAIModes = [
   "grok-beta",
@@ -907,6 +937,17 @@ export const DEFAULT_MODELS = [
       providerName: "302.AI",
       providerType: "ai302",
       sorted: 15,
+    },
+  })),
+  ...baichuanModels.map((name) => ({
+    name,
+    available: true,
+    sorted: seq++,
+    provider: {
+      id: "baichuan",
+      providerName: "Baichuan",
+      providerType: "baichuan",
+      sorted: 16,
     },
   })),
 ] as const;

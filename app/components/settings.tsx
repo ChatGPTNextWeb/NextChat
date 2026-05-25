@@ -76,6 +76,7 @@ import {
   DeepSeek,
   SiliconFlow,
   AI302,
+  Baichuan,
 } from "../constant";
 import { Prompt, SearchService, usePromptStore } from "../store/prompt";
 import { ErrorBoundary } from "./error";
@@ -1499,6 +1500,46 @@ export function Settings() {
       </>
   );
 
+  const baichuanConfigComponent = accessStore.provider === ServiceProvider.Baichuan && (
+    <>
+      <ListItem
+        title={Locale.Settings.Access.Baichuan.Endpoint.Title}
+        subTitle={
+          Locale.Settings.Access.Baichuan.Endpoint.SubTitle +
+          Baichuan.ExampleEndpoint
+        }
+      >
+        <input
+          aria-label={Locale.Settings.Access.Baichuan.Endpoint.Title}
+          type="text"
+          value={accessStore.baichuanUrl}
+          placeholder={Baichuan.ExampleEndpoint}
+          onChange={(e) =>
+            accessStore.update(
+              (access) => (access.baichuanUrl = e.currentTarget.value),
+            )
+          }
+        ></input>
+      </ListItem>
+      <ListItem
+        title={Locale.Settings.Access.Baichuan.ApiKey.Title}
+        subTitle={Locale.Settings.Access.Baichuan.ApiKey.SubTitle}
+      >
+        <PasswordInput
+          aria-label={Locale.Settings.Access.Baichuan.ApiKey.Title}
+          value={accessStore.baichuanApiKey}
+          type="text"
+          placeholder={Locale.Settings.Access.Baichuan.ApiKey.Placeholder}
+          onChange={(e) => {
+            accessStore.update(
+              (access) => (access.baichuanApiKey = e.currentTarget.value),
+            );
+          }}
+        />
+      </ListItem>
+    </>
+  );
+
   return (
     <ErrorBoundary>
       <div className="window-header" data-tauri-drag-region>
@@ -1864,6 +1905,7 @@ export function Settings() {
                   {chatglmConfigComponent}
                   {siliconflowConfigComponent}
                   {ai302ConfigComponent}
+                  {baichuanConfigComponent}
                 </>
               )}
             </>

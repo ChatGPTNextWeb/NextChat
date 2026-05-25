@@ -290,6 +290,14 @@ DeepSeek API 키입니다.
 
 DeepSeek API URL입니다.
 
+### `BAICHUAN_API_KEY` (선택 사항)
+
+Baichuan AI API 키입니다.
+
+### `BAICHUAN_URL` (선택 사항)
+
+Baichuan API URL입니다. 기본값: `https://api.baichuan-ai.com`.
+
 ### `HIDE_USER_API_KEY` (선택 사항)
 
 > 기본값: 비어 있음
