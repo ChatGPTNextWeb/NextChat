@@ -253,6 +253,10 @@ const it: PartialLocaleType = {
       },
       ImportFailed: "Importazione fallita",
     },
+    AutoScrollMessage: {
+      Title: "Risposta Auto-Scroll",
+      SubTitle: "Scorri il messaggio durante la risposta",
+    },
     Mask: {
       Splash: {
         Title: "Pagina di avvio delle maschere",
