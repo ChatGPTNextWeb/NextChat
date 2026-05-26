@@ -77,6 +77,10 @@ const en: LocaleType = {
         light: "Light Theme",
         dark: "Dark Theme",
       },
+      NetWork: {
+        on: "Enable Web Search",
+        off: "Disable Web Search",
+      },
       Prompt: "Prompts",
       Masks: "Masks",
       Clear: "Clear Context",

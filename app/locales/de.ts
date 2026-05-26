@@ -73,6 +73,10 @@ const de: PartialLocaleType = {
         light: "Helles Thema",
         dark: "Dunkles Thema",
       },
+      NetWork: {
+        on: "Web-Suche aktivieren",
+        off: "Web-Suche deaktivieren",
+      },
       Prompt: "Schnellbefehle",
       Masks: "Alle Masken",
       Clear: "Chat löschen",
@@ -437,7 +441,8 @@ const de: PartialLocaleType = {
       AI302: {
         ApiKey: {
           Title: "Schnittstellenschlüssel",
-          SubTitle: "Verwenden Sie einen benutzerdefinierten 302.AI API-Schlüssel",
+          SubTitle:
+            "Verwenden Sie einen benutzerdefinierten 302.AI API-Schlüssel",
           Placeholder: "302.AI API-Schlüssel",
         },
         Endpoint: {
