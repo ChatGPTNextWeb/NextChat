@@ -88,6 +88,10 @@ declare global {
       SILICONFLOW_URL?: string;
       SILICONFLOW_API_KEY?: string;
 
+      //huaweionly
+      HUAWEI_URL?: string;
+      HUAWEI_API_KEY?: string;
+
       // 302.AI only
       AI302_URL?: string;
       AI302_API_KEY?: string;
@@ -96,6 +100,12 @@ declare global {
       DEFAULT_INPUT_TEMPLATE?: string;
 
       ENABLE_MCP?: string; // enable mcp functionality
+
+      ATTACHMENT_STORE_DIR?: string;
+      ATTACHMENT_URL_PREFIX?: string;
+      ATTACHMENT_TTL_HOURS?: string;
+      ATTACHMENT_MAX_SIZE_MB?: string;
+      ATTACHMENT_MAX_TEXT_LENGTH?: string;
     }
   }
 }
@@ -168,6 +178,7 @@ export const getServerSideConfig = () => {
   const isChatGLM = !!process.env.CHATGLM_API_KEY;
   const isSiliconFlow = !!process.env.SILICONFLOW_API_KEY;
   const isAI302 = !!process.env.AI302_API_KEY;
+  const isHuawei = !!process.env.HUAWEI_API_KEY;
   // const apiKeyEnvVar = process.env.OPENAI_API_KEY ?? "";
   // const apiKeys = apiKeyEnvVar.split(",").map((v) => v.trim());
   // const randomIndex = Math.floor(Math.random() * apiKeys.length);
@@ -238,6 +249,10 @@ export const getServerSideConfig = () => {
     xaiUrl: process.env.XAI_URL,
     xaiApiKey: getApiKey(process.env.XAI_API_KEY),
 
+    isHuawei,
+    huaweiUrl: process.env.HUAWEI_URL,
+    huaweiApiKey: getApiKey(process.env.HUAWEI_API_KEY),
+
     isChatGLM,
     chatglmUrl: process.env.CHATGLM_URL,
     chatglmApiKey: getApiKey(process.env.CHATGLM_API_KEY),
@@ -274,5 +289,11 @@ export const getServerSideConfig = () => {
     visionModels,
     allowedWebDavEndpoints,
     enableMcp: process.env.ENABLE_MCP === "true",
+
+    attachmentStoreDir: process.env.ATTACHMENT_STORE_DIR,
+    attachmentUrlPrefix: process.env.ATTACHMENT_URL_PREFIX,
+    attachmentTtlHours: process.env.ATTACHMENT_TTL_HOURS,
+    attachmentMaxSizeMb: process.env.ATTACHMENT_MAX_SIZE_MB,
+    attachmentMaxTextLength: process.env.ATTACHMENT_MAX_TEXT_LENGTH,
   };
 };

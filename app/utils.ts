@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { showToast } from "./components/ui-lib";
 import Locale from "./locales";
 import { RequestMessage } from "./client/api";
+import type { Attachment } from "./types/attachment";
 import {
   REQUEST_TIMEOUT_MS,
   REQUEST_TIMEOUT_MS_FOR_THINKING,
@@ -245,19 +246,56 @@ export function getMessageTextContent(message: RequestMessage) {
   return "";
 }
 
-export function getMessageTextContentWithoutThinking(message: RequestMessage) {
-  let content = "";
+export function buildAttachmentsPrompt(attachments?: Attachment[]) {
+  if (!attachments?.length) return "";
+  const readable = attachments.filter((item) => item.text?.trim());
+  if (!readable.length) return "";
+  const blocks = readable.map((item, index) => {
+    const name = item.name || `attachment-${index + 1}`;
+    const type = item.type ? ` (${item.type})` : "";
+    const header = `Attachment ${index + 1}: ${name}${type}`;
+    return `${header}\n${item.text?.trim()}`;
+  });
+  return [
+    "The user attached the following files. Use their contents to answer:",
+    ...blocks,
+  ].join("\n\n");
+}
 
-  if (typeof message.content === "string") {
-    content = message.content;
-  } else {
-    for (const c of message.content) {
-      if (c.type === "text") {
-        content = c.text ?? "";
-        break;
-      }
-    }
+export function appendAttachmentsToContent(
+  content: RequestMessage["content"],
+  attachments?: Attachment[],
+) {
+  const prompt = buildAttachmentsPrompt(attachments);
+  if (!prompt) return content;
+  if (typeof content === "string") {
+    return [content, prompt].filter(Boolean).join("\n\n");
   }
+  return [...content, { type: "text" as const, text: prompt }];
+}
+
+export function contentToText(content: RequestMessage["content"]) {
+  if (typeof content === "string") return content;
+  return content
+    .map((c) => (c.type === "text" ? c.text ?? "" : ""))
+    .filter(Boolean)
+    .join("\n");
+}
+
+export function getMessageTextContentForModel(
+  message: RequestMessage & { attachments?: Attachment[] },
+) {
+  const content = appendAttachmentsToContent(
+    message.content,
+    message.attachments,
+  );
+  return contentToText(content);
+}
+
+export function getMessageTextContentWithoutThinking(message: RequestMessage) {
+  let content = getMessageTextContentForModel(
+    message as RequestMessage & { attachments?: Attachment[] },
+  );
 
   // Filter out thinking lines (starting with "> ")
   return content

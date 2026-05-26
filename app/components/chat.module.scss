@@ -1,10 +1,13 @@
 @import "../styles/animation.scss";
 
-.attach-images {
+.attach-list {
   position: absolute;
   left: 30px;
   bottom: 32px;
   display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  max-width: calc(100% - 140px);
 }
 
 .attach-image {
@@ -40,6 +43,56 @@
     float: right;
     background-color: var(--white);
   }
+}
+
+.attach-file {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: rgba($color: #888, $alpha: 0.2) 1px solid;
+  background-color: var(--white);
+  font-size: 12px;
+
+  .delete-image {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    background-color: var(--white);
+    margin-left: auto;
+  }
+}
+
+.attach-file-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+}
+
+.attach-file-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.attach-file-name {
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.attach-file-meta {
+  color: var(--gray);
+  font-size: 11px;
 }
 
 .chat-input-actions {
@@ -496,6 +549,41 @@
   border: rgba($color: #888, $alpha: 0.2) 1px solid;
 }
 
+.chat-message-attachments {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.chat-message-attachment {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: rgba($color: #888, $alpha: 0.2) 1px solid;
+  background-color: var(--white);
+  font-size: 12px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.chat-message-attachment-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+}
+
+.chat-message-attachment-name {
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 @media only screen and (max-width: 600px) {
   $calc-image-width: calc(100vw / 3 * 2 / var(--image-count));
 
@@ -632,11 +720,16 @@
 }
 
 .chat-input-panel-inner-attach {
-  padding-bottom: 80px;
+  padding-bottom: 110px;
 }
 
 .chat-input-panel-inner:has(.chat-input:focus) {
   border: 1px solid var(--primary);
+}
+
+.chat-input-panel-inner-drag {
+  border: 1px dashed var(--primary);
+  background-color: rgba(0, 0, 0, 0.03);
 }
 
 .chat-input {

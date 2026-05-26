@@ -53,6 +53,10 @@ const en: LocaleType = {
       PinToastContent: "Pinned 1 messages to contextual prompts",
       PinToastAction: "View",
       Delete: "Delete",
+      GenerateFile: "Generate Attachment",
+      GenerateFilePrompt: "Attachment filename",
+      GenerateFileToast: "Attachment generated",
+      OpenAttachment: "Open",
       Edit: "Edit",
       FullScreen: "FullScreen",
       RefreshTitle: "Refresh Title",
@@ -82,6 +86,7 @@ const en: LocaleType = {
       Clear: "Clear Context",
       Settings: "Settings",
       UploadImage: "Upload Images",
+      UploadFile: "Upload File",
     },
     Rename: "Rename Chat",
     Typing: "Typing…",
@@ -521,6 +526,22 @@ const en: LocaleType = {
       CustomModel: {
         Title: "Custom Models",
         SubTitle: "Custom model options, seperated by comma",
+      },
+      Huawei: {
+        ApiKey: {
+          Title: "API Key",
+          SubTitle: "Use your own HUAWEI API key",
+          Placeholder: "HUAWEI Key",
+        },
+        SecretKey: {
+          Title: "Secret Key",
+          SubTitle: "Use your own HUAWEI Secret key",
+          Placeholder: "HUAWEI Secret Key",
+        },
+        Endpoint: {
+          Title: "Endpoint Address",
+          SubTitle: "Does not support custom .env configuration",
+        },
       },
       Google: {
         ApiKey: {

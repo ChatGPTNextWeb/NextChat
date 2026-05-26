@@ -444,6 +444,22 @@ const no: PartialLocaleType = {
           SubTitle: "Eksempel:",
         },
       },
+      Huawei: {
+        ApiKey: {
+          Title: "API-nøkkel",
+          SubTitle: "Bruk din egen HUAWEI API-nøkkel",
+          Placeholder: "HUAWEI-nøkkel",
+        },
+        SecretKey: {
+          Title: "Hemmelig nøkkel",
+          SubTitle: "Bruk din egen HUAWEI hemmelige nøkkel",
+          Placeholder: "HUAWEI hemmelig nøkkel",
+        },
+        Endpoint: {
+          Title: "Grensesnittadresse",
+          SubTitle: "Støtter ikke tilpasset .env-konfigurasjon",
+        },
+      },
     },
 
     Model: "Modell",

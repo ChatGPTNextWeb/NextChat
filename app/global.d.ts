@@ -9,6 +9,7 @@ declare module "*.scss" {
 }
 
 declare module "*.svg";
+declare module "pdf-parse";
 
 declare interface Window {
   __TAURI__?: {

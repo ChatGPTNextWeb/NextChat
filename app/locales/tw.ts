@@ -52,6 +52,10 @@ const tw = {
       PinToastContent: "已將 1 條對話固定至預設提示詞",
       PinToastAction: "檢視",
       Delete: "刪除",
+      GenerateFile: "產生附件",
+      GenerateFilePrompt: "產生附件檔名",
+      GenerateFileToast: "附件已產生",
+      OpenAttachment: "開啟",
       Edit: "編輯",
       RefreshTitle: "重新整理標題",
       RefreshToast: "已傳送重新整理標題請求",
@@ -77,6 +81,7 @@ const tw = {
       Clear: "清除聊天",
       Settings: "對話設定",
       UploadImage: "上傳圖片",
+      UploadFile: "上傳附件",
     },
     Rename: "重新命名對話",
     Typing: "正在輸入…",
@@ -396,6 +401,22 @@ const tw = {
       CustomModel: {
         Title: "自訂模型名稱",
         SubTitle: "增加自訂模型可選擇項目，使用英文逗號隔開",
+      },
+      Huawei: {
+        ApiKey: {
+          Title: "API金鑰",
+          SubTitle: "使用您的HUAWEI API金鑰",
+          Placeholder: "HUAWEI金鑰",
+        },
+        SecretKey: {
+          Title: "密鑰",
+          SubTitle: "使用您的HUAWEI密鑰",
+          Placeholder: "HUAWEI密鑰",
+        },
+        Endpoint: {
+          Title: "端點地址",
+          SubTitle: "不支援自訂的.env配置",
+        },
       },
     },
 

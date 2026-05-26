@@ -17,6 +17,7 @@ import {
   XAI_BASE_URL,
   CHATGLM_BASE_URL,
   SILICONFLOW_BASE_URL,
+  HUAWEI_BASE_URL,
   AI302_BASE_URL,
 } from "../constant";
 import { getHeaders } from "../client/api";
@@ -55,6 +56,8 @@ const DEFAULT_DEEPSEEK_URL = isApp ? DEEPSEEK_BASE_URL : ApiPath.DeepSeek;
 const DEFAULT_XAI_URL = isApp ? XAI_BASE_URL : ApiPath.XAI;
 
 const DEFAULT_CHATGLM_URL = isApp ? CHATGLM_BASE_URL : ApiPath.ChatGLM;
+
+const DEFAULT_HUAWEI_URL = isApp ? HUAWEI_BASE_URL : ApiPath.Huawei;
 
 const DEFAULT_SILICONFLOW_URL = isApp
   ? SILICONFLOW_BASE_URL
@@ -134,6 +137,9 @@ const DEFAULT_ACCESS_STATE = {
   // siliconflow
   siliconflowUrl: DEFAULT_SILICONFLOW_URL,
   siliconflowApiKey: "",
+  // huawei
+  huaweiUrl: DEFAULT_HUAWEI_URL,
+  huaweiApiKey: "",
 
   // 302.AI
   ai302Url: DEFAULT_AI302_URL,
@@ -226,6 +232,9 @@ export const useAccessStore = createPersistStore(
       return ensure(get(), ["siliconflowApiKey"]);
     },
 
+    isValidHuawei() {
+      return ensure(get(), ["huaweiApiKey"]);
+    },
     isAuthorized() {
       this.fetch();
 
@@ -245,6 +254,7 @@ export const useAccessStore = createPersistStore(
         this.isValidXAI() ||
         this.isValidChatGLM() ||
         this.isValidSiliconFlow() ||
+        this.isValidHuawei() ||
         !this.enabledAccessControl() ||
         (this.enabledAccessControl() && ensure(get(), ["accessCode"]))
       );
