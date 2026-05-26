@@ -99,6 +99,7 @@
   font-size: 14px;
   line-height: 1.5;
   word-wrap: break-word;
+  margin-bottom: 0;
 }
 
 .light {
@@ -358,8 +359,14 @@
 .markdown-body kbd {
   display: inline-block;
   padding: 3px 5px;
-  font: 11px ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas,
-    Liberation Mono, monospace;
+  font:
+    11px ui-monospace,
+    SFMono-Regular,
+    SF Mono,
+    Menlo,
+    Consolas,
+    Liberation Mono,
+    monospace;
   line-height: 10px;
   color: var(--color-fg-default);
   vertical-align: middle;
@@ -448,16 +455,28 @@
 .markdown-body tt,
 .markdown-body code,
 .markdown-body samp {
-  font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas,
-    Liberation Mono, monospace;
+  font-family:
+    ui-monospace,
+    SFMono-Regular,
+    SF Mono,
+    Menlo,
+    Consolas,
+    Liberation Mono,
+    monospace;
   font-size: 12px;
 }
 
 .markdown-body pre {
   margin-top: 0;
   margin-bottom: 0;
-  font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas,
-    Liberation Mono, monospace;
+  font-family:
+    ui-monospace,
+    SFMono-Regular,
+    SF Mono,
+    Menlo,
+    Consolas,
+    Liberation Mono,
+    monospace;
   font-size: 12px;
   word-wrap: normal;
 }
@@ -1129,4 +1148,88 @@
 
 #dmermaid {
   display: none;
+}
+
+.markdown-content {
+  width: 100%;
+}
+
+.markdown-paragraph {
+  transition: opacity 0.3s ease;
+  margin-bottom: 0.5em;
+
+  &.markdown-paragraph-visible {
+    opacity: 1;
+  }
+
+  &.markdown-paragraph-hidden {
+    opacity: 0.7;
+  }
+}
+
+.markdown-paragraph-placeholder {
+  padding: 8px;
+  color: var(--color-fg-subtle);
+  background-color: var(--color-canvas-subtle);
+  border-radius: 6px;
+  border-left: 3px solid var(--color-border-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-family: var(--font-family-sans);
+  font-size: 14px;
+  min-height: 1.2em;
+}
+
+.markdown-paragraph-loading {
+  height: 20px;
+  background-color: var(--color-canvas-subtle);
+  border-radius: 6px;
+  margin-bottom: 8px;
+  position: relative;
+  overflow: hidden;
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 30%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.1),
+      transparent
+    );
+    animation: shimmer 1.5s infinite;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(200%);
+  }
+}
+
+.markdown-streaming-content {
+  width: 100%;
+}
+
+.markdown-streaming-paragraph {
+  opacity: 1;
+  animation: fadeIn 0.3s ease-in-out;
+  margin-bottom: 0.5em;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0.5;
+  }
+  to {
+    opacity: 1;
+  }
 }
