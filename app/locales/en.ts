@@ -554,6 +554,17 @@ const en: LocaleType = {
           SubTitle: "Example: ",
         },
       },
+      AnyAPI: {
+        ApiKey: {
+          Title: "AnyAPI API Key",
+          SubTitle: "Use a custom AnyAPI API Key",
+          Placeholder: "AnyAPI API Key",
+        },
+        Endpoint: {
+          Title: "Endpoint Address",
+          SubTitle: "Example: ",
+        },
+      },
     },
 
     Model: "Model",
