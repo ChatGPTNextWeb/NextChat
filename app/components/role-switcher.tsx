@@ -9,10 +9,8 @@ import React, { useState } from "react";
 import { useChatStore } from "../store";
 import { ALL_SKILLS } from "../skills";
 import { BuiltinMask } from "../masks/typing";
-import { Avatar } from "./emoji";
 import { Selector } from "./ui-lib";
 import MaskIcon from "../icons/mask.svg";
-import styles from "./chat.module.scss";
 
 interface RoleSwitcherProps {
   /** 用于在 ChatActions 中渲染成统一风格的 ChatAction 包装 */
@@ -52,7 +50,11 @@ export function RoleSwitcher({ renderAction }: RoleSwitcherProps) {
 
   const selectorItems = ALL_SKILLS.map((skill) => ({
     title: skill.name,
-    subTitle: extractFirstLine(skill.context[0]?.content ?? ""),
+    subTitle: extractFirstLine(
+      typeof skill.context[0]?.content === "string"
+        ? skill.context[0].content
+        : "",
+    ),
     value: skill.name,
   }));
 

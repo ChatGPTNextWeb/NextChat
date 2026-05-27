@@ -41,37 +41,9 @@ declare global {
       // google tag manager
       GTM_ID?: string;
 
-      // anthropic only
-      ANTHROPIC_URL?: string;
-      ANTHROPIC_API_KEY?: string;
-      ANTHROPIC_API_VERSION?: string;
-
-      // baidu only
-      BAIDU_URL?: string;
-      BAIDU_API_KEY?: string;
-      BAIDU_SECRET_KEY?: string;
-
-      // bytedance only
-      BYTEDANCE_URL?: string;
-      BYTEDANCE_API_KEY?: string;
-
-      // alibaba only
-      ALIBABA_URL?: string;
-      ALIBABA_API_KEY?: string;
-
-      // tencent only
-      TENCENT_URL?: string;
-      TENCENT_SECRET_KEY?: string;
-      TENCENT_SECRET_ID?: string;
-
       // moonshot only
       MOONSHOT_URL?: string;
       MOONSHOT_API_KEY?: string;
-
-      // iflytek only
-      IFLYTEK_URL?: string;
-      IFLYTEK_API_KEY?: string;
-      IFLYTEK_API_SECRET?: string;
 
       DEEPSEEK_URL?: string;
       DEEPSEEK_API_KEY?: string;
@@ -79,14 +51,6 @@ declare global {
       // xai only
       XAI_URL?: string;
       XAI_API_KEY?: string;
-
-      // chatglm only
-      CHATGLM_URL?: string;
-      CHATGLM_API_KEY?: string;
-
-      // siliconflow only
-      SILICONFLOW_URL?: string;
-      SILICONFLOW_API_KEY?: string;
 
       // 302.AI only
       AI302_URL?: string;
@@ -155,26 +119,10 @@ export const getServerSideConfig = () => {
 
   const isAzure = !!process.env.AZURE_URL;
   const isGoogle = !!process.env.GOOGLE_API_KEY;
-  const isAnthropic = !!process.env.ANTHROPIC_API_KEY;
-  const isTencent = !!process.env.TENCENT_API_KEY;
-
-  const isBaidu = !!process.env.BAIDU_API_KEY;
-  const isBytedance = !!process.env.BYTEDANCE_API_KEY;
-  const isAlibaba = !!process.env.ALIBABA_API_KEY;
   const isMoonshot = !!process.env.MOONSHOT_API_KEY;
-  const isIflytek = !!process.env.IFLYTEK_API_KEY;
   const isDeepSeek = !!process.env.DEEPSEEK_API_KEY;
   const isXAI = !!process.env.XAI_API_KEY;
-  const isChatGLM = !!process.env.CHATGLM_API_KEY;
-  const isSiliconFlow = !!process.env.SILICONFLOW_API_KEY;
   const isAI302 = !!process.env.AI302_API_KEY;
-  // const apiKeyEnvVar = process.env.OPENAI_API_KEY ?? "";
-  // const apiKeys = apiKeyEnvVar.split(",").map((v) => v.trim());
-  // const randomIndex = Math.floor(Math.random() * apiKeys.length);
-  // const apiKey = apiKeys[randomIndex];
-  // console.log(
-  //   `[Server Config] using ${randomIndex + 1} of ${apiKeys.length} api key`,
-  // );
 
   const allowedWebDavEndpoints = (
     process.env.WHITE_WEBDAV_ENDPOINTS ?? ""
@@ -198,37 +146,9 @@ export const getServerSideConfig = () => {
     googleApiKey: getApiKey(process.env.GOOGLE_API_KEY),
     googleUrl: process.env.GOOGLE_URL,
 
-    isAnthropic,
-    anthropicApiKey: getApiKey(process.env.ANTHROPIC_API_KEY),
-    anthropicApiVersion: process.env.ANTHROPIC_API_VERSION,
-    anthropicUrl: process.env.ANTHROPIC_URL,
-
-    isBaidu,
-    baiduUrl: process.env.BAIDU_URL,
-    baiduApiKey: getApiKey(process.env.BAIDU_API_KEY),
-    baiduSecretKey: process.env.BAIDU_SECRET_KEY,
-
-    isBytedance,
-    bytedanceApiKey: getApiKey(process.env.BYTEDANCE_API_KEY),
-    bytedanceUrl: process.env.BYTEDANCE_URL,
-
-    isAlibaba,
-    alibabaUrl: process.env.ALIBABA_URL,
-    alibabaApiKey: getApiKey(process.env.ALIBABA_API_KEY),
-
-    isTencent,
-    tencentUrl: process.env.TENCENT_URL,
-    tencentSecretKey: getApiKey(process.env.TENCENT_SECRET_KEY),
-    tencentSecretId: process.env.TENCENT_SECRET_ID,
-
     isMoonshot,
     moonshotUrl: process.env.MOONSHOT_URL,
     moonshotApiKey: getApiKey(process.env.MOONSHOT_API_KEY),
-
-    isIflytek,
-    iflytekUrl: process.env.IFLYTEK_URL,
-    iflytekApiKey: process.env.IFLYTEK_API_KEY,
-    iflytekApiSecret: process.env.IFLYTEK_API_SECRET,
 
     isDeepSeek,
     deepseekUrl: process.env.DEEPSEEK_URL,
@@ -238,18 +158,10 @@ export const getServerSideConfig = () => {
     xaiUrl: process.env.XAI_URL,
     xaiApiKey: getApiKey(process.env.XAI_API_KEY),
 
-    isChatGLM,
-    chatglmUrl: process.env.CHATGLM_URL,
-    chatglmApiKey: getApiKey(process.env.CHATGLM_API_KEY),
-
     cloudflareAccountId: process.env.CLOUDFLARE_ACCOUNT_ID,
     cloudflareKVNamespaceId: process.env.CLOUDFLARE_KV_NAMESPACE_ID,
     cloudflareKVApiKey: getApiKey(process.env.CLOUDFLARE_KV_API_KEY),
     cloudflareKVTTL: process.env.CLOUDFLARE_KV_TTL,
-
-    isSiliconFlow,
-    siliconFlowUrl: process.env.SILICONFLOW_URL,
-    siliconFlowApiKey: getApiKey(process.env.SILICONFLOW_API_KEY),
 
     isAI302,
     ai302Url: process.env.AI302_URL,

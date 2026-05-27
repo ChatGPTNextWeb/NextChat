@@ -1,3 +1,4 @@
 public/serviceWorker.js
 app/mcp/mcp_config.json
 app/mcp/mcp_config.default.json
+app/constant.ts
