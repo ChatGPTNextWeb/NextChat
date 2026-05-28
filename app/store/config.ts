@@ -60,19 +60,19 @@ export const DEFAULT_CONFIG = {
   dontShowMaskSplashScreen: false, // dont show splash screen when create chat
   hideBuiltinMasks: false, // dont add builtin masks
 
-  customModels: "",
+  customModels: "+deepseek-v4-pro",
   models: DEFAULT_MODELS as any as LLMModel[],
 
   modelConfig: {
-    model: "gpt-4o-mini" as ModelType,
-    providerName: "OpenAI" as ServiceProvider,
+    model: "deepseek-v4-pro" as ModelType,
+    providerName: "DeepSeek" as ServiceProvider,
     temperature: 0.5,
     top_p: 1,
     max_tokens: 4000,
     presence_penalty: 0,
     frequency_penalty: 0,
     sendMemory: true,
-    historyMessageCount: 4,
+    historyMessageCount: 64,
     compressMessageLengthThreshold: 1000,
     compressModel: "",
     compressProviderName: "",
