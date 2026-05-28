@@ -38,9 +38,9 @@ const DEFAULT_AI302_URL = isApp ? AI302_BASE_URL : ApiPath["302.AI"];
 
 const DEFAULT_ACCESS_STATE = {
   accessCode: "",
-  useCustomConfig: false,
+  useCustomConfig: true,
 
-  provider: ServiceProvider.OpenAI,
+  provider: ServiceProvider.DeepSeek,
 
   // openai
   openaiUrl: DEFAULT_OPENAI_URL,
@@ -184,7 +184,7 @@ export const useAccessStore = createPersistStore(
   }),
   {
     name: StoreKey.Access,
-    version: 2,
+    version: 3,
     migrate(persistedState, version) {
       if (version < 2) {
         const state = persistedState as {
@@ -195,6 +195,15 @@ export const useAccessStore = createPersistStore(
         };
         state.openaiApiKey = state.token;
         state.azureApiVersion = "2023-08-01-preview";
+      }
+
+      if (version < 3) {
+        const state = persistedState as {
+          useCustomConfig: boolean;
+          provider: ServiceProvider;
+        };
+        state.useCustomConfig = true;
+        state.provider = ServiceProvider.DeepSeek;
       }
 
       return persistedState as any;

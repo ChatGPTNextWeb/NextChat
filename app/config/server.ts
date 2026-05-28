@@ -102,7 +102,7 @@ export const getServerSideConfig = () => {
 
   const disableGPT4 = !!process.env.DISABLE_GPT4;
   let customModels = process.env.CUSTOM_MODELS ?? "";
-  let defaultModel = process.env.DEFAULT_MODEL ?? "";
+  let defaultModel = process.env.DEFAULT_MODEL ?? "deepseek-v4-pro";
   let visionModels = process.env.VISION_MODELS ?? "";
 
   if (disableGPT4) {

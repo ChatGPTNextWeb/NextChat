@@ -309,9 +309,9 @@ You are an AI assistant with access to system tools. Your role is to help users 
 
 `;
 
-export const SUMMARIZE_MODEL = "gpt-5-nano";
+export const SUMMARIZE_MODEL = "deepseek-v4-pro";
 export const GEMINI_SUMMARIZE_MODEL = "gemini-2.5-pro";
-export const DEEPSEEK_SUMMARIZE_MODEL = "deepseek-v4-flash";
+export const DEEPSEEK_SUMMARIZE_MODEL = "deepseek-v4-pro";
 
 export const KnowledgeCutOffDate: Record<string, string> = {
   default: "2024-10",

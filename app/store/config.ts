@@ -60,7 +60,7 @@ export const DEFAULT_CONFIG = {
   dontShowMaskSplashScreen: false, // dont show splash screen when create chat
   hideBuiltinMasks: false, // dont add builtin masks
 
-  customModels: "+deepseek-v4-pro",
+  customModels: "",
   models: DEFAULT_MODELS as any as LLMModel[],
 
   modelConfig: {
@@ -74,8 +74,8 @@ export const DEFAULT_CONFIG = {
     sendMemory: true,
     historyMessageCount: 64,
     compressMessageLengthThreshold: 1000,
-    compressModel: "",
-    compressProviderName: "",
+    compressModel: "deepseek-v4-pro" as ModelType,
+    compressProviderName: "DeepSeek",
     enableInjectSystemPrompts: true,
     template: config?.template ?? DEFAULT_INPUT_TEMPLATE,
     size: "1024x1024" as ModelSize,
@@ -195,7 +195,7 @@ export const useAppConfig = createPersistStore(
   }),
   {
     name: StoreKey.Config,
-    version: 4.1,
+    version: 4.3,
 
     merge(persistedState, currentState) {
       const state = persistedState as ChatConfig | undefined;
@@ -249,6 +249,32 @@ export const useAppConfig = createPersistStore(
       }
 
       if (version < 4.1) {
+        state.modelConfig.compressModel =
+          DEFAULT_CONFIG.modelConfig.compressModel;
+        state.modelConfig.compressProviderName =
+          DEFAULT_CONFIG.modelConfig.compressProviderName;
+      }
+
+      if (version < 4.2) {
+        state.modelConfig.model = DEFAULT_CONFIG.modelConfig.model as ModelType;
+        state.modelConfig.providerName = DEFAULT_CONFIG.modelConfig
+          .providerName as ServiceProvider;
+        state.modelConfig.historyMessageCount =
+          DEFAULT_CONFIG.modelConfig.historyMessageCount;
+        state.modelConfig.compressModel =
+          DEFAULT_CONFIG.modelConfig.compressModel;
+        state.modelConfig.compressProviderName =
+          DEFAULT_CONFIG.modelConfig.compressProviderName;
+        state.customModels = DEFAULT_CONFIG.customModels;
+      }
+
+      if (version < 4.3) {
+        state.customModels = "";
+        state.modelConfig.model = DEFAULT_CONFIG.modelConfig.model as ModelType;
+        state.modelConfig.providerName = DEFAULT_CONFIG.modelConfig
+          .providerName as ServiceProvider;
+        state.modelConfig.historyMessageCount =
+          DEFAULT_CONFIG.modelConfig.historyMessageCount;
         state.modelConfig.compressModel =
           DEFAULT_CONFIG.modelConfig.compressModel;
         state.modelConfig.compressProviderName =
