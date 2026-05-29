@@ -49,3 +49,7 @@ masks.json
 
 # mcp config
 app/mcp/mcp_config.json
+
+# release build artifacts (binaries only; build scripts & docs are tracked)
+release/*.exe
+release/*.dll
