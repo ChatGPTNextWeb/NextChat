@@ -1,0 +1,10 @@
+# GNU (MinGW) build configuration.
+#
+# This machine has no MSVC toolchain, so the app is built for the
+# x86_64-pc-windows-gnu target using a standalone MinGW GCC.
+#
+# `-static` links the MinGW runtime (libwinpthread / libgcc) into the exe so
+# the released binary is self-contained and needs no extra DLLs shipped
+# alongside it (msvcrt.dll is a Windows system component and is always present).
+[target.x86_64-pc-windows-gnu]
+rustflags = ["-C", "link-args=-static"]

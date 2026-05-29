@@ -47,3 +47,14 @@ bytes = "1.7.2"
 # If you use cargo directly instead of tauri's cli you can use this feature flag to switch between tauri's `dev` and `build` modes.
 # DO NOT REMOVE!!
 custom-protocol = ["tauri/custom-protocol"]
+
+# Size-optimized release profile, tuned to keep compile time reasonable.
+# (Full `lto = true` + `codegen-units = 1` shrinks ~10% more but compiles
+# several times slower; "thin" LTO with parallel codegen units is a much
+# better time/size trade-off.)
+[profile.release]
+opt-level = "z"     # optimize for binary size rather than speed
+lto = "thin"        # cheap cross-crate optimization (fast, most of fat-LTO's size win)
+codegen-units = 16  # parallel codegen — much faster compile
+panic = "abort"     # drop unwinding tables/landing pads
+strip = true        # strip symbols from the final binary

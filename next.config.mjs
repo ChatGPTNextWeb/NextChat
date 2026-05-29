@@ -1,4 +1,8 @@
 import webpack from "webpack";
+import { dirname, resolve } from "path";
+import { fileURLToPath } from "url";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const mode = process.env.BUILD_MODE ?? "standalone";
 console.log("[Next] build mode", mode);
@@ -18,6 +22,17 @@ const nextConfig = {
       config.plugins.push(
         new webpack.optimize.LimitChunkCountPlugin({ maxChunks: 1 }),
       );
+    }
+
+    if (mode === "export") {
+      // Replace server-only MCP actions with a no-op stub for static export.
+      // Uses resolve.alias (applied early in resolution) so webpack never
+      // sees the "use server" directive in the original file.
+      const mcpActionsPath = resolve(__dirname, "app/mcp/actions");
+      config.resolve.alias = {
+        ...config.resolve.alias,
+        [mcpActionsPath]: resolve(__dirname, "app/mcp/actions.export-stub"),
+      };
     }
 
     config.resolve.fallback = {

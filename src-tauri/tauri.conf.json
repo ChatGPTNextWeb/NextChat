@@ -58,7 +58,7 @@
       }
     },
     "bundle": {
-      "active": true,
+      "active": false,
       "category": "DeveloperTool",
       "copyright": "2023, Zhang Yifei All Rights Reserved.",
       "deb": {
