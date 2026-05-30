@@ -15,11 +15,13 @@ export type Mask = {
   context: ChatMessage[];
   syncGlobalConfig?: boolean;
   modelConfig: ModelConfig;
-  lang: Lang;
+  lang: Lang | string;
   builtin: boolean;
   plugin?: string[];
   enableArtifacts?: boolean;
   enableCodeFold?: boolean;
+  category?: string;
+  description?: string;
 };
 
 export const DEFAULT_MASK_STATE = {

@@ -4,7 +4,7 @@
   <img src="https://github.com/user-attachments/assets/83bdcc07-ae5e-4954-a53a-ac151ba6ccf3" width="1000" alt="icon"/>
 </a>
 
-<h1 align="center">NextChat</h1>
+<h1 align="center">ActorAIchat</h1>
 
 English / [简体中文](./README_CN.md)
 
@@ -18,7 +18,7 @@ English / [简体中文](./README_CN.md)
 [![MacOS][MacOS-image]][download-url]
 [![Linux][Linux-image]][download-url]
 
-[NextChatAI](https://nextchat.club?utm_source=readme) / [iOS APP](https://apps.apple.com/us/app/nextchat-ai/id6743085599) / [Web App Demo](https://app.nextchat.club) / [Desktop App](https://github.com/Yidadaa/ChatGPT-Next-Web/releases) / [Enterprise Edition](#enterprise-edition)
+[ActorAIchat SaaS](https://nextchat.club?utm_source=readme) / [iOS APP](https://apps.apple.com/us/app/nextchat-ai/id6743085599) / [Web App Demo](https://app.nextchat.club) / [Desktop App](https://github.com/Yidadaa/ChatGPT-Next-Web/releases) / [Enterprise Edition](#enterprise-edition)
 
 [saas-url]: https://nextchat.club?utm_source=readme
 [saas-image]: https://img.shields.io/badge/NextChat-Saas-green?logo=microsoftedge
@@ -51,7 +51,7 @@ English / [简体中文](./README_CN.md)
 
 ![Github iOS Image](https://github.com/user-attachments/assets/e0aa334f-4c13-4dc9-8310-e3b09fa4b9f3)
 
-## 🫣 NextChat Support MCP !
+## 🫣 ActorAIchat Support MCP !
 
 > Before build, please set env ENABLE_MCP=true
 

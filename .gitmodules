@@ -1,0 +1,5 @@
+[submodule "agency-agents"]
+	path = agency-agents
+	url = https://github.com/LKK2LQQ/agency-agents.git
+	branch = main
+	ignore = untracked

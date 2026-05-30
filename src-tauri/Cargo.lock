@@ -3,6 +3,21 @@
 version = 3
 
 [[package]]
+name = "actor-aichat"
+version = "0.1.0"
+dependencies = [
+ "bytes",
+ "futures-util",
+ "percent-encoding",
+ "reqwest",
+ "serde",
+ "serde_json",
+ "tauri",
+ "tauri-build",
+ "tauri-plugin-window-state",
+]
+
+[[package]]
 name = "adler2"
 version = "2.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2259,21 +2274,6 @@ name = "new_debug_unreachable"
 version = "1.0.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "650eef8c711430f1a879fdd01d4745a7deea475becfb90269c06775983bbf086"
-
-[[package]]
-name = "nextchat"
-version = "0.1.0"
-dependencies = [
- "bytes",
- "futures-util",
- "percent-encoding",
- "reqwest",
- "serde",
- "serde_json",
- "tauri",
- "tauri-build",
- "tauri-plugin-window-state",
-]
 
 [[package]]
 name = "nix"

@@ -27,7 +27,7 @@ export async function createClient(
 
   const client = new Client(
     {
-      name: `nextchat-mcp-client-${id}`,
+      name: `actor-aichat-mcp-client-${id}`,
       version: "1.0.0",
     },
     {

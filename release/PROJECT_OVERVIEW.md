@@ -132,7 +132,7 @@ VS Build Tools，改用 **GNU 目标 `x86_64-pc-windows-gnu` + 独立 MinGW(WinL
 ```bash
 # 仅 exe
 npx tauri build
-cp src-tauri/target/release/nextchat.exe      release/ActorAIchat.exe
+cp src-tauri/target/release/actor-aichat.exe      release/ActorAIchat.exe
 cp src-tauri/target/release/WebView2Loader.dll release/WebView2Loader.dll
 
 # 独立生成 setup.exe (需 winget install NSIS.NSIS)

@@ -103,7 +103,7 @@ try {
 finally { Pop-Location }
 
 # ---- Copy exe + dll ----
-$bin = Join-Path $Root 'src-tauri\target\release\nextchat.exe'
+$bin = Join-Path $Root 'src-tauri\target\release\actor-aichat.exe'
 $dll = Join-Path $Root 'src-tauri\target\release\WebView2Loader.dll'
 if (-not (Test-Path $bin)) { Fail "Binary not found: $bin" }
 

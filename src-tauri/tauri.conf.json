@@ -8,7 +8,7 @@
     "withGlobalTauri": true
   },
   "package": {
-    "productName": "NextChat",
+    "productName": "ActorAIchat",
     "version": "2.16.1"
   },
   "tauri": {
@@ -73,7 +73,7 @@
         "icons/icon.ico"
       ],
       "identifier": "com.yida.chatgpt.next.web",
-      "longDescription": "NextChat is a cross-platform ChatGPT client, including Web/Win/Linux/OSX/PWA.",
+      "longDescription": "ActorAIchat is a cross-platform AI assistant, including Web/Win/Linux/OSX/PWA.",
       "macOS": {
         "entitlements": null,
         "exceptionDomain": "",
@@ -82,7 +82,7 @@
         "signingIdentity": null
       },
       "resources": [],
-      "shortDescription": "NextChat App",
+      "shortDescription": "ActorAIchat App",
       "targets": [],
       "windows": {
         "certificateThumbprint": null,
@@ -117,7 +117,7 @@
         "fullscreen": false,
         "height": 600,
         "resizable": true,
-        "title": "NextChat",
+        "title": "ActorAIchat",
         "width": 960,
         "hiddenTitle": true,
         "titleBarStyle": "Overlay"

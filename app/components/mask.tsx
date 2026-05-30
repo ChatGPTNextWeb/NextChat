@@ -447,9 +447,21 @@ export function MaskPage() {
 
   const filterLang = maskStore.language;
 
-  const allMasks = maskStore
-    .getAll()
-    .filter((m) => !filterLang || m.lang === filterLang);
+  const allMasks = maskStore.getAll().filter((m) => {
+    const maskLang = (m as any).lang as string | undefined;
+    // Map "cn" ↔ "zh" for agency agents
+    const effectiveLang = filterLang === "cn" ? "zh" : filterLang || undefined;
+    if (effectiveLang && maskLang) return maskLang === effectiveLang;
+    // No language filter set: filter by current UI language
+    if (!filterLang) {
+      if (!maskLang) return true; // user-created masks
+      const { getLang } = require("../locales");
+      const uiLang = getLang();
+      const langKey = uiLang === "cn" ? "zh" : "en";
+      return maskLang === langKey;
+    }
+    return true;
+  });
 
   const [searchMasks, setSearchMasks] = useState<Mask[]>([]);
   const [searchText, setSearchText] = useState("");
@@ -591,7 +603,7 @@ export function MaskPage() {
                     <div className={styles["mask-name"]}>{m.name}</div>
                     <div className={clsx(styles["mask-info"], "one-line")}>
                       {`${Locale.Mask.Item.Info(m.context.length)} / ${
-                        ALL_LANG_OPTIONS[m.lang]
+                        ALL_LANG_OPTIONS[m.lang as "cn" | "en"] ?? m.lang
                       } / ${m.modelConfig.model}`}
                     </div>
                   </div>

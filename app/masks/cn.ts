@@ -1,4 +1,7 @@
-import { ALL_SKILLS } from "../skills";
 import { BuiltinMask } from "./typing";
 
-export const CN_MASKS: BuiltinMask[] = ALL_SKILLS;
+/**
+ * CN_MASKS is now empty — all roles come from the agency-agents submodule.
+ * Kept for backward compatibility with the mask build pipeline.
+ */
+export const CN_MASKS: BuiltinMask[] = [];

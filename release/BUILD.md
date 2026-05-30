@@ -75,7 +75,7 @@ $env:Path = "$env:USERPROFILE\.cargo\bin;$mingw;$env:Path"
 $env:RUSTUP_TOOLCHAIN = "stable-x86_64-pc-windows-gnu"
 yarn install            # 首次
 npx tauri build
-copy src-tauri\target\release\nextchat.exe        release\ActorAIchat.exe
+copy src-tauri\target\release\actor-aichat.exe        release\ActorAIchat.exe
 copy src-tauri\target\release\WebView2Loader.dll  release\WebView2Loader.dll
 
 # 3) 生成安装包（可选）

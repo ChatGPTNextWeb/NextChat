@@ -8,7 +8,7 @@ Skills 是 ActorChat 的角色定义系统，每个 Skill 代表一个 AI 角色
 - **模型参数**：针对该角色的最优 temperature / max_tokens 等配置
 - **示例对话**：引导模型快速进入角色状态的 few-shot 上下文
 
-Skills 与 NextChat 核心代码完全解耦，所有角色定义集中在 `app/skills/` 目录中维护。
+Skills 与 ActorAIchat 核心代码完全解耦，所有角色定义集中在 `app/skills/` 目录中维护。
 
 ---
 
@@ -182,7 +182,7 @@ yarn mask
 
 ## 上下文管理说明
 
-ActorChat 继承了 NextChat 的上下文管理机制：
+ActorAIchat 继承了上下文管理机制：
 
 - **持久记忆**：通过 `sendMemory: true` + `memoryPrompt` 实现跨多轮的记忆摘要
 - **手动清空**：工具栏"清除上下文"按钮插入分隔符，之前的消息不再发送给模型

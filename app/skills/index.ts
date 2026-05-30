@@ -1,53 +1,63 @@
 /**
- * ActorChat Skills 系统 - 核心入口
+ * ActorAIchat — Skills 系统
  *
- * 这里统一导出所有角色 Skill 定义。
- * 要添加新角色：
- *   1. 在 ./roles/ 目录下创建新文件（参考现有文件格式）
- *   2. 在此文件导入并加入 ALL_SKILLS 数组
- *   3. 无需修改其他任何核心代码
+ * 所有角色均从 agency-agents 子模块动态加载。
+ * 语言切换由 getAgencyAgents() 根据当前 UI 语言自动过滤。
  */
 
 import { BuiltinMask } from "../masks/typing";
 
-// ---- 导入各角色 Skill ----
-import { GENERAL_SKILL } from "./roles/general";
-import { OPERATIONS_SKILL } from "./roles/operations";
-import { PROGRAMMER_SKILL } from "./roles/programmer";
-import { PRODUCT_MANAGER_SKILL } from "./roles/product-manager";
-import { SALES_SKILL } from "./roles/sales";
-import { ENGINEER_SKILL } from "./roles/engineer";
-import { ARTIST_SKILL } from "./roles/artist";
-import { DESIGNER_SKILL } from "./roles/designer";
-import { TEACHER_SKILL } from "./roles/teacher";
+export { type BuiltinMask as Skill } from "../masks/typing";
 
 /**
- * 所有 Skill 的注册列表。
- * 顺序决定在 UI 中的展示顺序。
- * GENERAL_SKILL 始终排在第一位作为默认角色。
+ * 获取所有 agency agents，按当前 UI 语言过滤（zh/en）。
+ * 若无匹配语言的角色则回退到英文。
  */
-export const ALL_SKILLS: BuiltinMask[] = [
-  GENERAL_SKILL,
-  OPERATIONS_SKILL,
-  PROGRAMMER_SKILL,
-  PRODUCT_MANAGER_SKILL,
-  SALES_SKILL,
-  ENGINEER_SKILL,
-  ARTIST_SKILL,
-  DESIGNER_SKILL,
-  TEACHER_SKILL,
-];
+export function getAgencyAgents(): BuiltinMask[] {
+  const { BUILTIN_MASKS } = require("../masks");
+  const { getLang } = require("../locales");
+  const currentLang = getLang();
 
-/**
- * 通过 skill 名称查找对应定义
- */
-export function findSkillByName(name: string): BuiltinMask | undefined {
-  return ALL_SKILLS.find((s) => s.name === name);
+  const agents = BUILTIN_MASKS.filter(
+    (m: any) => m.category && typeof m.category === "string",
+  );
+
+  const langFiltered = agents.filter((a: any) => a.lang === currentLang);
+  if (langFiltered.length > 0) return langFiltered;
+  return agents.filter((a: any) => a.lang === "en" || !a.lang);
 }
 
 /**
- * 默认 Skill（通用 AI）
+ * 默认 Skill — 通用 AI 助手，作为没有匹配角色时的 fallback。
  */
-export const DEFAULT_SKILL = GENERAL_SKILL;
+export const DEFAULT_SKILL: BuiltinMask = {
+  avatar: "1f916",
+  name: "通用 AI",
+  context: [
+    {
+      id: "default-0",
+      role: "system",
+      content:
+        "你是 ActorAIchat 的默认 AI 助手，具备深度推理能力。请根据用户的问题提供高质量、结构化的回答。",
+      date: "",
+    },
+  ],
+  modelConfig: {
+    model: "deepseek-v4-pro",
+    temperature: 0.7,
+    max_tokens: 4000,
+    presence_penalty: 0,
+    frequency_penalty: 0,
+    sendMemory: true,
+    historyMessageCount: 20,
+    compressMessageLengthThreshold: 2000,
+  },
+  lang: "cn",
+  builtin: true,
+  createdAt: 1700000000001,
+};
 
-export type { BuiltinMask as Skill };
+/** @deprecated — 仅兼容旧代码，请使用 getAgencyAgents() */
+export function findSkillByName(name: string): BuiltinMask | undefined {
+  return getAgencyAgents().find((s) => s.name === name) || DEFAULT_SKILL;
+}

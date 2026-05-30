@@ -46,6 +46,8 @@ dev
 *.key.pub
 
 masks.json
+agency-agents.json
+agency-agents-zh.json
 
 # mcp config
 app/mcp/mcp_config.json

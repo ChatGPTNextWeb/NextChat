@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Path, SlotID } from "../constant";
 import { IconButton } from "./button";
 import { EmojiAvatar } from "./emoji";
@@ -10,7 +10,7 @@ import EyeIcon from "../icons/eye.svg";
 
 import { useLocation, useNavigate } from "react-router-dom";
 import { Mask, useMaskStore } from "../store/mask";
-import Locale from "../locales";
+import Locale, { getLang } from "../locales";
 import { useAppConfig, useChatStore } from "../store";
 import { MaskAvatar } from "./mask";
 import { useCommand } from "../command";
@@ -46,7 +46,6 @@ function useMaskGroup(masks: Mask[]) {
       const maskItemWidth = 120;
       const maskItemHeight = 50;
 
-      const randomMask = () => masks[Math.floor(Math.random() * masks.length)];
       let maskIndex = 0;
       const nextMask = () => masks[maskIndex++ % masks.length];
 
@@ -55,11 +54,7 @@ function useMaskGroup(masks: Mask[]) {
 
       const newGroups = new Array(rows)
         .fill(0)
-        .map((_, _i) =>
-          new Array(cols)
-            .fill(0)
-            .map((_, j) => (j < 1 || j > cols - 2 ? randomMask() : nextMask())),
-        );
+        .map((_, _i) => new Array(cols).fill(0).map(() => nextMask()));
 
       setGroups(newGroups);
     };
@@ -68,8 +63,7 @@ function useMaskGroup(masks: Mask[]) {
 
     window.addEventListener("resize", computeGroup);
     return () => window.removeEventListener("resize", computeGroup);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [masks]);
 
   return groups;
 }
@@ -78,7 +72,27 @@ export function NewChat() {
   const chatStore = useChatStore();
   const maskStore = useMaskStore();
 
-  const masks = maskStore.getAll();
+  // Force re-render when agency agents JSON is loaded
+  const [loaded, setLoaded] = useState(0);
+  useEffect(() => {
+    const handler = () => setLoaded((n) => n + 1);
+    window.addEventListener("agency-agents-loaded", handler);
+    return () => window.removeEventListener("agency-agents-loaded", handler);
+  }, []);
+
+  const allMasks = maskStore.getAll();
+
+  // Filter masks by current UI language (cn → zh, en → en)
+  const masks = useMemo(() => {
+    const langKey = getLang() === "cn" ? "zh" : "en";
+    return allMasks.filter((m) => {
+      const maskLang = (m as any).lang;
+      if (!maskLang) return true; // user-created masks
+      return maskLang === langKey;
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [allMasks, loaded]);
+
   const groups = useMaskGroup(masks);
 
   const navigate = useNavigate();
