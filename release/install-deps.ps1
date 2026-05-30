@@ -5,9 +5,11 @@
     1. Node.js LTS  + Yarn
     2. Rust (rustup) + GNU 工具链 stable-x86_64-pc-windows-gnu
     3. MinGW-w64 (WinLibs GCC, MSVCRT)   —— 链接器
+    4. NSIS v3                            —— 生成 setup.exe
+    5. WiX Toolset v3                     —— 生成 .msi
 
   依赖通过 winget 安装；需要管理员权限（脚本会自动申请）。
-  装完后即可运行 build-exe.cmd 一键编译。
+  装完后即可运行 build-exe.cmd 一键编译（会同时生成 exe + setup.exe + .msi）。
 #>
 [CmdletBinding()]
 param([switch]$NoPause)
@@ -103,6 +105,32 @@ if ($gcc) {
   Install-WingetPackage 'BrechtSanders.WinLibs.POSIX.MSVCRT' 'MinGW-w64 (WinLibs GCC)'
 }
 
+# 4) NSIS v3 —— 生成 setup.exe
+Update-EnvPath
+if (Get-Command makensis.exe -ErrorAction SilentlyContinue) {
+  Info "NSIS 已安装"
+} else {
+  Info "正在安装 NSIS (Nullsoft Scriptable Install System) ..."
+  Install-WingetPackage 'NSIS.NSIS' 'NSIS v3'
+  # NSIS installs to %ProgramFiles(x86)%\NSIS by default
+  $nsisPath = "${env:ProgramFiles(x86)}\NSIS\Bin"
+  if (Test-Path $nsisPath) {
+    [Environment]::SetEnvironmentVariable('Path',
+      "$nsisPath;" + [Environment]::GetEnvironmentVariable('Path', 'Machine'),
+      'Machine')
+    Update-EnvPath
+  }
+}
+
+# 5) WiX Toolset v3 —— 生成 .msi
+Update-EnvPath
+if (Get-Command candle.exe -ErrorAction SilentlyContinue) {
+  Info "WiX Toolset 已安装"
+} else {
+  Info "正在安装 WiX Toolset v3 ..."
+  Install-WingetPackage 'WiXToolset.WiXToolset' 'WiX Toolset v3'
+}
+
 Info "===== 依赖环境安装完成 ====="
-Info "现在可以运行 build-exe.cmd 一键编译 exe。"
+Info "现在可以运行 build-exe.cmd，在菜单中选择要构建的产物。"
 if (-not $NoPause) { Read-Host "按回车关闭" }

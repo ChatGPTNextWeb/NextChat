@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ActorAIchat - English Localization
+  ==================================
+  Usage: light.exe -loc en-US.wxl main.wixobj
+-->
+<WixLocalization Culture="en-us"
+                 Codepage="1252"
+                 xmlns="http://schemas.microsoft.com/wix/2006/localization">
+
+  <!-- Product identity -->
+  <String Id="LCID" Overridable="yes">1033</String>
+  <String Id="ProductName" Overridable="yes">ActorAIchat</String>
+  <String Id="Manufacturer" Overridable="yes">ActorAI</String>
+  <String Id="AppDescription" Overridable="yes">ActorAIchat - AI Chat Client powered by DeepSeek V4</String>
+
+  <!-- Shortcuts -->
+  <String Id="UninstallShortcutName" Overridable="yes">Uninstall ActorAIchat</String>
+  <String Id="UninstallDescription" Overridable="yes">Remove ActorAIchat from this computer</String>
+
+  <!-- Errors -->
+  <String Id="DowngradeError" Overridable="yes">A newer version of [ProductName] is already installed. Please uninstall it first before installing this older version.</String>
+  <String Id="WebView2Required" Overridable="yes">This application requires the Microsoft Edge WebView2 Runtime.
+
+Please download and install it from:
+https://developer.microsoft.com/microsoft-edge/webview2/
+
+(Windows 11 and recent Windows 10 include this component by default.)</String>
+
+</WixLocalization>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ActorAIchat - Chinese (Simplified) Localization
+  ===============================================
+  Usage: light.exe -loc zh-CN.wxl main.wixobj
+-->
+<WixLocalization Culture="zh-cn"
+                 Codepage="936"
+                 xmlns="http://schemas.microsoft.com/wix/2006/localization">
+
+  <!-- Product identity -->
+  <String Id="LCID" Overridable="yes">2052</String>
+  <String Id="ProductName" Overridable="yes">ActorAIchat</String>
+  <String Id="Manufacturer" Overridable="yes">ActorAI</String>
+  <String Id="AppDescription" Overridable="yes">ActorAIchat - 基于 DeepSeek V4 的 AI 对话客户端</String>
+
+  <!-- Shortcuts -->
+  <String Id="UninstallShortcutName" Overridable="yes">卸载 ActorAIchat</String>
+  <String Id="UninstallDescription" Overridable="yes">从计算机中移除 ActorAIchat</String>
+
+  <!-- Dialogs -->
+  <String Id="WelcomeDlg_Title" Overridable="yes">欢迎使用 [ProductName] 安装程序</String>
+  <String Id="WelcomeDlgDescription" Overridable="yes">安装向导将在您的计算机上安装 [ProductName]。</String>
+  <String Id="LicenseAgreementDlg_Title" Overridable="yes">最终用户许可协议</String>
+  <String Id="LicenseAgreementDlgDescription" Overridable="yes">请仔细阅读以下许可协议。</String>
+  <String Id="VerifyReadyDlgInstallTitle" Overridable="yes">准备安装 [ProductName]</String>
+  <String Id="VerifyReadyDlgRemoveTitle" Overridable="yes">准备卸载 [ProductName]</String>
+  <String Id="VerifyReadyDlgInstallText" Overridable="yes">安装程序已准备就绪，将 [ProductName] 安装到您的计算机。</String>
+  <String Id="ProgressDlgTitleInstalling" Overridable="yes">正在安装 [ProductName]</String>
+  <String Id="ProgressDlgTitleChanging" Overridable="yes">正在配置 [ProductName]</String>
+  <String Id="ProgressDlgTitleRemoving" Overridable="yes">正在卸载 [ProductName]</String>
+  <String Id="ProgressDlgTitleRepairing" Overridable="yes">正在修复 [ProductName]</String>
+  <String Id="ProgressDlgTextInstalling" Overridable="yes">请稍候，安装程序正在安装 [ProductName]。这可能需要几分钟时间。</String>
+  <String Id="ProgressDlgTextChanging" Overridable="yes">请稍候，安装程序正在配置 [ProductName]。这可能需要几分钟时间。</String>
+  <String Id="ProgressDlgTextRemoving" Overridable="yes">请稍候，安装程序正在卸载 [ProductName]。这可能需要几分钟时间。</String>
+  <String Id="ProgressDlgTextRepairing" Overridable="yes">请稍候，安装程序正在修复 [ProductName]。这可能需要几分钟时间。</String>
+  <String Id="ExitDialog_Title" Overridable="yes">[ProductName] 安装完成</String>
+  <String Id="ExitDialogDescription" Overridable="yes">[ProductName] 安装成功。点击"完成"退出。</String>
+  <String Id="UserExit_Title" Overridable="yes">[ProductName] 安装已取消</String>
+  <String Id="UserExitDescription" Overridable="yes">[ProductName] 安装尚未完成。您可以稍后再次运行安装程序。</String>
+  <String Id="FatalError_Title" Overridable="yes">[ProductName] 安装失败</String>
+  <String Id="FatalErrorDescription1" Overridable="yes">安装程序在安装 [ProductName] 时遇到错误。请修正问题后重试。</String>
+
+  <!-- Buttons -->
+  <String Id="ButtonText_Back" Overridable="yes">上一步(&amp;B)</String>
+  <String Id="ButtonText_Next" Overridable="yes">下一步(&amp;N)</String>
+  <String Id="ButtonText_Install" Overridable="yes">安装(&amp;I)</String>
+  <String Id="ButtonText_Remove" Overridable="yes">卸载(&amp;R)</String>
+  <String Id="ButtonText_Repair" Overridable="yes">修复(&amp;P)</String>
+  <String Id="ButtonText_Cancel" Overridable="yes">取消</String>
+  <String Id="ButtonText_Finish" Overridable="yes">完成(&amp;F)</String>
+  <String Id="ButtonText_OK" Overridable="yes">确定</String>
+  <String Id="ButtonText_Yes" Overridable="yes">是(&amp;Y)</String>
+  <String Id="ButtonText_No" Overridable="yes">否(&amp;N)</String>
+
+  <!-- Errors -->
+  <String Id="DowngradeError" Overridable="yes">已安装更新版本的 [ProductName]。请先卸载当前版本再安装旧版本。</String>
+  <String Id="WebView2Required" Overridable="yes">此应用程序需要 Microsoft Edge WebView2 运行时。
+
+请从以下地址下载安装后重试：
+https://developer.microsoft.com/microsoft-edge/webview2/
+
+（Windows 11 及较新的 Windows 10 已内置此组件。）</String>
+
+</WixLocalization>

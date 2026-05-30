@@ -53,3 +53,9 @@ app/mcp/mcp_config.json
 # release build artifacts (binaries only; build scripts & docs are tracked)
 release/*.exe
 release/*.dll
+release/*.msi
+release/*-setup.exe
+release/*-setup.ps1
+
+# WiX build temp
+msi-install/_wixobj/

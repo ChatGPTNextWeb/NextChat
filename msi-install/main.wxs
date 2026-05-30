@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ActorAIchat - WiX MSI Installer Template (Path 2: Standalone Mode)
+  ==================================================================
+  Compiled by: msi-install/build-msi.ps1 (candle.exe + light.exe)
+
+  Preprocessor variables (passed via candle.exe -d flag):
+    $(var.Version)       - e.g. "2.16.1"
+    $(var.ProductName)   - "ActorAIchat"
+    $(var.Manufacturer)  - "ActorAI"
+    $(var.ExeSource)     - absolute path to ActorAIchat.exe
+    $(var.DllSource)     - absolute path to WebView2Loader.dll
+    $(var.IconSource)    - absolute path to icon.ico
+-->
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+
+  <!-- ================================================================ -->
+  <!-- Product                                                           -->
+  <!-- Product/@Id="*" = auto-generate new ProductCode each build         -->
+  <!-- UpgradeCode     = fixed forever, identifies this app lineage       -->
+  <!-- ================================================================ -->
+  <Product Id="*"
+           Name="!(loc.ProductName)"
+           Language="!(loc.LCID)"
+           Version="$(var.Version)"
+           Manufacturer="!(loc.Manufacturer)"
+           UpgradeCode="A1B2C3D4-E5F6-7890-ABCD-EF1234567890">
+
+    <Package InstallerVersion="200"
+             Compressed="yes"
+             InstallScope="perMachine"
+             Manufacturer="!(loc.Manufacturer)"
+             Description="!(loc.ProductName) Desktop Application"
+             Comments="AI Chat Client powered by DeepSeek V4"
+             Keywords="AI,Chat,DeepSeek,LLM,ChatGPT"
+             Platform="x64" />
+
+    <!-- Auto-uninstall previous versions when newer MSI runs -->
+    <MajorUpgrade AllowSameVersionUpgrades="yes"
+                  DowngradeErrorMessage="!(loc.DowngradeError)" />
+
+    <Media Id="1" Cabinet="actorai.cab" EmbedCab="yes" />
+
+    <!-- ================================================================ -->
+    <!-- Directory Structure                                               -->
+    <!--   TARGETDIR                                                        -->
+    <!--     ProgramFiles64Folder                                           -->
+    <!--       ActorAI (CompanyFolder)                                       -->
+    <!--         ActorAIchat (INSTALLDIR)                                    -->
+    <!--     ProgramMenuFolder                                               -->
+    <!--       ActorAIchat (StartMenuDir)                                    -->
+    <!--     DesktopFolder                                                   -->
+    <!-- ================================================================ -->
+    <Directory Id="TARGETDIR" Name="SourceDir">
+
+      <!-- Main installation -->
+      <Directory Id="ProgramFiles64Folder">
+        <Directory Id="CompanyFolder" Name="ActorAI">
+          <Directory Id="INSTALLDIR" Name="ActorAIchat">
+
+            <Component Id="MainExeComponent"
+                       Guid="B2C3D4E5-F6A7-8901-BCDE-F12345678901"
+                       Win64="yes">
+              <File Id="ActorAIchatExe"
+                    Name="ActorAIchat.exe"
+                    Source="$(var.ExeSource)"
+                    KeyPath="yes"
+                    Checksum="yes" />
+            </Component>
+
+            <Component Id="WebView2LoaderComponent"
+                       Guid="C3D4E5F6-A7B8-9012-CDEF-123456789012"
+                       Win64="yes">
+              <File Id="WebView2LoaderDll"
+                    Name="WebView2Loader.dll"
+                    Source="$(var.DllSource)"
+                    KeyPath="yes" />
+            </Component>
+
+          </Directory>
+        </Directory>
+      </Directory>
+
+      <!-- Start Menu -->
+      <Directory Id="ProgramMenuFolder">
+        <Directory Id="StartMenuDir" Name="ActorAIchat" />
+      </Directory>
+
+      <!-- Desktop -->
+      <Directory Id="DesktopFolder" />
+
+    </Directory>
+
+    <!-- ================================================================ -->
+    <!-- Start Menu Shortcuts                                              -->
+    <!-- ================================================================ -->
+    <DirectoryRef Id="StartMenuDir">
+      <Component Id="StartMenuShortcutsComponent"
+                 Guid="D4E5F6A7-B8C9-0123-DEF0-123456789ABC"
+                 Win64="yes">
+        <Shortcut Id="ActorAIchatStartMenu"
+                  Name="ActorAIchat"
+                  Description="!(loc.AppDescription)"
+                  Target="[INSTALLDIR]ActorAIchat.exe"
+                  WorkingDirectory="INSTALLDIR"
+                  Icon="icon.ico" />
+        <Shortcut Id="UninstallShortcut"
+                  Name="!(loc.UninstallShortcutName)"
+                  Description="!(loc.UninstallDescription)"
+                  Target="[System64Folder]msiexec.exe"
+                  Arguments="/x [ProductCode]"
+                  WorkingDirectory="SystemFolder"
+                  Icon="icon.ico" />
+        <RemoveFolder Id="RemoveStartMenuDir" On="uninstall" />
+        <RegistryValue Root="HKCU"
+                       Key="Software\ActorAI\ActorAIchat"
+                       Name="StartMenuInstalled"
+                       Type="integer"
+                       Value="1"
+                       KeyPath="yes" />
+      </Component>
+    </DirectoryRef>
+
+    <!-- ================================================================ -->
+    <!-- Desktop Shortcut                                                  -->
+    <!-- ================================================================ -->
+    <DirectoryRef Id="DesktopFolder">
+      <Component Id="DesktopShortcutComponent"
+                 Guid="E5F6A7B8-C9D0-1234-EF01-234567890BCD"
+                 Win64="yes">
+        <Shortcut Id="ActorAIchatDesktop"
+                  Name="ActorAIchat"
+                  Description="!(loc.AppDescription)"
+                  Target="[INSTALLDIR]ActorAIchat.exe"
+                  WorkingDirectory="INSTALLDIR"
+                  Icon="icon.ico" />
+        <RemoveFolder Id="RemoveDesktopDir" On="uninstall" />
+        <RegistryValue Root="HKCU"
+                       Key="Software\ActorAI\ActorAIchat"
+                       Name="DesktopShortcutInstalled"
+                       Type="integer"
+                       Value="1"
+                       KeyPath="yes" />
+      </Component>
+    </DirectoryRef>
+
+    <!-- ================================================================ -->
+    <!-- WebView2 Runtime Detection                                        -->
+    <!-- Probes both machine-wide and per-user Evergreen runtime.          -->
+    <!-- Condition: block fresh install if WebView2 is absent.             -->
+    <!-- ================================================================ -->
+    <Property Id="WEBVIEW2MACHINE" Secure="yes">
+      <RegistrySearch Id="WebView2MachineSearch"
+                      Root="HKLM"
+                      Key="SOFTWARE\WOW6432Node\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}"
+                      Name="pv"
+                      Type="raw"
+                      Win64="yes" />
+    </Property>
+    <Property Id="WEBVIEW2USER" Secure="yes">
+      <RegistrySearch Id="WebView2UserSearch"
+                      Root="HKCU"
+                      Key="SOFTWARE\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}"
+                      Name="pv"
+                      Type="raw" />
+    </Property>
+
+    <Condition Message="!(loc.WebView2Required)">
+      Installed OR WEBVIEW2MACHINE OR WEBVIEW2USER
+    </Condition>
+
+    <!-- ================================================================ -->
+    <!-- Feature                                                           -->
+    <!-- ================================================================ -->
+    <Feature Id="MainFeature"
+             Title="ActorAIchat"
+             Description="!(loc.AppDescription)"
+             Level="1"
+             ConfigurableDirectory="INSTALLDIR"
+             Display="expand"
+             AllowAdvertise="no"
+             Absent="disallow">
+      <ComponentRef Id="MainExeComponent" />
+      <ComponentRef Id="WebView2LoaderComponent" />
+      <ComponentRef Id="StartMenuShortcutsComponent" />
+      <ComponentRef Id="DesktopShortcutComponent" />
+    </Feature>
+
+    <!-- ================================================================ -->
+    <!-- UI: WixUI_Minimal with License Agreement                          -->
+    <!-- ================================================================ -->
+    <UIRef Id="WixUI_Minimal" />
+    <UIRef Id="WixUI_ErrorProgressText" />
+
+    <!-- ================================================================ -->
+    <!-- ARP (Add/Remove Programs)                                         -->
+    <!-- ================================================================ -->
+    <Icon Id="icon.ico" SourceFile="$(var.IconSource)" />
+    <Property Id="ARPPRODUCTICON" Value="icon.ico" />
+    <Property Id="ARPHELPLINK" Value="https://github.com/ChatGPTNextWeb/ChatGPT-Next-Web" />
+    <Property Id="ARPURLINFOABOUT" Value="https://github.com/ChatGPTNextWeb/ChatGPT-Next-Web" />
+    <Property Id="ARPURLUPDATEINFO" Value="https://github.com/ChatGPTNextWeb/ChatGPT-Next-Web/releases" />
+    <Property Id="ARPCONTACT" Value="ActorAI" />
+    <Property Id="ARPSIZE" Value="8192" />
+
+  </Product>
+
+</Wix>

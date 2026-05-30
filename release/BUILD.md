@@ -1,6 +1,6 @@
 # ActorAIchat 一键编译说明（Windows）
 
-本目录提供 **两步、全双击** 的编译方案：先装依赖，再编译出 exe。
+本目录提供 **两步、全双击** 的编译方案：先装依赖，再编译出 exe + 安装包。
 脚本均为 PowerShell + winget 实现，**无需手动配置环境变量**，可在全新的 Windows 机器上运行。
 
 ---
@@ -10,8 +10,16 @@
 1. **装依赖**：双击 `install-deps.cmd`
    （会弹 UAC 申请管理员权限，自动用 winget 安装所有缺失依赖；已装的会跳过）
 2. **编译**：双击 `build-exe.cmd`
-   （先检查依赖是否齐全 → 齐全才编译 → 把 `ActorAIchat.exe` + `WebView2Loader.dll`
-   拷到本目录；依赖缺失则提示你先运行第 1 步）
+   （弹出交互菜单，选择要构建的产物 → 检查依赖 → 编译 → 拷到本目录）
+
+**交互菜单：**
+```
+  [1] Build exe only (portable)
+  [2] Build exe + setup.exe  (NSIS installer)
+  [3] Build exe + .msi       (Windows Installer)
+  [4] Build all (exe + setup.exe + .msi)
+  [5] Check dependencies only
+```
 
 > 第一次编译会先 `yarn install` 并从零编译 Rust 依赖，约需几分钟；之后会快很多。
 
@@ -24,6 +32,8 @@
 | Node.js LTS + Yarn | 前端构建（Next.js 静态导出） | `OpenJS.NodeJS.LTS`（Yarn 经 corepack 启用） |
 | Rust (rustup) + **GNU 工具链** | 编译原生 exe | `Rustlang.Rustup` + `rustup toolchain install stable-x86_64-pc-windows-gnu` |
 | MinGW-w64 (WinLibs GCC) | 链接器（GNU 目标用 gcc 链接） | `BrechtSanders.WinLibs.POSIX.MSVCRT` |
+| NSIS v3 | 生成 setup.exe 安装向导 | `NSIS.NSIS` |
+| WiX Toolset v3 | 生成 .msi 安装包 | `WiXToolset.WiXToolset` |
 
 **前提**：系统需有 `winget`（Win10 1809+ / Win11 自带；若缺失，从 Microsoft Store 装
 “App Installer / 应用安装程序”）。
@@ -67,6 +77,12 @@ yarn install            # 首次
 npx tauri build
 copy src-tauri\target\release\nextchat.exe        release\ActorAIchat.exe
 copy src-tauri\target\release\WebView2Loader.dll  release\WebView2Loader.dll
+
+# 3) 生成安装包（可选）
+winget install NSIS.NSIS                               # 仅首次
+winget install -e --id WiXToolset.WiXToolset           # 仅首次，需管理员权限
+powershell -File msi-install\build-setup.ps1           # → setup.exe
+powershell -File msi-install\build-msi.ps1 -Lang zh-CN # → .msi
 ```
 
 **git-bash / Linux 用户**：仓库另有等价的 Bash 脚本 `scripts/build-release.sh`
@@ -79,14 +95,10 @@ copy src-tauri\target\release\WebView2Loader.dll  release\WebView2Loader.dll
 | 文件 | 说明 |
 |------|------|
 | `install-deps.cmd` / `install-deps.ps1` | 一键安装依赖（自动提权、幂等、可重复运行） |
-| `build-exe.cmd` / `build-exe.ps1` | 一键编译（先查依赖再编译）。支持 `-CheckOnly`（只检查）、`-NoPause`（不等回车） |
+| `build-exe.cmd` / `build-exe.ps1` | 一键编译（交互菜单，选 [1]-[5]） |
+| `msi-install/build-setup.ps1` | 独立生成 setup.exe（需 NSIS） |
+| `msi-install/build-msi.ps1` | 独立生成 .msi（需 WiX） |
 | `PROJECT_OVERVIEW.md` | 项目结构、构建流水线与优化决策梳理 |
-
-仅检查依赖是否就绪（不编译）：
-
-```bat
-build-exe.cmd -CheckOnly
-```
 
 ---
 

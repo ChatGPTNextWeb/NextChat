@@ -83,11 +83,18 @@
       },
       "resources": [],
       "shortDescription": "NextChat App",
-      "targets": "all",
+      "targets": [],
       "windows": {
         "certificateThumbprint": null,
         "digestAlgorithm": "sha256",
-        "timestampUrl": ""
+        "timestampUrl": "",
+        "wix": {
+          "language": ["en-US", "zh-CN"]
+        },
+        "webviewInstallMode": {
+          "type": "downloadBootstrapper",
+          "silent": true
+        }
       }
     },
     "security": {

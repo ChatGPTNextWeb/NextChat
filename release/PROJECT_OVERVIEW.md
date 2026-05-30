@@ -70,11 +70,25 @@ scripts/build-release.sh         # 一键封装：检测环境 → 前端 → ex
 > 备注：如需把体积再压榨约 10%，可改为 `lto = true` + `codegen-units = 1`，
 > 代价是编译时间成倍增加。
 
-### 4.2 不打安装包，只产出绿色单文件
-`tauri.conf.json` 中将 `bundle.active` 置为 **false**：
+### 4.2 支持生成 Windows 安装包（MSI + setup.exe）
 
-- 不再生成 MSI / NSIS 安装器，也就不会去下载 WiX / NSIS 工具，**省下安装内容与磁盘**。
-- 直接产出可绿色运行的单个 `.exe`，无需安装、无残留。
+考虑到国内网络环境（Tauri 内置打包会从 GitHub 下载 WiX/NSIS 二进制，可能超时），
+本项目改用 **独立脚本 + winget 本地安装** 的方式生成安装包：
+
+- Tauri 只编译 exe（`bundle.active: false`），不触发任何 GitHub 下载。
+- MSI 和 setup.exe 由 `msi-install/` 中的独立脚本调用本地 WiX / NSIS 工具生成。
+- WiX 和 NSIS 通过 winget 一次性安装（走微软 CDN），之后构建不再需要网络。
+
+**三种安装包可选：**
+
+| 产物 | 生成方式 | 额外依赖 |
+|------|----------|----------|
+| 绿色 exe | `build-exe.cmd` | 无 |
+| setup.exe (NSIS) | `build-exe.cmd /BuildSetup` | NSIS (winget) |
+| .msi (WiX) | `build-exe.cmd /BuildMsi` | WiX Toolset (winget) |
+| 全部 | `build-exe.cmd /All` | NSIS + WiX |
+
+**MSI/setup.exe 均包含：** 开始菜单快捷方式、桌面快捷方式、控制面板卸载、WebView2 检测。
 
 ### 4.3 用轻量 GNU(MinGW) 工具链替代 MSVC
 本机此前已删除 Visual Studio / Windows SDK（无 MSVC 链接器），为避免重新安装数 GB 的
@@ -91,27 +105,55 @@ VS Build Tools，改用 **GNU 目标 `x86_64-pc-windows-gnu` + 独立 MinGW(WinL
 
 ## 5. 如何重新构建
 
-最简单：直接跑发布脚本（已封装好工具链探测、PATH、拷贝）：
+### 5.1 安装依赖（仅首次）
 
-```bash
-bash scripts/build-release.sh
+```powershell
+.\release\install-deps.cmd
 ```
 
-手动等价步骤：
+自动安装：Node.js + Yarn + Rust (GNU 工具链) + MinGW (WinLibs GCC) + NSIS + WiX Toolset。
+
+> 所有依赖均通过 winget 安装（微软 CDN），无需访问 GitHub。
+
+### 5.2 一键构建
+
+双击 `release\build-exe.cmd`，在交互菜单中选择：
+
+```
+  [1] Build exe only (portable)
+  [2] Build exe + setup.exe  (NSIS installer)
+  [3] Build exe + .msi       (Windows Installer)
+  [4] Build all (exe + setup.exe + .msi)
+  [5] Check dependencies only
+```
+
+### 5.3 手动构建
 
 ```bash
-# 1) 需要 cargo 与独立 MinGW(WinLibs) gcc
-export PATH="$HOME/.cargo/bin:<WinLibs>/mingw64/bin:$PATH"
+# 仅 exe
+npx tauri build
+cp src-tauri/target/release/nextchat.exe      release/ActorAIchat.exe
+cp src-tauri/target/release/WebView2Loader.dll release/WebView2Loader.dll
 
-# 2) 用 GNU 工具链作为 host（app 与 build script 都用 gcc 链接）
-#    用环境变量而非 `rustup override`，可避开 rustup 自更新检查导致的卡顿
-export RUSTUP_TOOLCHAIN=stable-x86_64-pc-windows-gnu
-export RUSTUP_DISABLE_SELF_UPDATE=1
+# 独立生成 setup.exe (需 winget install NSIS.NSIS)
+powershell -File msi-install\build-setup.ps1
 
-cd <repo>
-npx tauri build                                   # host=gnu，产物在 target/release/
-cp src-tauri/target/release/nextchat.exe        release/ActorAIchat.exe
-cp src-tauri/target/release/WebView2Loader.dll  release/WebView2Loader.dll
+# 独立生成 .msi (需 winget install WiXToolset.WiXToolset)
+powershell -File msi-install\build-msi.ps1 -Lang zh-CN
+```
+
+### 5.4 msi-install 目录结构
+
+```
+msi-install/
+├── setup.nsi           # NSIS 安装脚本
+├── build-setup.ps1     # setup.exe 构建器
+├── main.wxs            # WiX 安装模板
+├── zh-CN.wxl           # 简体中文 UI
+├── en-US.wxl           # English UI
+├── build-msi.ps1       # .msi 构建器
+├── license.txt         # MIT 许可证 (NSIS 引用)
+└── README.md           # 详细文档
 ```
 
 ### 踩坑记录（务必注意）
@@ -127,13 +169,16 @@ cp src-tauri/target/release/WebView2Loader.dll  release/WebView2Loader.dll
 4. **自包含**：`-C link-args=-static`（见 `src-tauri/.cargo/config.toml`）把 MinGW
    运行库静态链入，产物只依赖 Windows 系统 DLL + `WebView2Loader.dll`，无需附带
    libwinpthread/libgcc 等。
+5. **GitHub 下载超时**：Tauri 打包时从 GitHub 下载 WiX/NSIS 二进制，国内可能超时。
+   故 `bundle.active: false` 禁用内置打包，改用 winget 本地安装工具 + 独立脚本生成。
 
 ## 6. 发布产物与体积
 
 | 文件 | 体积 | 说明 |
 |------|------|------|
-| `release/ActorAIchat.exe` | ~7.8 MB | 主程序（旧 MSVC 构建为 ~53MB，缩小约 85%） |
-| `release/WebView2Loader.dll` | ~154 KB | WebView2 引导（运行时必需，无法在 MinGW 下静态链接） |
+| `release/ActorAIchat.exe` | ~7.8 MB | 主程序（便携版，旧 MSVC 构建为 ~53MB，缩小约 85%） |
+| `release/ActorAIchat_x.x.x_x64-setup.exe` | ~4.5 MB | NSIS 安装向导（安装到 `%LocalAppData%\Programs`） |
+| `release/ActorAIchat_x.x.x_x64_zh-CN.msi` | ~5.5 MB | Windows Installer 安装包（安装到 `%ProgramFiles%`） |
+| `release/WebView2Loader.dll` | ~154 KB | WebView2 引导（运行时必需，MinGW 无法静态链接） |
 
 运行依赖：Windows 自带的 Edge **WebView2 运行时**（Win11 及较新 Win10 默认已装）。
-无需安装器、无残留、绿色运行。
