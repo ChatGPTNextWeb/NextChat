@@ -375,6 +375,14 @@ SiliconFlow API URL.
 
 302.AI API URL.
 
+### `ANYAPI_API_KEY` (optional)
+
+AnyAPI API Key.
+
+### `ANYAPI_URL` (optional)
+
+AnyAPI API URL.
+
 ## Requirements
 
 NodeJS >= 18, Docker >= 20
