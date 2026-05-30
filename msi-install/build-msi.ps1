@@ -23,8 +23,12 @@ if (-not $ExePath)   { $ExePath   = Join-Path $ReleaseDir 'ActorAIchat.exe' }
 if (-not $DllPath)   { $DllPath   = Join-Path $ReleaseDir 'WebView2Loader.dll' }
 if (-not $OutputDir) { $OutputDir = $ReleaseDir }
 if (-not $Version) {
-  $p = Join-Path $ProjectDir 'package.json'
-  if (Test-Path $p) { $Version = (Get-Content $p -Raw | ConvertFrom-Json).version }
+  $v = Join-Path $ProjectDir 'VERSION'
+  if (Test-Path $v) { $Version = (Get-Content $v -Raw).Trim() }
+  if (-not $Version) {
+    $p = Join-Path $ProjectDir 'package.json'
+    if (Test-Path $p) { $Version = (Get-Content $p -Raw | ConvertFrom-Json).version }
+  }
   if (-not $Version) { $Version = '0.1.0' }
 }
 $ExePath  = (Resolve-Path $ExePath -ErrorAction SilentlyContinue).Path
