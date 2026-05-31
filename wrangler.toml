@@ -1,3 +1,6 @@
 name = "actor-aichat"
-pages_build_output_dir = "out"
+main = "src/index.ts"
 compatibility_date = "2026-05-31"
+
+[assets]
+directory = "./out"

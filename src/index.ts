@@ -1,29 +1,20 @@
 // ActorAIchat Cloudflare Worker
-// Static assets are served via [assets] in wrangler.toml
-// This fallback handles SPA routing
+// Static assets in out/ are served automatically via [assets] in wrangler.toml
+// This handler only receives requests for paths that don't match a static file
 
 export default {
   async fetch(request: Request): Promise<Response> {
-    // All static files are handled by the [assets] binding.
-    // This handler only receives requests for paths that don't match a file.
     const url = new URL(request.url);
 
-    // For API paths that don't exist, return a helpful error
+    // API paths are not available in static mode
     if (url.pathname.startsWith("/api/")) {
       return new Response(
         JSON.stringify({ error: "API not available in static mode" }),
-        {
-          status: 404,
-          headers: { "Content-Type": "application/json" },
-        },
+        { status: 404, headers: { "Content-Type": "application/json" } },
       );
     }
 
-    // SPA fallback: serve index.html for any non-file path
-    const index = await fetch(new URL("/index.html", request.url));
-    return new Response(index.body, {
-      status: 200,
-      headers: { "Content-Type": "text/html; charset=utf-8" },
-    });
+    // SPA fallback: redirect to root, HashRouter handles the rest
+    return Response.redirect(url.origin + "/#" + url.pathname, 302);
   },
 };
