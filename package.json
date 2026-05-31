@@ -14,6 +14,7 @@
     "export:dev": "yarn mask && concurrently -r \"yarn mask:watch\"  \"cross-env BUILD_MODE=export BUILD_APP=1 next dev\"",
     "app:dev": "concurrently -r \"yarn mask:watch\" \"yarn tauri dev\"",
     "app:build": "yarn mask && yarn tauri build",
+    "deploy:cloudflare": "yarn export && wrangler pages deploy out --project-name=actor-aichat",
     "app:clear": "yarn tauri dev",
     "prompts": "node ./scripts/fetch-prompts.mjs",
     "prepare": "husky install",

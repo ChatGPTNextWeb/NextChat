@@ -1,0 +1,16 @@
+# Cloudflare Pages headers for ActorAIchat
+# Hashed static assets — cache aggressively
+/_next/static/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# HTML entry point — never cache
+/index.html
+  Cache-Control: no-cache, no-store, must-revalidate
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  X-XSS-Protection: 1; mode=block
+
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
