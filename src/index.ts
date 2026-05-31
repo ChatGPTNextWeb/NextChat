@@ -1,26 +1,24 @@
 // ActorAIchat Cloudflare Worker
-// Serves static assets from out/ directory via [assets] binding
+// Static files served automatically via [assets] with SPA fallback.
+// This handler only runs for paths that don't match assets (API, etc).
 
 interface Env {
-  ASSETS: {
-    fetch(request: Request): Promise<Response>;
-  };
+  ASSETS: { fetch(request: Request): Promise<Response> };
 }
 
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
 
-    // Try to serve the request from static assets
-    let response = await env.ASSETS.fetch(request);
-
-    // If the asset was found, return it
-    if (response.status !== 404) {
-      return response;
+    // API routes return 404 (not available in static mode)
+    if (url.pathname.startsWith("/api/")) {
+      return new Response(
+        JSON.stringify({ error: "API not available in static mode" }),
+        { status: 404, headers: { "Content-Type": "application/json" } },
+      );
     }
 
-    // SPA fallback: serve index.html for any path that doesn't match a static file
-    const indexRequest = new Request(new URL("/index.html", request.url));
-    return env.ASSETS.fetch(indexRequest);
+    // Delegate to assets binding (SPA fallback handled by platform)
+    return env.ASSETS.fetch(request);
   },
 };
