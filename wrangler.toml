@@ -2,10 +2,5 @@
 # Deploy: yarn deploy:cloudflare
 # Or manually: wrangler pages deploy out --project-name=actor-aichat
 
-name = "actor-aichat"
-
 # Static site — no next-on-pages, no functions
 pages_build_output_dir = "out"
-
-# Cloudflare compatibility date (required)
-compatibility_date = "2025-01-01"
