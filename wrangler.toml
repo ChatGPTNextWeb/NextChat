@@ -1,6 +1,0 @@
-# ActorAIchat Cloudflare Pages configuration
-# Deploy: yarn deploy:cloudflare
-# Or manually: wrangler pages deploy out --project-name=actor-aichat
-
-# Static site — no next-on-pages, no functions
-pages_build_output_dir = "out"
