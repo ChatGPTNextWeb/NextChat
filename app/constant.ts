@@ -503,7 +503,8 @@ export const VISION_MODEL_REGEXES = [
   /o3/,
   /o4-mini/,
   /grok-4/i,
-  /gpt-5/
+  /gpt-5/,
+  /^MiniMax-M3$/,
 ];
 
 export const EXCLUDE_VISION_MODEL_REGEXES = [/claude-3-5-haiku-20241022/];
@@ -753,14 +754,9 @@ const ai302Models = [
 ];
 
 const minimaxModels = [
+  "MiniMax-M3",
   "MiniMax-M2.7",
   "MiniMax-M2.7-highspeed",
-  "MiniMax-M1",
-  "MiniMax-M1-80k",
-  "MiniMax-M2",
-  "MiniMax-M2-80k",
-  "MiniMax-M2.5",
-  "MiniMax-M2.5-80k",
 ];
 
 let seq = 1000; // 内置的模型序号生成器从1000开始
