@@ -3,6 +3,7 @@
   "private": false,
   "license": "mit",
   "scripts": {
+    "preinstall": "node scripts/build-precheck.mjs",
     "mask": "npx tsx app/masks/build.ts",
     "mask:watch": "npx watch \"yarn mask\" app/masks",
     "dev": "concurrently -r \"yarn run mask:watch\" \"next dev\"",
