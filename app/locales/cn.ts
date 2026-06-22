@@ -549,6 +549,17 @@ const cn = {
           SubTitle: "样例：",
         },
       },
+      AtlasCloud: {
+        ApiKey: {
+          Title: "接口密钥",
+          SubTitle: "使用自定义 Atlas Cloud API Key",
+          Placeholder: "Atlas Cloud API Key",
+        },
+        Endpoint: {
+          Title: "接口地址",
+          SubTitle: "样例：",
+        },
+      },
     },
 
     Model: "模型 (model)",

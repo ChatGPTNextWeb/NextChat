@@ -554,6 +554,17 @@ const en: LocaleType = {
           SubTitle: "Example: ",
         },
       },
+      AtlasCloud: {
+        ApiKey: {
+          Title: "Atlas Cloud API Key",
+          SubTitle: "Use a custom Atlas Cloud API Key",
+          Placeholder: "Atlas Cloud API Key",
+        },
+        Endpoint: {
+          Title: "Endpoint Address",
+          SubTitle: "Example: ",
+        },
+      },
     },
 
     Model: "Model",
