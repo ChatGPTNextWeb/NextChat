@@ -104,6 +104,9 @@ export function auth(req: NextRequest, modelProvider: ModelProvider) {
       case ModelProvider.SiliconFlow:
         systemApiKey = serverConfig.siliconFlowApiKey;
         break;
+      case ModelProvider.AtlasCloud:
+        systemApiKey = serverConfig.atlascloudApiKey;
+        break;
       case ModelProvider.GPT:
       default:
         if (req.nextUrl.pathname.includes("azure/deployments")) {
