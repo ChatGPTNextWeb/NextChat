@@ -326,6 +326,11 @@ export function PromptHints(props: {
       if (noPrompts || e.metaKey || e.altKey || e.ctrlKey) {
         return;
       }
+      // Skip while an IME is composing so Enter confirms the composition and
+      // Arrow keys navigate IME candidates. Mirrors useSubmitHandler above.
+      if (e.isComposing || e.keyCode === 229) {
+        return;
+      }
       // arrow up / down to select prompt
       const changeIndex = (delta: number) => {
         e.stopPropagation();
