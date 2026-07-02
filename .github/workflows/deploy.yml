@@ -82,20 +82,28 @@ jobs:
 
       # OPENAI_API_KEY等はビルド成果物に含めず、Pages Functionsの実行時
       # シークレットとして直接登録する（Terraformのstateにも残らない）
+      #
+      # 注: GitHub Actionsの仕様上 `secrets` コンテキストは if: 条件式では使えない
+      # ("Unrecognized named-value: 'secrets'" エラーの原因）。そのためステップ自体は
+      # 常に実行し、各シークレットの有無はステップ内のシェルスクリプトでチェックする。
       - name: Sync runtime secrets to Cloudflare Pages
-        if: ${{ secrets.OPENAI_API_KEY != '' }}
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_ORG_ID: ${{ secrets.OPENAI_ORG_ID }}
+          NEXTCHAT_ACCESS_CODE: ${{ secrets.NEXTCHAT_ACCESS_CODE }}
         run: |
           set -e
-          npx wrangler pages secret put OPENAI_API_KEY \
-            --project-name="${{ env.CF_PAGES_PROJECT_NAME }}" <<< "${{ secrets.OPENAI_API_KEY }}"
-          if [ -n "${{ secrets.OPENAI_ORG_ID }}" ]; then
-            npx wrangler pages secret put OPENAI_ORG_ID \
-              --project-name="${{ env.CF_PAGES_PROJECT_NAME }}" <<< "${{ secrets.OPENAI_ORG_ID }}"
+          if [ -n "$OPENAI_API_KEY" ]; then
+            printf '%s' "$OPENAI_API_KEY" | npx wrangler pages secret put OPENAI_API_KEY \
+              --project-name="${{ env.CF_PAGES_PROJECT_NAME }}"
           fi
-          if [ -n "${{ secrets.NEXTCHAT_ACCESS_CODE }}" ]; then
-            npx wrangler pages secret put CODE \
-              --project-name="${{ env.CF_PAGES_PROJECT_NAME }}" <<< "${{ secrets.NEXTCHAT_ACCESS_CODE }}"
+          if [ -n "$OPENAI_ORG_ID" ]; then
+            printf '%s' "$OPENAI_ORG_ID" | npx wrangler pages secret put OPENAI_ORG_ID \
+              --project-name="${{ env.CF_PAGES_PROJECT_NAME }}"
+          fi
+          if [ -n "$NEXTCHAT_ACCESS_CODE" ]; then
+            printf '%s' "$NEXTCHAT_ACCESS_CODE" | npx wrangler pages secret put CODE \
+              --project-name="${{ env.CF_PAGES_PROJECT_NAME }}"
           fi
