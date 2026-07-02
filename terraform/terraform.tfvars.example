@@ -1,0 +1,23 @@
+# このファイルを terraform.tfvars にコピーして値を埋め、
+# 【絶対にgitにコミットしない】こと（.gitignore済み）。
+# CIで実行する場合は TF_VAR_xxx 環境変数として渡す方法を推奨。
+
+cloudflare_api_token   = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+cloudflare_account_id  = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+
+github_token = "github_pat_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+github_owner = "your-github-user-or-org"
+github_repo  = "NextChat" # フォークしたリポジトリ名
+
+project_name       = "nextchat"
+production_branch  = "main"
+custom_domain      = "" # 例: "chat.example.com"（Cloudflareにゾーンがある場合のみ）
+
+openai_api_key       = "sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+openai_org_id        = ""
+nextchat_access_code = "" # 例: "pass1,pass2"
+
+hide_user_api_key    = "0"
+disable_gpt4         = "0"
+enable_balance_query = "0"
+disable_fast_link    = "0"
