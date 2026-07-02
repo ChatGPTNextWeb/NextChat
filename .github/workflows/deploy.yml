@@ -50,13 +50,59 @@ jobs:
         if: steps.pm.outputs.manager != 'npm'
         run: corepack enable
 
+      # NextChat のロックファイルは中国国内ミラー(華為クラウド/淘宝/騰訊等)を
+      # 参照していることがあり、GitHub Actionsのランナー(中国国外)からは
+      # 到達性が悪く "Socket connection timeout" で失敗する。
+      # ロックファイルに記録された解決済みURLと、レジストリ設定の両方を
+      # 公式npmレジストリへ強制的に書き換える。
+      - name: Normalize registry to official npm (avoid CN mirror timeouts)
+        run: |
+          set -e
+          MIRROR_RE='https://(mirrors\.huaweicloud\.com/repository/npm|repo\.huaweicloud\.com/repository/npm|registry\.npmmirror\.com|registry\.npm\.taobao\.org|mirrors\.cloud\.tencent\.com/npm|mirrors\.tencent\.com/npm|r\.cnpmjs\.org)/?'
+
+          for f in yarn.lock package-lock.json npm-shrinkwrap.json; do
+            if [ -f "$f" ] && grep -qE "$MIRROR_RE" "$f"; then
+              echo "Rewriting mirror URLs found in $f"
+              sed -i -E "s#${MIRROR_RE}#https://registry.npmjs.org/#g" "$f"
+            fi
+          done
+
+          # 既存の .yarnrc / .npmrc に registry 指定があれば取り除き、公式レジストリと
+          # 長めの network-timeout を追記する（新規解決分・再解決分の保険）
+          if [ -f .yarnrc ]; then
+            grep -v '^registry ' .yarnrc > .yarnrc.tmp || true
+            mv .yarnrc.tmp .yarnrc
+          fi
+          {
+            echo 'registry "https://registry.npmjs.org/"'
+            echo 'network-timeout 300000'
+          } >> .yarnrc
+
+          if [ -f .npmrc ]; then
+            grep -v '^registry' .npmrc > .npmrc.tmp || true
+            mv .npmrc.tmp .npmrc
+          fi
+          echo 'registry=https://registry.npmjs.org/' >> .npmrc
+
       - name: Install dependencies
         run: |
-          case "${{ steps.pm.outputs.manager }}" in
-            pnpm) pnpm install --frozen-lockfile ;;
-            yarn) yarn install --frozen-lockfile ;;
-            npm)  npm ci ;;
-          esac
+          set -e
+          install_cmd() {
+            case "${{ steps.pm.outputs.manager }}" in
+              pnpm) pnpm install --frozen-lockfile ;;
+              yarn) yarn install --frozen-lockfile --network-timeout 300000 ;;
+              npm)  npm ci ;;
+            esac
+          }
+          # 一時的なネットワーク断にも耐えられるよう3回までリトライ
+          for attempt in 1 2 3; do
+            if install_cmd; then
+              exit 0
+            fi
+            echo "Install attempt $attempt failed, retrying in 10s..."
+            sleep 10
+          done
+          exit 1
 
       # NextChat 公式ドキュメント推奨のビルドコマンド。
       # 通常の `next build` は node:buffer 関連の既知バグで Pages 上で動作しないため使用しない。
