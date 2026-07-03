@@ -119,6 +119,20 @@ jobs:
           ENABLE_BALANCE_QUERY: ${{ vars.ENABLE_BALANCE_QUERY }}
           DISABLE_FAST_LINK: ${{ vars.DISABLE_FAST_LINK }}
 
+      # wrangler pages deploy は対象プロジェクトが存在しないと
+      # "Project not found [code: 8000007]" で失敗する。CI(非対話環境)では
+      # 自動作成の確認プロンプトを出せないため、事前に明示的に作成しておく。
+      # 既に存在する場合はエラーになるが、それは想定内なのでジョブは継続する
+      # （本当に認証情報などに問題がある場合は、直後の deploy ステップで
+      # 同じくエラーになるので気づける）。
+      - name: Ensure Cloudflare Pages project exists
+        continue-on-error: true
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages project create ${{ env.CF_PAGES_PROJECT_NAME }} --production-branch=main
+
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3
         with:
