@@ -135,27 +135,22 @@ jobs:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: pages project create ${{ env.CF_PAGES_PROJECT_NAME }} --production-branch=main --compatibility-date=${{ env.CF_COMPATIBILITY_DATE }} --compatibility-flags=nodejs_compat
 
-      - name: Deploy to Cloudflare Pages
-        uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy .vercel/output/static --project-name=${{ env.CF_PAGES_PROJECT_NAME }} --branch=main
-
-      # 【今回のエラーの本当の原因と対策】
-      # wrangler.jsonc をデプロイ時に読ませて compatibility_flags を渡す方式を試したが、
-      # 直らなかった。Cloudflare Pages の仕様として「Wrangler設定ファイルを使うと、
-      # 同じ項目はダッシュボード/API側では編集できなくなる(ソースオブトゥルースが
-      # ファイル側に一本化される)」という制約があり、next-on-pagesが生成する
-      # _worker.js 配下に同梱される設定と衝突して意図通りに反映されない事例が
-      # 複数報告されている。next-on-pages公式ドキュメントも「Direct Uploadの場合は
-      # 結局ダッシュボード側でnodejs_compatを設定する必要がある」と明記している。
+      # 【今回のエラーが直らなかった本当の原因】
+      # このステップは元々 deploy の"後"に置いていたが、それが間違いだった。
+      # Cloudflare Pages は「compatibility flags 等のプロジェクト設定を変更しても、
+      # 既に存在するデプロイには遡って適用されない。設定変更後に新しくデプロイし直して
+      # 初めて反映される」という仕様（公式・非公式の複数の情報源で確認済み。
+      # dashboardで設定を変えた場合も同様に "redeploy" が必要と案内されている）。
+      # つまり deploy → patch の順序だと、patchで直した内容は「次回以降のデプロイ」
+      # にしか効かず、その回に公開されたデプロイ自体は直らないまま残っていた。
+      # なので patch を deploy より前に移動し、この設定が反映された状態で
+      # 新しいデプロイが作られるようにする。
       #
-      # そのため方針を変更し、wrangler.jsoncには頼らず、Cloudflare API を直接叩いて
-      # プロジェクト設定(production/preview 両方のdeployment_configs)に対して
-      # compatibility_flags を確実に反映させる。ダッシュボードでポチッとするのと
-      # 同じ操作をAPI経由で行っているだけなので、config file周りの曖昧さを回避できる。
-      # 既存の環境変数などを消さないよう、一度GETしてから該当項目だけ上書きしてPATCHする。
+      # (方式としては、wrangler.jsonc をデプロイ時に読ませる案も試したが、
+      # Cloudflare Pages は設定ファイルを使うとダッシュボード/API側と
+      # ソースオブトゥルースが競合する仕様があり、next-on-pagesが生成する
+      # _worker.js 側の設定と衝突して無視される事例が複数報告されていたため、
+      # 採用せず Cloudflare API を直接叩く方式にしている)
       - name: Enforce nodejs_compat via Cloudflare API
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
@@ -185,7 +180,7 @@ jobs:
             | {deployment_configs: .result.deployment_configs}
           ' /tmp/pages-project-current.json > /tmp/pages-compat-patch.json
 
-          # 3. PATCHで反映
+          # 3. PATCHで反映（これが完了してから、この後のステップでdeployする）
           patch_code=$(curl -sS -o /tmp/pages-compat-response.json -w '%{http_code}' -X PATCH \
             "$API" -H "$AUTH_HEADER" -H "Content-Type: application/json" \
             --data @/tmp/pages-compat-patch.json)
@@ -197,7 +192,16 @@ jobs:
             echo "::error::Cloudflare Pages への compatibility flags 設定(PATCH)に失敗しました (HTTP $patch_code)"
             exit 1
           fi
-          echo "✅ nodejs_compat を production/preview 両方に設定しました"
+          echo "✅ nodejs_compat を production/preview 両方に設定しました（この後デプロイします）"
+
+      # ここで初めてデプロイする。上のステップで nodejs_compat 設定済みのプロジェクトに
+      # 対して新しいデプロイを作るので、今回のデプロイから正しく反映される。
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy .vercel/output/static --project-name=${{ env.CF_PAGES_PROJECT_NAME }} --branch=main
 
       # OPENAI_API_KEY等はビルド成果物に含めず、Pages Functionsの実行時
       # シークレットとして直接登録する（Terraformのstateにも残らない）
