@@ -17,6 +17,8 @@ env:
   NODE_VERSION: "20.1"
   # Cloudflare Pages のプロジェクト名。Terraform の cloudflare_pages_project.name と一致させること
   CF_PAGES_PROJECT_NAME: ${{ vars.CF_PAGES_PROJECT_NAME || 'nextchat' }}
+  # next-on-pages のPages Functionsを動かすのに必須。Terraform側の設定と揃えること
+  CF_COMPATIBILITY_DATE: "2025-03-07"
 
 jobs:
   build-and-deploy:
@@ -119,6 +121,24 @@ jobs:
           ENABLE_BALANCE_QUERY: ${{ vars.ENABLE_BALANCE_QUERY }}
           DISABLE_FAST_LINK: ${{ vars.DISABLE_FAST_LINK }}
 
+      # 今回のエラー("no nodejs_compat compatibility flag set")の直接の原因はこれ。
+      # next-on-pages で作った Pages Functions を動かすには nodejs_compat フラグが
+      # 必須だが、Pagesプロジェクト側の設定（ダッシュボード or Terraform管理）に
+      # 依存すると、プロジェクトの作られ方によって設定が漏れることがある
+      # （実際、前回追加した project create フォールバックにはフラグ指定がなかった）。
+      # そこでデプロイの度に wrangler.jsonc を生成し、確実に設定を deploy に含める。
+      - name: Write Cloudflare Pages runtime config
+        run: |
+          cat > wrangler.jsonc <<EOF
+          {
+            "name": "${{ env.CF_PAGES_PROJECT_NAME }}",
+            "pages_build_output_dir": ".vercel/output/static",
+            "compatibility_date": "${{ env.CF_COMPATIBILITY_DATE }}",
+            "compatibility_flags": ["nodejs_compat"]
+          }
+          EOF
+          cat wrangler.jsonc
+
       # wrangler pages deploy は対象プロジェクトが存在しないと
       # "Project not found [code: 8000007]" で失敗する。CI(非対話環境)では
       # 自動作成の確認プロンプトを出せないため、事前に明示的に作成しておく。
@@ -131,7 +151,7 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages project create ${{ env.CF_PAGES_PROJECT_NAME }} --production-branch=main
+          command: pages project create ${{ env.CF_PAGES_PROJECT_NAME }} --production-branch=main --compatibility-date=${{ env.CF_COMPATIBILITY_DATE }} --compatibility-flags=nodejs_compat
 
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3
