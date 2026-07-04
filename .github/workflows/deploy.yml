@@ -121,24 +121,6 @@ jobs:
           ENABLE_BALANCE_QUERY: ${{ vars.ENABLE_BALANCE_QUERY }}
           DISABLE_FAST_LINK: ${{ vars.DISABLE_FAST_LINK }}
 
-      # 今回のエラー("no nodejs_compat compatibility flag set")の直接の原因はこれ。
-      # next-on-pages で作った Pages Functions を動かすには nodejs_compat フラグが
-      # 必須だが、Pagesプロジェクト側の設定（ダッシュボード or Terraform管理）に
-      # 依存すると、プロジェクトの作られ方によって設定が漏れることがある
-      # （実際、前回追加した project create フォールバックにはフラグ指定がなかった）。
-      # そこでデプロイの度に wrangler.jsonc を生成し、確実に設定を deploy に含める。
-      - name: Write Cloudflare Pages runtime config
-        run: |
-          cat > wrangler.jsonc <<EOF
-          {
-            "name": "${{ env.CF_PAGES_PROJECT_NAME }}",
-            "pages_build_output_dir": ".vercel/output/static",
-            "compatibility_date": "${{ env.CF_COMPATIBILITY_DATE }}",
-            "compatibility_flags": ["nodejs_compat"]
-          }
-          EOF
-          cat wrangler.jsonc
-
       # wrangler pages deploy は対象プロジェクトが存在しないと
       # "Project not found [code: 8000007]" で失敗する。CI(非対話環境)では
       # 自動作成の確認プロンプトを出せないため、事前に明示的に作成しておく。
@@ -159,6 +141,63 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: pages deploy .vercel/output/static --project-name=${{ env.CF_PAGES_PROJECT_NAME }} --branch=main
+
+      # 【今回のエラーの本当の原因と対策】
+      # wrangler.jsonc をデプロイ時に読ませて compatibility_flags を渡す方式を試したが、
+      # 直らなかった。Cloudflare Pages の仕様として「Wrangler設定ファイルを使うと、
+      # 同じ項目はダッシュボード/API側では編集できなくなる(ソースオブトゥルースが
+      # ファイル側に一本化される)」という制約があり、next-on-pagesが生成する
+      # _worker.js 配下に同梱される設定と衝突して意図通りに反映されない事例が
+      # 複数報告されている。next-on-pages公式ドキュメントも「Direct Uploadの場合は
+      # 結局ダッシュボード側でnodejs_compatを設定する必要がある」と明記している。
+      #
+      # そのため方針を変更し、wrangler.jsoncには頼らず、Cloudflare API を直接叩いて
+      # プロジェクト設定(production/preview 両方のdeployment_configs)に対して
+      # compatibility_flags を確実に反映させる。ダッシュボードでポチッとするのと
+      # 同じ操作をAPI経由で行っているだけなので、config file周りの曖昧さを回避できる。
+      # 既存の環境変数などを消さないよう、一度GETしてから該当項目だけ上書きしてPATCHする。
+      - name: Enforce nodejs_compat via Cloudflare API
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -e
+          API="https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}/pages/projects/${{ env.CF_PAGES_PROJECT_NAME }}"
+          AUTH_HEADER="Authorization: Bearer ${CLOUDFLARE_API_TOKEN}"
+
+          # 1. 現在のプロジェクト設定を取得する
+          #    (Terraformで設定した環境変数などを上書きで消さないため)
+          get_code=$(curl -sS -o /tmp/pages-project-current.json -w '%{http_code}' \
+            "$API" -H "$AUTH_HEADER")
+          if [ "$get_code" -ge 300 ]; then
+            cat /tmp/pages-project-current.json
+            echo "::error::Cloudflare Pages プロジェクト情報の取得に失敗しました (HTTP $get_code)。CLOUDFLARE_API_TOKEN / CLOUDFLARE_ACCOUNT_ID を確認してください。"
+            exit 1
+          fi
+
+          # 2. compatibility_date / compatibility_flags だけを上書きしたJSONを作る
+          #    (他の既存項目=環境変数やbinding等はそのまま保持する)
+          jq --arg date "${{ env.CF_COMPATIBILITY_DATE }}" '
+            .result.deployment_configs.production.compatibility_date = $date
+            | .result.deployment_configs.production.compatibility_flags = ["nodejs_compat"]
+            | .result.deployment_configs.preview.compatibility_date = $date
+            | .result.deployment_configs.preview.compatibility_flags = ["nodejs_compat"]
+            | {deployment_configs: .result.deployment_configs}
+          ' /tmp/pages-project-current.json > /tmp/pages-compat-patch.json
+
+          # 3. PATCHで反映
+          patch_code=$(curl -sS -o /tmp/pages-compat-response.json -w '%{http_code}' -X PATCH \
+            "$API" -H "$AUTH_HEADER" -H "Content-Type: application/json" \
+            --data @/tmp/pages-compat-patch.json)
+
+          cat /tmp/pages-compat-response.json
+          echo
+          success=$(jq -r '.success' /tmp/pages-compat-response.json)
+          if [ "$patch_code" -ge 300 ] || [ "$success" != "true" ]; then
+            echo "::error::Cloudflare Pages への compatibility flags 設定(PATCH)に失敗しました (HTTP $patch_code)"
+            exit 1
+          fi
+          echo "✅ nodejs_compat を production/preview 両方に設定しました"
 
       # OPENAI_API_KEY等はビルド成果物に含めず、Pages Functionsの実行時
       # シークレットとして直接登録する（Terraformのstateにも残らない）
