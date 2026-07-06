@@ -76,6 +76,7 @@ export function collectModelTable(
   // server custom models
   customModels
     .split(",")
+    .map((v) => v.trim())
     .filter((v) => !!v && v.length > 0)
     .forEach((m) => {
       const available = !m.startsWith("-");
@@ -88,6 +89,13 @@ export function collectModelTable(
         Object.values(modelTable).forEach(
           (model) => (model.available = available),
         );
+      } else if (name.startsWith("*")) {
+        const modelId = name.substring(1).toLowerCase();
+        Object.values(modelTable).forEach((model) => {
+          if (model?.provider?.id === modelId) {
+            model.available = available;
+          }
+        });
       } else {
         // 1. find model by name, and set available value
         const [customModelName, customProviderName] = getModelProvider(name);
