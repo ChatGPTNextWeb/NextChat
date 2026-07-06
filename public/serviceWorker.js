@@ -19,12 +19,17 @@ function jsonify(data) {
   return new Response(JSON.stringify(data), { headers: { 'content-type': 'application/json' } })
 }
 
+const ALLOWED_EXTENSIONS = new Set(['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'pdf', 'txt', 'mp3', 'mp4', 'wav', 'ogg']);
+
 async function upload(request, url) {
   const formData = await request.formData()
   const file = formData.getAll('file')[0]
-  let ext = file.name.split('.').pop()
+  let ext = file.name.split('.').pop().toLowerCase()
   if (ext === 'blob') {
-    ext = file.type.split('/').pop()
+    ext = file.type.split('/').pop().toLowerCase()
+  }
+  if (!ALLOWED_EXTENSIONS.has(ext)) {
+    return jsonify({ code: 1, msg: 'Invalid file type' })
   }
   const fileUrl = `${url.origin}/api/cache/${nanoid()}.${ext}`
   // console.debug('file', file, fileUrl, request)
