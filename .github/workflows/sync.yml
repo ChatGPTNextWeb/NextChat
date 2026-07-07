@@ -22,7 +22,7 @@ jobs:
       # Step 2: run the sync action
       - name: Sync upstream changes
         id: sync
-        uses: aormsby/Fork-Sync-With-Upstream-action@v3.4
+        uses: aormsby/Fork-Sync-With-Upstream-action@9e2e4fd0829a2fe8ca4b13693faac9230c414d51 # v3.4
         with:
           upstream_sync_repo: ChatGPTNextWeb/ChatGPT-Next-Web
           upstream_sync_branch: main
