@@ -72,6 +72,10 @@ const tr: PartialLocaleType = {
         light: "Açık mod",
         dark: "Koyu mod",
       },
+      NetWork: {
+        on: "Web aramasını etkinleştir",
+        off: "Web aramasını devre dışı bırak",
+      },
       Prompt: "Kısayol komutu",
       Masks: "Tüm maskeler",
       Clear: "Sohbeti temizle",

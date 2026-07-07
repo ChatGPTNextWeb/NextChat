@@ -73,6 +73,10 @@ const sk: PartialLocaleType = {
         light: "Svetlý motív",
         dark: "Tmavý motív",
       },
+      NetWork: {
+        on: "Povoliť webové vyhľadávanie",
+        off: "Zakázať webové vyhľadávanie",
+      },
       Prompt: "Výzvy",
       Masks: "Masky",
       Clear: "Vymazať kontext",

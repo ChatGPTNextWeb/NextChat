@@ -296,6 +296,15 @@ export function isDalle3(model: string) {
   return "dall-e-3" === model;
 }
 
+export function canUseNetWork(model: string) {
+  return (
+    model.includes("qwen-max") ||
+    model.includes("qwen-plus") ||
+    model.includes("qwen-turbo") ||
+    model.includes("qwq")
+  );
+}
+
 export function getTimeoutMSByModel(model: string) {
   model = model.toLowerCase();
   if (
@@ -345,6 +354,12 @@ export function showPlugins(provider: ServiceProvider, model: string) {
     return true;
   }
   if (provider == ServiceProvider.Google && !model.includes("vision")) {
+    return true;
+  }
+  if (
+    provider == ServiceProvider.Alibaba &&
+    (model.includes("qwen") || model.includes("deepseek"))
+  ) {
     return true;
   }
   return false;

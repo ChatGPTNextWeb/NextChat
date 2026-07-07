@@ -74,6 +74,10 @@ const no: PartialLocaleType = {
         light: "Lyst tema",
         dark: "Mørkt tema",
       },
+      NetWork: {
+        on: "Aktiver web-søk",
+        off: "Deaktiver web-søk",
+      },
       Prompt: "Hurtigkommando",
       Masks: "Alle masker",
       Clear: "Rydd samtale",

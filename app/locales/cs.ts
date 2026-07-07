@@ -72,6 +72,10 @@ const cs: PartialLocaleType = {
         light: "Světelný režim",
         dark: "Tmavý režim",
       },
+      NetWork: {
+        on: "Povolit webové vyhledávání",
+        off: "Zakázat webové vyhledávání",
+      },
       Prompt: "Rychlé příkazy",
       Masks: "Všechny masky",
       Clear: "Vymazat konverzaci",
