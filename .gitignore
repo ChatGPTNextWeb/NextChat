@@ -49,3 +49,10 @@ masks.json
 
 # mcp config
 app/mcp/mcp_config.json
+
+terraform.tfvars
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+crash.log
