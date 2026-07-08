@@ -34,6 +34,8 @@ import ConfirmIcon from "../icons/confirm.svg";
 import CloseIcon from "../icons/close.svg";
 import CancelIcon from "../icons/cancel.svg";
 import ImageIcon from "../icons/image.svg";
+import DownloadIcon from "../icons/download.svg";
+import MenuIcon from "../icons/menu.svg";
 
 import LightIcon from "../icons/light.svg";
 import DarkIcon from "../icons/dark.svg";
@@ -65,6 +67,7 @@ import {
 import {
   autoGrowTextArea,
   copyToClipboard,
+  downloadAs,
   getMessageImages,
   getMessageTextContent,
   isDalle3,
@@ -996,6 +999,25 @@ function _Chat() {
   const fontFamily = config.fontFamily;
 
   const [showExport, setShowExport] = useState(false);
+  const [isSelectionMode, setIsSelectionMode] = useState(false);
+  const [selectedMessageIds, setSelectedMessageIds] = useState<Set<string>>(new Set());
+
+  const toggleMessageSelection = (messageId: string) => {
+    setSelectedMessageIds((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(messageId)) {
+        newSet.delete(messageId);
+      } else {
+        newSet.add(messageId);
+      }
+      return newSet;
+    });
+  };
+
+  const exitSelectionMode = () => {
+    setIsSelectionMode(false);
+    setSelectedMessageIds(new Set());
+  };
 
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const [userInput, setUserInput] = useState("");
@@ -1737,11 +1759,59 @@ function _Chat() {
             )}
             <div className="window-action-button">
               <IconButton
+                icon={<MenuIcon />}
+                bordered
+                title={Locale.Chat.Actions.SelectionMode}
+                onClick={() => {
+                  setIsSelectionMode(true);
+                }}
+              />
+            </div>
+            <div className="window-action-button">
+              <IconButton
                 icon={<ExportIcon />}
                 bordered
                 title={Locale.Chat.Actions.Export}
                 onClick={() => {
                   setShowExport(true);
+                }}
+              />
+            </div>
+            <div className="window-action-button">
+              <IconButton
+                icon={<DownloadIcon />}
+                bordered
+                title={Locale.Chat.Actions.ExportMarkdown}
+                onClick={() => {
+                  const currentSession = chatStore.currentSession();
+                  const messages = currentSession.messages;
+                  const topic = currentSession.topic || DEFAULT_TOPIC;
+                  const model = currentSession.mask.modelConfig.model;
+                  const today = new Date().toISOString().split("T")[0];
+
+                  let mdContent = `---
+title: "${topic}"
+date: "${today}"
+model: "${model}"
+---
+
+# ${topic}
+
+`;
+
+                  messages.forEach((m) => {
+                    const role =
+                      m.role === "user"
+                        ? Locale.Export.MessageFromYou
+                        : Locale.Export.MessageFromChatGPT;
+                    mdContent += `## ${role}
+
+${getMessageTextContent(m).trim()}
+
+`;
+                  });
+
+                  downloadAs(mdContent, `${topic}.md`);
                 }}
               />
             </div>
@@ -1804,6 +1874,21 @@ function _Chat() {
                             : styles["chat-message"]
                         }
                       >
+                        {isSelectionMode && (
+                          <div
+                            className={styles["chat-message-checkbox"]}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              toggleMessageSelection(message.id);
+                            }}
+                          >
+                            <input
+                              type="checkbox"
+                              checked={selectedMessageIds.has(message.id)}
+                              readOnly
+                            ></input>
+                          </div>
+                        )}
                         <div className={styles["chat-message-container"]}>
                           <div className={styles["chat-message-header"]}>
                             <div className={styles["chat-message-avatar"]}>
@@ -2039,92 +2124,151 @@ function _Chat() {
                   );
                 })}
             </div>
-            <div className={styles["chat-input-panel"]}>
-              <PromptHints
-                prompts={promptHints}
-                onPromptSelect={onPromptSelect}
-              />
+            {!isSelectionMode && (
+              <div className={styles["chat-input-panel"]}>
+                <PromptHints
+                  prompts={promptHints}
+                  onPromptSelect={onPromptSelect}
+                />
 
-              <ChatActions
-                uploadImage={uploadImage}
-                setAttachImages={setAttachImages}
-                setUploading={setUploading}
-                showPromptModal={() => setShowPromptModal(true)}
-                scrollToBottom={scrollToBottom}
-                hitBottom={hitBottom}
-                uploading={uploading}
-                showPromptHints={() => {
-                  // Click again to close
-                  if (promptHints.length > 0) {
-                    setPromptHints([]);
-                    return;
-                  }
+                <ChatActions
+                  uploadImage={uploadImage}
+                  setAttachImages={setAttachImages}
+                  setUploading={setUploading}
+                  showPromptModal={() => setShowPromptModal(true)}
+                  scrollToBottom={scrollToBottom}
+                  hitBottom={hitBottom}
+                  uploading={uploading}
+                  showPromptHints={() => {
+                    // Click again to close
+                    if (promptHints.length > 0) {
+                      setPromptHints([]);
+                      return;
+                    }
 
-                  inputRef.current?.focus();
-                  setUserInput("/");
-                  onSearch("");
-                }}
-                setShowShortcutKeyModal={setShowShortcutKeyModal}
-                setUserInput={setUserInput}
-                setShowChatSidePanel={setShowChatSidePanel}
-              />
-              <label
-                className={clsx(styles["chat-input-panel-inner"], {
-                  [styles["chat-input-panel-inner-attach"]]:
-                    attachImages.length !== 0,
-                })}
-                htmlFor="chat-input"
-              >
-                <textarea
-                  id="chat-input"
-                  ref={inputRef}
-                  className={styles["chat-input"]}
-                  placeholder={Locale.Chat.Input(submitKey)}
-                  onInput={(e) => onInput(e.currentTarget.value)}
-                  value={userInput}
-                  onKeyDown={onInputKeyDown}
-                  onFocus={scrollToBottom}
-                  onClick={scrollToBottom}
-                  onPaste={handlePaste}
-                  rows={inputRows}
-                  autoFocus={autoFocus}
-                  style={{
-                    fontSize: config.fontSize,
-                    fontFamily: config.fontFamily,
+                    inputRef.current?.focus();
+                    setUserInput("/");
+                    onSearch("");
                   }}
+                  setShowShortcutKeyModal={setShowShortcutKeyModal}
+                  setUserInput={setUserInput}
+                  setShowChatSidePanel={setShowChatSidePanel}
                 />
-                {attachImages.length != 0 && (
-                  <div className={styles["attach-images"]}>
-                    {attachImages.map((image, index) => {
-                      return (
-                        <div
-                          key={index}
-                          className={styles["attach-image"]}
-                          style={{ backgroundImage: `url("${image}")` }}
-                        >
-                          <div className={styles["attach-image-mask"]}>
-                            <DeleteImageButton
-                              deleteImage={() => {
-                                setAttachImages(
-                                  attachImages.filter((_, i) => i !== index),
-                                );
-                              }}
-                            />
+                <label
+                  className={clsx(styles["chat-input-panel-inner"], {
+                    [styles["chat-input-panel-inner-attach"]]:
+                      attachImages.length !== 0,
+                  })}
+                  htmlFor="chat-input"
+                >
+                  <textarea
+                    id="chat-input"
+                    ref={inputRef}
+                    className={styles["chat-input"]}
+                    placeholder={Locale.Chat.Input(submitKey)}
+                    onInput={(e) => onInput(e.currentTarget.value)}
+                    value={userInput}
+                    onKeyDown={onInputKeyDown}
+                    onFocus={scrollToBottom}
+                    onClick={scrollToBottom}
+                    onPaste={handlePaste}
+                    rows={inputRows}
+                    autoFocus={autoFocus}
+                    style={{
+                      fontSize: config.fontSize,
+                      fontFamily: config.fontFamily,
+                    }}
+                  />
+                  {attachImages.length != 0 && (
+                    <div className={styles["attach-images"]}>
+                      {attachImages.map((image, index) => {
+                        return (
+                          <div
+                            key={index}
+                            className={styles["attach-image"]}
+                            style={{ backgroundImage: `url("${image}")` }}
+                          >
+                            <div className={styles["attach-image-mask"]}>
+                              <DeleteImageButton
+                                deleteImage={() => {
+                                  setAttachImages(
+                                    attachImages.filter((_, i) => i !== index),
+                                  );
+                                }}
+                              />
+                            </div>
                           </div>
-                        </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                  <IconButton
+                    icon={<SendWhiteIcon />}
+                    text={Locale.Chat.Send}
+                    className={styles["chat-input-send"]}
+                    type="primary"
+                    onClick={() => doSubmit(userInput)}
+                  />
+                </label>
+              </div>
+            )}
+            {isSelectionMode && (
+              <div className={styles["chat-selection-panel"]}>
+                <div className={styles["chat-selection-info"]}>
+                  {Locale.Chat.Selection.SelectedCount(selectedMessageIds.size)}
+                </div>
+                <div className={styles["chat-selection-actions"]}>
+                  <IconButton
+                    icon={<CancelIcon />}
+                    text={Locale.Chat.Selection.Cancel}
+                    bordered
+                    onClick={exitSelectionMode}
+                  />
+                  <IconButton
+                    icon={<DownloadIcon />}
+                    text={Locale.Chat.Selection.ExportMarkdown}
+                    bordered
+                    onClick={() => {
+                      if (selectedMessageIds.size === 0) {
+                        showToast(Locale.Chat.Selection.NoSelection);
+                        return;
+                      }
+
+                      const selectedMessages = session.messages.filter((m) =>
+                        selectedMessageIds.has(m.id),
                       );
-                    })}
-                  </div>
-                )}
-                <IconButton
-                  icon={<SendWhiteIcon />}
-                  text={Locale.Chat.Send}
-                  className={styles["chat-input-send"]}
-                  type="primary"
-                  onClick={() => doSubmit(userInput)}
-                />
-              </label>
-            </div>
+                      const topic = session.topic || DEFAULT_TOPIC;
+                      const model = session.mask.modelConfig.model;
+                      const today = new Date().toISOString().split("T")[0];
+
+                      let mdContent = `---
+title: "${topic}"
+date: "${today}"
+model: "${model}"
+---
+
+# ${topic}
+
+`;
+
+                      selectedMessages.forEach((m) => {
+                        const role =
+                          m.role === "user"
+                            ? Locale.Export.MessageFromYou
+                            : Locale.Export.MessageFromChatGPT;
+                        mdContent += `## ${role}
+
+${getMessageTextContent(m).trim()}
+
+`;
+                      });
+
+                      downloadAs(mdContent, `${topic}.md`);
+                    }}
+                  />
+                </div>
+              </div>
+            )}
           </div>
           <div
             className={clsx(styles["chat-side-panel"], {
