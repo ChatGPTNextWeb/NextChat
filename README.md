@@ -10,7 +10,7 @@ English / [简体中文](./README_CN.md)
 
 <a href="https://trendshift.io/repositories/5973" target="_blank"><img src="https://trendshift.io/api/badge/repositories/5973" alt="ChatGPTNextWeb%2FChatGPT-Next-Web | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a>
 
-✨ Light and Fast AI Assistant,with Claude, DeepSeek, GPT4 & Gemini Pro support.
+✨ Light and Fast AI Assistant,with Claude, DeepSeek, GPT4, Gemini Pro & MiniMax support.
 
 [![Saas][Saas-image]][saas-url]
 [![Web][Web-image]][web-url]
@@ -282,6 +282,14 @@ DeepSeek Api Key.
 
 DeepSeek Api Url.
 
+### `MINIMAX_API_KEY` (optional)
+
+MiniMax Api Key. Available at [MiniMax Platform](https://platform.minimaxi.com/).
+
+### `MINIMAX_URL` (optional)
+
+MiniMax Api Url.
+
 ### `HIDE_USER_API_KEY` (optional)
 
 > Default: Empty
@@ -366,6 +374,14 @@ SiliconFlow API Key.
 ### `SILICONFLOW_URL` (optional)
 
 SiliconFlow API URL.
+
+### `MINIMAX_API_KEY` (optional)
+
+MiniMax API Key, available from [MiniMax Platform](https://platform.minimaxi.com/).
+
+### `MINIMAX_URL` (optional)
+
+MiniMax API URL.
 
 ### `AI302_API_KEY` (optional)
 
