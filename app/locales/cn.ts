@@ -551,6 +551,10 @@ const cn = {
       },
     },
 
+    EnableWebSearch: {
+      Title: "启用网络搜索",
+      SubTitle: "为该模型启用网络搜索工具（仅限 Gemini）",
+    },
     Model: "模型 (model)",
     CompressModel: {
       Title: "对话摘要模型",

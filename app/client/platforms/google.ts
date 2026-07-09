@@ -150,7 +150,7 @@ export class GeminiProApi implements LLMApi {
         model: options.config.model,
       },
     };
-    const requestPayload = {
+    const requestPayload: any = {
       contents: messages,
       generationConfig: {
         // stopSequences: [
@@ -180,6 +180,10 @@ export class GeminiProApi implements LLMApi {
         },
       ],
     };
+
+    if (modelConfig.enableWebSearch) {
+      requestPayload.tools = [{ googleSearch: {} }];
+    }
 
     let shouldStream = !!options.config.stream;
     const controller = new AbortController();
