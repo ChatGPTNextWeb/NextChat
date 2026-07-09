@@ -13,7 +13,7 @@ import McpIcon from "../icons/mcp.svg";
 import DragIcon from "../icons/drag.svg";
 import DiscoveryIcon from "../icons/discovery.svg";
 
-import Locale from "../locales";
+import Locale, { getLang } from "../locales";
 
 import { useAppConfig, useChatStore } from "../store";
 
@@ -91,7 +91,11 @@ export function useDragSideBar() {
         return;
       }
       lastUpdateTime.current = Date.now();
-      const d = e.clientX - startX.current;
+      let d = e.clientX - startX.current;
+      // If text and other elements go from right to left
+      if (getLang() === "ar") {
+        d = -1 * d;
+      }
       const nextWidth = limit(startDragWidth.current + d);
       config.update((config) => {
         if (nextWidth < MIN_SIDEBAR_WIDTH) {
