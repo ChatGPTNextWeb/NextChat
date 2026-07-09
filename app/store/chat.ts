@@ -227,6 +227,8 @@ const DEFAULT_CHAT_STATE = {
   sessions: [createEmptySession()],
   currentSessionIndex: 0,
   lastInput: "",
+  isSelectionMode: false,
+  selectedMessageIds: [] as string[],
 };
 
 export const useChatStore = createPersistStore(
@@ -820,6 +822,38 @@ export const useChatStore = createPersistStore(
       setLastInput(lastInput: string) {
         set({
           lastInput,
+        });
+      },
+
+      enterSelectionMode() {
+        set({
+          isSelectionMode: true,
+        });
+      },
+
+      exitSelectionMode() {
+        set({
+          isSelectionMode: false,
+          selectedMessageIds: [],
+        });
+      },
+
+      toggleMessageSelection(messageId: string) {
+        set((state) => {
+          const selectedMessageIds = [...state.selectedMessageIds];
+          const index = selectedMessageIds.indexOf(messageId);
+          if (index >= 0) {
+            selectedMessageIds.splice(index, 1);
+          } else {
+            selectedMessageIds.push(messageId);
+          }
+          return { selectedMessageIds };
+        });
+      },
+
+      clearSelection() {
+        set({
+          selectedMessageIds: [],
         });
       },
 
