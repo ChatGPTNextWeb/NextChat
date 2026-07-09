@@ -86,6 +86,7 @@ import { getClientConfig } from "../config/client";
 import { useSyncStore } from "../store/sync";
 import { nanoid } from "nanoid";
 import { useMaskStore } from "../store/mask";
+import { PROXY_MODES, ProxyMode } from "../store/access";
 import { ProviderType } from "../utils/cloud";
 import { TTSConfigList } from "./tts-config";
 import { RealtimeConfigList } from "./realtime-chat/realtime-config";
@@ -737,6 +738,66 @@ export function Settings() {
         ></input>
       </ListItem>
     );
+  const desktopProxyConfigComponent = clientConfig?.isApp && (
+    <>
+      <ListItem
+        title="Desktop Proxy Mode"
+        subTitle="Choose system, HTTP, or SOCKS5 proxy for desktop requests"
+      >
+        <Select
+          value={accessStore.proxyMode}
+          onChange={(e) =>
+            accessStore.update(
+              (access) => (access.proxyMode = e.target.value as ProxyMode),
+            )
+          }
+        >
+          {PROXY_MODES.map((mode) => (
+            <option value={mode} key={mode}>
+              {mode === "system"
+                ? "System"
+                : mode === "http"
+                ? "HTTP"
+                : "SOCKS5"}
+            </option>
+          ))}
+        </Select>
+      </ListItem>
+
+      {accessStore.proxyMode !== "system" && (
+        <>
+          <ListItem
+            title="Desktop Proxy Host"
+            subTitle="Proxy server hostname or IP address"
+          >
+            <input
+              type="text"
+              value={accessStore.proxyHost}
+              placeholder="127.0.0.1"
+              onChange={(e) =>
+                accessStore.update(
+                  (access) => (access.proxyHost = e.currentTarget.value),
+                )
+              }
+            ></input>
+          </ListItem>
+
+          <ListItem title="Desktop Proxy Port" subTitle="Proxy server port">
+            <input
+              type="text"
+              value={accessStore.proxyPort}
+              placeholder="7890"
+              onChange={(e) =>
+                accessStore.update(
+                  (access) => (access.proxyPort = e.currentTarget.value),
+                )
+              }
+            ></input>
+          </ListItem>
+        </>
+      )}
+    </>
+  );
 
   const openAIConfigComponent = accessStore.provider ===
     ServiceProvider.OpenAI && (
@@ -1459,44 +1520,44 @@ export function Settings() {
     </>
   );
 
-  const ai302ConfigComponent = accessStore.provider === ServiceProvider["302.AI"] && (
+  const ai302ConfigComponent = accessStore.provider ===
+    ServiceProvider["302.AI"] && (
     <>
       <ListItem
-          title={Locale.Settings.Access.AI302.Endpoint.Title}
-          subTitle={
-            Locale.Settings.Access.AI302.Endpoint.SubTitle +
-            AI302.ExampleEndpoint
+        title={Locale.Settings.Access.AI302.Endpoint.Title}
+        subTitle={
+          Locale.Settings.Access.AI302.Endpoint.SubTitle + AI302.ExampleEndpoint
+        }
+      >
+        <input
+          aria-label={Locale.Settings.Access.AI302.Endpoint.Title}
+          type="text"
+          value={accessStore.ai302Url}
+          placeholder={AI302.ExampleEndpoint}
+          onChange={(e) =>
+            accessStore.update(
+              (access) => (access.ai302Url = e.currentTarget.value),
+            )
           }
-        >
-          <input
-            aria-label={Locale.Settings.Access.AI302.Endpoint.Title}
-            type="text"
-            value={accessStore.ai302Url}
-            placeholder={AI302.ExampleEndpoint}
-            onChange={(e) =>
-              accessStore.update(
-                (access) => (access.ai302Url = e.currentTarget.value),
-              )
-            }
-          ></input>
-        </ListItem>
-        <ListItem
-          title={Locale.Settings.Access.AI302.ApiKey.Title}
-          subTitle={Locale.Settings.Access.AI302.ApiKey.SubTitle}
-        >
-          <PasswordInput
-            aria-label={Locale.Settings.Access.AI302.ApiKey.Title}
-            value={accessStore.ai302ApiKey}
-            type="text"
-            placeholder={Locale.Settings.Access.AI302.ApiKey.Placeholder}
-            onChange={(e) => {
-              accessStore.update(
-                (access) => (access.ai302ApiKey = e.currentTarget.value),
-              );
-            }}
-          />
-        </ListItem>
-      </>
+        ></input>
+      </ListItem>
+      <ListItem
+        title={Locale.Settings.Access.AI302.ApiKey.Title}
+        subTitle={Locale.Settings.Access.AI302.ApiKey.SubTitle}
+      >
+        <PasswordInput
+          aria-label={Locale.Settings.Access.AI302.ApiKey.Title}
+          value={accessStore.ai302ApiKey}
+          type="text"
+          placeholder={Locale.Settings.Access.AI302.ApiKey.Placeholder}
+          onChange={(e) => {
+            accessStore.update(
+              (access) => (access.ai302ApiKey = e.currentTarget.value),
+            );
+          }}
+        />
+      </ListItem>
+    </>
   );
 
   return (
@@ -1868,6 +1929,7 @@ export function Settings() {
               )}
             </>
           )}
+          {desktopProxyConfigComponent}
 
           {!shouldHideBalanceQuery && !clientConfig?.isApp ? (
             <ListItem

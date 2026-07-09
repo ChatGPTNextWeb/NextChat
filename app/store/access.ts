@@ -27,6 +27,8 @@ import { DEFAULT_CONFIG } from "./config";
 import { getModelProvider } from "../utils/model";
 
 let fetchState = 0; // 0 not fetch, 1 fetching, 2 done
+export const PROXY_MODES = ["system", "http", "socks5"] as const;
+export type ProxyMode = (typeof PROXY_MODES)[number];
 
 const isApp = getClientConfig()?.buildMode === "export";
 
@@ -138,6 +140,11 @@ const DEFAULT_ACCESS_STATE = {
   // 302.AI
   ai302Url: DEFAULT_AI302_URL,
   ai302ApiKey: "",
+
+  // desktop proxy mode
+  proxyMode: "system" as ProxyMode,
+  proxyHost: "127.0.0.1",
+  proxyPort: "7890",
 
   // server config
   needCode: true,
