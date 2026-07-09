@@ -16,11 +16,14 @@
 
 ## Sponsor AI API
 
-<a href='https://302.ai/'>
-  <img src="https://github.com/user-attachments/assets/d8c0c513-1e18-4d3b-a2a9-ff3696aec0d4" width="100%" alt="icon"/>
-</a>
+本仓库已集成 AIMLAPI（多模型 API 网关，OpenAI 兼容）。
 
-[302.AI](https://302.ai/) 是一个按需付费的AI应用平台，提供市面上最全的AI API和AI在线应用。
+为何做出此项更改？
+
+目前，许多用户都面临着 OpenAI 高昂的费用或区域访问限制的困扰。AIMLAPI 提供了一个一体化的 API 网关，支持 200 多个模型（OpenAI、Anthropic、Llama 3 等），费用最多可降低 50%。
+
+🔗 快速体验 AIMLAPI：
+[点击这里注册](https://aimlapi.com?via=coke)
 
 ## 企业版
 
