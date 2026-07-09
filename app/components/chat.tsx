@@ -34,6 +34,7 @@ import ConfirmIcon from "../icons/confirm.svg";
 import CloseIcon from "../icons/close.svg";
 import CancelIcon from "../icons/cancel.svg";
 import ImageIcon from "../icons/image.svg";
+import DownloadIcon from "../icons/download.svg";
 
 import LightIcon from "../icons/light.svg";
 import DarkIcon from "../icons/dark.svg";
@@ -65,6 +66,7 @@ import {
 import {
   autoGrowTextArea,
   copyToClipboard,
+  downloadAs,
   getMessageImages,
   getMessageTextContent,
   isDalle3,
@@ -1742,6 +1744,44 @@ function _Chat() {
                 title={Locale.Chat.Actions.Export}
                 onClick={() => {
                   setShowExport(true);
+                }}
+              />
+            </div>
+            <div className="window-action-button">
+              <IconButton
+                icon={<DownloadIcon />}
+                bordered
+                title={Locale.Chat.Actions.ExportMarkdown}
+                onClick={() => {
+                  const currentSession = chatStore.currentSession();
+                  const messages = currentSession.messages;
+                  const topic = currentSession.topic || DEFAULT_TOPIC;
+                  const model = currentSession.mask.modelConfig.model;
+                  const today = new Date().toISOString().split("T")[0];
+
+                  let mdContent = `---
+title: "${topic}"
+date: "${today}"
+model: "${model}"
+---
+
+# ${topic}
+
+`;
+
+                  messages.forEach((m) => {
+                    const role =
+                      m.role === "user"
+                        ? Locale.Export.MessageFromYou
+                        : Locale.Export.MessageFromChatGPT;
+                    mdContent += `## ${role}
+
+${getMessageTextContent(m).trim()}
+
+`;
+                  });
+
+                  downloadAs(mdContent, `${topic}.md`);
                 }}
               />
             </div>

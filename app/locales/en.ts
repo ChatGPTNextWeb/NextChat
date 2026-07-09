@@ -45,7 +45,8 @@ const en: LocaleType = {
     Actions: {
       ChatList: "Go To Chat List",
       CompressedHistory: "Compressed History Memory Prompt",
-      Export: "Export All Messages as Markdown",
+      Export: "Export All Messages",
+      ExportMarkdown: "Export as Markdown",
       Copy: "Copy",
       Stop: "Stop",
       Retry: "Retry",
