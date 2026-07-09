@@ -30,9 +30,8 @@ if (typeof window != "undefined") {
       return { cn: [], tw: [], en: [] };
     })
     .then((masks) => {
-      const { cn = [], tw = [], en = [] } = masks;
-      return [...cn, ...tw, ...en].map((m) => {
-        BUILTIN_MASKS.push(BUILTIN_MASK_STORE.add(m));
+     return Object.values(masks).flat().map((m) => {
+        BUILTIN_MASKS.push(BUILTIN_MASK_STORE.add(m as BuiltinMask));
       });
     });
 }
