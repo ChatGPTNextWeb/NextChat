@@ -40,6 +40,17 @@ export const getBuildConfig = () => {
     buildMode,
     isApp,
     template: process.env.DEFAULT_INPUT_TEMPLATE ?? DEFAULT_INPUT_TEMPLATE,
+
+    needCode: !!process.env.CODE,
+    hideUserApiKey: !!process.env.HIDE_USER_API_KEY,
+    baseUrl: process.env.BASE_URL,
+    openaiUrl: process.env.OPENAI_BASE_URL ?? process.env.BASE_URL,
+    disableGPT4: !!process.env.DISABLE_GPT4,
+    useCustomConfig: !!process.env.USE_CUSTOM_CONFIG,
+    hideBalanceQuery: !process.env.ENABLE_BALANCE_QUERY,
+    disableFastLink: !!process.env.DISABLE_FAST_LINK,
+    defaultModel: process.env.DEFAULT_MODEL ?? "",
+    enableMcp: process.env.ENABLE_MCP === "true",
   };
 };
 

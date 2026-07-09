@@ -1,3 +1,7 @@
+declare global {
+  const EXPORT_MODE: boolean;
+}
+
 export type Updater<T> = (updater: (value: T) => void) => void;
 
 export const ROLES = ["system", "user", "assistant"] as const;
