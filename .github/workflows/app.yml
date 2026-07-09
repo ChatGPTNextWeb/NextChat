@@ -14,16 +14,16 @@ jobs:
       release_id: ${{ steps.create-release.outputs.result }}
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
       - name: setup node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v6
         with:
           node-version: 18
       - name: get version
         run: echo "PACKAGE_VERSION=$(node -p "require('./src-tauri/tauri.conf.json').package.version")" >> $GITHUB_ENV
       - name: create release
         id: create-release
-        uses: actions/github-script@v6
+        uses: actions/github-script@v8
         with:
           script: |
             const { data } = await github.rest.repos.getLatestRelease({
@@ -52,9 +52,9 @@ jobs:
 
     runs-on: ${{ matrix.config.os }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
       - name: setup node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v6
         with:
           node-version: 18
           cache: 'yarn'
@@ -96,7 +96,7 @@ jobs:
     steps:
       - name: publish release
         id: publish-release
-        uses: actions/github-script@v6
+        uses: actions/github-script@v8
         env:
           release_id: ${{ needs.create-release.outputs.release_id }}
         with:
