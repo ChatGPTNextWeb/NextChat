@@ -292,6 +292,14 @@ SiliconFlow API URL.
 
 302.AI API URL.
 
+### `ANYAPI_API_KEY` (optional)
+
+AnyAPI API Key.
+
+### `ANYAPI_URL` (optional)
+
+AnyAPI API URL.
+
 ## 开发
 
 点击下方按钮，开始二次开发：
