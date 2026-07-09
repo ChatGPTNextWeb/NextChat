@@ -196,7 +196,9 @@ function fillTemplateWith(input: string, modelConfig: ModelConfig) {
 
   Object.entries(vars).forEach(([name, value]) => {
     const regex = new RegExp(`{{${name}}}`, "g");
-    output = output.replace(regex, value.toString()); // Ensure value is a string
+    // Use a function callback to avoid special replacement patterns ($$, $&, $`, $')
+    // in String.prototype.replace when user input contains these sequences
+    output = output.replace(regex, () => value.toString());
   });
 
   return output;
