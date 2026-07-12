@@ -63,6 +63,11 @@ export type ChatMessage = RequestMessage & {
   tools?: ChatMessageTool[];
   audio_url?: string;
   isMcpResponse?: boolean;
+  // ===== 新增审核字段 =====
+  reviewStatus?: "pending" | "reviewing" | "passed" | "failed" | "corrected";
+  originalContent?: string;
+  correctedContent?: string;
+  isReviewed?: boolean;
 };
 
 export function createMessage(override: Partial<ChatMessage>): ChatMessage {
