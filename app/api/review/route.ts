@@ -6,9 +6,9 @@ const serverConfig = getServerSideConfig();
 
 export async function POST(req: NextRequest) {
   try {
-    const { content, history, model } = await req.json();
+    const { content, history } = await req.json();
 
-    const claudeApiKey = serverConfig.anthropicApiKey || process.env.ANTHROPIC_API_KEY;
+    const claudeApiKey = serverConfig.anthropicApiKey || process.env.ANTHROPIC_API_KEY || "";
     const claudeModel = process.env.REVIEW_MODEL || "[限时福利]claude-sonnet-5";
     const reviewPrompt = process.env.REVIEW_PROMPT || "你是一个内容审核专家...";
 
