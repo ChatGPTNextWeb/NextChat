@@ -1679,6 +1679,63 @@ function _Chat() {
 
   const [showChatSidePanel, setShowChatSidePanel] = useState(false);
 
+  // ===== 审核相关逻辑 =====
+  const triggerReview = useCallback(async (message: ChatMessage) => {
+    if (message.reviewStatus || message.role !== "assistant") return;
+    if (!message.content || typeof message.content !== "string") return;
+
+    const content = message.content;
+    const history = session.messages
+      .slice(0, -1)
+      .map((m) => getMessageTextContent(m))
+      .join("\n");
+
+    // 设置状态为审核中
+    chatStore.updateTargetSession(session, (s) => {
+      const target = s.messages.find((m) => m.id === message.id);
+      if (target) target.reviewStatus = "reviewing";
+    });
+
+    try {
+      const res = await fetch("/api/review", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ content, history }),
+      });
+      const data = await res.json();
+
+      chatStore.updateTargetSession(session, (s) => {
+        const target = s.messages.find((m) => m.id === message.id);
+        if (target) {
+          if (data.passed) {
+            target.reviewStatus = "passed";
+          } else {
+            target.originalContent = content;
+            target.content = data.corrected || content;
+            target.reviewStatus = "corrected";
+          }
+          target.isReviewed = true;
+        }
+      });
+    } catch (error) {
+      console.error("[Review] Error:", error);
+      chatStore.updateTargetSession(session, (s) => {
+        const target = s.messages.find((m) => m.id === message.id);
+        if (target) target.reviewStatus = "failed";
+      });
+    }
+  }, [session, chatStore]);
+
+  // 监听新消息，自动触发审核
+  useEffect(() => {
+    const messages = session.messages;
+    const lastMsg = messages[messages.length - 1];
+    if (lastMsg && lastMsg.role === "assistant" && !lastMsg.reviewStatus && !lastMsg.isReviewed) {
+      triggerReview(lastMsg);
+    }
+  }, [session.messages, triggerReview]);
+  // ===== 审核相关逻辑结束 =====
+
   return (
     <>
       <div className={styles.chat} key={session.id}>
@@ -2021,12 +2078,44 @@ function _Chat() {
                               </div>
                             )}
                           </div>
-                          {message?.audio_url && (
-                            <div className={styles["chat-message-audio"]}>
-                              <audio src={message.audio_url} controls />
+                          {/* ===== 审核状态指示器 ===== */}
+                          {!isUser && message.reviewStatus && message.reviewStatus !== "reviewing" && (
+                            <div className={styles["review-status"]}>
+                              {message.reviewStatus === "passed" && (
+                                <span className={styles["review-status-passed"]}>
+                                  ✅ 已通过审核
+                                </span>
+                              )}
+                              {message.reviewStatus === "corrected" && (
+                                <span className={styles["review-status-corrected"]}>
+                                  ✏️ 已修正&nbsp;
+                                  <IconButton
+                                    icon={<EditIcon />}
+                                    text="查看原文"
+                                    onClick={() => {
+                                      if (message.originalContent) {
+                                        copyToClipboard(message.originalContent);
+                                        showToast("原文已复制到剪贴板");
+                                      }
+                                    }}
+                                  />
+                                </span>
+                              )}
+                              {message.reviewStatus === "failed" && (
+                                <span className={styles["review-status-failed"]}>
+                                  ⚠️ 审核失败
+                                </span>
+                              )}
                             </div>
                           )}
-
+                          {!isUser && message.reviewStatus === "reviewing" && (
+                            <div className={styles["review-status"]}>
+                              <span className={styles["review-status-reviewing"]}>
+                                🔄 审核中...
+                              </span>
+                            </div>
+                          )}
+                          {/* ===== 审核状态指示器结束 ===== */}
                           <div className={styles["chat-message-action-date"]}>
                             {isContext
                               ? Locale.Chat.IsContext
