@@ -18,6 +18,7 @@ import {
   CHATGLM_BASE_URL,
   SILICONFLOW_BASE_URL,
   AI302_BASE_URL,
+  DAOXE_BASE_URL,
 } from "../constant";
 import { getHeaders } from "../client/api";
 import { getClientConfig } from "../config/client";
@@ -61,6 +62,8 @@ const DEFAULT_SILICONFLOW_URL = isApp
   : ApiPath.SiliconFlow;
 
 const DEFAULT_AI302_URL = isApp ? AI302_BASE_URL : ApiPath["302.AI"];
+
+const DEFAULT_DAOXE_URL = isApp ? DAOXE_BASE_URL : ApiPath.DaoXE;
 
 const DEFAULT_ACCESS_STATE = {
   accessCode: "",
@@ -138,6 +141,10 @@ const DEFAULT_ACCESS_STATE = {
   // 302.AI
   ai302Url: DEFAULT_AI302_URL,
   ai302ApiKey: "",
+
+  // DaoXE
+  daoxeUrl: DEFAULT_DAOXE_URL,
+  daoxeApiKey: "",
 
   // server config
   needCode: true,
@@ -225,6 +232,9 @@ export const useAccessStore = createPersistStore(
     isValidSiliconFlow() {
       return ensure(get(), ["siliconflowApiKey"]);
     },
+    isValidDaoXE() {
+      return ensure(get(), ["daoxeApiKey"]);
+    },
 
     isAuthorized() {
       this.fetch();
@@ -245,6 +255,7 @@ export const useAccessStore = createPersistStore(
         this.isValidXAI() ||
         this.isValidChatGLM() ||
         this.isValidSiliconFlow() ||
+        this.isValidDaoXE() ||
         !this.enabledAccessControl() ||
         (this.enabledAccessControl() && ensure(get(), ["accessCode"]))
       );
