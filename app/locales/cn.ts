@@ -502,6 +502,17 @@ const cn = {
           SubTitle: "使用自定义硅基流动 API Key",
           Placeholder: "硅基流动 API Key",
         },
+      DaoXE: {
+        ApiKey: {
+          Title: "DaoXE API Key",
+          SubTitle: "使用自定义 DaoXE API Key（多模型多协议网关）",
+          Placeholder: "DaoXE API Key",
+        },
+        Endpoint: {
+          Title: "DaoXE 接口地址",
+          SubTitle: "自定义 API 端点，默认：",
+        },
+      },
         Endpoint: {
           Title: "接口地址",
           SubTitle: "样例：",

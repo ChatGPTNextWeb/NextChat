@@ -486,6 +486,17 @@ const en: LocaleType = {
           SubTitle: "Use a custom SiliconFlow API Key",
           Placeholder: "SiliconFlow API Key",
         },
+      DaoXE: {
+        ApiKey: {
+          Title: "DaoXE API Key",
+          SubTitle: "Use a custom DaoXE API Key (multi-model gateway)",
+          Placeholder: "DaoXE API Key",
+        },
+        Endpoint: {
+          Title: "DaoXE Endpoint",
+          SubTitle: "Custom API endpoint, default: ",
+        },
+      },
         Endpoint: {
           Title: "Endpoint Address",
           SubTitle: "Example: ",

@@ -35,6 +35,7 @@ export const XAI_BASE_URL = "https://api.x.ai";
 export const CHATGLM_BASE_URL = "https://open.bigmodel.cn";
 
 export const SILICONFLOW_BASE_URL = "https://api.siliconflow.cn";
+export const DAOXE_BASE_URL = "https://daoxe.com";
 
 export const AI302_BASE_URL = "https://api.302.ai";
 
@@ -75,6 +76,7 @@ export enum ApiPath {
   DeepSeek = "/api/deepseek",
   SiliconFlow = "/api/siliconflow",
   "302.AI" = "/api/302ai",
+  DaoXE = "/api/daoxe",
 }
 
 export enum SlotID {
@@ -134,6 +136,7 @@ export enum ServiceProvider {
   DeepSeek = "DeepSeek",
   SiliconFlow = "SiliconFlow",
   "302.AI" = "302.AI",
+  DaoXE = "DaoXE",
 }
 
 // Google API safety settings, see https://ai.google.dev/gemini-api/docs/safety-settings
@@ -161,6 +164,7 @@ export enum ModelProvider {
   DeepSeek = "DeepSeek",
   SiliconFlow = "SiliconFlow",
   "302.AI" = "302.AI",
+  DaoXE = "DaoXE",
 }
 
 export const Stability = {
@@ -269,6 +273,12 @@ export const SiliconFlow = {
   ExampleEndpoint: SILICONFLOW_BASE_URL,
   ChatPath: "v1/chat/completions",
   ListModelPath: "v1/models?&sub_type=chat",
+};
+
+export const DaoXE = {
+  ExampleEndpoint: DAOXE_BASE_URL,
+  ChatPath: "v1/chat/completions",
+  ListModelPath: "v1/models",
 };
 
 export const AI302 = {
@@ -742,6 +752,9 @@ const ai302Models = [
   "gemini-2.5-pro",
 ];
 
+// Account-scoped catalog; runtime listModels via GET /v1/models.
+const daoxeModels: string[] = [];
+
 let seq = 1000; // 内置的模型序号生成器从1000开始
 export const DEFAULT_MODELS = [
   ...openaiModels.map((name) => ({
@@ -907,6 +920,17 @@ export const DEFAULT_MODELS = [
       providerName: "302.AI",
       providerType: "ai302",
       sorted: 15,
+    },
+  })),
+  ...daoxeModels.map((name) => ({
+    name,
+    available: true,
+    sorted: seq++,
+    provider: {
+      id: "daoxe",
+      providerName: "DaoXE",
+      providerType: "daoxe",
+      sorted: 16,
     },
   })),
 ] as const;
