@@ -166,10 +166,12 @@ function fillTemplateWith(input: string, modelConfig: ModelConfig) {
 
   var serviceProvider = "OpenAI";
   if (modelInfo) {
-    // TODO: auto detect the providerName from the modelConfig.model
-
     // Directly use the providerName from the modelInfo
     serviceProvider = modelInfo.provider.providerName;
+  } else if (modelConfig.providerName) {
+    // For custom models not in DEFAULT_MODELS, use the configured providerName
+    // so that {{ServiceProvider}} in templates reflects the actual provider
+    serviceProvider = modelConfig.providerName;
   }
 
   const vars = {
