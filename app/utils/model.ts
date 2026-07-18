@@ -254,5 +254,18 @@ export function isModelNotavailableInServer(
     const fullName = `${modelName}@${providerName.toLowerCase()}`;
     if (modelTable?.[fullName]?.available === true) return false;
   }
+
+  // For custom models added without an explicit provider (e.g. just "chatglm3-6b"),
+  // the table entry key is "<modelName>@<modelName>". Check if any available entry
+  // in the custom model table matches this model name, regardless of provider.
+  // This ensures user-defined custom models are never incorrectly blocked.
+  const hasAvailableCustomEntry = Object.values(modelTable).some(
+    (entry) =>
+      entry.name === modelName &&
+      entry.available === true &&
+      entry.provider?.providerType === "custom",
+  );
+  if (hasAvailableCustomEntry) return false;
+
   return true;
 }
