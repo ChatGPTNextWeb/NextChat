@@ -48,6 +48,8 @@ import PluginIcon from "../icons/plugin.svg";
 import ShortcutkeyIcon from "../icons/shortcutkey.svg";
 import McpToolIcon from "../icons/tool.svg";
 import HeadphoneIcon from "../icons/headphone.svg";
+import VoiceIcon from "../icons/voice.svg";
+import VoiceOffIcon from "../icons/voice-off.svg";
 import {
   BOT_HELLO,
   ChatMessage,
@@ -118,6 +120,12 @@ import { getClientConfig } from "../config/client";
 import { useAllModels } from "../utils/hooks";
 import { ClientApi, MultimodalContent } from "../client/api";
 import { createTTSPlayer } from "../utils/audio";
+import {
+  ActiveAudioRecording,
+  mergeTranscriptionInput,
+  startAudioRecording,
+  transcribeAudio,
+} from "../utils/transcription";
 import { MsEdgeTTS, OUTPUT_FORMAT } from "../utils/ms_edge_tts";
 
 import { isEmpty } from "lodash-es";
@@ -501,7 +509,7 @@ export function ChatActions(props: {
   hitBottom: boolean;
   uploading: boolean;
   setShowShortcutKeyModal: React.Dispatch<React.SetStateAction<boolean>>;
-  setUserInput: (input: string) => void;
+  setUserInput: React.Dispatch<React.SetStateAction<string>>;
   setShowChatSidePanel: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const config = useAppConfig();
@@ -509,6 +517,53 @@ export function ChatActions(props: {
   const chatStore = useChatStore();
   const pluginStore = usePluginStore();
   const session = chatStore.currentSession();
+  const accessStore = useAccessStore();
+  const recordingRef = useRef<ActiveAudioRecording | null>(null);
+  const [transcriptionStatus, setTranscriptionStatus] = useState<
+    "idle" | "recording" | "transcribing"
+  >("idle");
+
+  useEffect(() => {
+    return () => {
+      const recording = recordingRef.current;
+      recordingRef.current = null;
+      if (recording) {
+        void recording.stop().catch(() => undefined);
+      }
+    };
+  }, []);
+
+  async function toggleTranscription() {
+    if (transcriptionStatus === "transcribing") return;
+
+    try {
+      if (recordingRef.current) {
+        const recording = recordingRef.current;
+        recordingRef.current = null;
+        setTranscriptionStatus("transcribing");
+
+        const audio = await recording.stop();
+        const transcription = await transcribeAudio(audio, {
+          ...config.transcriptionConfig,
+          apiKey: accessStore.transcriptionApiKey,
+        });
+        props.setUserInput((current) =>
+          mergeTranscriptionInput(current, transcription),
+        );
+        setTranscriptionStatus("idle");
+        return;
+      }
+
+      recordingRef.current = await startAudioRecording();
+      setTranscriptionStatus("recording");
+    } catch (error) {
+      recordingRef.current = null;
+      setTranscriptionStatus("idle");
+      showToast(
+        error instanceof Error ? error.message : "Voice transcription failed",
+      );
+    }
+  }
 
   // switch themes
   const theme = config.theme;
@@ -835,6 +890,27 @@ export function ChatActions(props: {
         {!isMobileScreen && <MCPAction />}
       </>
       <div className={styles["chat-input-actions-end"]}>
+        {config.transcriptionConfig.enable && (
+          <ChatAction
+            onClick={() => void toggleTranscription()}
+            text={
+              transcriptionStatus === "recording"
+                ? "Stop recording"
+                : transcriptionStatus === "transcribing"
+                ? "Transcribing"
+                : "Voice input"
+            }
+            icon={
+              transcriptionStatus === "transcribing" ? (
+                <LoadingButtonIcon />
+              ) : transcriptionStatus === "recording" ? (
+                <VoiceOffIcon />
+              ) : (
+                <VoiceIcon />
+              )
+            }
+          />
+        )}
         {config.realtimeConfig.enable && (
           <ChatAction
             onClick={() => props.setShowChatSidePanel(true)}
