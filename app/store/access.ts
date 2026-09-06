@@ -17,6 +17,7 @@ import {
   XAI_BASE_URL,
   CHATGLM_BASE_URL,
   SILICONFLOW_BASE_URL,
+  MIZUMI_BASE_URL,
   AI302_BASE_URL,
 } from "../constant";
 import { getHeaders } from "../client/api";
@@ -59,6 +60,8 @@ const DEFAULT_CHATGLM_URL = isApp ? CHATGLM_BASE_URL : ApiPath.ChatGLM;
 const DEFAULT_SILICONFLOW_URL = isApp
   ? SILICONFLOW_BASE_URL
   : ApiPath.SiliconFlow;
+
+const DEFAULT_MIZUMI_URL = isApp ? MIZUMI_BASE_URL : ApiPath.Mizumi;
 
 const DEFAULT_AI302_URL = isApp ? AI302_BASE_URL : ApiPath["302.AI"];
 
@@ -134,6 +137,10 @@ const DEFAULT_ACCESS_STATE = {
   // siliconflow
   siliconflowUrl: DEFAULT_SILICONFLOW_URL,
   siliconflowApiKey: "",
+
+  // mizumi
+  mizumiUrl: DEFAULT_MIZUMI_URL,
+  mizumiApiKey: "",
 
   // 302.AI
   ai302Url: DEFAULT_AI302_URL,
@@ -226,6 +233,10 @@ export const useAccessStore = createPersistStore(
       return ensure(get(), ["siliconflowApiKey"]);
     },
 
+    isValidMizumi() {
+      return ensure(get(), ["mizumiApiKey"]);
+    },
+
     isAuthorized() {
       this.fetch();
 
@@ -245,6 +256,7 @@ export const useAccessStore = createPersistStore(
         this.isValidXAI() ||
         this.isValidChatGLM() ||
         this.isValidSiliconFlow() ||
+        this.isValidMizumi() ||
         !this.enabledAccessControl() ||
         (this.enabledAccessControl() && ensure(get(), ["accessCode"]))
       );
