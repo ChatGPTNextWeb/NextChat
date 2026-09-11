@@ -25,6 +25,53 @@ import { createPersistStore } from "../utils/store";
 import { ensure } from "../utils/clone";
 import { DEFAULT_CONFIG } from "./config";
 import { getModelProvider } from "../utils/model";
+import { useAppConfig } from "./config";
+
+/**
+ * A user-defined custom endpoint, bundling provider + base URL + API key +
+ * custom model names into a single switchable configuration.
+ */
+export interface CustomEndpoint {
+  id: string;
+  name: string;
+  provider: ServiceProvider;
+  baseUrl: string;
+  apiKey: string;
+  customModels: string;
+}
+
+/**
+ * Maps each ServiceProvider to the access-store fields that hold its
+ * base URL and API key, so activateEndpoint can write a custom endpoint's
+ * values into the right place without touching request-layer code.
+ */
+const PROVIDER_FIELD_MAP: Record<
+  ServiceProvider,
+  {
+    url: keyof typeof DEFAULT_ACCESS_STATE;
+    key: keyof typeof DEFAULT_ACCESS_STATE;
+  }
+> = {
+  [ServiceProvider.OpenAI]: { url: "openaiUrl", key: "openaiApiKey" },
+  [ServiceProvider.Azure]: { url: "azureUrl", key: "azureApiKey" },
+  [ServiceProvider.Google]: { url: "googleUrl", key: "googleApiKey" },
+  [ServiceProvider.Anthropic]: { url: "anthropicUrl", key: "anthropicApiKey" },
+  [ServiceProvider.Baidu]: { url: "baiduUrl", key: "baiduApiKey" },
+  [ServiceProvider.ByteDance]: { url: "bytedanceUrl", key: "bytedanceApiKey" },
+  [ServiceProvider.Alibaba]: { url: "alibabaUrl", key: "alibabaApiKey" },
+  [ServiceProvider.Tencent]: { url: "tencentUrl", key: "tencentSecretId" },
+  [ServiceProvider.Moonshot]: { url: "moonshotUrl", key: "moonshotApiKey" },
+  [ServiceProvider.Stability]: { url: "stabilityUrl", key: "stabilityApiKey" },
+  [ServiceProvider.Iflytek]: { url: "iflytekUrl", key: "iflytekApiKey" },
+  [ServiceProvider.XAI]: { url: "xaiUrl", key: "xaiApiKey" },
+  [ServiceProvider.ChatGLM]: { url: "chatglmUrl", key: "chatglmApiKey" },
+  [ServiceProvider.DeepSeek]: { url: "deepseekUrl", key: "deepseekApiKey" },
+  [ServiceProvider.SiliconFlow]: {
+    url: "siliconflowUrl",
+    key: "siliconflowApiKey",
+  },
+  [ServiceProvider["302.AI"]]: { url: "ai302Url", key: "ai302ApiKey" },
+};
 
 let fetchState = 0; // 0 not fetch, 1 fetching, 2 done
 
@@ -151,6 +198,10 @@ const DEFAULT_ACCESS_STATE = {
 
   // tts config
   edgeTTSVoiceName: "zh-CN-YunxiNeural",
+
+  // custom endpoints (user-defined switchable provider bundles)
+  customEndpoints: [] as CustomEndpoint[],
+  activeEndpointId: null as string | null,
 };
 
 export const useAccessStore = createPersistStore(
@@ -281,10 +332,91 @@ export const useAccessStore = createPersistStore(
           fetchState = 2;
         });
     },
+
+    /**
+     * Add a new custom endpoint. Returns the created id.
+     */
+    addCustomEndpoint(name?: string) {
+      const id =
+        Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+      const endpoint: CustomEndpoint = {
+        id,
+        name: name ?? `Custom Endpoint ${get().customEndpoints.length + 1}`,
+        provider: ServiceProvider.OpenAI,
+        baseUrl: "",
+        apiKey: "",
+        customModels: "",
+      };
+      set((state) => ({
+        customEndpoints: [...state.customEndpoints, endpoint],
+      }));
+      return id;
+    },
+
+    /**
+     * Remove a custom endpoint by id. If it was the active one, clear
+     * activeEndpointId.
+     */
+    removeCustomEndpoint(id: string) {
+      set((state) => {
+        const endpoints = state.customEndpoints.filter((e) => e.id !== id);
+        const wasActive = state.activeEndpointId === id;
+        return {
+          customEndpoints: endpoints,
+          activeEndpointId: wasActive ? null : state.activeEndpointId,
+        };
+      });
+    },
+
+    /**
+     * Update a single custom endpoint.
+     */
+    updateCustomEndpoint(id: string, patch: Partial<CustomEndpoint>) {
+      set((state) => ({
+        customEndpoints: state.customEndpoints.map((e) =>
+          e.id === id ? { ...e, ...patch } : e,
+        ),
+      }));
+    },
+
+    /**
+     * Activate a custom endpoint by writing its values into the matching
+     * provider URL/key fields and the global customModels, so existing
+     * request-layer code picks them up without changes.
+     */
+    activateEndpoint(id: string) {
+      const ep = get().customEndpoints.find((e) => e.id === id);
+      if (!ep) return;
+
+      const fields = PROVIDER_FIELD_MAP[ep.provider];
+      const patch: any = {
+        activeEndpointId: id,
+        provider: ep.provider,
+      };
+      if (fields) {
+        patch[fields.url] = ep.baseUrl;
+        patch[fields.key] = ep.apiKey;
+      }
+
+      // Sync custom model list to config store so the model selector shows them.
+      useAppConfig
+        .getState()
+        .update((config) => (config.customModels = ep.customModels));
+
+      set(patch);
+    },
+
+    /**
+     * Clear the active custom endpoint, falling back to the manually
+     * configured provider/url/key values.
+     */
+    clearActiveEndpoint() {
+      set({ activeEndpointId: null });
+    },
   }),
   {
     name: StoreKey.Access,
-    version: 2,
+    version: 3,
     migrate(persistedState, version) {
       if (version < 2) {
         const state = persistedState as {
@@ -295,6 +427,14 @@ export const useAccessStore = createPersistStore(
         };
         state.openaiApiKey = state.token;
         state.azureApiVersion = "2023-08-01-preview";
+      }
+
+      if (version < 3) {
+        const state = persistedState as Record<string, any>;
+        state.customEndpoints = Array.isArray(state.customEndpoints)
+          ? state.customEndpoints
+          : [];
+        state.activeEndpointId = state.activeEndpointId ?? null;
       }
 
       return persistedState as any;

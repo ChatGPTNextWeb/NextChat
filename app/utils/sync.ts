@@ -146,20 +146,26 @@ export function mergeAppState(localState: AppState, remoteState: AppState) {
 }
 
 /**
- * Merge state with `lastUpdateTime`, older state will be override
+ * Merge state with `lastUpdate`/`lastUpdateTime`: newer state overrides
+ * older one. Falls back to a full remote-over-local merge when neither side
+ * carries a timestamp (e.g. Access store, which has no update marker).
+ *
+ * Previously only `lastUpdateTime` was checked, but NextChat stores expose
+ * `lastUpdate` (Config) or no timestamp at all (Access). That meant Config
+ * and Access never merged on import — custom models, custom API endpoints,
+ * API keys etc. were silently dropped.
  */
-export function mergeWithUpdate<T extends { lastUpdateTime?: number }>(
+export function mergeWithUpdate<T extends Record<string, any>>(
   localState: T,
   remoteState: T,
 ) {
-  const localUpdateTime = localState.lastUpdateTime ?? 0;
-  const remoteUpdateTime = localState.lastUpdateTime ?? 1;
+  const localUpdateTime = localState.lastUpdateTime ?? localState.lastUpdate ?? 0;
+  const remoteUpdateTime = remoteState.lastUpdateTime ?? remoteState.lastUpdate ?? 0;
 
-  if (localUpdateTime < remoteUpdateTime) {
-    merge(remoteState, localState);
-    return { ...remoteState };
-  } else {
+  // Remote wins when it's newer, equal, or when local has no timestamp at
+  // all (Access store). This guarantees import always restores the backup.
+  if (remoteUpdateTime >= localUpdateTime) {
     merge(localState, remoteState);
-    return { ...localState };
   }
+  return { ...localState };
 }

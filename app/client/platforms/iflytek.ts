@@ -13,6 +13,7 @@ import {
   LLMApi,
   LLMModel,
   SpeechOptions,
+  applyModelConfigExtras,
 } from "../api";
 import Locale from "../../locales";
 import {
@@ -91,6 +92,8 @@ export class SparkApi implements LLMApi {
       // max_tokens: Math.max(modelConfig.max_tokens, 1024),
       // Please do not ask me why not send max_tokens, no reason, this param is just shit, I dont want to explain anymore.
     };
+
+    applyModelConfigExtras(modelConfig, requestPayload);
 
     console.log("[Request] Spark payload: ", requestPayload);
 

@@ -15,6 +15,7 @@ import {
   LLMApi,
   LLMModel,
   SpeechOptions,
+  applyModelConfigExtras,
 } from "../api";
 import { getClientConfig } from "@/app/config/client";
 import { getTimeoutMSByModel } from "@/app/utils";
@@ -85,6 +86,8 @@ export class XAIApi implements LLMApi {
       frequency_penalty: modelConfig.frequency_penalty,
       top_p: modelConfig.top_p,
     };
+
+    applyModelConfigExtras(modelConfig, requestPayload);
 
     console.log("[Request] xai payload: ", requestPayload);
 

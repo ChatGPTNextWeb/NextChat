@@ -1,5 +1,5 @@
 import { Anthropic, ApiPath } from "@/app/constant";
-import { ChatOptions, getHeaders, LLMApi, SpeechOptions } from "../api";
+import { ChatOptions, getHeaders, LLMApi, SpeechOptions, applyModelConfigExtras } from "../api";
 import {
   useAccessStore,
   useAppConfig,
@@ -190,6 +190,11 @@ export class ClaudeApi implements LLMApi {
       // top_k: modelConfig.top_k,
       top_k: 5,
     };
+
+    // Apply disable flags (temperature/top_p) + merge custom extraParams
+    // presence_penalty / frequency_penalty are not supported by Anthropic,
+    // so those disable flags are effectively no-ops here
+    applyModelConfigExtras(modelConfig, requestBody as any);
 
     const path = this.path(Anthropic.ChatPath);
 
