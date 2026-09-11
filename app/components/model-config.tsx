@@ -53,41 +53,72 @@ export function ModelConfigList(props: {
         title={Locale.Settings.Temperature.Title}
         subTitle={Locale.Settings.Temperature.SubTitle}
       >
-        <InputRange
-          aria={Locale.Settings.Temperature.Title}
-          value={props.modelConfig.temperature?.toFixed(1)}
-          min="0"
-          max="1" // lets limit it to 0-1
-          step="0.1"
-          onChange={(e) => {
-            props.updateConfig(
-              (config) =>
-                (config.temperature = ModalConfigValidator.temperature(
-                  e.currentTarget.valueAsNumber,
-                )),
-            );
-          }}
-        ></InputRange>
+        <div className={styles["param-with-toggle"]}>
+          <InputRange
+            aria={Locale.Settings.Temperature.Title}
+            value={props.modelConfig.temperature?.toFixed(1)}
+            min="0"
+            max="1" // lets limit it to 0-1
+            step="0.1"
+            disabled={props.modelConfig.disableTemperature}
+            onChange={(e) => {
+              props.updateConfig(
+                (config) =>
+                  (config.temperature = ModalConfigValidator.temperature(
+                    e.currentTarget.valueAsNumber,
+                  )),
+              );
+            }}
+          ></InputRange>
+          <label className={styles["param-disable-label"]}>
+            <input
+              type="checkbox"
+              checked={props.modelConfig.disableTemperature}
+              onChange={(e) =>
+                props.updateConfig(
+                  (config) =>
+                    (config.disableTemperature = e.currentTarget.checked),
+                )
+              }
+            />
+            <span>{Locale.Settings.DisableParam}</span>
+          </label>
+        </div>
       </ListItem>
       <ListItem
         title={Locale.Settings.TopP.Title}
         subTitle={Locale.Settings.TopP.SubTitle}
       >
-        <InputRange
-          aria={Locale.Settings.TopP.Title}
-          value={(props.modelConfig.top_p ?? 1).toFixed(1)}
-          min="0"
-          max="1"
-          step="0.1"
-          onChange={(e) => {
-            props.updateConfig(
-              (config) =>
-                (config.top_p = ModalConfigValidator.top_p(
-                  e.currentTarget.valueAsNumber,
-                )),
-            );
-          }}
-        ></InputRange>
+        <div className={styles["param-with-toggle"]}>
+          <InputRange
+            aria={Locale.Settings.TopP.Title}
+            value={(props.modelConfig.top_p ?? 1).toFixed(1)}
+            min="0"
+            max="1"
+            step="0.1"
+            disabled={props.modelConfig.disableTopP}
+            onChange={(e) => {
+              props.updateConfig(
+                (config) =>
+                  (config.top_p = ModalConfigValidator.top_p(
+                    e.currentTarget.valueAsNumber,
+                  )),
+              );
+            }}
+          ></InputRange>
+          <label className={styles["param-disable-label"]}>
+            <input
+              type="checkbox"
+              checked={props.modelConfig.disableTopP}
+              onChange={(e) =>
+                props.updateConfig(
+                  (config) => (config.disableTopP = e.currentTarget.checked),
+                )
+              }
+            />
+            <span>{Locale.Settings.DisableParam}</span>
+          </label>
+        </div>
       </ListItem>
       <ListItem
         title={Locale.Settings.MaxTokens.Title}
@@ -116,44 +147,78 @@ export function ModelConfigList(props: {
             title={Locale.Settings.PresencePenalty.Title}
             subTitle={Locale.Settings.PresencePenalty.SubTitle}
           >
-            <InputRange
-              aria={Locale.Settings.PresencePenalty.Title}
-              value={props.modelConfig.presence_penalty?.toFixed(1)}
-              min="-2"
-              max="2"
-              step="0.1"
-              onChange={(e) => {
-                props.updateConfig(
-                  (config) =>
-                    (config.presence_penalty =
-                      ModalConfigValidator.presence_penalty(
-                        e.currentTarget.valueAsNumber,
-                      )),
-                );
-              }}
-            ></InputRange>
+            <div className={styles["param-with-toggle"]}>
+              <InputRange
+                aria={Locale.Settings.PresencePenalty.Title}
+                value={props.modelConfig.presence_penalty?.toFixed(1)}
+                min="-2"
+                max="2"
+                step="0.1"
+                disabled={props.modelConfig.disablePresencePenalty}
+                onChange={(e) => {
+                  props.updateConfig(
+                    (config) =>
+                      (config.presence_penalty =
+                        ModalConfigValidator.presence_penalty(
+                          e.currentTarget.valueAsNumber,
+                        )),
+                  );
+                }}
+              ></InputRange>
+              <label className={styles["param-disable-label"]}>
+                <input
+                  type="checkbox"
+                  checked={props.modelConfig.disablePresencePenalty}
+                  onChange={(e) =>
+                    props.updateConfig(
+                      (config) =>
+                        (config.disablePresencePenalty =
+                          e.currentTarget.checked),
+                    )
+                  }
+                />
+                <span>{Locale.Settings.DisableParam}</span>
+              </label>
+            </div>
           </ListItem>
 
           <ListItem
             title={Locale.Settings.FrequencyPenalty.Title}
             subTitle={Locale.Settings.FrequencyPenalty.SubTitle}
           >
-            <InputRange
-              aria={Locale.Settings.FrequencyPenalty.Title}
-              value={props.modelConfig.frequency_penalty?.toFixed(1)}
-              min="-2"
-              max="2"
-              step="0.1"
-              onChange={(e) => {
-                props.updateConfig(
-                  (config) =>
-                    (config.frequency_penalty =
-                      ModalConfigValidator.frequency_penalty(
-                        e.currentTarget.valueAsNumber,
-                      )),
-                );
-              }}
-            ></InputRange>
+            <div className={styles["param-with-toggle"]}>
+              <InputRange
+                aria={Locale.Settings.FrequencyPenalty.Title}
+                value={props.modelConfig.frequency_penalty?.toFixed(1)}
+                min="-2"
+                max="2"
+                step="0.1"
+                disabled={props.modelConfig.disableFrequencyPenalty}
+                onChange={(e) => {
+                  props.updateConfig(
+                    (config) =>
+                      (config.frequency_penalty =
+                        ModalConfigValidator.frequency_penalty(
+                          e.currentTarget.valueAsNumber,
+                        )),
+                  );
+                }}
+              ></InputRange>
+              <label className={styles["param-disable-label"]}>
+                <input
+                  type="checkbox"
+                  checked={props.modelConfig.disableFrequencyPenalty}
+                  onChange={(e) =>
+                    props.updateConfig(
+                      (config) =>
+                        (config.disableFrequencyPenalty =
+                          e.currentTarget.checked),
+                    )
+                  }
+                />
+                <span>{Locale.Settings.DisableParam}</span>
+              </label>
+            </div>
           </ListItem>
 
           <ListItem
@@ -267,6 +332,24 @@ export function ModelConfigList(props: {
               </option>
             ))}
         </Select>
+      </ListItem>
+      <ListItem
+        title={Locale.Settings.ExtraParams.Title}
+        subTitle={Locale.Settings.ExtraParams.SubTitle}
+      >
+        <textarea
+          className={styles["extra-params-input"]}
+          aria-label={Locale.Settings.ExtraParams.Title}
+          value={props.modelConfig.extraParams}
+          placeholder={Locale.Settings.ExtraParams.Placeholder}
+          spellCheck={false}
+          rows={4}
+          onChange={(e) =>
+            props.updateConfig(
+              (config) => (config.extraParams = e.currentTarget.value),
+            )
+          }
+        />
       </ListItem>
     </>
   );

@@ -11,6 +11,7 @@ import {
   useAccessStore,
   useChatStore,
 } from "../store";
+import type { ModelConfig } from "../store/config";
 import { ChatGPTApi, DalleRequestPayload } from "./platforms/openai";
 import { GeminiProApi } from "./platforms/google";
 import { ClaudeApi } from "./platforms/anthropic";
@@ -396,4 +397,79 @@ export function getClientApi(provider: ServiceProvider): ClientApi {
     default:
       return new ClientApi(ModelProvider.GPT);
   }
+}
+
+// Core fields that must not be overwritten by extraParams
+const PROTECTED_PAYLOAD_KEYS = new Set([
+  "messages",
+  "model",
+  "stream",
+  "temperature",
+  "top_p",
+  "presence_penalty",
+  "frequency_penalty",
+]);
+
+/**
+ * Apply model-config extras to a request payload (called after requestPayload
+ * has been constructed in each provider):
+ *   1. Remove parameters flagged as "do not send" so the provider defaults
+ *      are used instead.
+ *   2. Parse modelConfig.extraParams (a JSON string) and merge it into the
+ *      payload.
+ *   3. Protect core fields from being overwritten by extraParams.
+ *
+ * Note: temperature/top_p/presence_penalty/frequency_penalty are in the
+ * protected set because they can be removed by the disable flags above;
+ * adding them back via extraParams would defeat that intent.
+ */
+export function applyModelConfigExtras(
+  modelConfig: ModelConfig,
+  payload: Record<string, any>,
+): Record<string, any> {
+  if (!payload || typeof payload !== "object") {
+    return payload;
+  }
+
+  // 1. Remove parameters the user chose not to send
+  if (modelConfig.disableTemperature) {
+    delete payload.temperature;
+  }
+  if (modelConfig.disableTopP) {
+    delete payload.top_p;
+  }
+  if (modelConfig.disablePresencePenalty) {
+    delete payload.presence_penalty;
+  }
+  if (modelConfig.disableFrequencyPenalty) {
+    delete payload.frequency_penalty;
+  }
+
+  // 2. Merge custom request parameters
+  const extraParamsStr = modelConfig.extraParams;
+  if (extraParamsStr && extraParamsStr.trim().length > 0) {
+    try {
+      const extra = JSON.parse(extraParamsStr);
+      if (extra && typeof extra === "object" && !Array.isArray(extra)) {
+        Object.keys(extra).forEach((key) => {
+          if (!PROTECTED_PAYLOAD_KEYS.has(key)) {
+            payload[key] = extra[key];
+          } else {
+            console.warn(
+              `[applyModelConfigExtras] skip protected key "${key}"`,
+            );
+          }
+        });
+      } else {
+        console.warn(
+          "[applyModelConfigExtras] extraParams must be a JSON object, got:",
+          extra,
+        );
+      }
+    } catch (e) {
+      console.warn("[applyModelConfigExtras] invalid extraParams JSON:", e);
+    }
+  }
+
+  return payload;
 }

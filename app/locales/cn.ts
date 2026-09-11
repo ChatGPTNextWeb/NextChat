@@ -576,6 +576,14 @@ const cn = {
       Title: "频率惩罚度 (frequency_penalty)",
       SubTitle: "值越大，越有可能降低重复字词",
     },
+    DisableParam: "不提供（采用模型提供商默认）",
+    ExtraParams: {
+      Title: "自定义请求参数",
+      SubTitle:
+        "以 JSON 格式追加自定义请求参数（如 thinking）。messages/model/stream 等核心字段会被保护，不会被覆盖",
+      Placeholder:
+        '例如：\n{"thinking":{"type":"disabled"}}\n注意：仅会合并到顶层请求体，不会覆盖受保护字段',
+    },
     TTS: {
       Enable: {
         Title: "启用文本转语音",

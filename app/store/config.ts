@@ -78,6 +78,13 @@ export const DEFAULT_CONFIG = {
     compressProviderName: "",
     enableInjectSystemPrompts: true,
     template: config?.template ?? DEFAULT_INPUT_TEMPLATE,
+    // Omit these parameters (use provider defaults instead)
+    disableTemperature: false,
+    disableTopP: false,
+    disablePresencePenalty: false,
+    disableFrequencyPenalty: false,
+    // Custom request parameters (JSON string, merged into the request payload)
+    extraParams: "",
     size: "1024x1024" as ModelSize,
     quality: "standard" as DalleQuality,
     style: "vivid" as DalleStyle,
@@ -195,7 +202,7 @@ export const useAppConfig = createPersistStore(
   }),
   {
     name: StoreKey.Config,
-    version: 4.1,
+    version: 4.3,
 
     merge(persistedState, currentState) {
       const state = persistedState as ChatConfig | undefined;
@@ -255,6 +262,17 @@ export const useAppConfig = createPersistStore(
           DEFAULT_CONFIG.modelConfig.compressProviderName;
       }
 
+      if (version < 4.2) {
+        state.enableMcp = DEFAULT_CONFIG.enableMcp;
+      }
+
+      if (version < 4.3) {
+        state.modelConfig.disableTemperature = false;
+        state.modelConfig.disableTopP = false;
+        state.modelConfig.disablePresencePenalty = false;
+        state.modelConfig.disableFrequencyPenalty = false;
+        state.modelConfig.extraParams = "";
+      }
       return state as any;
     },
   },

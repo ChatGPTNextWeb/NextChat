@@ -583,6 +583,14 @@ const en: LocaleType = {
       SubTitle:
         "A larger value decreasing the likelihood to repeat the same line",
     },
+    DisableParam: "Do not send (use provider default)",
+    ExtraParams: {
+      Title: "Custom Request Parameters",
+      SubTitle:
+        "Append custom request parameters as JSON (e.g. thinking). Core fields like messages/model/stream are protected and will not be overwritten",
+      Placeholder:
+        'e.g.\n{"thinking":{"type":"disabled"}}\nNote: merged into the top-level request body only; protected fields are skipped',
+    },
     TTS: {
       Enable: {
         Title: "Enable TTS",
