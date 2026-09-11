@@ -15,6 +15,7 @@ import {
   LLMModel,
   MultimodalContent,
   SpeechOptions,
+  applyModelConfigExtras,
 } from "../api";
 
 import { streamWithThink } from "@/app/utils/chat";
@@ -112,6 +113,8 @@ export class DoubaoApi implements LLMApi {
       frequency_penalty: modelConfig.frequency_penalty,
       top_p: modelConfig.top_p,
     };
+
+    applyModelConfigExtras(modelConfig, requestPayload);
 
     const controller = new AbortController();
     options.onController?.(controller);

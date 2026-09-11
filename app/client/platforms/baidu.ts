@@ -10,6 +10,7 @@ import {
   LLMModel,
   MultimodalContent,
   SpeechOptions,
+  applyModelConfigExtras,
 } from "../api";
 import Locale from "../../locales";
 import {
@@ -116,6 +117,8 @@ export class ErnieApi implements LLMApi {
       frequency_penalty: modelConfig.frequency_penalty,
       top_p: modelConfig.top_p,
     };
+
+    applyModelConfigExtras(modelConfig, requestPayload);
 
     console.log("[Request] Baidu payload: ", requestPayload);
 

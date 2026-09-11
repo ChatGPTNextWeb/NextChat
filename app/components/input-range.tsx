@@ -11,6 +11,7 @@ interface InputRangeProps {
   max: string;
   step: string;
   aria: string;
+  disabled?: boolean;
 }
 
 export function InputRange({
@@ -22,6 +23,7 @@ export function InputRange({
   max,
   step,
   aria,
+  disabled,
 }: InputRangeProps) {
   return (
     <div className={clsx(styles["input-range"], className)}>
@@ -35,6 +37,7 @@ export function InputRange({
         max={max}
         step={step}
         onChange={onChange}
+        disabled={disabled}
       ></input>
     </div>
   );

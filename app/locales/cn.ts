@@ -576,6 +576,21 @@ const cn = {
       Title: "频率惩罚度 (frequency_penalty)",
       SubTitle: "值越大，越有可能降低重复字词",
     },
+    DisableParam: "不提供（采用模型提供商默认）",
+    ExtraParams: {
+      Title: "自定义请求参数",
+      SubTitle:
+        "以 JSON 格式追加自定义请求参数（如 thinking）。messages/model/stream 等核心字段会被保护，不会被覆盖",
+      Placeholder:
+        '例如：\n{"thinking":{"type":"disabled"}}\n注意：仅会合并到顶层请求体，不会覆盖受保护字段',
+      StatusEmpty: "未填写 — 不附加额外参数",
+      StatusValid: "JSON 合法",
+      StatusObject: "顶层值必须是 JSON 对象，不能是数组或原始类型",
+      StatusInvalid: "JSON 格式错误",
+      SaveButton: "保存",
+      SavedButton: "已保存",
+      SaveDisabledHint: "修复 JSON 语法后才能保存",
+    },
     TTS: {
       Enable: {
         Title: "启用文本转语音",

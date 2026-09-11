@@ -19,6 +19,7 @@ import {
   SpeechOptions,
   MultimodalContent,
   MultimodalContentForAlibaba,
+  applyModelConfigExtras,
 } from "../api";
 import { getClientConfig } from "@/app/config/client";
 import {
@@ -131,6 +132,18 @@ export class QwenApi implements LLMApi {
         top_p: modelConfig.top_p === 1 ? 0.99 : modelConfig.top_p, // qwen top_p is should be < 1
       },
     };
+
+    // Alibaba nests temperature/top_p inside parameters, so handle the
+    // disable flags specifically for those nested fields
+    if (modelConfig.disableTemperature) {
+      delete (requestPayload.parameters as any).temperature;
+    }
+    if (modelConfig.disableTopP) {
+      delete (requestPayload.parameters as any).top_p;
+    }
+    // Merge custom extraParams at the top level; top-level disable flags
+    // are no-ops here because Alibaba does not use those top-level names
+    applyModelConfigExtras(modelConfig, requestPayload as any);
 
     const controller = new AbortController();
     options.onController?.(controller);

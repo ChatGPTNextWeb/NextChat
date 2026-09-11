@@ -9,6 +9,7 @@ import {
   LLMModel,
   MultimodalContent,
   SpeechOptions,
+  applyModelConfigExtras,
 } from "../api";
 import Locale from "../../locales";
 import {
@@ -113,13 +114,24 @@ export class HunyuanApi implements LLMApi {
       },
     };
 
-    const requestPayload: RequestPayload = capitalizeKeys({
+    // Tencent payload keys get uppercased by capitalizeKeys, so construct the
+    // raw object conditionally based on disable flags before capitalizing
+    const basePayload: Record<string, any> = {
       model: modelConfig.model,
       messages,
-      temperature: modelConfig.temperature,
-      top_p: modelConfig.top_p,
       stream: options.config.stream,
-    });
+    };
+    if (!modelConfig.disableTemperature) {
+      basePayload.temperature = modelConfig.temperature;
+    }
+    if (!modelConfig.disableTopP) {
+      basePayload.top_p = modelConfig.top_p;
+    }
+    const requestPayload: RequestPayload = capitalizeKeys(basePayload);
+
+    // Merge custom extraParams (top-level). Top-level disable flags are no-ops
+    // here because all keys have been capitalized already
+    applyModelConfigExtras(modelConfig, requestPayload as any);
 
     console.log("[Request] Tencent payload: ", requestPayload);
 
