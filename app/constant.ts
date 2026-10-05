@@ -35,6 +35,7 @@ export const XAI_BASE_URL = "https://api.x.ai";
 export const CHATGLM_BASE_URL = "https://open.bigmodel.cn";
 
 export const SILICONFLOW_BASE_URL = "https://api.siliconflow.cn";
+export const ATLASCLOUD_BASE_URL = "https://api.atlascloud.ai";
 
 export const AI302_BASE_URL = "https://api.302.ai";
 
@@ -74,6 +75,7 @@ export enum ApiPath {
   ChatGLM = "/api/chatglm",
   DeepSeek = "/api/deepseek",
   SiliconFlow = "/api/siliconflow",
+  AtlasCloud = "/api/atlascloud",
   "302.AI" = "/api/302ai",
 }
 
@@ -133,6 +135,7 @@ export enum ServiceProvider {
   ChatGLM = "ChatGLM",
   DeepSeek = "DeepSeek",
   SiliconFlow = "SiliconFlow",
+  AtlasCloud = "AtlasCloud",
   "302.AI" = "302.AI",
 }
 
@@ -160,6 +163,7 @@ export enum ModelProvider {
   ChatGLM = "ChatGLM",
   DeepSeek = "DeepSeek",
   SiliconFlow = "SiliconFlow",
+  AtlasCloud = "AtlasCloud",
   "302.AI" = "302.AI",
 }
 
@@ -267,6 +271,12 @@ export const ChatGLM = {
 
 export const SiliconFlow = {
   ExampleEndpoint: SILICONFLOW_BASE_URL,
+  ChatPath: "v1/chat/completions",
+  ListModelPath: "v1/models?&sub_type=chat",
+};
+
+export const AtlasCloud = {
+  ExampleEndpoint: ATLASCLOUD_BASE_URL,
   ChatPath: "v1/chat/completions",
   ListModelPath: "v1/models?&sub_type=chat",
 };
@@ -700,6 +710,15 @@ const chatglmModels = [
   //   "cogvideox-flash", // free
 ];
 
+const atlascloudModels = [
+  "deepseek-ai/DeepSeek-V3.1-Terminus",
+  "deepseek-ai/DeepSeek-V3.2-Exp",
+  "Qwen/Qwen3-235B-A22B-Instruct-2507",
+  "moonshotai/kimi-k2.6",
+  "zai-org/glm-4.7",
+  "zai-org/glm-5",
+];
+
 const siliconflowModels = [
   "Qwen/Qwen2.5-7B-Instruct",
   "Qwen/Qwen2.5-72B-Instruct",
@@ -895,6 +914,17 @@ export const DEFAULT_MODELS = [
       id: "siliconflow",
       providerName: "SiliconFlow",
       providerType: "siliconflow",
+      sorted: 14,
+    },
+  })),
+  ...atlascloudModels.map((name) => ({
+    name,
+    available: true,
+    sorted: seq++,
+    provider: {
+      id: "atlascloud",
+      providerName: "AtlasCloud",
+      providerType: "atlascloud",
       sorted: 14,
     },
   })),
