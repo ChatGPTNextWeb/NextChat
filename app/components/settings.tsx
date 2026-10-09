@@ -75,6 +75,7 @@ import {
   ChatGLM,
   DeepSeek,
   SiliconFlow,
+  Tensorix,
   AI302,
 } from "../constant";
 import { Prompt, SearchService, usePromptStore } from "../store/prompt";
@@ -1361,6 +1362,47 @@ export function Settings() {
     </>
   );
 
+  const tensorixConfigComponent = accessStore.provider ===
+    ServiceProvider.Tensorix && (
+    <>
+      <ListItem
+        title={Locale.Settings.Access.Tensorix.Endpoint.Title}
+        subTitle={
+          Locale.Settings.Access.Tensorix.Endpoint.SubTitle +
+          Tensorix.ExampleEndpoint
+        }
+      >
+        <input
+          aria-label={Locale.Settings.Access.Tensorix.Endpoint.Title}
+          type="text"
+          value={accessStore.tensorixUrl}
+          placeholder={Tensorix.ExampleEndpoint}
+          onChange={(e) =>
+            accessStore.update(
+              (access) => (access.tensorixUrl = e.currentTarget.value),
+            )
+          }
+        ></input>
+      </ListItem>
+      <ListItem
+        title={Locale.Settings.Access.Tensorix.ApiKey.Title}
+        subTitle={Locale.Settings.Access.Tensorix.ApiKey.SubTitle}
+      >
+        <PasswordInput
+          aria-label={Locale.Settings.Access.Tensorix.ApiKey.Title}
+          value={accessStore.tensorixApiKey}
+          type="text"
+          placeholder={Locale.Settings.Access.Tensorix.ApiKey.Placeholder}
+          onChange={(e) => {
+            accessStore.update(
+              (access) => (access.tensorixApiKey = e.currentTarget.value),
+            );
+          }}
+        />
+      </ListItem>
+    </>
+  );
+
   const stabilityConfigComponent = accessStore.provider ===
     ServiceProvider.Stability && (
     <>
@@ -1863,6 +1905,7 @@ export function Settings() {
                   {XAIConfigComponent}
                   {chatglmConfigComponent}
                   {siliconflowConfigComponent}
+                  {tensorixConfigComponent}
                   {ai302ConfigComponent}
                 </>
               )}
