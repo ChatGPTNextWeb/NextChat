@@ -65,6 +65,21 @@ export type ChatStreamResponse = ChatResponse & {
   log_id: string;
 };
 
+export function getAnthropicSamplingParams(
+  model: string,
+  temperature: number | undefined,
+  topP: number | undefined,
+) {
+  const isClaude4Model = /^claude-(?:opus|sonnet|haiku)-4(?:[-.]|$)/i.test(
+    model,
+  );
+
+  return {
+    temperature,
+    ...(isClaude4Model ? {} : { top_p: topP }),
+  };
+}
+
 const ClaudeMapper = {
   assistant: "assistant",
   user: "user",
@@ -185,8 +200,11 @@ export class ClaudeApi implements LLMApi {
 
       model: modelConfig.model,
       max_tokens: modelConfig.max_tokens,
-      temperature: modelConfig.temperature,
-      top_p: modelConfig.top_p,
+      ...getAnthropicSamplingParams(
+        modelConfig.model,
+        modelConfig.temperature,
+        modelConfig.top_p,
+      ),
       // top_k: modelConfig.top_k,
       top_k: 5,
     };
