@@ -52,8 +52,11 @@ const tw = {
       PinToastAction: "檢視",
       Delete: "刪除",
       Edit: "編輯",
+      FullScreen: "全螢幕",
       RefreshTitle: "重新整理標題",
       RefreshToast: "已傳送重新整理標題請求",
+      Speech: "朗讀",
+      StopSpeech: "停止朗讀",
     },
     Commands: {
       new: "新建聊天",
@@ -61,6 +64,7 @@ const tw = {
       next: "下一個聊天",
       prev: "上一個聊天",
       clear: "清除上下文",
+      fork: "複製對話",
       del: "刪除聊天",
     },
     InputActions: {
@@ -87,6 +91,8 @@ const tw = {
       return inputHints;
     },
     Send: "傳送",
+    StartSpeak: "開始說話",
+    StopSpeak: "停止說話",
     Config: {
       Reset: "重設",
       SaveAs: "另存新檔",
@@ -125,6 +131,10 @@ const tw = {
       Toast: "正在產生截圖",
       Modal: "長按或按右鍵儲存圖片",
     },
+    Artifacts: {
+      Title: "分享 Artifacts",
+      Error: "分享失敗",
+    },
   },
   Select: {
     Search: "查詢訊息",
@@ -149,6 +159,7 @@ const tw = {
   Settings: {
     Title: "設定",
     SubTitle: "設定選項",
+    ShowPassword: "顯示密碼",
 
     Danger: {
       Reset: {
@@ -194,6 +205,8 @@ const tw = {
       IsChecking: "正在檢查更新...",
       FoundUpdate: (x: string) => `發現新版本：${x}`,
       GoToUpdate: "前往更新",
+      Success: "更新成功。",
+      Failed: "更新失敗。",
     },
     SendKey: "傳送鍵",
     Theme: "主題",
@@ -423,6 +436,59 @@ const tw = {
       Title: "頻率懲罰度 (frequency_penalty)",
       SubTitle: "值越大，越有可能降低重複字詞",
     },
+    TTS: {
+      Enable: {
+        Title: "啟用文字轉語音",
+        SubTitle: "啟用文字轉語音服務",
+      },
+      Autoplay: {
+        Title: "啟用自動朗讀",
+        SubTitle: "自動產生並播放語音，須先啟用文字轉語音功能",
+      },
+      Model: "模型",
+      Voice: {
+        Title: "語音",
+        SubTitle: "產生音訊時使用的語音",
+      },
+      Speed: {
+        Title: "語速",
+        SubTitle: "產生語音時使用的速度",
+      },
+      Engine: "TTS 引擎",
+    },
+    Realtime: {
+      Enable: {
+        Title: "即時對話",
+        SubTitle: "啟用即時對話功能",
+      },
+      Provider: {
+        Title: "模型供應商",
+        SubTitle: "切換不同的服務供應商",
+      },
+      Model: {
+        Title: "模型",
+        SubTitle: "選擇模型",
+      },
+      ApiKey: {
+        Title: "API Key",
+        SubTitle: "即時對話所使用的 API Key",
+        Placeholder: "API Key",
+      },
+      Azure: {
+        Endpoint: {
+          Title: "端點位址",
+          SubTitle: "Azure 即時 API 端點位址",
+        },
+        Deployment: {
+          Title: "部署名稱",
+          SubTitle: "Azure 部署名稱",
+        },
+      },
+      Temperature: {
+        Title: "隨機性 (temperature)",
+        SubTitle: "數值越高，回應越隨機",
+      },
+    },
   },
   Store: {
     DefaultTopic: "新的對話",
@@ -451,6 +517,12 @@ const tw = {
     Add: "新增一則",
     Clear: "上下文已清除",
     Revert: "恢復上下文",
+  },
+  Discovery: {
+    Name: "探索",
+  },
+  Mcp: {
+    Name: "MCP",
   },
   Plugin: { Name: "外掛" },
   FineTuned: { Sysmessage: "你是一個助手" },
@@ -487,6 +559,14 @@ const tw = {
       HideContext: {
         Title: "隱藏預設對話",
         SubTitle: "隱藏後預設對話不會出現在聊天介面",
+      },
+      Artifacts: {
+        Title: "啟用 Artifacts",
+        SubTitle: "啟用後可直接呈現 HTML 頁面",
+      },
+      CodeFold: {
+        Title: "啟用程式碼折疊",
+        SubTitle: "啟用後可自動折疊或展開過長的程式碼區塊",
       },
       Share: {
         Title: "分享此角色範本",
