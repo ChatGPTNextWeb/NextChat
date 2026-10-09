@@ -75,6 +75,7 @@ import {
   ChatGLM,
   DeepSeek,
   SiliconFlow,
+  AtlasCloud,
   AI302,
 } from "../constant";
 import { Prompt, SearchService, usePromptStore } from "../store/prompt";
@@ -1361,6 +1362,47 @@ export function Settings() {
     </>
   );
 
+  const atlascloudConfigComponent = accessStore.provider ===
+    ServiceProvider.AtlasCloud && (
+    <>
+      <ListItem
+        title={Locale.Settings.Access.AtlasCloud.Endpoint.Title}
+        subTitle={
+          Locale.Settings.Access.AtlasCloud.Endpoint.SubTitle +
+          AtlasCloud.ExampleEndpoint
+        }
+      >
+        <input
+          aria-label={Locale.Settings.Access.AtlasCloud.Endpoint.Title}
+          type="text"
+          value={accessStore.atlascloudUrl}
+          placeholder={AtlasCloud.ExampleEndpoint}
+          onChange={(e) =>
+            accessStore.update(
+              (access) => (access.atlascloudUrl = e.currentTarget.value),
+            )
+          }
+        ></input>
+      </ListItem>
+      <ListItem
+        title={Locale.Settings.Access.AtlasCloud.ApiKey.Title}
+        subTitle={Locale.Settings.Access.AtlasCloud.ApiKey.SubTitle}
+      >
+        <PasswordInput
+          aria-label={Locale.Settings.Access.AtlasCloud.ApiKey.Title}
+          value={accessStore.atlascloudApiKey}
+          type="text"
+          placeholder={Locale.Settings.Access.AtlasCloud.ApiKey.Placeholder}
+          onChange={(e) => {
+            accessStore.update(
+              (access) => (access.atlascloudApiKey = e.currentTarget.value),
+            );
+          }}
+        />
+      </ListItem>
+    </>
+  );
+
   const stabilityConfigComponent = accessStore.provider ===
     ServiceProvider.Stability && (
     <>
@@ -1863,6 +1905,7 @@ export function Settings() {
                   {XAIConfigComponent}
                   {chatglmConfigComponent}
                   {siliconflowConfigComponent}
+                  {atlascloudConfigComponent}
                   {ai302ConfigComponent}
                 </>
               )}
