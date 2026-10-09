@@ -75,6 +75,7 @@ import {
   ChatGLM,
   DeepSeek,
   SiliconFlow,
+  Mizumi,
   AI302,
 } from "../constant";
 import { Prompt, SearchService, usePromptStore } from "../store/prompt";
@@ -1361,6 +1362,47 @@ export function Settings() {
     </>
   );
 
+  const mizumiConfigComponent = accessStore.provider ===
+    ServiceProvider.Mizumi && (
+    <>
+      <ListItem
+        title={Locale.Settings.Access.Mizumi.Endpoint.Title}
+        subTitle={
+          Locale.Settings.Access.Mizumi.Endpoint.SubTitle +
+          Mizumi.ExampleEndpoint
+        }
+      >
+        <input
+          aria-label={Locale.Settings.Access.Mizumi.Endpoint.Title}
+          type="text"
+          value={accessStore.mizumiUrl}
+          placeholder={Mizumi.ExampleEndpoint}
+          onChange={(e) =>
+            accessStore.update(
+              (access) => (access.mizumiUrl = e.currentTarget.value),
+            )
+          }
+        ></input>
+      </ListItem>
+      <ListItem
+        title={Locale.Settings.Access.Mizumi.ApiKey.Title}
+        subTitle={Locale.Settings.Access.Mizumi.ApiKey.SubTitle}
+      >
+        <PasswordInput
+          aria-label={Locale.Settings.Access.Mizumi.ApiKey.Title}
+          value={accessStore.mizumiApiKey}
+          type="text"
+          placeholder={Locale.Settings.Access.Mizumi.ApiKey.Placeholder}
+          onChange={(e) => {
+            accessStore.update(
+              (access) => (access.mizumiApiKey = e.currentTarget.value),
+            );
+          }}
+        />
+      </ListItem>
+    </>
+  );
+
   const stabilityConfigComponent = accessStore.provider ===
     ServiceProvider.Stability && (
     <>
@@ -1863,6 +1905,7 @@ export function Settings() {
                   {XAIConfigComponent}
                   {chatglmConfigComponent}
                   {siliconflowConfigComponent}
+                  {mizumiConfigComponent}
                   {ai302ConfigComponent}
                 </>
               )}

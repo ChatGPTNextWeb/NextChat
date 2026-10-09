@@ -490,6 +490,17 @@ const en: LocaleType = {
           SubTitle: "Example: ",
         },
       },
+      Mizumi: {
+        ApiKey: {
+          Title: "Mizumi API Key",
+          SubTitle: "Use a custom Mizumi API Key",
+          Placeholder: "Mizumi API Key",
+        },
+        Endpoint: {
+          Title: "Endpoint Address",
+          SubTitle: "Example: ",
+        },
+      },
       Stability: {
         ApiKey: {
           Title: "Stability API Key",
