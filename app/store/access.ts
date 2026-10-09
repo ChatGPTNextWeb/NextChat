@@ -149,6 +149,9 @@ const DEFAULT_ACCESS_STATE = {
   defaultModel: "",
   visionModels: "",
 
+  // speech-to-text
+  transcriptionApiKey: "",
+
   // tts config
   edgeTTSVoiceName: "zh-CN-YunxiNeural",
 };

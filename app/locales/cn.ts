@@ -594,6 +594,25 @@ const cn = {
         SubTitle: "生成语音的速度",
       },
     },
+    Transcription: {
+      Enable: {
+        Title: "启用语音转写",
+        SubTitle: "使用 OpenAI 兼容的语音转文字接口",
+      },
+      Endpoint: {
+        Title: "转写接口",
+        SubTitle: "/v1/audio/transcriptions",
+        Placeholder: "http://localhost:8000/v1",
+      },
+      Model: {
+        Title: "转写模型",
+        Placeholder: "sensevoice",
+      },
+      ApiKey: {
+        Title: "转写 API 密钥",
+        SubTitle: "可选",
+      },
+    },
     Realtime: {
       Enable: {
         Title: "实时聊天",
