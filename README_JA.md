@@ -221,6 +221,10 @@ ByteDance モードでは、`modelName@bytedance=deploymentName` 形式でモデ
 
 デフォルトのモデルを変更します。
 
+### `DEFAULT_COMPRESS_MODEL` （オプション）
+
+デフォルトの圧縮モデルを変更します。
+
 ### `VISION_MODELS` (オプション)
 
 > デフォルト：空

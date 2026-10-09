@@ -14,6 +14,7 @@ const DANGER_CONFIG = {
   disableFastLink: serverConfig.disableFastLink,
   customModels: serverConfig.customModels,
   defaultModel: serverConfig.defaultModel,
+  defaultCompressModel: serverConfig.defaultCompressModel,
   visionModels: serverConfig.visionModels,
 };
 

@@ -328,6 +328,10 @@ For ByteDance: use `modelName@bytedance=deploymentName` to customize model name 
 
 Change default model
 
+### `DEFAULT_COMPRESS_MODEL` （optional）
+
+Change default summary model
+
 ### `VISION_MODELS` (optional)
 
 > Default: Empty

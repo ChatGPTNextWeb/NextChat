@@ -253,6 +253,10 @@ DeepSeek Api Url.
 
 更改默认模型
 
+### `DEFAULT_COMPRESS_MODEL` （可选）
+
+更改默认对话摘要模型
+
 ### `VISION_MODELS` (可选)
 
 > 默认值：空
