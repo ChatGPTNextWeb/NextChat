@@ -1263,10 +1263,15 @@ function _Chat() {
     deleteMessage(botMessage?.id);
 
     // resend the message
+    // skip template fill because userMessage.content already stores the
+    // template-applied content from the original send; re-applying it would
+    // nest the template on every retry.
     setIsLoading(true);
     const textContent = getMessageTextContent(userMessage);
     const images = getMessageImages(userMessage);
-    chatStore.onUserInput(textContent, images).then(() => setIsLoading(false));
+    chatStore
+      .onUserInput(textContent, images, false, true)
+      .then(() => setIsLoading(false));
     inputRef.current?.focus();
   };
 
