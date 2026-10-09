@@ -270,6 +270,8 @@ export function getHeaders(ignoreHeaders: boolean = false) {
     const isSiliconFlow =
       modelConfig.providerName === ServiceProvider.SiliconFlow;
     const isAI302 = modelConfig.providerName === ServiceProvider["302.AI"];
+    const isAPIRoute =
+      modelConfig.providerName === ServiceProvider["API Route"];
     const isEnabledAccessControl = accessStore.enabledAccessControl();
     const apiKey = isGoogle
       ? accessStore.googleApiKey
@@ -297,6 +299,8 @@ export function getHeaders(ignoreHeaders: boolean = false) {
         : ""
       : isAI302
       ? accessStore.ai302ApiKey
+      : isAPIRoute
+      ? accessStore.apiRouteApiKey
       : accessStore.openaiApiKey;
     return {
       isGoogle,

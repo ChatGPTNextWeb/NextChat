@@ -553,6 +553,17 @@ const en: LocaleType = {
           SubTitle: "Example: ",
         },
       },
+      APIRoute: {
+        ApiKey: {
+          Title: "API Route API Key",
+          SubTitle: "Get and use an API Route key from api-route.com",
+          Placeholder: "API Route API Key",
+        },
+        Endpoint: {
+          Title: "Endpoint Address",
+          SubTitle: "API Route's OpenAI-compatible endpoint",
+        },
+      },
     },
 
     Model: "Model",

@@ -547,6 +547,17 @@ const cn = {
           SubTitle: "样例：",
         },
       },
+      APIRoute: {
+        ApiKey: {
+          Title: "API Route 接口密钥",
+          SubTitle: "在 api-route.com 获取并使用 API Route 密钥",
+          Placeholder: "API Route API Key",
+        },
+        Endpoint: {
+          Title: "接口地址",
+          SubTitle: "API Route 的 OpenAI 兼容接口地址",
+        },
+      },
     },
 
     Model: "模型 (model)",

@@ -38,6 +38,8 @@ export const SILICONFLOW_BASE_URL = "https://api.siliconflow.cn";
 
 export const AI302_BASE_URL = "https://api.302.ai";
 
+export const API_ROUTE_BASE_URL = "https://global.api-route.com/v1";
+
 export const CACHE_URL_PREFIX = "/api/cache";
 export const UPLOAD_URL = `${CACHE_URL_PREFIX}/upload`;
 
@@ -134,6 +136,7 @@ export enum ServiceProvider {
   DeepSeek = "DeepSeek",
   SiliconFlow = "SiliconFlow",
   "302.AI" = "302.AI",
+  "API Route" = "API Route",
 }
 
 // Google API safety settings, see https://ai.google.dev/gemini-api/docs/safety-settings
@@ -742,6 +745,8 @@ const ai302Models = [
   "gemini-2.5-pro",
 ];
 
+const apiRouteModels = ["gpt-5.4-mini"];
+
 let seq = 1000; // 内置的模型序号生成器从1000开始
 export const DEFAULT_MODELS = [
   ...openaiModels.map((name) => ({
@@ -907,6 +912,17 @@ export const DEFAULT_MODELS = [
       providerName: "302.AI",
       providerType: "ai302",
       sorted: 15,
+    },
+  })),
+  ...apiRouteModels.map((name) => ({
+    name,
+    available: true,
+    sorted: seq++,
+    provider: {
+      id: "api-route",
+      providerName: "API Route",
+      providerType: "api-route",
+      sorted: 16,
     },
   })),
 ] as const;

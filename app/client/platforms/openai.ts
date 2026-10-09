@@ -8,6 +8,7 @@ import {
   Azure,
   REQUEST_TIMEOUT_MS,
   ServiceProvider,
+  API_ROUTE_BASE_URL,
 } from "@/app/constant";
 import {
   ChatMessageTool,
@@ -87,6 +88,9 @@ export class ChatGPTApi implements LLMApi {
 
     let baseUrl = "";
 
+    const providerName = useChatStore.getState().currentSession().mask
+      .modelConfig.providerName;
+    const isAPIRoute = providerName === ServiceProvider["API Route"];
     const isAzure = path.includes("deployments");
     if (accessStore.useCustomConfig) {
       if (isAzure && !accessStore.isValidAzure()) {
@@ -95,13 +99,21 @@ export class ChatGPTApi implements LLMApi {
         );
       }
 
-      baseUrl = isAzure ? accessStore.azureUrl : accessStore.openaiUrl;
+      baseUrl = isAzure
+        ? accessStore.azureUrl
+        : isAPIRoute
+        ? accessStore.apiRouteUrl
+        : accessStore.openaiUrl;
     }
 
     if (baseUrl.length === 0) {
       const isApp = !!getClientConfig()?.isApp;
       const apiPath = isAzure ? ApiPath.Azure : ApiPath.OpenAI;
-      baseUrl = isApp ? OPENAI_BASE_URL : apiPath;
+      baseUrl = isAPIRoute
+        ? API_ROUTE_BASE_URL
+        : isApp
+        ? OPENAI_BASE_URL
+        : apiPath;
     }
 
     if (baseUrl.endsWith("/")) {
@@ -113,6 +125,10 @@ export class ChatGPTApi implements LLMApi {
       !baseUrl.startsWith(ApiPath.OpenAI)
     ) {
       baseUrl = "https://" + baseUrl;
+    }
+
+    if (isAPIRoute && baseUrl.endsWith("/v1") && path.startsWith("v1/")) {
+      path = path.slice(3);
     }
 
     console.log("[Proxy Endpoint] ", baseUrl, path);

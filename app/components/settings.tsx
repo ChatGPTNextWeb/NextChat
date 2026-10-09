@@ -76,6 +76,7 @@ import {
   DeepSeek,
   SiliconFlow,
   AI302,
+  API_ROUTE_BASE_URL,
 } from "../constant";
 import { Prompt, SearchService, usePromptStore } from "../store/prompt";
 import { ErrorBoundary } from "./error";
@@ -611,7 +612,8 @@ export function Settings() {
     return (
       accessStore.hideBalanceQuery ||
       isOpenAiUrl ||
-      accessStore.provider === ServiceProvider.Azure
+      accessStore.provider === ServiceProvider.Azure ||
+      accessStore.provider === ServiceProvider["API Route"]
     );
   }, [
     accessStore.hideBalanceQuery,
@@ -1499,6 +1501,44 @@ export function Settings() {
       </>
   );
 
+  const apiRouteConfigComponent = accessStore.provider ===
+    ServiceProvider["API Route"] && (
+    <>
+      <ListItem
+        title={Locale.Settings.Access.APIRoute.Endpoint.Title}
+        subTitle={Locale.Settings.Access.APIRoute.Endpoint.SubTitle}
+      >
+        <input
+          aria-label={Locale.Settings.Access.APIRoute.Endpoint.Title}
+          type="text"
+          value={accessStore.apiRouteUrl}
+          placeholder={API_ROUTE_BASE_URL}
+          onChange={(e) =>
+            accessStore.update(
+              (access) => (access.apiRouteUrl = e.currentTarget.value),
+            )
+          }
+        ></input>
+      </ListItem>
+      <ListItem
+        title={Locale.Settings.Access.APIRoute.ApiKey.Title}
+        subTitle={Locale.Settings.Access.APIRoute.ApiKey.SubTitle}
+      >
+        <PasswordInput
+          aria-label={Locale.Settings.Access.APIRoute.ApiKey.Title}
+          value={accessStore.apiRouteApiKey}
+          type="text"
+          placeholder={Locale.Settings.Access.APIRoute.ApiKey.Placeholder}
+          onChange={(e) => {
+            accessStore.update(
+              (access) => (access.apiRouteApiKey = e.currentTarget.value),
+            );
+          }}
+        />
+      </ListItem>
+    </>
+  );
+
   return (
     <ErrorBoundary>
       <div className="window-header" data-tauri-drag-region>
@@ -1864,6 +1904,7 @@ export function Settings() {
                   {chatglmConfigComponent}
                   {siliconflowConfigComponent}
                   {ai302ConfigComponent}
+                  {apiRouteConfigComponent}
                 </>
               )}
             </>
