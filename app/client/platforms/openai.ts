@@ -2,10 +2,10 @@
 // azure and openai, using same models. so using same LLMApi.
 import {
   ApiPath,
-  OPENAI_BASE_URL,
-  DEFAULT_MODELS,
-  OpenaiPath,
   Azure,
+  DEFAULT_MODELS,
+  OPENAI_BASE_URL,
+  OpenaiPath,
   REQUEST_TIMEOUT_MS,
   ServiceProvider,
 } from "@/app/constant";
@@ -18,13 +18,13 @@ import {
 } from "@/app/store";
 import { collectModelsWithDefaultModel } from "@/app/utils/model";
 import {
-  preProcessImageContent,
-  uploadImage,
   base64Image2Blob,
+  preProcessImageContent,
   streamWithThink,
+  uploadImage,
 } from "@/app/utils/chat";
 import { cloudflareAIGatewayUrl } from "@/app/utils/cloudflare";
-import { ModelSize, DalleQuality, DalleStyle } from "@/app/typing";
+import { DalleQuality, DalleStyle, ModelSize } from "@/app/typing";
 
 import {
   ChatOptions,
@@ -39,9 +39,9 @@ import Locale from "../../locales";
 import { getClientConfig } from "@/app/config/client";
 import {
   getMessageTextContent,
-  isVisionModel,
-  isDalle3 as _isDalle3,
   getTimeoutMSByModel,
+  isDalle3 as _isDalle3,
+  isVisionModel,
 } from "@/app/utils";
 import { fetch } from "@/app/utils/stream";
 
@@ -311,6 +311,13 @@ export class ChatGPTApi implements LLMApi {
             useChatStore.getState().currentSession().mask?.plugin || [],
           );
         // console.log("getAsTools", tools, funcs);
+
+        // Add "include_reasoning" for OpenRouter: https://openrouter.ai/announcements/reasoning-tokens-for-thinking-models
+        if (chatPath.includes("openrouter.ai")) {
+          // @ts-ignore
+          requestPayload["include_reasoning"] = true;
+        }
+
         streamWithThink(
           chatPath,
           requestPayload,
@@ -327,6 +334,7 @@ export class ChatGPTApi implements LLMApi {
                 content: string;
                 tool_calls: ChatMessageTool[];
                 reasoning_content: string | null;
+                reasoning: string | null;
               };
             }>;
 
@@ -352,7 +360,9 @@ export class ChatGPTApi implements LLMApi {
               }
             }
 
-            const reasoning = choices[0]?.delta?.reasoning_content;
+            const reasoning =
+              choices[0]?.delta?.reasoning_content ||
+              choices[0]?.delta?.reasoning;
             const content = choices[0]?.delta?.content;
 
             // Skip if both content and reasoning_content are empty or null
@@ -428,6 +438,7 @@ export class ChatGPTApi implements LLMApi {
       options.onError?.(e as Error);
     }
   }
+
   async usage() {
     const formatDate = (d: Date) =>
       `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, "0")}-${d
@@ -531,4 +542,5 @@ export class ChatGPTApi implements LLMApi {
     }));
   }
 }
+
 export { OpenaiPath };
