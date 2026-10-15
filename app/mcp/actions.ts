@@ -23,10 +23,23 @@ const CONFIG_PATH = path.join(process.cwd(), "app/mcp/mcp_config.json");
 
 const clientsMap = new Map<string, McpClientData>();
 
+// These functions are exported from a "use server" module, which makes every one of
+// them callable directly over HTTP as a Next.js Server Action, unauthenticated, by
+// anyone who has the action id (visible in the client bundle). isMcpEnabled() existed
+// but nothing called it, so every action ran regardless of the ENABLE_MCP setting -
+// including addMcpServer, which spawns a child process using a caller-supplied command.
+// Every action here now checks this first.
+async function assertMcpEnabled() {
+  if (!(await isMcpEnabled())) {
+    throw new Error("MCP is not enabled");
+  }
+}
+
 // 获取客户端状态
 export async function getClientsStatus(): Promise<
   Record<string, ServerStatusResponse>
 > {
+  await assertMcpEnabled();
   const config = await getMcpConfigFromFile();
   const result: Record<string, ServerStatusResponse> = {};
 
@@ -76,11 +89,13 @@ export async function getClientsStatus(): Promise<
 
 // 获取客户端工具
 export async function getClientTools(clientId: string) {
+  await assertMcpEnabled();
   return clientsMap.get(clientId)?.tools ?? null;
 }
 
 // 获取可用客户端数量
 export async function getAvailableClientsCount() {
+  await assertMcpEnabled();
   let count = 0;
   clientsMap.forEach((map) => !map.errorMsg && count++);
   return count;
@@ -88,6 +103,7 @@ export async function getAvailableClientsCount() {
 
 // 获取所有客户端工具
 export async function getAllTools() {
+  await assertMcpEnabled();
   const result = [];
   for (const [clientId, status] of clientsMap.entries()) {
     result.push({
@@ -140,6 +156,7 @@ async function initializeSingleClient(
 
 // 初始化系统
 export async function initializeMcpSystem() {
+  await assertMcpEnabled();
   logger.info("MCP Actions starting...");
   try {
     // 检查是否已有活跃的客户端
@@ -162,6 +179,7 @@ export async function initializeMcpSystem() {
 
 // 添加服务器
 export async function addMcpServer(clientId: string, config: ServerConfig) {
+  await assertMcpEnabled();
   try {
     const currentConfig = await getMcpConfigFromFile();
     const isNewServer = !(clientId in currentConfig.mcpServers);
@@ -194,6 +212,7 @@ export async function addMcpServer(clientId: string, config: ServerConfig) {
 
 // 暂停服务器
 export async function pauseMcpServer(clientId: string) {
+  await assertMcpEnabled();
   try {
     const currentConfig = await getMcpConfigFromFile();
     const serverConfig = currentConfig.mcpServers[clientId];
@@ -230,6 +249,7 @@ export async function pauseMcpServer(clientId: string) {
 
 // 恢复服务器
 export async function resumeMcpServer(clientId: string): Promise<void> {
+  await assertMcpEnabled();
   try {
     const currentConfig = await getMcpConfigFromFile();
     const serverConfig = currentConfig.mcpServers[clientId];
@@ -284,6 +304,7 @@ export async function resumeMcpServer(clientId: string): Promise<void> {
 
 // 移除服务器
 export async function removeMcpServer(clientId: string) {
+  await assertMcpEnabled();
   try {
     const currentConfig = await getMcpConfigFromFile();
     const { [clientId]: _, ...rest } = currentConfig.mcpServers;
@@ -309,6 +330,7 @@ export async function removeMcpServer(clientId: string) {
 
 // 重启所有客户端
 export async function restartAllClients() {
+  await assertMcpEnabled();
   logger.info("Restarting all clients...");
   try {
     // 关闭所有客户端
@@ -338,6 +360,7 @@ export async function executeMcpAction(
   clientId: string,
   request: McpRequestMessage,
 ) {
+  await assertMcpEnabled();
   try {
     const client = clientsMap.get(clientId);
     if (!client?.client) {
@@ -353,6 +376,7 @@ export async function executeMcpAction(
 
 // 获取 MCP 配置文件
 export async function getMcpConfigFromFile(): Promise<McpConfigData> {
+  await assertMcpEnabled();
   try {
     const configStr = await fs.readFile(CONFIG_PATH, "utf-8");
     return JSON.parse(configStr);
