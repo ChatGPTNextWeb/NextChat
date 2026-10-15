@@ -17,31 +17,64 @@ describe("chunks", () => {
     expect(result).toEqual(["helloworld"]);
   });
 
-  test("splits on spaces so no word is cut in half", () => {
-    // maxBytes small enough to force a split at the space boundary
+  test("preserves spaces across chunk boundaries", () => {
     const result = [...chunks("hello world", 5)];
-    expect(result).toEqual(["hello", "world"]);
+    expect(result.join("")).toBe("hello world");
+    expect(result.every((c) => new TextEncoder().encode(c).length <= 5)).toBe(
+      true,
+    );
   });
 
-  test("concatenating the pieces reproduces the original words", () => {
-    const input = "the quick brown fox jumps over the lazy dog";
+  test("concatenating the pieces reproduces whitespace exactly", () => {
+    const input = "  the quick  brown\tfox\njumps over the lazy dog  ";
     const result = [...chunks(input, 8)];
-    // every produced chunk is non-empty
     expect(result.every((c) => c.length > 0)).toBe(true);
-    // spaces were the only thing dropped between chunks
-    expect(result.join(" ")).toBe(input);
+    expect(result.join("")).toBe(input);
+    expect(result.every((c) => new TextEncoder().encode(c).length <= 8)).toBe(
+      true,
+    );
   });
 
   test("never splits in the middle of a multi-byte character", () => {
-    // each emoji is 4 UTF-8 bytes; a naive byte cut would corrupt them
     const input = "😀😁😂🤣😃😄😅😆";
     const result = [...chunks(input, 6)];
-    // a corrupted cut would surface as the replacement character
     expect(result.join("")).not.toContain("�");
+    expect(result.join("")).toBe(input);
+    expect(result.every((c) => new TextEncoder().encode(c).length <= 6)).toBe(
+      true,
+    );
+  });
+
+  test.each(["abcéx", "abc€x", "abc😀x", "中文消息"])(
+    "keeps UTF-8 boundaries in %s",
+    (input) => {
+      const result = [...chunks(input, 4)];
+      expect(result.join("")).toBe(input);
+      expect(result.every((c) => new TextEncoder().encode(c).length <= 4)).toBe(
+        true,
+      );
+    },
+  );
+
+  test.each(["\uFEFFhello", "abcd\uFEFFxyz"])(
+    "preserves byte-order-mark characters in %s",
+    (input) => {
+      expect([...chunks(input, 4)].join("")).toBe(input);
+    },
+  );
+
+  test("splits long space-free strings at the default byte limit", () => {
+    const input = "x".repeat(1_000_001);
+    const result = [...chunks(input)];
+    expect(result.map((c) => c.length)).toEqual([1_000_000, 1]);
     expect(result.join("")).toBe(input);
   });
 
   test("produces no chunks for an empty string", () => {
     expect([...chunks("")]).toEqual([]);
+  });
+
+  test("rejects a byte limit smaller than one character", () => {
+    expect(() => [...chunks("😀", 3)]).toThrow(RangeError);
   });
 });
