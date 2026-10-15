@@ -104,6 +104,12 @@ export const DEFAULT_CONFIG = {
     temperature: 0.9,
     voice: "alloy" as Voice,
   },
+
+  transcriptionConfig: {
+    enable: false,
+    baseUrl: "http://localhost:8000/v1",
+    model: "sensevoice",
+  },
 };
 
 export type ChatConfig = typeof DEFAULT_CONFIG;
@@ -111,6 +117,7 @@ export type ChatConfig = typeof DEFAULT_CONFIG;
 export type ModelConfig = ChatConfig["modelConfig"];
 export type TTSConfig = ChatConfig["ttsConfig"];
 export type RealtimeConfig = ChatConfig["realtimeConfig"];
+export type TranscriptionConfig = ChatConfig["transcriptionConfig"];
 
 export function limitNumber(
   x: number,

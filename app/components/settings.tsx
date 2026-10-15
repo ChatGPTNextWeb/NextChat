@@ -89,6 +89,7 @@ import { useMaskStore } from "../store/mask";
 import { ProviderType } from "../utils/cloud";
 import { TTSConfigList } from "./tts-config";
 import { RealtimeConfigList } from "./realtime-chat/realtime-config";
+import { TranscriptionConfigList } from "./transcription-config";
 
 function EditPromptModal(props: { id: string; onClose: () => void }) {
   const promptStore = usePromptStore();
@@ -1948,6 +1949,27 @@ export function Settings() {
               const ttsConfig = { ...config.ttsConfig };
               updater(ttsConfig);
               config.update((config) => (config.ttsConfig = ttsConfig));
+            }}
+          />
+        </List>
+
+        <List>
+          <TranscriptionConfigList
+            transcriptionConfig={config.transcriptionConfig}
+            apiKey={accessStore.transcriptionApiKey}
+            updateApiKey={(apiKey) => {
+              accessStore.update(
+                (access) => (access.transcriptionApiKey = apiKey),
+              );
+            }}
+            updateConfig={(updater) => {
+              const transcriptionConfig = {
+                ...config.transcriptionConfig,
+              };
+              updater(transcriptionConfig);
+              config.update(
+                (config) => (config.transcriptionConfig = transcriptionConfig),
+              );
             }}
           />
         </List>

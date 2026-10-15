@@ -603,6 +603,25 @@ const en: LocaleType = {
       },
       Engine: "TTS Engine",
     },
+    Transcription: {
+      Enable: {
+        Title: "Enable voice transcription",
+        SubTitle: "Use an OpenAI-compatible speech-to-text endpoint",
+      },
+      Endpoint: {
+        Title: "Transcription endpoint",
+        SubTitle: "/v1/audio/transcriptions",
+        Placeholder: "http://localhost:8000/v1",
+      },
+      Model: {
+        Title: "Transcription model",
+        Placeholder: "sensevoice",
+      },
+      ApiKey: {
+        Title: "Transcription API key",
+        SubTitle: "Optional",
+      },
+    },
     Realtime: {
       Enable: {
         Title: "Realtime Chat",
