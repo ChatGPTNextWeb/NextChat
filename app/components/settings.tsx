@@ -75,6 +75,7 @@ import {
   ChatGLM,
   DeepSeek,
   SiliconFlow,
+  DaoXE,
   AI302,
 } from "../constant";
 import { Prompt, SearchService, usePromptStore } from "../store/prompt";
@@ -1459,6 +1460,47 @@ export function Settings() {
     </>
   );
 
+  const daoxeConfigComponent = accessStore.provider ===
+    ServiceProvider.DaoXE && (
+    <>
+      <ListItem
+        title={Locale.Settings.Access.DaoXE.Endpoint.Title}
+        subTitle={
+          Locale.Settings.Access.DaoXE.Endpoint.SubTitle +
+          DaoXE.ExampleEndpoint
+        }
+      >
+        <input
+          aria-label={Locale.Settings.Access.DaoXE.Endpoint.Title}
+          type="text"
+          value={accessStore.daoxeUrl}
+          placeholder={DaoXE.ExampleEndpoint}
+          onChange={(e) =>
+            accessStore.update(
+              (access) => (access.daoxeUrl = e.currentTarget.value),
+            )
+          }
+        ></input>
+      </ListItem>
+      <ListItem
+        title={Locale.Settings.Access.DaoXE.ApiKey.Title}
+        subTitle={Locale.Settings.Access.DaoXE.ApiKey.SubTitle}
+      >
+        <PasswordInput
+          aria-label={Locale.Settings.Access.DaoXE.ApiKey.Title}
+          value={accessStore.daoxeApiKey}
+          type="text"
+          placeholder={Locale.Settings.Access.DaoXE.ApiKey.Placeholder}
+          onChange={(e) => {
+            accessStore.update(
+              (access) => (access.daoxeApiKey = e.currentTarget.value),
+            );
+          }}
+        />
+      </ListItem>
+    </>
+  );
+
   const ai302ConfigComponent = accessStore.provider === ServiceProvider["302.AI"] && (
     <>
       <ListItem
@@ -1863,6 +1905,7 @@ export function Settings() {
                   {XAIConfigComponent}
                   {chatglmConfigComponent}
                   {siliconflowConfigComponent}
+                  {daoxeConfigComponent}
                   {ai302ConfigComponent}
                 </>
               )}

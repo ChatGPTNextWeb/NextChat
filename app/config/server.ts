@@ -88,6 +88,10 @@ declare global {
       SILICONFLOW_URL?: string;
       SILICONFLOW_API_KEY?: string;
 
+      // DaoXE only
+      DAOXE_URL?: string;
+      DAOXE_API_KEY?: string;
+
       // 302.AI only
       AI302_URL?: string;
       AI302_API_KEY?: string;
@@ -167,6 +171,7 @@ export const getServerSideConfig = () => {
   const isXAI = !!process.env.XAI_API_KEY;
   const isChatGLM = !!process.env.CHATGLM_API_KEY;
   const isSiliconFlow = !!process.env.SILICONFLOW_API_KEY;
+  const isDaoXE = !!process.env.DAOXE_API_KEY;
   const isAI302 = !!process.env.AI302_API_KEY;
   // const apiKeyEnvVar = process.env.OPENAI_API_KEY ?? "";
   // const apiKeys = apiKeyEnvVar.split(",").map((v) => v.trim());
@@ -250,6 +255,10 @@ export const getServerSideConfig = () => {
     isSiliconFlow,
     siliconFlowUrl: process.env.SILICONFLOW_URL,
     siliconFlowApiKey: getApiKey(process.env.SILICONFLOW_API_KEY),
+
+    isDaoXE,
+    daoxeUrl: process.env.DAOXE_URL,
+    daoxeApiKey: getApiKey(process.env.DAOXE_API_KEY),
 
     isAI302,
     ai302Url: process.env.AI302_URL,
