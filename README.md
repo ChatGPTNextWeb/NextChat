@@ -282,6 +282,22 @@ DeepSeek Api Key.
 
 DeepSeek Api Url.
 
+### `MISTRAL_API_KEY` (optional)
+
+Mistral API key for the native Mistral chat provider.
+
+### `MISTRAL_URL` (optional)
+
+> Default: `https://api.mistral.ai`
+
+Mistral API base URL, without `/v1`. For client-side credentials, enable Custom
+Endpoint in Settings, select Mistral, and enter the endpoint and Mistral API key.
+Select a Mistral model in the chat's model selector. Additional chat models can be
+added with `CUSTOM_MODELS`, for example `+my-model@mistral`.
+
+This provider supports text chat, streaming, and function tools through
+`/v1/chat/completions`; Mistral Agents, audio, and image generation are not included.
+
 ### `HIDE_USER_API_KEY` (optional)
 
 > Default: Empty

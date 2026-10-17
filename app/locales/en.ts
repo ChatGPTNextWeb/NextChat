@@ -468,6 +468,17 @@ const en: LocaleType = {
           SubTitle: "Example: ",
         },
       },
+      Mistral: {
+        ApiKey: {
+          Title: "Mistral API Key",
+          SubTitle: "Use a custom Mistral API Key",
+          Placeholder: "Mistral API Key",
+        },
+        Endpoint: {
+          Title: "Endpoint Address",
+          SubTitle: "Example: ",
+        },
+      },
       ChatGLM: {
         ApiKey: {
           Title: "ChatGLM API Key",

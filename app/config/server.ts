@@ -80,6 +80,10 @@ declare global {
       XAI_URL?: string;
       XAI_API_KEY?: string;
 
+      // mistral only
+      MISTRAL_URL?: string;
+      MISTRAL_API_KEY?: string;
+
       // chatglm only
       CHATGLM_URL?: string;
       CHATGLM_API_KEY?: string;
@@ -120,9 +124,7 @@ function getApiKey(keys?: string) {
   const apiKey = apiKeys[randomIndex];
   if (apiKey) {
     console.log(
-      `[Server Config] using ${randomIndex + 1} of ${
-        apiKeys.length
-      } api key - ${apiKey}`,
+      `[Server Config] using ${randomIndex + 1} of ${apiKeys.length} api key`,
     );
   }
 
@@ -165,6 +167,7 @@ export const getServerSideConfig = () => {
   const isIflytek = !!process.env.IFLYTEK_API_KEY;
   const isDeepSeek = !!process.env.DEEPSEEK_API_KEY;
   const isXAI = !!process.env.XAI_API_KEY;
+  const isMistral = !!process.env.MISTRAL_API_KEY;
   const isChatGLM = !!process.env.CHATGLM_API_KEY;
   const isSiliconFlow = !!process.env.SILICONFLOW_API_KEY;
   const isAI302 = !!process.env.AI302_API_KEY;
@@ -237,6 +240,10 @@ export const getServerSideConfig = () => {
     isXAI,
     xaiUrl: process.env.XAI_URL,
     xaiApiKey: getApiKey(process.env.XAI_API_KEY),
+
+    isMistral,
+    mistralUrl: process.env.MISTRAL_URL,
+    mistralApiKey: getApiKey(process.env.MISTRAL_API_KEY),
 
     isChatGLM,
     chatglmUrl: process.env.CHATGLM_URL,

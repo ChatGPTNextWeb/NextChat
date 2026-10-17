@@ -483,6 +483,17 @@ const cn = {
           SubTitle: "样例：",
         },
       },
+      Mistral: {
+        ApiKey: {
+          Title: "接口密钥",
+          SubTitle: "使用自定义 Mistral API Key",
+          Placeholder: "Mistral API Key",
+        },
+        Endpoint: {
+          Title: "接口地址",
+          SubTitle: "样例：",
+        },
+      },
       ChatGLM: {
         ApiKey: {
           Title: "接口密钥",

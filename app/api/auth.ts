@@ -98,6 +98,9 @@ export function auth(req: NextRequest, modelProvider: ModelProvider) {
       case ModelProvider.XAI:
         systemApiKey = serverConfig.xaiApiKey;
         break;
+      case ModelProvider.Mistral:
+        systemApiKey = serverConfig.mistralApiKey;
+        break;
       case ModelProvider.ChatGLM:
         systemApiKey = serverConfig.chatglmApiKey;
         break;

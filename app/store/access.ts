@@ -15,6 +15,7 @@ import {
   IFLYTEK_BASE_URL,
   DEEPSEEK_BASE_URL,
   XAI_BASE_URL,
+  MISTRAL_BASE_URL,
   CHATGLM_BASE_URL,
   SILICONFLOW_BASE_URL,
   AI302_BASE_URL,
@@ -53,6 +54,8 @@ const DEFAULT_IFLYTEK_URL = isApp ? IFLYTEK_BASE_URL : ApiPath.Iflytek;
 const DEFAULT_DEEPSEEK_URL = isApp ? DEEPSEEK_BASE_URL : ApiPath.DeepSeek;
 
 const DEFAULT_XAI_URL = isApp ? XAI_BASE_URL : ApiPath.XAI;
+
+const DEFAULT_MISTRAL_URL = isApp ? MISTRAL_BASE_URL : ApiPath.Mistral;
 
 const DEFAULT_CHATGLM_URL = isApp ? CHATGLM_BASE_URL : ApiPath.ChatGLM;
 
@@ -126,6 +129,10 @@ const DEFAULT_ACCESS_STATE = {
   // xai
   xaiUrl: DEFAULT_XAI_URL,
   xaiApiKey: "",
+
+  // mistral
+  mistralUrl: DEFAULT_MISTRAL_URL,
+  mistralApiKey: "",
 
   // chatglm
   chatglmUrl: DEFAULT_CHATGLM_URL,
@@ -218,6 +225,10 @@ export const useAccessStore = createPersistStore(
       return ensure(get(), ["xaiApiKey"]);
     },
 
+    isValidMistral() {
+      return ensure(get(), ["mistralApiKey"]);
+    },
+
     isValidChatGLM() {
       return ensure(get(), ["chatglmApiKey"]);
     },
@@ -243,6 +254,7 @@ export const useAccessStore = createPersistStore(
         this.isValidIflytek() ||
         this.isValidDeepSeek() ||
         this.isValidXAI() ||
+        this.isValidMistral() ||
         this.isValidChatGLM() ||
         this.isValidSiliconFlow() ||
         !this.enabledAccessControl() ||

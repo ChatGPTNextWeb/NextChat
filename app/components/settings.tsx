@@ -59,6 +59,7 @@ import {
   ByteDance,
   Alibaba,
   Moonshot,
+  MISTRAL_BASE_URL,
   XAI,
   Google,
   GoogleSafetySettingsThreshold,
@@ -1280,6 +1281,45 @@ export function Settings() {
     </>
   );
 
+  const mistralConfigComponent = accessStore.provider ===
+    ServiceProvider.Mistral && (
+    <>
+      <ListItem
+        title={Locale.Settings.Access.Mistral.Endpoint.Title}
+        subTitle={
+          Locale.Settings.Access.Mistral.Endpoint.SubTitle + MISTRAL_BASE_URL
+        }
+      >
+        <input
+          aria-label={Locale.Settings.Access.Mistral.Endpoint.Title}
+          type="text"
+          value={accessStore.mistralUrl}
+          placeholder={MISTRAL_BASE_URL}
+          onChange={(e) =>
+            accessStore.update(
+              (access) => (access.mistralUrl = e.currentTarget.value),
+            )
+          }
+        />
+      </ListItem>
+      <ListItem
+        title={Locale.Settings.Access.Mistral.ApiKey.Title}
+        subTitle={Locale.Settings.Access.Mistral.ApiKey.SubTitle}
+      >
+        <PasswordInput
+          aria-label={Locale.Settings.Access.Mistral.ApiKey.Title}
+          value={accessStore.mistralApiKey}
+          placeholder={Locale.Settings.Access.Mistral.ApiKey.Placeholder}
+          onChange={(e) =>
+            accessStore.update(
+              (access) => (access.mistralApiKey = e.currentTarget.value),
+            )
+          }
+        />
+      </ListItem>
+    </>
+  );
+
   const chatglmConfigComponent = accessStore.provider ===
     ServiceProvider.ChatGLM && (
     <>
@@ -1459,44 +1499,44 @@ export function Settings() {
     </>
   );
 
-  const ai302ConfigComponent = accessStore.provider === ServiceProvider["302.AI"] && (
+  const ai302ConfigComponent = accessStore.provider ===
+    ServiceProvider["302.AI"] && (
     <>
       <ListItem
-          title={Locale.Settings.Access.AI302.Endpoint.Title}
-          subTitle={
-            Locale.Settings.Access.AI302.Endpoint.SubTitle +
-            AI302.ExampleEndpoint
+        title={Locale.Settings.Access.AI302.Endpoint.Title}
+        subTitle={
+          Locale.Settings.Access.AI302.Endpoint.SubTitle + AI302.ExampleEndpoint
+        }
+      >
+        <input
+          aria-label={Locale.Settings.Access.AI302.Endpoint.Title}
+          type="text"
+          value={accessStore.ai302Url}
+          placeholder={AI302.ExampleEndpoint}
+          onChange={(e) =>
+            accessStore.update(
+              (access) => (access.ai302Url = e.currentTarget.value),
+            )
           }
-        >
-          <input
-            aria-label={Locale.Settings.Access.AI302.Endpoint.Title}
-            type="text"
-            value={accessStore.ai302Url}
-            placeholder={AI302.ExampleEndpoint}
-            onChange={(e) =>
-              accessStore.update(
-                (access) => (access.ai302Url = e.currentTarget.value),
-              )
-            }
-          ></input>
-        </ListItem>
-        <ListItem
-          title={Locale.Settings.Access.AI302.ApiKey.Title}
-          subTitle={Locale.Settings.Access.AI302.ApiKey.SubTitle}
-        >
-          <PasswordInput
-            aria-label={Locale.Settings.Access.AI302.ApiKey.Title}
-            value={accessStore.ai302ApiKey}
-            type="text"
-            placeholder={Locale.Settings.Access.AI302.ApiKey.Placeholder}
-            onChange={(e) => {
-              accessStore.update(
-                (access) => (access.ai302ApiKey = e.currentTarget.value),
-              );
-            }}
-          />
-        </ListItem>
-      </>
+        ></input>
+      </ListItem>
+      <ListItem
+        title={Locale.Settings.Access.AI302.ApiKey.Title}
+        subTitle={Locale.Settings.Access.AI302.ApiKey.SubTitle}
+      >
+        <PasswordInput
+          aria-label={Locale.Settings.Access.AI302.ApiKey.Title}
+          value={accessStore.ai302ApiKey}
+          type="text"
+          placeholder={Locale.Settings.Access.AI302.ApiKey.Placeholder}
+          onChange={(e) => {
+            accessStore.update(
+              (access) => (access.ai302ApiKey = e.currentTarget.value),
+            );
+          }}
+        />
+      </ListItem>
+    </>
   );
 
   return (
@@ -1861,6 +1901,7 @@ export function Settings() {
                   {stabilityConfigComponent}
                   {lflytekConfigComponent}
                   {XAIConfigComponent}
+                  {mistralConfigComponent}
                   {chatglmConfigComponent}
                   {siliconflowConfigComponent}
                   {ai302ConfigComponent}

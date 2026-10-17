@@ -22,6 +22,7 @@ import { MoonshotApi } from "./platforms/moonshot";
 import { SparkApi } from "./platforms/iflytek";
 import { DeepSeekApi } from "./platforms/deepseek";
 import { XAIApi } from "./platforms/xai";
+import { MistralApi } from "./platforms/mistral";
 import { ChatGLMApi } from "./platforms/glm";
 import { SiliconflowApi } from "./platforms/siliconflow";
 import { Ai302Api } from "./platforms/ai302";
@@ -168,6 +169,9 @@ export class ClientApi {
       case ModelProvider.XAI:
         this.llm = new XAIApi();
         break;
+      case ModelProvider.Mistral:
+        this.llm = new MistralApi();
+        break;
       case ModelProvider.ChatGLM:
         this.llm = new ChatGLMApi();
         break;
@@ -266,6 +270,7 @@ export function getHeaders(ignoreHeaders: boolean = false) {
     const isIflytek = modelConfig.providerName === ServiceProvider.Iflytek;
     const isDeepSeek = modelConfig.providerName === ServiceProvider.DeepSeek;
     const isXAI = modelConfig.providerName === ServiceProvider.XAI;
+    const isMistral = modelConfig.providerName === ServiceProvider.Mistral;
     const isChatGLM = modelConfig.providerName === ServiceProvider.ChatGLM;
     const isSiliconFlow =
       modelConfig.providerName === ServiceProvider.SiliconFlow;
@@ -285,6 +290,8 @@ export function getHeaders(ignoreHeaders: boolean = false) {
       ? accessStore.moonshotApiKey
       : isXAI
       ? accessStore.xaiApiKey
+      : isMistral
+      ? accessStore.mistralApiKey
       : isDeepSeek
       ? accessStore.deepseekApiKey
       : isChatGLM
@@ -387,6 +394,8 @@ export function getClientApi(provider: ServiceProvider): ClientApi {
       return new ClientApi(ModelProvider.DeepSeek);
     case ServiceProvider.XAI:
       return new ClientApi(ModelProvider.XAI);
+    case ServiceProvider.Mistral:
+      return new ClientApi(ModelProvider.Mistral);
     case ServiceProvider.ChatGLM:
       return new ClientApi(ModelProvider.ChatGLM);
     case ServiceProvider.SiliconFlow:
