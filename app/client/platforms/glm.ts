@@ -14,6 +14,7 @@ import {
   LLMApi,
   LLMModel,
   SpeechOptions,
+  applyModelConfigExtras,
 } from "../api";
 import { getClientConfig } from "@/app/config/client";
 import {
@@ -174,6 +175,11 @@ export class ChatGLMApi implements LLMApi {
     const modelType = this.getModelType(modelConfig.model);
     const requestPayload = this.createPayload(messages, modelConfig, options);
     const path = this.path(this.getModelPath(modelType));
+
+    // Apply disable flags + merge custom extraParams (chat only; skip for image/video)
+    if (modelType !== "image" && modelType !== "video") {
+      applyModelConfigExtras(modelConfig, requestPayload as any);
+    }
 
     console.log(`[Request] glm ${modelType} payload: `, requestPayload);
 

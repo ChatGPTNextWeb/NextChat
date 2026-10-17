@@ -6,6 +6,7 @@ import {
   LLMModel,
   LLMUsage,
   SpeechOptions,
+  applyModelConfigExtras,
 } from "../api";
 import {
   useAccessStore,
@@ -180,6 +181,19 @@ export class GeminiProApi implements LLMApi {
         },
       ],
     };
+
+    // Google nests temperature/topP inside generationConfig, so handle the
+    // disable flags specifically for those nested fields
+    if (modelConfig.disableTemperature) {
+      delete (requestPayload.generationConfig as any).temperature;
+    }
+    if (modelConfig.disableTopP) {
+      delete (requestPayload.generationConfig as any).topP;
+    }
+    // Merge custom extraParams at the top level; top-level disable flags
+    // (temperature/top_p/presence_penalty/frequency_penalty) are no-ops here
+    // because Google does not use those top-level field names
+    applyModelConfigExtras(modelConfig, requestPayload);
 
     let shouldStream = !!options.config.stream;
     const controller = new AbortController();

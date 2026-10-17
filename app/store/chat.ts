@@ -860,7 +860,7 @@ export const useChatStore = createPersistStore(
   },
   {
     name: StoreKey.Chat,
-    version: 3.3,
+    version: 3.4,
     migrate(persistedState, version) {
       const state = persistedState as any;
       const newState = JSON.parse(
@@ -922,6 +922,24 @@ export const useChatStore = createPersistStore(
           const config = useAppConfig.getState();
           s.mask.modelConfig.compressModel = "";
           s.mask.modelConfig.compressProviderName = "";
+        });
+      }
+
+      // Old sessions saved before the custom-request-params feature lack the
+      // new modelConfig fields. Fill in defaults so the UI and request
+      // builders don't crash on undefined values.
+      if (version < 3.4) {
+        newState.sessions.forEach((s) => {
+          const mc = s.mask.modelConfig as Record<string, any>;
+          if (!mc) return;
+          if (typeof mc.disableTemperature !== "boolean")
+            mc.disableTemperature = false;
+          if (typeof mc.disableTopP !== "boolean") mc.disableTopP = false;
+          if (typeof mc.disablePresencePenalty !== "boolean")
+            mc.disablePresencePenalty = false;
+          if (typeof mc.disableFrequencyPenalty !== "boolean")
+            mc.disableFrequencyPenalty = false;
+          if (typeof mc.extraParams !== "string") mc.extraParams = "";
         });
       }
 

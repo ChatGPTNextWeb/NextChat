@@ -78,3 +78,36 @@
     overflow:visible ;
   }
 }
+
+/* Custom Endpoint card: a switchable provider bundle in settings */
+.custom-endpoint-card {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  margin-top: 12px;
+  padding: 12px 16px 4px;
+  background-color: var(--white);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+
+  .custom-endpoint-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+
+    .custom-endpoint-name {
+      flex: 1;
+      font-weight: 600;
+      font-size: 14px;
+      border: none;
+      border-bottom: 1px dashed var(--border);
+      background: transparent;
+      outline: none;
+      padding: 4px 0;
+      min-width: 0;
+    }
+
+    .custom-endpoint-name:focus {
+      border-bottom-color: var(--primary);
+    }
+  }
+}

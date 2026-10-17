@@ -521,6 +521,13 @@ const en: LocaleType = {
         Title: "Custom Models",
         SubTitle: "Custom model options, seperated by comma",
       },
+      CustomEndpoints: {
+        Title: "Custom Endpoints",
+        SubTitle:
+          "Bundle provider, endpoint, API key and custom models into switchable endpoints",
+        Add: "Add Endpoint",
+        NamePlaceholder: "Endpoint name (e.g. Work OpenAI)",
+      },
       Google: {
         ApiKey: {
           Title: "API Key",
@@ -581,6 +588,22 @@ const en: LocaleType = {
       Title: "Frequency Penalty",
       SubTitle:
         "A larger value decreasing the likelihood to repeat the same line",
+    },
+    DisableParam: "Do not send (use provider default)",
+    ExtraParams: {
+      Title: "Custom Request Parameters",
+      SubTitle:
+        "Append custom request parameters as JSON (e.g. thinking). Core fields like messages/model/stream are protected and will not be overwritten",
+      Placeholder:
+        'e.g.\n{"thinking":{"type":"disabled"}}\nNote: merged into the top-level request body only; protected fields are skipped',
+      StatusEmpty: "Empty — no extra params",
+      StatusValid: "Valid JSON object",
+      StatusObject:
+        "Top-level value must be a JSON object, not array or primitive",
+      StatusInvalid: "Invalid JSON",
+      SaveButton: "Save",
+      SavedButton: "Saved",
+      SaveDisabledHint: "Fix the JSON syntax before saving",
     },
     TTS: {
       Enable: {

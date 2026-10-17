@@ -29,6 +29,7 @@ import ReloadIcon from "../icons/reload.svg";
 import BreakIcon from "../icons/break.svg";
 import SettingsIcon from "../icons/chat-settings.svg";
 import DeleteIcon from "../icons/clear.svg";
+import ConnectionIcon from "../icons/connection.svg";
 import PinIcon from "../icons/pin.svg";
 import ConfirmIcon from "../icons/confirm.svg";
 import CloseIcon from "../icons/close.svg";
@@ -508,6 +509,7 @@ export function ChatActions(props: {
   const navigate = useNavigate();
   const chatStore = useChatStore();
   const pluginStore = usePluginStore();
+  const accessStore = useAccessStore();
   const session = chatStore.currentSession();
 
   // switch themes
@@ -555,6 +557,7 @@ export function ChatActions(props: {
   const [showModelSelector, setShowModelSelector] = useState(false);
   const [showPluginSelector, setShowPluginSelector] = useState(false);
   const [showUploadImage, setShowUploadImage] = useState(false);
+  const [showEndpointSelector, setShowEndpointSelector] = useState(false);
 
   const [showSizeSelector, setShowSizeSelector] = useState(false);
   const [showQualitySelector, setShowQualitySelector] = useState(false);
@@ -678,6 +681,46 @@ export function ChatActions(props: {
           text={currentModelName}
           icon={<RobotIcon />}
         />
+
+        {accessStore.customEndpoints.length > 0 && (
+          <>
+            <ChatAction
+              onClick={() => setShowEndpointSelector(true)}
+              text={
+                accessStore.customEndpoints.find(
+                  (e) => e.id === accessStore.activeEndpointId,
+                )?.name ?? "Default"
+              }
+              icon={<ConnectionIcon />}
+            />
+            {showEndpointSelector && (
+              <Selector
+                defaultSelectedValue={accessStore.activeEndpointId ?? ""}
+                items={[
+                  {
+                    title: "Default",
+                    value: "",
+                  },
+                  ...accessStore.customEndpoints.map((e) => ({
+                    title: e.name,
+                    value: e.id,
+                  })),
+                ]}
+                onClose={() => setShowEndpointSelector(false)}
+                onSelection={(s) => {
+                  if (s.length === 0) return;
+                  const id = s[0];
+                  if (id === "") {
+                    accessStore.clearActiveEndpoint();
+                  } else {
+                    accessStore.activateEndpoint(id);
+                  }
+                  setShowEndpointSelector(false);
+                }}
+              />
+            )}
+          </>
+        )}
 
         {showModelSelector && (
           <Selector

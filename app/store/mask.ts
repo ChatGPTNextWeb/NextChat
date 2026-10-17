@@ -114,7 +114,7 @@ export const useMaskStore = createPersistStore(
   }),
   {
     name: StoreKey.Mask,
-    version: 3.1,
+    version: 3.2,
 
     migrate(state, version) {
       const newState = JSON.parse(JSON.stringify(state)) as MaskState;
@@ -130,6 +130,24 @@ export const useMaskStore = createPersistStore(
           updatedMasks[m.id] = m;
         });
         newState.masks = updatedMasks;
+      }
+
+      // Old masks saved before the custom-request-params feature lack the
+      // new modelConfig fields. Fill in defaults so the UI and request
+      // builders don't crash on undefined values.
+      if (version < 3.2) {
+        Object.values(newState.masks).forEach((m) => {
+          const mc = m.modelConfig as Record<string, any>;
+          if (!mc) return;
+          if (typeof mc.disableTemperature !== "boolean")
+            mc.disableTemperature = false;
+          if (typeof mc.disableTopP !== "boolean") mc.disableTopP = false;
+          if (typeof mc.disablePresencePenalty !== "boolean")
+            mc.disablePresencePenalty = false;
+          if (typeof mc.disableFrequencyPenalty !== "boolean")
+            mc.disableFrequencyPenalty = false;
+          if (typeof mc.extraParams !== "string") mc.extraParams = "";
+        });
       }
 
       return newState as any;

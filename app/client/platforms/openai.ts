@@ -34,6 +34,7 @@ import {
   LLMUsage,
   MultimodalContent,
   SpeechOptions,
+  applyModelConfigExtras,
 } from "../api";
 import Locale from "../../locales";
 import { getClientConfig } from "@/app/config/client";
@@ -263,6 +264,9 @@ export class ChatGPTApi implements LLMApi {
       if (visionModel && !isO1OrO3 && ! isGpt5) {
         requestPayload["max_tokens"] = Math.max(modelConfig.max_tokens, 4000);
       }
+
+      // Apply disable flags + merge custom extraParams (chat only; skip for Dalle3)
+      requestPayload = applyModelConfigExtras(modelConfig, requestPayload as any) as any;
     }
 
     console.log("[Request] openai payload: ", requestPayload);

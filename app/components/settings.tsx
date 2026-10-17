@@ -15,6 +15,7 @@ import DownloadIcon from "../icons/download.svg";
 import UploadIcon from "../icons/upload.svg";
 import ConfigIcon from "../icons/config.svg";
 import ConfirmIcon from "../icons/confirm.svg";
+import DeleteIcon from "../icons/delete.svg";
 
 import ConnectionIcon from "../icons/connection.svg";
 import CloudSuccessIcon from "../icons/cloud-success.svg";
@@ -1459,44 +1460,44 @@ export function Settings() {
     </>
   );
 
-  const ai302ConfigComponent = accessStore.provider === ServiceProvider["302.AI"] && (
+  const ai302ConfigComponent = accessStore.provider ===
+    ServiceProvider["302.AI"] && (
     <>
       <ListItem
-          title={Locale.Settings.Access.AI302.Endpoint.Title}
-          subTitle={
-            Locale.Settings.Access.AI302.Endpoint.SubTitle +
-            AI302.ExampleEndpoint
+        title={Locale.Settings.Access.AI302.Endpoint.Title}
+        subTitle={
+          Locale.Settings.Access.AI302.Endpoint.SubTitle + AI302.ExampleEndpoint
+        }
+      >
+        <input
+          aria-label={Locale.Settings.Access.AI302.Endpoint.Title}
+          type="text"
+          value={accessStore.ai302Url}
+          placeholder={AI302.ExampleEndpoint}
+          onChange={(e) =>
+            accessStore.update(
+              (access) => (access.ai302Url = e.currentTarget.value),
+            )
           }
-        >
-          <input
-            aria-label={Locale.Settings.Access.AI302.Endpoint.Title}
-            type="text"
-            value={accessStore.ai302Url}
-            placeholder={AI302.ExampleEndpoint}
-            onChange={(e) =>
-              accessStore.update(
-                (access) => (access.ai302Url = e.currentTarget.value),
-              )
-            }
-          ></input>
-        </ListItem>
-        <ListItem
-          title={Locale.Settings.Access.AI302.ApiKey.Title}
-          subTitle={Locale.Settings.Access.AI302.ApiKey.SubTitle}
-        >
-          <PasswordInput
-            aria-label={Locale.Settings.Access.AI302.ApiKey.Title}
-            value={accessStore.ai302ApiKey}
-            type="text"
-            placeholder={Locale.Settings.Access.AI302.ApiKey.Placeholder}
-            onChange={(e) => {
-              accessStore.update(
-                (access) => (access.ai302ApiKey = e.currentTarget.value),
-              );
-            }}
-          />
-        </ListItem>
-      </>
+        ></input>
+      </ListItem>
+      <ListItem
+        title={Locale.Settings.Access.AI302.ApiKey.Title}
+        subTitle={Locale.Settings.Access.AI302.ApiKey.SubTitle}
+      >
+        <PasswordInput
+          aria-label={Locale.Settings.Access.AI302.ApiKey.Title}
+          value={accessStore.ai302ApiKey}
+          type="text"
+          placeholder={Locale.Settings.Access.AI302.ApiKey.Placeholder}
+          onChange={(e) => {
+            accessStore.update(
+              (access) => (access.ai302ApiKey = e.currentTarget.value),
+            );
+          }}
+        />
+      </ListItem>
+    </>
   );
 
   return (
@@ -1864,6 +1865,116 @@ export function Settings() {
                   {chatglmConfigComponent}
                   {siliconflowConfigComponent}
                   {ai302ConfigComponent}
+
+                  {/* Custom Endpoints: switchable provider bundles */}
+                  <ListItem
+                    title={Locale.Settings.Access.CustomEndpoints.Title}
+                    subTitle={Locale.Settings.Access.CustomEndpoints.SubTitle}
+                  >
+                    <IconButton
+                      icon={<AddIcon />}
+                      text={Locale.Settings.Access.CustomEndpoints.Add}
+                      onClick={() => accessStore.addCustomEndpoint()}
+                    />
+                  </ListItem>
+
+                  {accessStore.customEndpoints.map((ep) => (
+                    <div key={ep.id} className={styles["custom-endpoint-card"]}>
+                      <div className={styles["custom-endpoint-header"]}>
+                        <input
+                          className={styles["custom-endpoint-name"]}
+                          type="text"
+                          value={ep.name}
+                          placeholder={
+                            Locale.Settings.Access.CustomEndpoints
+                              .NamePlaceholder
+                          }
+                          onChange={(e) =>
+                            accessStore.updateCustomEndpoint(ep.id, {
+                              name: e.currentTarget.value,
+                            })
+                          }
+                        />
+                        <IconButton
+                          icon={<DeleteIcon />}
+                          onClick={() =>
+                            accessStore.removeCustomEndpoint(ep.id)
+                          }
+                        />
+                      </div>
+
+                      <ListItem title={Locale.Settings.Access.Provider.Title}>
+                        <Select
+                          value={ep.provider}
+                          onChange={(e) =>
+                            accessStore.updateCustomEndpoint(ep.id, {
+                              provider: e.target.value as ServiceProvider,
+                            })
+                          }
+                        >
+                          {Object.entries(ServiceProvider).map(([k, v]) => (
+                            <option value={v} key={k}>
+                              {k}
+                            </option>
+                          ))}
+                        </Select>
+                      </ListItem>
+
+                      <ListItem
+                        title={Locale.Settings.Access.OpenAI.Endpoint.Title}
+                      >
+                        <input
+                          type="text"
+                          value={ep.baseUrl}
+                          placeholder="https://api.example.com/v1"
+                          onChange={(e) =>
+                            accessStore.updateCustomEndpoint(ep.id, {
+                              baseUrl: e.currentTarget.value,
+                            })
+                          }
+                        />
+                      </ListItem>
+
+                      <ListItem
+                        title={Locale.Settings.Access.OpenAI.ApiKey.Title}
+                      >
+                        <PasswordInput
+                          aria={Locale.Settings.ShowPassword}
+                          value={ep.apiKey}
+                          type="text"
+                          placeholder={
+                            Locale.Settings.Access.OpenAI.ApiKey.Placeholder
+                          }
+                          onChange={(e) =>
+                            accessStore.updateCustomEndpoint(ep.id, {
+                              apiKey: e.currentTarget.value,
+                            })
+                          }
+                        />
+                      </ListItem>
+
+                      <ListItem
+                        title={Locale.Settings.Access.CustomModel.Title}
+                        vertical={true}
+                      >
+                        <input
+                          type="text"
+                          style={{
+                            width: "100%",
+                            maxWidth: "unset",
+                            textAlign: "left",
+                          }}
+                          value={ep.customModels}
+                          placeholder="model1,model2,model3"
+                          onChange={(e) =>
+                            accessStore.updateCustomEndpoint(ep.id, {
+                              customModels: e.currentTarget.value,
+                            })
+                          }
+                        />
+                      </ListItem>
+                    </div>
+                  ))}
                 </>
               )}
             </>
