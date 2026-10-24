@@ -5,7 +5,9 @@ import { ListItem, Select } from "./ui-lib";
 import {
   DEFAULT_TTS_ENGINE,
   DEFAULT_TTS_ENGINES,
+  DEFAULT_TTS_MODEL,
   DEFAULT_TTS_MODELS,
+  DEFAULT_TTS_VOICE,
   DEFAULT_TTS_VOICES,
 } from "../constant";
 import { InputRange } from "./input-range";
@@ -66,45 +68,45 @@ export function TTSConfigList(props: {
       {props.ttsConfig.engine === DEFAULT_TTS_ENGINE && (
         <>
           <ListItem title={Locale.Settings.TTS.Model}>
-            <Select
+            <input
+              aria-label={Locale.Settings.TTS.Model}
+              type="text"
+              list="tts-models"
               value={props.ttsConfig.model}
-              onChange={(e) => {
+              placeholder={DEFAULT_TTS_MODEL}
+              onChange={(e) =>
                 props.updateConfig(
-                  (config) =>
-                    (config.model = TTSConfigValidator.model(
-                      e.currentTarget.value,
-                    )),
-                );
-              }}
-            >
+                  (config) => (config.model = e.currentTarget.value),
+                )
+              }
+            ></input>
+            <datalist id="tts-models">
               {DEFAULT_TTS_MODELS.map((v, i) => (
-                <option value={v} key={i}>
-                  {v}
-                </option>
+                <option value={v} key={i} />
               ))}
-            </Select>
+            </datalist>
           </ListItem>
           <ListItem
             title={Locale.Settings.TTS.Voice.Title}
             subTitle={Locale.Settings.TTS.Voice.SubTitle}
           >
-            <Select
+            <input
+              aria-label={Locale.Settings.TTS.Voice.Title}
+              type="text"
+              list="tts-voices"
               value={props.ttsConfig.voice}
-              onChange={(e) => {
+              placeholder={DEFAULT_TTS_VOICE}
+              onChange={(e) =>
                 props.updateConfig(
-                  (config) =>
-                    (config.voice = TTSConfigValidator.voice(
-                      e.currentTarget.value,
-                    )),
-                );
-              }}
-            >
+                  (config) => (config.voice = e.currentTarget.value),
+                )
+              }
+            ></input>
+            <datalist id="tts-voices">
               {DEFAULT_TTS_VOICES.map((v, i) => (
-                <option value={v} key={i}>
-                  {v}
-                </option>
+                <option value={v} key={i} />
               ))}
-            </Select>
+            </datalist>
           </ListItem>
           <ListItem
             title={Locale.Settings.TTS.Speed.Title}
