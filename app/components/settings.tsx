@@ -75,6 +75,7 @@ import {
   ChatGLM,
   DeepSeek,
   SiliconFlow,
+  MiniMax,
   AI302,
 } from "../constant";
 import { Prompt, SearchService, usePromptStore } from "../store/prompt";
@@ -1459,6 +1460,47 @@ export function Settings() {
     </>
   );
 
+  const minimaxConfigComponent = accessStore.provider ===
+    ServiceProvider.MiniMax && (
+    <>
+      <ListItem
+        title={Locale.Settings.Access.MiniMax.Endpoint.Title}
+        subTitle={
+          Locale.Settings.Access.MiniMax.Endpoint.SubTitle +
+          MiniMax.ExampleEndpoint
+        }
+      >
+        <input
+          aria-label={Locale.Settings.Access.MiniMax.Endpoint.Title}
+          type="text"
+          value={accessStore.minimaxUrl}
+          placeholder={MiniMax.ExampleEndpoint}
+          onChange={(e) =>
+            accessStore.update(
+              (access) => (access.minimaxUrl = e.currentTarget.value),
+            )
+          }
+        ></input>
+      </ListItem>
+      <ListItem
+        title={Locale.Settings.Access.MiniMax.ApiKey.Title}
+        subTitle={Locale.Settings.Access.MiniMax.ApiKey.SubTitle}
+      >
+        <PasswordInput
+          aria-label={Locale.Settings.Access.MiniMax.ApiKey.Title}
+          value={accessStore.minimaxApiKey}
+          type="text"
+          placeholder={Locale.Settings.Access.MiniMax.ApiKey.Placeholder}
+          onChange={(e) => {
+            accessStore.update(
+              (access) => (access.minimaxApiKey = e.currentTarget.value),
+            );
+          }}
+        />
+      </ListItem>
+    </>
+  );
+
   const ai302ConfigComponent = accessStore.provider === ServiceProvider["302.AI"] && (
     <>
       <ListItem
@@ -1863,6 +1905,7 @@ export function Settings() {
                   {XAIConfigComponent}
                   {chatglmConfigComponent}
                   {siliconflowConfigComponent}
+                  {minimaxConfigComponent}
                   {ai302ConfigComponent}
                 </>
               )}

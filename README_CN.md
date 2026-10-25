@@ -209,6 +209,14 @@ DeepSeek Api Key.
 
 DeepSeek Api Url.
 
+### `MINIMAX_API_KEY` (可选)
+
+MiniMax Api Key，可在 [MiniMax 开放平台](https://platform.minimaxi.com/) 获取。
+
+### `MINIMAX_URL` (可选)
+
+MiniMax Api Url。
+
 ### `HIDE_USER_API_KEY` （可选）
 
 如果你不想让用户自行填入 API Key，将此环境变量设置为 1 即可。

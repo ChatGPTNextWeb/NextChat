@@ -104,6 +104,9 @@ export function auth(req: NextRequest, modelProvider: ModelProvider) {
       case ModelProvider.SiliconFlow:
         systemApiKey = serverConfig.siliconFlowApiKey;
         break;
+      case ModelProvider.MiniMax:
+        systemApiKey = serverConfig.minimaxApiKey;
+        break;
       case ModelProvider.GPT:
       default:
         if (req.nextUrl.pathname.includes("azure/deployments")) {
