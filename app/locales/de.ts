@@ -446,6 +446,17 @@ const de: PartialLocaleType = {
           SubTitle: "Beispiel:",
         },
       },
+      OrcaRouter: {
+        ApiKey: {
+          Title: "Schnittstellenschlüssel",
+          SubTitle: "Verwenden Sie einen benutzerdefinierten OrcaRouter API-Schlüssel",
+          Placeholder: "OrcaRouter API-Schlüssel",
+        },
+        Endpoint: {
+          Title: "Endpunktadresse",
+          SubTitle: "Beispiel:",
+        },
+      },
       CustomModel: {
         Title: "Benutzerdefinierter Modellname",
         SubTitle:

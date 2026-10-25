@@ -547,6 +547,17 @@ const cn = {
           SubTitle: "样例：",
         },
       },
+      OrcaRouter: {
+        ApiKey: {
+          Title: "接口密钥",
+          SubTitle: "使用自定义OrcaRouter API Key",
+          Placeholder: "OrcaRouter API Key",
+        },
+        Endpoint: {
+          Title: "接口地址",
+          SubTitle: "样例：",
+        },
+      },
     },
 
     Model: "模型 (model)",

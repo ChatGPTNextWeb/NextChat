@@ -376,6 +376,14 @@ SiliconFlow API URL.
 
 302.AI API URL.
 
+### `ORCAROUTER_API_KEY` (optional)
+
+OrcaRouter API Key.
+
+### `ORCAROUTER_URL` (optional)
+
+OrcaRouter API URL.
+
 ## Requirements
 
 NodeJS >= 18, Docker >= 20

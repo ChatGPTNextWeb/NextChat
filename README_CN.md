@@ -293,6 +293,14 @@ SiliconFlow API URL.
 
 302.AI API URL.
 
+### `ORCAROUTER_API_KEY` (可选)
+
+OrcaRouter API Key。
+
+### `ORCAROUTER_URL` (可选)
+
+OrcaRouter API URL。
+
 ## 开发
 
 点击下方按钮，开始二次开发：

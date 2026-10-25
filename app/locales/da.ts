@@ -528,6 +528,17 @@ const da: PartialLocaleType = {
           SubTitle: "Eksempel: ",
         },
       },
+      OrcaRouter: {
+        ApiKey: {
+          Title: "OrcaRouter API Key",
+          SubTitle: "Brug en custom OrcaRouter API Key",
+          Placeholder: "OrcaRouter API Key",
+        },
+        Endpoint: {
+          Title: "Endpoint-adresse",
+          SubTitle: "Eksempel: ",
+        },
+      },
     },
     Model: "Model",
     CompressModel: {

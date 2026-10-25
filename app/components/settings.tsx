@@ -76,6 +76,7 @@ import {
   DeepSeek,
   SiliconFlow,
   AI302,
+  OrcaRouter,
 } from "../constant";
 import { Prompt, SearchService, usePromptStore } from "../store/prompt";
 import { ErrorBoundary } from "./error";
@@ -1499,6 +1500,46 @@ export function Settings() {
       </>
   );
 
+  const orcarouterConfigComponent =
+    accessStore.provider === ServiceProvider.OrcaRouter && (
+      <>
+        <ListItem
+          title={Locale.Settings.Access.OrcaRouter.Endpoint.Title}
+          subTitle={
+            Locale.Settings.Access.OrcaRouter.Endpoint.SubTitle +
+            OrcaRouter.ExampleEndpoint
+          }
+        >
+          <input
+            aria-label={Locale.Settings.Access.OrcaRouter.Endpoint.Title}
+            type="text"
+            value={accessStore.orcarouterUrl}
+            placeholder={OrcaRouter.ExampleEndpoint}
+            onChange={(e) =>
+              accessStore.update(
+                (access) => (access.orcarouterUrl = e.currentTarget.value),
+              )
+            }
+          ></input>
+        </ListItem>
+        <ListItem
+          title={Locale.Settings.Access.OrcaRouter.ApiKey.Title}
+          subTitle={Locale.Settings.Access.OrcaRouter.ApiKey.SubTitle}
+        >
+          <PasswordInput
+            aria-label={Locale.Settings.Access.OrcaRouter.ApiKey.Title}
+            value={accessStore.orcarouterApiKey}
+            type="text"
+            placeholder={Locale.Settings.Access.OrcaRouter.ApiKey.Placeholder}
+            onChange={(e) => {
+              accessStore.update(
+                (access) => (access.orcarouterApiKey = e.currentTarget.value),
+              );
+            }}
+          />
+        </ListItem>
+      </>
+  );
   return (
     <ErrorBoundary>
       <div className="window-header" data-tauri-drag-region>
@@ -1864,6 +1905,7 @@ export function Settings() {
                   {chatglmConfigComponent}
                   {siliconflowConfigComponent}
                   {ai302ConfigComponent}
+                  {orcarouterConfigComponent}
                 </>
               )}
             </>

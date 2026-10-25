@@ -1,0 +1,12 @@
+<svg fill="none" height="1em" style="flex:none;line-height:1" viewBox="0 0 30 30" width="1em" xmlns="http://www.w3.org/2000/svg">
+    <title>OrcaRouter</title>
+    <rect width="30" height="30" fill="#E7F8FF" rx="6"/>
+    <g transform="translate(3, 3)">
+        <path d="M12 5.5v13M5.5 12h13" stroke="#1F2937" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="12" cy="12" r="2.7" fill="#1F2937"/>
+        <circle cx="12" cy="4.8" r="1.9" fill="#1F2937"/>
+        <circle cx="4.8" cy="12" r="1.9" fill="#1F2937"/>
+        <circle cx="19.2" cy="12" r="1.9" fill="#1F2937"/>
+        <circle cx="12" cy="19.2" r="1.9" fill="#1F2937"/>
+    </g>
+</svg>

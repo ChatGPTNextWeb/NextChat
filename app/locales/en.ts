@@ -553,6 +553,17 @@ const en: LocaleType = {
           SubTitle: "Example: ",
         },
       },
+      OrcaRouter: {
+        ApiKey: {
+          Title: "OrcaRouter API Key",
+          SubTitle: "Use a custom OrcaRouter API Key",
+          Placeholder: "OrcaRouter API Key",
+        },
+        Endpoint: {
+          Title: "Endpoint Address",
+          SubTitle: "Example: ",
+        },
+      },
     },
 
     Model: "Model",

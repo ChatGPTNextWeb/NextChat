@@ -370,6 +370,17 @@ const pt: PartialLocaleType = {
           SubTitle: "Exemplo: ",
         },
       },
+      OrcaRouter: {
+        ApiKey: {
+          Title: "Chave API OrcaRouter",
+          SubTitle: "Use uma chave API OrcaRouter personalizada",
+          Placeholder: "OrcaRouter API Key",
+        },
+        Endpoint: {
+          Title: "Endpoint Address",
+          SubTitle: "Exemplo: ",
+        },
+      },
       CustomModel: {
         Title: "Modelos Personalizados",
         SubTitle: "Opções de modelo personalizado, separados por vírgula",

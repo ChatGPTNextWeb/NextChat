@@ -437,6 +437,17 @@ const ru: PartialLocaleType = {
           SubTitle: "Пример:",
         },
       },
+      OrcaRouter: {
+        ApiKey: {
+          Title: "Ключ интерфейса",
+          SubTitle: "Использовать пользовательский OrcaRouter API-ключ",
+          Placeholder: "OrcaRouter API-ключ",
+        },
+        Endpoint: {
+          Title: "Адрес интерфейса",
+          SubTitle: "Пример:",
+        },
+      },
       CustomModel: {
         Title: "Название пользовательской модели",
         SubTitle:

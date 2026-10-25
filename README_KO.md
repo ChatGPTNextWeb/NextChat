@@ -382,6 +382,14 @@ SiliconFlow API URL입니다.
 
 302.AI API URL입니다.
 
+### `ORCAROUTER_API_KEY` (선택 사항)
+
+OrcaRouter API 키입니다.
+
+### `ORCAROUTER_URL` (선택 사항)
+
+OrcaRouter API URL입니다.
+
 ## 요구 사항 (Requirements)
 
 NodeJS >= 18, Docker >= 20

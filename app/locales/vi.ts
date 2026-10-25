@@ -433,6 +433,17 @@ const vi: PartialLocaleType = {
           SubTitle: "Ví dụ:",
         },
       },
+      OrcaRouter: {
+        ApiKey: {
+          Title: "Khóa API OrcaRouter",
+          SubTitle: "Sử dụng khóa API OrcaRouter tùy chỉnh",
+          Placeholder: "OrcaRouter API Key",
+        },
+        Endpoint: {
+          Title: "Địa chỉ giao diện",
+          SubTitle: "Ví dụ:",
+        },
+      },
       CustomModel: {
         Title: "Tên mô hình tùy chỉnh",
         SubTitle:

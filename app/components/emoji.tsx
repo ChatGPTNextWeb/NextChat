@@ -20,6 +20,7 @@ import BotIconGrok from "../icons/llm-icons/grok.svg";
 import BotIconHunyuan from "../icons/llm-icons/hunyuan.svg";
 import BotIconDoubao from "../icons/llm-icons/doubao.svg";
 import BotIconChatglm from "../icons/llm-icons/chatglm.svg";
+import BotIconOrcarouter from "../icons/llm-icons/orcarouter.svg";
 
 export function getEmojiUrl(unified: string, style: EmojiStyle) {
   // Whoever owns this Content Delivery Network (CDN), I am using your CDN to serve emojis
@@ -83,6 +84,8 @@ export function Avatar(props: { model?: ModelType; avatar?: string }) {
       modelName.startsWith("cogvideox-")
     ) {
       LlmIcon = BotIconChatglm;
+    } else if (modelName.includes("orcarouter") || modelName.startsWith("orca-")) {
+      LlmIcon = BotIconOrcarouter;
     }
 
     return (
