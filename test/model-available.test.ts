@@ -77,4 +77,26 @@ describe("isModelNotavailableInServer", () => {
     );
     expect(result).toBe(false);
   });
+
+  test("should trim whitespace around custom model entries", () => {
+    const customModels = `
+      -all,
+      gpt-4,
+      mistral-large
+    `;
+
+    expect(isModelNotavailableInServer(customModels, "gpt-4", "OpenAI")).toBe(
+      false,
+    );
+    expect(
+      isModelNotavailableInServer(customModels, "gpt-3.5-turbo", "OpenAI"),
+    ).toBe(true);
+    expect(
+      isModelNotavailableInServer(
+        customModels,
+        "mistral-large",
+        "mistral-large",
+      ),
+    ).toBe(false);
+  });
 });
