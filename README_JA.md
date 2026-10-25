@@ -13,11 +13,15 @@
 
 ## Sponsor AI API
 
-<a href='https://302.ai/'>
-  <img src="https://github.com/user-attachments/assets/6cf24233-1010-43e0-9a83-a11159866175" width="100%" alt="icon"/>
-</a>
+このリポジトリには、AIMLAPI（OpenAI互換のマルチモデルAPIゲートウェイ）が統合されています。
 
-[302.AI](https://302.ai/) は、オンデマンドで支払うAIアプリケーションプラットフォームで、最も安全なAI APIとAIオンラインアプリケーションを提供します。
+なぜこの変更になったのですか？
+
+現在、多くのユーザーがOpenAI関連の高額なコストや地域的なアクセス制限といった課題に直面しています。AIMLAPIは、200以上のモデル（OpenAI、Anthropic、Llama 3など）をサポートするオールインワンAPIゲートウェイを提供し、コストを最大50%削減できます。
+
+🔗 AIMLAPIを今すぐ体験：
+
+[登録はこちら](https://aimlapi.com?via=coke)
 
 ## 企業版
 
