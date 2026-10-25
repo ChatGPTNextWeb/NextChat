@@ -30,6 +30,8 @@ const cn = {
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} 条对话`,
+    PinChat: "固定此对话",
+    UnpinChat: "取消固定",
   },
   Chat: {
     SubTitle: (count: number) => `共 ${count} 条对话`,
@@ -793,6 +795,7 @@ const cn = {
     Import: "导入",
     Sync: "同步",
     Config: "配置",
+    NewWindow: "新窗口",
   },
   Exporter: {
     Description: {

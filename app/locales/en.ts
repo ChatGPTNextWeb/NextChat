@@ -32,6 +32,8 @@ const en: LocaleType = {
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} messages`,
+    PinChat: "Pin this chat",
+    UnpinChat: "Unpin this chat",
   },
   Chat: {
     SubTitle: (count: number) => `${count} messages`,
@@ -800,6 +802,7 @@ const en: LocaleType = {
     Import: "Import",
     Sync: "Sync",
     Config: "Config",
+    NewWindow: "New Window",
   },
   Exporter: {
     Description: {

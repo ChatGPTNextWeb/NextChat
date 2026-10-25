@@ -34,6 +34,7 @@
       "window": {
         "all": false,
         "close": true,
+        "create": true,
         "hide": true,
         "maximize": true,
         "minimize": true,

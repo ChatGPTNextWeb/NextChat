@@ -14,6 +14,15 @@ declare interface Window {
   __TAURI__?: {
     writeText(text: string): Promise<void>;
     invoke(command: string, payload?: Record<string, unknown>): Promise<any>;
+    window: {
+      getAll(): { label: string }[];
+      WebviewWindow: new (
+        label: string,
+        options?: Record<string, unknown>,
+      ) => {
+        once(event: string, handler: (event: unknown) => void): void;
+      };
+    };
     dialog: {
       save(options?: Record<string, unknown>): Promise<string | null>;
     };

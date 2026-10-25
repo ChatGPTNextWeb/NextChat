@@ -12,6 +12,7 @@ import MaskIcon from "../icons/mask.svg";
 import McpIcon from "../icons/mcp.svg";
 import DragIcon from "../icons/drag.svg";
 import DiscoveryIcon from "../icons/discovery.svg";
+import NewWindowIcon from "../icons/new-window.svg";
 
 import Locale from "../locales";
 
@@ -32,6 +33,7 @@ import dynamic from "next/dynamic";
 import { Selector, showConfirm } from "./ui-lib";
 import clsx from "clsx";
 import { isMcpEnabled } from "../mcp/actions";
+import { openNewChatWindow } from "../utils/window";
 
 const DISCOVERY = [
   { name: Locale.Plugin.Name, path: Path.Plugins },
@@ -48,6 +50,12 @@ export function useHotKey() {
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
+      if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "n") {
+        // Ctrl+Shift+N: open a new app window with its own configuration (#4886)
+        e.preventDefault();
+        openNewChatWindow();
+        return;
+      }
       if (e.altKey || e.ctrlKey) {
         if (e.key === "ArrowUp") {
           chatStore.nextSession(-1);
@@ -232,6 +240,11 @@ export function SideBar(props: { className?: string }) {
   const config = useAppConfig();
   const chatStore = useChatStore();
   const [mcpEnabled, setMcpEnabled] = useState(false);
+  const [isApp, setIsApp] = useState(false);
+
+  useEffect(() => {
+    setIsApp(!!window.__TAURI__);
+  }, []);
 
   useEffect(() => {
     // 检查 MCP 是否启用
@@ -327,6 +340,16 @@ export function SideBar(props: { className?: string }) {
                 }}
               />
             </div>
+            {isApp && (
+              <div className={styles["sidebar-action"]}>
+                <IconButton
+                  aria={Locale.UI.NewWindow}
+                  icon={<NewWindowIcon />}
+                  onClick={() => openNewChatWindow()}
+                  shadow
+                />
+              </div>
+            )}
             <div className={styles["sidebar-action"]}>
               <Link to={Path.Settings}>
                 <IconButton

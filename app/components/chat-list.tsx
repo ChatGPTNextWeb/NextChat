@@ -1,4 +1,5 @@
 import DeleteIcon from "../icons/delete.svg";
+import PinIcon from "../icons/pin.svg";
 
 import styles from "./home.module.scss";
 import {
@@ -15,7 +16,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Path } from "../constant";
 import { MaskAvatar } from "./mask";
 import { Mask } from "../store/mask";
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useMemo } from "react";
 import { showConfirm } from "./ui-lib";
 import { useMobileScreen } from "../utils";
 import clsx from "clsx";
@@ -23,10 +24,12 @@ import clsx from "clsx";
 export function ChatItem(props: {
   onClick?: () => void;
   onDelete?: () => void;
+  onPin?: () => void;
   title: string;
   count: number;
   time: string;
   selected: boolean;
+  pinned?: boolean;
   id: string;
   index: number;
   narrow?: boolean;
@@ -50,6 +53,7 @@ export function ChatItem(props: {
             [styles["chat-item-selected"]]:
               props.selected &&
               (currentPath === Path.Chat || currentPath === Path.Home),
+            [styles["chat-item-pinned"]]: props.pinned,
           })}
           onClick={props.onClick}
           ref={(ele) => {
@@ -87,6 +91,22 @@ export function ChatItem(props: {
           )}
 
           <div
+            className={styles["chat-item-pin"]}
+            onClickCapture={(e) => {
+              props.onPin?.();
+              e.preventDefault();
+              e.stopPropagation();
+            }}
+            title={
+              props.pinned
+                ? Locale.ChatItem.UnpinChat
+                : Locale.ChatItem.PinChat
+            }
+          >
+            <PinIcon />
+          </div>
+
+          <div
             className={styles["chat-item-delete"]}
             onClickCapture={(e) => {
               props.onDelete?.();
@@ -115,6 +135,17 @@ export function ChatList(props: { narrow?: boolean }) {
   const navigate = useNavigate();
   const isMobileScreen = useMobileScreen();
 
+  // Sort sessions: pinned first, then by original order
+  const sortedSessions = useMemo(() => {
+    return sessions
+      .map((session, originalIndex) => ({ session, originalIndex }))
+      .sort((a, b) => {
+        const aPinned = a.session.pinned ? 1 : 0;
+        const bPinned = b.session.pinned ? 1 : 0;
+        return bPinned - aPinned;
+      });
+  }, [sessions]);
+
   const onDragEnd: OnDragEndResponder = (result) => {
     const { destination, source } = result;
     if (!destination) {
@@ -128,7 +159,10 @@ export function ChatList(props: { narrow?: boolean }) {
       return;
     }
 
-    moveSession(source.index, destination.index);
+    // Map sorted index back to original index for moveSession
+    const fromOriginal = sortedSessions[source.index].originalIndex;
+    const toOriginal = sortedSessions[destination.index].originalIndex;
+    moveSession(fromOriginal, toOriginal);
   };
 
   return (
@@ -140,29 +174,33 @@ export function ChatList(props: { narrow?: boolean }) {
             ref={provided.innerRef}
             {...provided.droppableProps}
           >
-            {sessions.map((item, i) => (
+            {sortedSessions.map(({ session, originalIndex }, i) => (
               <ChatItem
-                title={item.topic}
-                time={new Date(item.lastUpdate).toLocaleString()}
-                count={item.messages.length}
-                key={item.id}
-                id={item.id}
+                title={session.topic}
+                time={new Date(session.lastUpdate).toLocaleString()}
+                count={session.messages.length}
+                key={session.id}
+                id={session.id}
                 index={i}
-                selected={i === selectedIndex}
+                selected={originalIndex === selectedIndex}
+                pinned={session.pinned}
                 onClick={() => {
                   navigate(Path.Chat);
-                  selectSession(i);
+                  selectSession(originalIndex);
+                }}
+                onPin={() => {
+                  chatStore.togglePin(originalIndex);
                 }}
                 onDelete={async () => {
                   if (
                     (!props.narrow && !isMobileScreen) ||
                     (await showConfirm(Locale.Home.DeleteChat))
                   ) {
-                    chatStore.deleteSession(i);
+                    chatStore.deleteSession(originalIndex);
                   }
                 }}
                 narrow={props.narrow}
-                mask={item.mask}
+                mask={session.mask}
               />
             ))}
             {provided.placeholder}

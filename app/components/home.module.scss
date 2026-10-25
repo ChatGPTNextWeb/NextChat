@@ -205,22 +205,43 @@
   animation: slide-in ease 0.3s;
 }
 
+.chat-item-pin,
 .chat-item-delete {
   position: absolute;
   top: 0;
-  right: 0;
   transition: all ease 0.3s;
   opacity: 0;
   cursor: pointer;
 }
 
+.chat-item-pin {
+  right: 20px;
+}
+
+.chat-item-delete {
+  right: 0;
+}
+
+.chat-item:hover > .chat-item-pin,
 .chat-item:hover > .chat-item-delete {
   opacity: 0.5;
   transform: translateX(-4px);
 }
 
+.chat-item:hover > .chat-item-pin:hover,
 .chat-item:hover > .chat-item-delete:hover {
   opacity: 1;
+}
+
+.chat-item-pinned {
+  .chat-item-pin {
+    opacity: 0.8;
+    color: var(--primary);
+  }
+
+  &:hover .chat-item-pin {
+    opacity: 1;
+  }
 }
 
 .chat-item-info {

@@ -93,6 +93,8 @@ export interface ChatSession {
   clearContextIndex?: number;
 
   mask: Mask;
+
+  pinned?: boolean;
 }
 
 export const DEFAULT_TOPIC = Locale.Store.DefaultTopic;
@@ -116,6 +118,8 @@ function createEmptySession(): ChatSession {
     lastSummarizeIndex: 0,
 
     mask: createEmptyMask(),
+
+    pinned: false,
   };
 }
 
@@ -301,6 +305,16 @@ export const useChatStore = createPersistStore(
             currentSessionIndex: newIndex,
             sessions: newSessions,
           };
+        });
+      },
+
+      togglePin(index: number) {
+        set((state) => {
+          const sessions = [...state.sessions];
+          const session = { ...sessions[index] };
+          session.pinned = !session.pinned;
+          sessions[index] = session;
+          return { sessions };
         });
       },
 
