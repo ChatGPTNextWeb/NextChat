@@ -408,14 +408,18 @@ export const useChatStore = createPersistStore(
         content: string,
         attachImages?: string[],
         isMcpResponse?: boolean,
+        skipTemplateFill?: boolean,
       ) {
         const session = get().currentSession();
         const modelConfig = session.mask.modelConfig;
 
         // MCP Response no need to fill template
-        let mContent: string | MultimodalContent[] = isMcpResponse
-          ? content
-          : fillTemplateWith(content, modelConfig);
+        // Retrying a message also skips the template, since the saved user
+        // message already contains the template-applied content.
+        let mContent: string | MultimodalContent[] =
+          isMcpResponse || skipTemplateFill
+            ? content
+            : fillTemplateWith(content, modelConfig);
 
         if (!isMcpResponse && attachImages && attachImages.length > 0) {
           mContent = [
