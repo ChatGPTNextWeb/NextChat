@@ -21,6 +21,7 @@ import React, {
   useState,
   useCallback,
   useRef,
+  forwardRef,
 } from "react";
 import { IconButton } from "./button";
 import { Avatar } from "./emoji";
@@ -260,14 +261,17 @@ export type InputProps = React.HTMLProps<HTMLTextAreaElement> & {
   rows?: number;
 };
 
-export function Input(props: InputProps) {
-  return (
-    <textarea
-      {...props}
-      className={clsx(styles["input"], props.className)}
-    ></textarea>
-  );
-}
+export const Input = forwardRef<HTMLTextAreaElement, InputProps>(
+  function Input(props, ref) {
+    return (
+      <textarea
+        ref={ref}
+        {...props}
+        className={clsx(styles["input"], props.className)}
+      ></textarea>
+    );
+  },
+);
 
 export function PasswordInput(
   props: HTMLProps<HTMLInputElement> & { aria?: string },

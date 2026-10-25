@@ -3,11 +3,13 @@ import { ModalConfigValidator, ModelConfig } from "../store";
 
 import Locale from "../locales";
 import { InputRange } from "./input-range";
-import { ListItem, Select } from "./ui-lib";
+import { Input, ListItem, Select } from "./ui-lib";
 import { useAllModels } from "../utils/hooks";
 import { groupBy } from "lodash-es";
 import styles from "./model-config.module.scss";
 import { getModelProvider } from "../utils/model";
+import { useEffect, useRef, useState } from "react";
+import { autoGrowTextArea } from "../utils";
 
 export function ModelConfigList(props: {
   modelConfig: ModelConfig;
@@ -20,6 +22,16 @@ export function ModelConfigList(props: {
   );
   const value = `${props.modelConfig.model}@${props.modelConfig?.providerName}`;
   const compressModelValue = `${props.modelConfig.compressModel}@${props.modelConfig?.compressProviderName}`;
+
+  // auto-grow input template textarea: small at rest, expands when focused
+  const templateRef = useRef<HTMLTextAreaElement>(null);
+  const [templateFocused, setTemplateFocused] = useState(false);
+  const [templateRows, setTemplateRows] = useState(2);
+  useEffect(() => {
+    if (!templateRef.current) return;
+    const rows = autoGrowTextArea(templateRef.current);
+    setTemplateRows(templateFocused ? Math.min(20, Math.max(4, rows)) : 2);
+  }, [props.modelConfig.template, templateFocused]);
 
   return (
     <>
@@ -178,16 +190,19 @@ export function ModelConfigList(props: {
             title={Locale.Settings.InputTemplate.Title}
             subTitle={Locale.Settings.InputTemplate.SubTitle}
           >
-            <input
+            <Input
               aria-label={Locale.Settings.InputTemplate.Title}
-              type="text"
+              ref={templateRef}
+              rows={templateRows}
               value={props.modelConfig.template}
+              onFocus={() => setTemplateFocused(true)}
+              onBlur={() => setTemplateFocused(false)}
               onChange={(e) =>
                 props.updateConfig(
                   (config) => (config.template = e.currentTarget.value),
                 )
               }
-            ></input>
+            />
           </ListItem>
         </>
       )}
