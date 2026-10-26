@@ -9,25 +9,25 @@ describe("collectModelTableWithDefaultModel", () => {
     const table = collectModelTableWithDefaultModel(
       DEFAULT_MODELS,
       "",
-      "gpt-4@openai",
+      "gpt-5.6-sol@openai",
     );
-    expect(table["gpt-4@openai"].isDefault).toBe(true);
+    expect(table["gpt-5.6-sol@openai"].isDefault).toBe(true);
   });
 
   test("marks the first available match when the default omits the provider", () => {
     const table = collectModelTableWithDefaultModel(
       DEFAULT_MODELS,
       "",
-      "gpt-3.5-turbo",
+      "gpt-5.6-terra",
     );
-    expect(table["gpt-3.5-turbo@openai"].isDefault).toBe(true);
+    expect(table["gpt-5.6-terra@openai"].isDefault).toBe(true);
   });
 
   test("flags exactly one model as default", () => {
     const table = collectModelTableWithDefaultModel(
       DEFAULT_MODELS,
       "",
-      "gpt-4@openai",
+      "gpt-5.6-sol@openai",
     );
     expect(Object.values(table).filter((m) => m.isDefault)).toHaveLength(1);
   });
@@ -43,10 +43,10 @@ describe("collectModelsWithDefaultModel", () => {
     const models = collectModelsWithDefaultModel(
       DEFAULT_MODELS,
       "",
-      "gpt-4@openai",
+      "gpt-5.6-sol@openai",
     );
     const defaults = models.filter((m) => m.isDefault);
     expect(defaults).toHaveLength(1);
-    expect(defaults[0].name).toBe("gpt-4");
+    expect(defaults[0].name).toBe("gpt-5.6-sol");
   });
 });
