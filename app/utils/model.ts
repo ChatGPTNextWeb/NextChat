@@ -219,11 +219,139 @@ export function isGPT4Model(modelName: string): boolean {
 }
 
 /**
+ * Resolves and authorizes an Azure deployment identifier from the request.
+ * Returns the final authorized deployment name if allowed, or null if unauthorized/blocked.
+ */
+export function resolveAzureDeployment(
+  customModels: string,
+  modelName: string,
+  azureUrl?: string,
+): string | null {
+  if (!modelName || typeof modelName !== "string") return null;
+
+  const effectiveCustomModels = customModels ?? "";
+  const modelTable = collectModelTable(DEFAULT_MODELS, effectiveCustomModels);
+
+  const isGenericCustomModel = (v: (typeof modelTable)[string]) => {
+    return (
+      v.provider?.providerType === "custom" &&
+      (!v.provider?.providerName ||
+        v.provider?.providerName === v.name ||
+        v.provider?.id === v.name)
+    );
+  };
+
+  const azureEntries = Object.values(modelTable).filter(
+    (v) =>
+      v.provider?.id === "azure" ||
+      v.provider?.providerName?.toLowerCase() === "azure" ||
+      isGenericCustomModel(v),
+  );
+
+  const getCleanDeployId = () => {
+    if (!azureUrl) return null;
+    const deploySegment = azureUrl.split("deployments/")[1];
+    if (!deploySegment) return null;
+    return deploySegment.split("/")[0]?.split("?")[0] || null;
+  };
+
+  const isExplicitAzureModelEnabledWithoutAlias = (
+    nameToCheck: string,
+  ): boolean => {
+    let lastDirective: { enabled: boolean; hasAlias: boolean } | null = null;
+    const parts = effectiveCustomModels.split(",");
+    for (const part of parts) {
+      const isNegative = part.startsWith("-");
+      const isPositive = part.startsWith("+");
+      const raw = isNegative || isPositive ? part.slice(1) : part;
+      const [nameConfig, alias] = raw.split("=");
+      const [cModel, cProvider] = getModelProvider(nameConfig);
+      // Strictly require explicit Azure provider. Generic custom models never fallback to AZURE_URL deployId.
+      if (cProvider?.toLowerCase() === "azure" && cModel === nameToCheck) {
+        lastDirective = {
+          enabled: !isNegative,
+          hasAlias: Boolean(alias && alias !== cModel),
+        };
+      }
+    }
+    return Boolean(
+      lastDirective && lastDirective.enabled && !lastDirective.hasAlias,
+    );
+  };
+
+  // Build authoritative effective deployment mapping:
+  // Canonical model name -> Effective deployment ID
+  const modelToEffectiveDeploy = new Map<string, string>();
+  const deployToModels = new Map<string, typeof azureEntries>();
+
+  for (const entry of azureEntries) {
+    let effectiveDeploy = entry.name;
+    if (entry.displayName && entry.displayName !== entry.name) {
+      effectiveDeploy = entry.displayName;
+    } else if (
+      entry.available &&
+      isExplicitAzureModelEnabledWithoutAlias(entry.name) &&
+      getCleanDeployId()
+    ) {
+      effectiveDeploy = getCleanDeployId()!;
+    }
+
+    modelToEffectiveDeploy.set(entry.name, effectiveDeploy);
+
+    if (!deployToModels.has(effectiveDeploy)) {
+      deployToModels.set(effectiveDeploy, []);
+    }
+    deployToModels.get(effectiveDeploy)!.push(entry);
+  }
+
+  // Phase 1: Determine target deployment strictly from effective mapping
+  let targetDeploy: string | null = null;
+
+  if (deployToModels.has(modelName)) {
+    targetDeploy = modelName;
+  } else if (modelToEffectiveDeploy.has(modelName)) {
+    targetDeploy = modelToEffectiveDeploy.get(modelName)!;
+  }
+
+  if (!targetDeploy) {
+    return null;
+  }
+
+  // Phase 2: Safety gate on the target deployment
+  const boundEntries = deployToModels.get(targetDeploy);
+  if (!boundEntries || boundEntries.length === 0) {
+    return null;
+  }
+
+  // Reject if any currently bound entry is unavailable
+  if (boundEntries.some((e) => !e.available)) {
+    return null;
+  }
+
+  // Reject if DISABLE_GPT4 is set and any bound model is a GPT-4 model
+  if (
+    process.env.DISABLE_GPT4 === "1" &&
+    boundEntries.some((e) => isGPT4Model(e.name.toLowerCase()))
+  ) {
+    return null;
+  }
+
+  // If requested by canonical model name, that model itself must be available
+  const requestedModelEntry = azureEntries.find((e) => e.name === modelName);
+  if (requestedModelEntry && !requestedModelEntry.available) {
+    return null;
+  }
+
+  return targetDeploy;
+}
+
+/**
  * Checks if a model is not available on any of the specified providers in the server.
  *
  * @param {string} customModels - A string of custom models, comma-separated.
  * @param {string} modelName - The name of the model to check.
  * @param {string|string[]} providerNames - A string or array of provider names to check against.
+ * @param {string} [azureUrl] - Optional Azure URL for deployment resolution.
  *
  * @returns {boolean} True if the model is not available on any of the specified providers, false otherwise.
  */
@@ -231,7 +359,12 @@ export function isModelNotavailableInServer(
   customModels: string,
   modelName: string,
   providerNames: string | string[],
+  azureUrl?: string,
 ): boolean {
+  if (!modelName || typeof modelName !== "string") {
+    return true;
+  }
+
   // Check DISABLE_GPT4 environment variable
   if (
     process.env.DISABLE_GPT4 === "1" &&
@@ -246,6 +379,15 @@ export function isModelNotavailableInServer(
     ? providerNames
     : [providerNames];
   for (const providerName of providerNamesArray) {
+    if (!providerName || typeof providerName !== "string") {
+      continue;
+    }
+    if (providerName.toLowerCase() === ServiceProvider.Azure.toLowerCase()) {
+      if (resolveAzureDeployment(customModels, modelName, azureUrl) !== null) {
+        return false;
+      }
+      continue;
+    }
     // if model provider is bytedance, use model config name to check if not avaliable
     if (providerName === ServiceProvider.ByteDance) {
       return !Object.values(modelTable).filter((v) => v.name === modelName)?.[0]
@@ -253,6 +395,17 @@ export function isModelNotavailableInServer(
     }
     const fullName = `${modelName}@${providerName.toLowerCase()}`;
     if (modelTable?.[fullName]?.available === true) return false;
+
+    // Explicitly check for provider-unspecified custom models on standard providers
+    const customFullName = `${modelName}@${modelName.toLowerCase()}`;
+    const customEntry = modelTable?.[customFullName];
+    if (
+      customEntry?.available === true &&
+      customEntry.provider?.providerType === "custom" &&
+      customEntry.provider?.id !== ServiceProvider.Azure.toLowerCase()
+    ) {
+      return false;
+    }
   }
   return true;
 }
