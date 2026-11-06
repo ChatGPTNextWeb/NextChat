@@ -2,7 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSideConfig } from "../config/server";
 import { OPENAI_BASE_URL, ServiceProvider } from "../constant";
 import { cloudflareAIGatewayUrl } from "../utils/cloudflare";
-import { getModelProvider, isModelNotavailableInServer } from "../utils/model";
+import {
+  isModelNotavailableInServer,
+  resolveAzureDeployment,
+} from "../utils/model";
 
 const serverConfig = getServerSideConfig();
 
@@ -60,30 +63,33 @@ export async function requestOpenai(req: NextRequest) {
       "",
     )}?api-version=${azureApiVersion}`;
 
-    // Forward compatibility:
-    // if display_name(deployment_name) not set, and '{deploy-id}' in AZURE_URL
-    // then using default '{deploy-id}'
-    if (serverConfig.customModels && serverConfig.azureUrl) {
-      const modelName = path.split("/")[1];
-      let realDeployName = "";
-      serverConfig.customModels
-        .split(",")
-        .filter((v) => !!v && !v.startsWith("-") && v.includes(modelName))
-        .forEach((m) => {
-          const [fullName, displayName] = m.split("=");
-          const [_, providerName] = getModelProvider(fullName);
-          if (providerName === "azure" && !displayName) {
-            const [_, deployId] = (serverConfig?.azureUrl ?? "").split(
-              "deployments/",
-            );
-            if (deployId) {
-              realDeployName = deployId;
-            }
-          }
-        });
-      if (realDeployName) {
-        console.log("[Replace with DeployId", realDeployName);
-        path = path.replaceAll(modelName, realDeployName);
+    const pathSegments = path.split("/");
+    const modelName = pathSegments[1];
+
+    if (serverConfig.customModels && modelName) {
+      const authorizedDeploy = resolveAzureDeployment(
+        serverConfig.customModels,
+        modelName,
+        serverConfig.azureUrl,
+      );
+
+      if (!authorizedDeploy) {
+        clearTimeout(timeoutId);
+        return NextResponse.json(
+          {
+            error: true,
+            message: `you are not allowed to use ${modelName} model`,
+          },
+          {
+            status: 403,
+          },
+        );
+      }
+
+      if (authorizedDeploy !== modelName) {
+        console.log("[Replace with DeployId", authorizedDeploy);
+        pathSegments[1] = authorizedDeploy;
+        path = pathSegments.join("/");
       }
     }
   }
@@ -116,27 +122,26 @@ export async function requestOpenai(req: NextRequest) {
 
       const jsonBody = JSON.parse(clonedBody) as { model?: string };
 
-      // not undefined and is false
-      if (
-        isModelNotavailableInServer(
-          serverConfig.customModels,
-          jsonBody?.model as string,
-          [
+      // Non-Azure routes enforce authorization on jsonBody.model
+      if (!isAzure) {
+        if (
+          isModelNotavailableInServer(
+            serverConfig.customModels,
+            jsonBody?.model as string,
             ServiceProvider.OpenAI,
-            ServiceProvider.Azure,
-            jsonBody?.model as string, // support provider-unspecified model
-          ],
-        )
-      ) {
-        return NextResponse.json(
-          {
-            error: true,
-            message: `you are not allowed to use ${jsonBody?.model} model`,
-          },
-          {
-            status: 403,
-          },
-        );
+          )
+        ) {
+          clearTimeout(timeoutId);
+          return NextResponse.json(
+            {
+              error: true,
+              message: `you are not allowed to use ${jsonBody?.model} model`,
+            },
+            {
+              status: 403,
+            },
+          );
+        }
       }
     } catch (e) {
       console.error("[OpenAI] gpt4 filter", e);
