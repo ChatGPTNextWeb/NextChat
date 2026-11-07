@@ -107,7 +107,7 @@ OpenAI の API キー。OpenAI アカウントページで申請したキーを�
 
 > 例: `http://your-openai-proxy.com`
 
-OpenAI API のプロキシ URL。手動で OpenAI API のプロキシを設定している場合はこのオプションを設定してください。
+OpenAI API のプロキシ URL。手動で OpenAI API のプロキシを設定している場合はこのオプションを設定してください。`/v1/chat/completions` のような具体的なパスは含めないでください。ベース URL がすでに `/v1` で終わる場合、`/v1` は二重に付与されません。
 
 > SSL 証明書の問題がある場合は、`BASE_URL` のプロトコルを http に設定してください。
 

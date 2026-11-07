@@ -186,7 +186,7 @@ Your openai api key, join multiple api keys with comma.
 
 > Examples: `http://your-openai-proxy.com`
 
-Override openai api request base url.
+Override openai api request base url. Do not include a route such as `/v1/chat/completions`. A base that already ends in `/v1` is accepted; that version segment is not appended twice.
 
 ### `OPENAI_ORG_ID` (optional)
 

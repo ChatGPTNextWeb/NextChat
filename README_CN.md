@@ -111,7 +111,7 @@ OpenAI 密钥，你在 openai 账户页面申请的 api key，使用英文逗号
 
 > Examples: `http://your-openai-proxy.com`
 
-OpenAI 接口代理 URL，如果你手动配置了 openai 接口代理，请填写此选项。
+OpenAI 接口代理 URL，如果你手动配置了 openai 接口代理，请填写此选项。不要带上 `/v1/chat/completions` 这类具体路径。如果地址本身已经以 `/v1` 结尾，程序不会再追加一次 `/v1`。
 
 > 如果遇到 ssl 证书问题，请将 `BASE_URL` 的协议设置为 http。
 
