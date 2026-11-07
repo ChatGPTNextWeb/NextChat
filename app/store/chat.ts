@@ -527,8 +527,8 @@ export const useChatStore = createPersistStore(
         });
       },
 
-      getMemoryPrompt() {
-        const session = get().currentSession();
+      getMemoryPrompt(targetSession?: ChatSession) {
+        const session = targetSession ?? get().currentSession();
 
         if (session.memoryPrompt.length) {
           return {
@@ -588,7 +588,7 @@ export const useChatStore = createPersistStore(
             systemPrompts.at(0)?.content ?? "empty",
           );
         }
-        const memoryPrompt = get().getMemoryPrompt();
+        const memoryPrompt = get().getMemoryPrompt(session);
         // long term memory
         const shouldSendLongTermMemory =
           modelConfig.sendMemory &&
@@ -742,7 +742,7 @@ export const useChatStore = createPersistStore(
             Math.max(0, n - modelConfig.historyMessageCount),
           );
         }
-        const memoryPrompt = get().getMemoryPrompt();
+        const memoryPrompt = get().getMemoryPrompt(session);
         if (memoryPrompt) {
           // add memory prompt
           toBeSummarizedMsgs.unshift(memoryPrompt);
