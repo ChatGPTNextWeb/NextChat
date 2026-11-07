@@ -430,6 +430,17 @@ const jp: PartialLocaleType = {
           SubTitle: "例：",
         },
       },
+      Wally: {
+        ApiKey: {
+          Title: "APIキー",
+          SubTitle: "カスタムWally APIキーを使用",
+          Placeholder: "Wally APIキー",
+        },
+        Endpoint: {
+          Title: "エンドポイント",
+          SubTitle: "例：",
+        },
+      },
       CustomModel: {
         Title: "カスタムモデル名",
         SubTitle: "カスタムモデルの選択肢を追加、英語のカンマで区切る",

@@ -553,6 +553,17 @@ const en: LocaleType = {
           SubTitle: "Example: ",
         },
       },
+      Wally: {
+        ApiKey: {
+          Title: "Wally API Key",
+          SubTitle: "Use a custom Wally API Key",
+          Placeholder: "Wally API Key",
+        },
+        Endpoint: {
+          Title: "Endpoint Address",
+          SubTitle: "Example: ",
+        },
+      },
     },
 
     Model: "Model",

@@ -434,6 +434,17 @@ const cs: PartialLocaleType = {
           SubTitle: "Příklad:",
         },
       },
+      Wally: {
+        ApiKey: {
+          Title: "Rozhraní klíč",
+          SubTitle: "Použijte vlastní Wally API Key",
+          Placeholder: "Wally API Key",
+        },
+        Endpoint: {
+          Title: "Adresa rozhraní",
+          SubTitle: "Příklad:",
+        },
+      },
       CustomModel: {
         Title: "Vlastní názvy modelů",
         SubTitle: "Přidejte možnosti vlastních modelů, oddělené čárkami",

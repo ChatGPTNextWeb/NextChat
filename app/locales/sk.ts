@@ -392,6 +392,17 @@ const sk: PartialLocaleType = {
           SubTitle: "Príklad:",
         },
       },
+      Wally: {
+        ApiKey: {
+          Title: "API kľúč",
+          SubTitle: "Použiť vlastný API kľúč Wally",
+          Placeholder: "Wally API kľúč",
+        },
+        Endpoint: {
+          Title: "Adresa koncového bodu",
+          SubTitle: "Príklad:",
+        },
+      },
     },
 
     Model: "Model",

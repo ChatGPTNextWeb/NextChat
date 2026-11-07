@@ -376,6 +376,14 @@ SiliconFlow API URL.
 
 302.AI API URL.
 
+### `WALLY_API_KEY` (optional)
+
+Wally API Key.
+
+### `WALLY_URL` (optional)
+
+Wally API URL.
+
 ## Requirements
 
 NodeJS >= 18, Docker >= 20

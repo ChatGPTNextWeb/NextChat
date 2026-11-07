@@ -444,6 +444,17 @@ const no: PartialLocaleType = {
           SubTitle: "Eksempel:",
         },
       },
+      Wally: {
+        ApiKey: {
+          Title: "API-nøkkel",
+          SubTitle: "Bruk egendefinert Wally API-nøkkel",
+          Placeholder: "Wally API-nøkkel",
+        },
+        Endpoint: {
+          Title: "API-adresse",
+          SubTitle: "Eksempel:",
+        },
+      },
     },
 
     Model: "Modell",

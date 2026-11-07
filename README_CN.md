@@ -293,6 +293,14 @@ SiliconFlow API URL.
 
 302.AI API URL.
 
+### `WALLY_API_KEY` (optional)
+
+Wally API Key.
+
+### `WALLY_URL` (optional)
+
+Wally API URL.
+
 ## 开发
 
 点击下方按钮，开始二次开发：

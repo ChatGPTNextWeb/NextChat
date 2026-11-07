@@ -240,6 +240,14 @@ ByteDance モードでは、`modelName@bytedance=deploymentName` 形式でモデ
 
 302.AI API の URL.
 
+### `WALLY_API_KEY` （オプション）
+
+Wally API キー.
+
+### `WALLY_URL` （オプション）
+
+Wally API の URL.
+
 ## 開発
 
 下のボタンをクリックして二次開発を開始してください：

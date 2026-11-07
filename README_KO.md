@@ -382,6 +382,14 @@ SiliconFlow API URL입니다.
 
 302.AI API URL입니다.
 
+### `WALLY_API_KEY` (선택 사항)
+
+Wally API 키입니다.
+
+### `WALLY_URL` (선택 사항)
+
+Wally API URL입니다.
+
 ## 요구 사항 (Requirements)
 
 NodeJS >= 18, Docker >= 20

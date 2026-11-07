@@ -438,6 +438,17 @@ const tr: PartialLocaleType = {
           SubTitle: "Örnek:",
         },
       },
+      Wally: {
+        ApiKey: {
+          Title: "API Anahtarı",
+          SubTitle: "Özelleştirilmiş Wally API Anahtarı kullanın",
+          Placeholder: "Wally API Anahtarı",
+        },
+        Endpoint: {
+          Title: "API Adresi",
+          SubTitle: "Örnek:",
+        },
+      },
       CustomModel: {
         Title: "Özelleştirilmiş Model Adı",
         SubTitle:
