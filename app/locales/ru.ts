@@ -437,6 +437,17 @@ const ru: PartialLocaleType = {
           SubTitle: "Пример:",
         },
       },
+      Wally: {
+        ApiKey: {
+          Title: "Ключ интерфейса",
+          SubTitle: "Использовать пользовательский Wally API-ключ",
+          Placeholder: "Wally API-ключ",
+        },
+        Endpoint: {
+          Title: "Адрес интерфейса",
+          SubTitle: "Пример:",
+        },
+      },
       CustomModel: {
         Title: "Название пользовательской модели",
         SubTitle:

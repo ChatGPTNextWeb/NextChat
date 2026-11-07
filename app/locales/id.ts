@@ -435,6 +435,17 @@ const id: PartialLocaleType = {
           SubTitle: "Contoh:",
         },
       },
+      Wally: {
+        ApiKey: {
+          Title: "Kunci Antarmuka",
+          SubTitle: "Gunakan Wally API Key kustom",
+          Placeholder: "Wally API Key",
+        },
+        Endpoint: {
+          Title: "Alamat Antarmuka",
+          SubTitle: "Contoh:",
+        },
+      },
       CustomModel: {
         Title: "Nama Model Kustom",
         SubTitle: "Tambahkan opsi model kustom, pisahkan dengan koma",

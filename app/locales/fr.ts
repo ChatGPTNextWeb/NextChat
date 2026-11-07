@@ -446,6 +446,17 @@ const fr: PartialLocaleType = {
           SubTitle: "Exemple :",
         },
       },
+      Wally: {
+        ApiKey: {
+          Title: "Clé d'interface",
+          SubTitle: "Utiliser une clé API Wally personnalisée",
+          Placeholder: "Clé API Wally",
+        },
+        Endpoint: {
+          Title: "Adresse de l'endpoint",
+          SubTitle: "Exemple :",
+        },
+      },
       CustomModel: {
         Title: "Nom du modèle personnalisé",
         SubTitle:

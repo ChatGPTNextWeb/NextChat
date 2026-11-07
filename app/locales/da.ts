@@ -528,6 +528,17 @@ const da: PartialLocaleType = {
           SubTitle: "Eksempel: ",
         },
       },
+      Wally: {
+        ApiKey: {
+          Title: "Wally API Key",
+          SubTitle: "Brug en custom Wally API Key",
+          Placeholder: "Wally API Key",
+        },
+        Endpoint: {
+          Title: "Endpoint-adresse",
+          SubTitle: "Eksempel: ",
+        },
+      },
     },
     Model: "Model",
     CompressModel: {

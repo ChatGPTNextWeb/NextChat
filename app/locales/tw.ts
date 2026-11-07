@@ -392,6 +392,17 @@ const tw = {
           SubTitle: "範例：",
         },
       },
+      Wally: {
+        ApiKey: {
+          Title: "API 金鑰",
+          SubTitle: "使用自訂 Wally API 金鑰",
+          Placeholder: "Wally API 金鑰",
+        },
+        Endpoint: {
+          Title: "端點位址",
+          SubTitle: "範例：",
+        },
+      },
       CustomModel: {
         Title: "自訂模型名稱",
         SubTitle: "增加自訂模型可選擇項目，使用英文逗號隔開",

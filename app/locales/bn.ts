@@ -434,6 +434,17 @@ const bn: PartialLocaleType = {
           SubTitle: "উদাহরণ:",
         },
       },
+      Wally: {
+        ApiKey: {
+          Title: "ইন্টারফেস কী",
+          SubTitle: "স্বনির্ধারিত Wally API কী ব্যবহার করুন",
+          Placeholder: "Wally API কী",
+        },
+        Endpoint: {
+          Title: "ইন্টারফেস ঠিকানা",
+          SubTitle: "উদাহরণ:",
+        },
+      },
       CustomModel: {
         Title: "স্বনির্ধারিত মডেল নাম",
         SubTitle:

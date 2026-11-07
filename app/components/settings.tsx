@@ -76,6 +76,7 @@ import {
   DeepSeek,
   SiliconFlow,
   AI302,
+  Wally,
 } from "../constant";
 import { Prompt, SearchService, usePromptStore } from "../store/prompt";
 import { ErrorBoundary } from "./error";
@@ -1499,6 +1500,46 @@ export function Settings() {
       </>
   );
 
+  const wallyConfigComponent = accessStore.provider ===
+    ServiceProvider.Wally && (
+    <>
+      <ListItem
+        title={Locale.Settings.Access.Wally.Endpoint.Title}
+        subTitle={
+          Locale.Settings.Access.Wally.Endpoint.SubTitle + Wally.ExampleEndpoint
+        }
+      >
+        <input
+          aria-label={Locale.Settings.Access.Wally.Endpoint.Title}
+          type="text"
+          value={accessStore.wallyUrl}
+          placeholder={Wally.ExampleEndpoint}
+          onChange={(e) =>
+            accessStore.update(
+              (access) => (access.wallyUrl = e.currentTarget.value),
+            )
+          }
+        ></input>
+      </ListItem>
+      <ListItem
+        title={Locale.Settings.Access.Wally.ApiKey.Title}
+        subTitle={Locale.Settings.Access.Wally.ApiKey.SubTitle}
+      >
+        <PasswordInput
+          aria-label={Locale.Settings.Access.Wally.ApiKey.Title}
+          value={accessStore.wallyApiKey}
+          type="text"
+          placeholder={Locale.Settings.Access.Wally.ApiKey.Placeholder}
+          onChange={(e) => {
+            accessStore.update(
+              (access) => (access.wallyApiKey = e.currentTarget.value),
+            );
+          }}
+        />
+      </ListItem>
+    </>
+  );
+
   return (
     <ErrorBoundary>
       <div className="window-header" data-tauri-drag-region>
@@ -1864,6 +1905,7 @@ export function Settings() {
                   {chatglmConfigComponent}
                   {siliconflowConfigComponent}
                   {ai302ConfigComponent}
+                  {wallyConfigComponent}
                 </>
               )}
             </>

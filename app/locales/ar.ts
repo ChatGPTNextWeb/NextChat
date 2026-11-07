@@ -426,6 +426,17 @@ const ar: PartialLocaleType = {
           SubTitle: "مثال:",
         },
       },
+      Wally: {
+        ApiKey: {
+          Title: "مفتاح Wally API",
+          SubTitle: "استخدم مفتاح Wally API مخصص",
+          Placeholder: "مفتاح Wally API",
+        },
+        Endpoint: {
+          Title: "عنوان الواجهة",
+          SubTitle: "مثال:",
+        },
+      },
       CustomModel: {
         Title: "اسم النموذج المخصص",
         SubTitle: "أضف خيارات نموذج مخصص، مفصولة بفواصل إنجليزية",

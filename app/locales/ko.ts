@@ -551,6 +551,17 @@ const ko: PartialLocaleType = {
           SubTitle: "예: ",
         },
       },
+      Wally: {
+        ApiKey: {
+          Title: "엔드포인트 키",
+          SubTitle: "커스텀 Wally API 키 사용",
+          Placeholder: "Wally API 키",
+        },
+        Endpoint: {
+          Title: "엔드포인트 주소",
+          SubTitle: "예: ",
+        },
+      },
     },
 
     Model: "모델 (model)",
