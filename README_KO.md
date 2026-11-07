@@ -194,7 +194,7 @@ code1,code2,code3
 
 > 예시: `http://your-openai-proxy.com`
 
-OpenAI API 요청의 기본 URL을 재정의합니다.
+OpenAI API 요청의 기본 URL을 재정의합니다. `/v1/chat/completions` 같은 구체적 경로는 넣지 마세요. 기본 URL이 이미 `/v1`로 끝나면 `/v1`을 한 번 더 붙이지 않습니다.
 
 ### `OPENAI_ORG_ID` (선택 사항)
 
