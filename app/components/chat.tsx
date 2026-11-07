@@ -450,7 +450,6 @@ export function ChatAction(props: {
     </div>
   );
 }
-
 function useScrollToBottom(
   scrollRef: RefObject<HTMLDivElement>,
   detach: boolean = false,
@@ -458,15 +457,18 @@ function useScrollToBottom(
 ) {
   // for auto-scroll
   const [autoScroll, setAutoScroll] = useState(true);
+  const config = useAppConfig();
+  const isAutoScrollEnabled: boolean = config.autoScrollMessage;
+
   const scrollDomToBottom = useCallback(() => {
     const dom = scrollRef.current;
     if (dom) {
       requestAnimationFrame(() => {
-        setAutoScroll(true);
+        setAutoScroll(isAutoScrollEnabled);
         dom.scrollTo(0, dom.scrollHeight);
       });
     }
-  }, [scrollRef]);
+  }, [scrollRef, isAutoScrollEnabled]);
 
   // auto scroll
   useEffect(() => {
@@ -491,7 +493,6 @@ function useScrollToBottom(
     scrollDomToBottom,
   };
 }
-
 export function ChatActions(props: {
   uploadImage: () => void;
   setAttachImages: (images: string[]) => void;
@@ -1421,7 +1422,8 @@ function _Chat() {
     }
 
     setHitBottom(isHitBottom);
-    setAutoScroll(isHitBottom);
+    let isAutoScrollEnabled: boolean = config.autoScrollMessage;
+    setAutoScroll(isAutoScrollEnabled);
   };
 
   function scrollToBottom() {

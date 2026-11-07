@@ -196,6 +196,10 @@ const sk: PartialLocaleType = {
       Title: "Bublina náhľadu odoslania",
       SubTitle: "Náhľad markdownu v bubline",
     },
+    AutoScrollMessage: {
+      Title: "Odpoveď s automatickým posúvaním",
+      SubTitle: "Posúvať správu počas odpovedania",
+    },
     AutoGenerateTitle: {
       Title: "Automaticky generovať názov",
       SubTitle: "Generovať vhodný názov na základe obsahu konverzácie",

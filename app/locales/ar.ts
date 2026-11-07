@@ -241,6 +241,10 @@ const ar: PartialLocaleType = {
       },
       ImportFailed: "فشل الاستيراد",
     },
+    AutoScrollMessage: {
+      Title: "الرد التلقائي للتمرير",
+      SubTitle: "تمرير الرسالة أثناء الرد",
+    },
     Mask: {
       Splash: {
         Title: "صفحة بدء القناع",
