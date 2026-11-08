@@ -38,6 +38,8 @@ export const SILICONFLOW_BASE_URL = "https://api.siliconflow.cn";
 
 export const AI302_BASE_URL = "https://api.302.ai";
 
+export const RUNCRATE_BASE_URL = "https://api.runcrate.ai";
+
 export const CACHE_URL_PREFIX = "/api/cache";
 export const UPLOAD_URL = `${CACHE_URL_PREFIX}/upload`;
 
@@ -75,6 +77,7 @@ export enum ApiPath {
   DeepSeek = "/api/deepseek",
   SiliconFlow = "/api/siliconflow",
   "302.AI" = "/api/302ai",
+  Runcrate = "/api/runcrate",
 }
 
 export enum SlotID {
@@ -134,6 +137,7 @@ export enum ServiceProvider {
   DeepSeek = "DeepSeek",
   SiliconFlow = "SiliconFlow",
   "302.AI" = "302.AI",
+  Runcrate = "Runcrate",
 }
 
 // Google API safety settings, see https://ai.google.dev/gemini-api/docs/safety-settings
@@ -161,6 +165,7 @@ export enum ModelProvider {
   DeepSeek = "DeepSeek",
   SiliconFlow = "SiliconFlow",
   "302.AI" = "302.AI",
+  Runcrate = "Runcrate",
 }
 
 export const Stability = {
@@ -276,6 +281,12 @@ export const AI302 = {
   ChatPath: "v1/chat/completions",
   EmbeddingsPath: "jina/v1/embeddings",
   ListModelPath: "v1/models?llm=1",
+};
+
+export const Runcrate = {
+  ExampleEndpoint: RUNCRATE_BASE_URL,
+  ChatPath: "v1/chat/completions",
+  ListModelPath: "v1/models",
 };
 
 export const DEFAULT_INPUT_TEMPLATE = `{{input}}`; // input / time / model / lang
@@ -742,6 +753,17 @@ const ai302Models = [
   "gemini-2.5-pro",
 ];
 
+const runcrateModels = [
+  "deepseek-ai/DeepSeek-V3.2",
+  "deepseek-ai/DeepSeek-R1-0528",
+  "Qwen/Qwen3-235B-A22B-Instruct-2507",
+  "moonshotai/Kimi-K2.6",
+  "zai-org/GLM-5.2",
+  "openai/gpt-oss-120b",
+  "meta-llama/Llama-3.3-70B-Instruct-Turbo",
+  "google/gemma-3-27b-it",
+];
+
 let seq = 1000; // 内置的模型序号生成器从1000开始
 export const DEFAULT_MODELS = [
   ...openaiModels.map((name) => ({
@@ -907,6 +929,17 @@ export const DEFAULT_MODELS = [
       providerName: "302.AI",
       providerType: "ai302",
       sorted: 15,
+    },
+  })),
+  ...runcrateModels.map((name) => ({
+    name,
+    available: true,
+    sorted: seq++,
+    provider: {
+      id: "runcrate",
+      providerName: "Runcrate",
+      providerType: "runcrate",
+      sorted: 16,
     },
   })),
 ] as const;

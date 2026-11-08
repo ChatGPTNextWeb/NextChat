@@ -376,6 +376,14 @@ SiliconFlow API URL.
 
 302.AI API URL.
 
+### `RUNCRATE_API_KEY` (optional)
+
+Runcrate API Key.
+
+### `RUNCRATE_URL` (optional)
+
+Runcrate API URL, defaults to `https://api.runcrate.ai`.
+
 ## Requirements
 
 NodeJS >= 18, Docker >= 20

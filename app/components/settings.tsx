@@ -76,6 +76,7 @@ import {
   DeepSeek,
   SiliconFlow,
   AI302,
+  Runcrate,
 } from "../constant";
 import { Prompt, SearchService, usePromptStore } from "../store/prompt";
 import { ErrorBoundary } from "./error";
@@ -1499,6 +1500,47 @@ export function Settings() {
       </>
   );
 
+  const runcrateConfigComponent = accessStore.provider ===
+    ServiceProvider.Runcrate && (
+    <>
+      <ListItem
+        title={Locale.Settings.Access.Runcrate.Endpoint.Title}
+        subTitle={
+          Locale.Settings.Access.Runcrate.Endpoint.SubTitle +
+          Runcrate.ExampleEndpoint
+        }
+      >
+        <input
+          aria-label={Locale.Settings.Access.Runcrate.Endpoint.Title}
+          type="text"
+          value={accessStore.runcrateUrl}
+          placeholder={Runcrate.ExampleEndpoint}
+          onChange={(e) =>
+            accessStore.update(
+              (access) => (access.runcrateUrl = e.currentTarget.value),
+            )
+          }
+        ></input>
+      </ListItem>
+      <ListItem
+        title={Locale.Settings.Access.Runcrate.ApiKey.Title}
+        subTitle={Locale.Settings.Access.Runcrate.ApiKey.SubTitle}
+      >
+        <PasswordInput
+          aria-label={Locale.Settings.Access.Runcrate.ApiKey.Title}
+          value={accessStore.runcrateApiKey}
+          type="text"
+          placeholder={Locale.Settings.Access.Runcrate.ApiKey.Placeholder}
+          onChange={(e) => {
+            accessStore.update(
+              (access) => (access.runcrateApiKey = e.currentTarget.value),
+            );
+          }}
+        />
+      </ListItem>
+    </>
+  );
+
   return (
     <ErrorBoundary>
       <div className="window-header" data-tauri-drag-region>
@@ -1864,6 +1906,7 @@ export function Settings() {
                   {chatglmConfigComponent}
                   {siliconflowConfigComponent}
                   {ai302ConfigComponent}
+                  {runcrateConfigComponent}
                 </>
               )}
             </>
