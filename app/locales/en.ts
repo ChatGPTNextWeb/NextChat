@@ -553,6 +553,17 @@ const en: LocaleType = {
           SubTitle: "Example: ",
         },
       },
+      Runcrate: {
+        ApiKey: {
+          Title: "Runcrate API Key",
+          SubTitle: "Use a custom Runcrate API Key",
+          Placeholder: "Runcrate API Key",
+        },
+        Endpoint: {
+          Title: "Endpoint Address",
+          SubTitle: "Example: ",
+        },
+      },
     },
 
     Model: "Model",
