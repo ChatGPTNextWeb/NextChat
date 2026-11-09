@@ -76,6 +76,11 @@ export class XAIApi implements LLMApi {
       },
     };
 
+    // Grok-3-mini and Grok-4 models do not support presence_penalty and frequency_penalty
+    const isGrokMiniOrV4 =
+      /grok-3-mini/i.test(modelConfig.model) ||
+      /grok-4/i.test(modelConfig.model);
+
     const requestPayload: RequestPayload = {
       messages,
       stream: options.config.stream,
@@ -85,6 +90,12 @@ export class XAIApi implements LLMApi {
       frequency_penalty: modelConfig.frequency_penalty,
       top_p: modelConfig.top_p,
     };
+
+    if (isGrokMiniOrV4) {
+      // These models do not accept presence_penalty / frequency_penalty
+      delete (requestPayload as any).presence_penalty;
+      delete (requestPayload as any).frequency_penalty;
+    }
 
     console.log("[Request] xai payload: ", requestPayload);
 
