@@ -130,10 +130,10 @@ export const TTSConfigValidator = {
     return x as TTSEngineType;
   },
   model(x: string) {
-    return x as TTSModelType;
+    return (x.trim() || DEFAULT_TTS_MODEL) as TTSModelType;
   },
   voice(x: string) {
-    return x as TTSVoiceType;
+    return (x.trim() || DEFAULT_TTS_VOICE) as TTSVoiceType;
   },
   speed(x: number) {
     return limitNumber(x, 0.25, 4.0, 1.0);

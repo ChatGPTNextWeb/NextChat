@@ -56,6 +56,7 @@ import {
   ModelType,
   SubmitKey,
   Theme,
+  TTSConfigValidator,
   useAccessStore,
   useAppConfig,
   useChatStore,
@@ -1311,9 +1312,9 @@ function _Chat() {
         audioBuffer = await tts.toArrayBuffer(textContent);
       } else {
         audioBuffer = await api.llm.speech({
-          model: config.ttsConfig.model,
+          model: TTSConfigValidator.model(config.ttsConfig.model),
           input: textContent,
-          voice: config.ttsConfig.voice,
+          voice: TTSConfigValidator.voice(config.ttsConfig.voice),
           speed: config.ttsConfig.speed,
         });
       }
