@@ -1130,3 +1130,10 @@
 #dmermaid {
   display: none;
 }
+
+.markdown-body .vis-chart {
+  width: 600px;
+  max-width: 100%;
+  margin-bottom: 10px;
+  overflow: auto;
+}

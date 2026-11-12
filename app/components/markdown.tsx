@@ -24,6 +24,8 @@ import { IconButton } from "./button";
 
 import { useAppConfig } from "../store/config";
 import clsx from "clsx";
+import { VisChart } from "./vis-chart";
+import { getVisTheme, isVisSyntax } from "../utils/vis";
 
 export function Mermaid(props: { code: string }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -75,6 +77,7 @@ export function PreCode(props: { children: any }) {
   const ref = useRef<HTMLPreElement>(null);
   const previewRef = useRef<HTMLPreviewHandler>(null);
   const [mermaidCode, setMermaidCode] = useState("");
+  const [visCode, setVisCode] = useState("");
   const [htmlCode, setHtmlCode] = useState("");
   const { height } = useWindowSize();
   const chatStore = useChatStore();
@@ -85,6 +88,11 @@ export function PreCode(props: { children: any }) {
     const mermaidDom = ref.current.querySelector("code.language-mermaid");
     if (mermaidDom) {
       setMermaidCode((mermaidDom as HTMLElement).innerText);
+    }
+    const visDom = ref.current.querySelector("code.language-vis");
+    const visText = (visDom as HTMLElement | null)?.innerText;
+    if (visText && isVisSyntax(visText)) {
+      setVisCode(visText);
     }
     const htmlDom = ref.current.querySelector("code.language-html");
     const refText = ref.current.querySelector("code")?.innerText;
@@ -102,6 +110,11 @@ export function PreCode(props: { children: any }) {
   const config = useAppConfig();
   const enableArtifacts =
     session.mask?.enableArtifacts !== false && config.enableArtifacts;
+  const visTheme = getVisTheme(
+    config.theme,
+    typeof window !== "undefined" &&
+      !!window.matchMedia?.("(prefers-color-scheme: dark)").matches,
+  );
 
   //Wrap the paragraph for plain-text
   useEffect(() => {
@@ -147,6 +160,9 @@ export function PreCode(props: { children: any }) {
       </pre>
       {mermaidCode.length > 0 && (
         <Mermaid code={mermaidCode} key={mermaidCode} />
+      )}
+      {visCode.length > 0 && (
+        <VisChart code={visCode} theme={visTheme} key={visCode} />
       )}
       {htmlCode.length > 0 && enableArtifacts && (
         <FullScreen className="no-dark html" right={70}>
