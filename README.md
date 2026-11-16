@@ -57,6 +57,38 @@ English / [简体中文](./README_CN.md)
 
 <img src="./docs/images/mcp-market.png" alt="NextChat MCP Market" />
 
+### Search the public web with Parallel
+
+On a self-hosted NextChat server, use [uv](https://docs.astral.sh/uv/getting-started/installation/) to install the [`mcp-proxy`](https://github.com/sparfenyuk/mcp-proxy/tree/v0.15.0) bridge. Make sure `mcp-proxy` is on the NextChat process's `PATH`.
+
+```sh
+uv tool install --python 3.12 mcp-proxy==0.15.0
+```
+
+Set `ENABLE_MCP=true` and configure a private `CODE` for your deployment. From the NextChat process's working directory, create `app/mcp/mcp_config.json` with this example, or add the `parallel-search` entry to your existing `mcpServers`.
+
+```json
+{
+  "mcpServers": {
+    "parallel-search": {
+      "command": "mcp-proxy",
+      "args": [
+        "https://mcp.parallel.ai/mcp",
+        "--transport",
+        "streamablehttp",
+        "--headers",
+        "User-Agent",
+        "NextChat"
+      ]
+    }
+  }
+}
+```
+
+For Docker, use a custom image with the bridge on the container's `PATH`, pass `ENABLE_MCP` and `CODE` to the container, and mount the config file at `/app/app/mcp/mcp_config.json`.
+
+Restart NextChat, enter your deployment access code in Settings, and reload the page. In a chat, ask your configured model to find a NASA page about the Apollo 11 landing and quote a short passage with its source URL. Search queries go to Parallel's public MCP endpoint, which accepts requests without a Parallel API key.
+
 ## Enterprise Edition
 
 Meeting Your Company's Privatization and Customization Deployment Requirements:
