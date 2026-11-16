@@ -65,7 +65,7 @@ On a self-hosted NextChat server, use [uv](https://docs.astral.sh/uv/getting-sta
 uv tool install --python 3.12 mcp-proxy==0.15.0
 ```
 
-Set `ENABLE_MCP=true` and configure a private `CODE` for your deployment. Create `app/mcp/mcp_config.json` with the following example, or add the `parallel-search` entry to your existing `mcpServers`.
+Set `ENABLE_MCP=true` and configure a private `CODE` for your deployment. From the NextChat process's working directory, create `app/mcp/mcp_config.json` with this example, or add the `parallel-search` entry to your existing `mcpServers`.
 
 ```json
 {
@@ -84,6 +84,8 @@ Set `ENABLE_MCP=true` and configure a private `CODE` for your deployment. Create
   }
 }
 ```
+
+For Docker, use a custom image with the bridge on the container's `PATH`, pass `ENABLE_MCP` and `CODE` to the container, and mount the config file at `/app/app/mcp/mcp_config.json`.
 
 Restart NextChat, enter your deployment access code in Settings, and reload the page. In a chat, ask your configured model to find a NASA page about the Apollo 11 landing and quote a short passage with its source URL. Search queries go to Parallel's public MCP endpoint, which accepts requests without a Parallel API key.
 
