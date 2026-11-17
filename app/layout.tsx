@@ -9,10 +9,10 @@ import { GoogleTagManager, GoogleAnalytics } from "@next/third-parties/google";
 import { getServerSideConfig } from "./config/server";
 
 export const metadata: Metadata = {
-  title: "NextChat",
-  description: "Your personal AI assistant.",
+  title: "Tandi NEO — Inteligência no dispositivo",
+  description: "Plataforma de inteligência artificial local, mobile-first e multimodal.",
   appleWebApp: {
-    title: "NextChat",
+    title: "Tandi NEO",
     statusBarStyle: "default",
   },
 };
@@ -35,7 +35,7 @@ export default function RootLayout({
   const serverConfig = getServerSideConfig();
 
   return (
-    <html lang="en">
+    <html lang="pt-BR">
       <head>
         <meta name="config" content={JSON.stringify(getClientConfig())} />
         <meta
