@@ -1,0 +1,10 @@
+{"id":"pt-001","category":"arithmetic","prompt":"Quanto é 7 + 5? Responda apenas com o número.","accepted_answers":["12"]}
+{"id":"pt-002","category":"arithmetic","prompt":"Quanto é 9 vezes 6? Responda apenas com o número.","accepted_answers":["54"]}
+{"id":"pt-003","category":"arithmetic","prompt":"Quanto é 100 dividido por 4? Responda apenas com o número.","accepted_answers":["25"]}
+{"id":"pt-004","category":"language","prompt":"Qual é o plural de 'animal'? Responda com uma palavra.","accepted_answers":["animais"]}
+{"id":"pt-005","category":"language","prompt":"Qual é o antônimo de 'quente'? Responda com uma palavra.","accepted_answers":["frio"]}
+{"id":"pt-006","category":"language","prompt":"Qual é a primeira letra da palavra 'Brasil'? Responda com uma letra.","accepted_answers":["B"]}
+{"id":"pt-007","category":"logic","prompt":"Se todos os gatos são mamíferos e Mimi é um gato, Mimi é mamífero? Responda sim ou não.","accepted_answers":["sim"]}
+{"id":"pt-008","category":"logic","prompt":"Se hoje é segunda-feira, amanhã é terça-feira? Responda sim ou não.","accepted_answers":["sim"]}
+{"id":"pt-009","category":"general","prompt":"Qual é a capital do Brasil? Responda apenas com o nome.","accepted_answers":["Brasília"]}
+{"id":"pt-010","category":"general","prompt":"Quantos dias tem uma semana? Responda com um número.","accepted_answers":["7"]}

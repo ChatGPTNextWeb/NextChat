@@ -48,7 +48,7 @@ export const DEFAULT_CONFIG = {
   theme: Theme.Auto as Theme,
   tightBorder: !!config?.isApp,
   sendPreviewBubble: true,
-  enableAutoGenerateTitle: true,
+  enableAutoGenerateTitle: false,
   sidebarWidth: DEFAULT_SIDEBAR_WIDTH,
 
   enableArtifacts: true, // show artifacts config
@@ -64,16 +64,16 @@ export const DEFAULT_CONFIG = {
   models: DEFAULT_MODELS as any as LLMModel[],
 
   modelConfig: {
-    model: "gpt-4o-mini" as ModelType,
-    providerName: "OpenAI" as ServiceProvider,
+    model: "Qwen2.5-0.5B-Instruct-q4f16_1-MLC" as ModelType,
+    providerName: ServiceProvider.TandiNEO,
     temperature: 0.5,
     top_p: 1,
-    max_tokens: 4000,
+    max_tokens: 256,
     presence_penalty: 0,
     frequency_penalty: 0,
     sendMemory: true,
     historyMessageCount: 4,
-    compressMessageLengthThreshold: 1000,
+    compressMessageLengthThreshold: 1000000,
     compressModel: "",
     compressProviderName: "",
     enableInjectSystemPrompts: true,

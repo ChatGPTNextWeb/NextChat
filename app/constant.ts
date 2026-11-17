@@ -118,6 +118,7 @@ export const REQUEST_TIMEOUT_MS_FOR_THINKING = REQUEST_TIMEOUT_MS * 5;
 export const EXPORT_MESSAGE_CLASS_NAME = "export-markdown";
 
 export enum ServiceProvider {
+  TandiNEO = "Tandi NEO",
   OpenAI = "OpenAI",
   Azure = "Azure",
   Google = "Google",
@@ -146,6 +147,7 @@ export enum GoogleSafetySettingsThreshold {
 }
 
 export enum ModelProvider {
+  TandiNEO = "TandiNEO",
   Stability = "Stability",
   GPT = "GPT",
   GeminiPro = "GeminiPro",
@@ -744,6 +746,17 @@ const ai302Models = [
 
 let seq = 1000; // 内置的模型序号生成器从1000开始
 export const DEFAULT_MODELS = [
+  {
+    name: "Qwen2.5-0.5B-Instruct-q4f16_1-MLC",
+    available: true,
+    sorted: -1,
+    provider: {
+      id: "tandineo",
+      providerName: "Tandi NEO",
+      providerType: "local",
+      sorted: 0,
+    },
+  },
   ...openaiModels.map((name) => ({
     name,
     available: true,
