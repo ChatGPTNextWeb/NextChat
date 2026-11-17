@@ -15,7 +15,7 @@ import type {
   SpeechOptions,
 } from "../api";
 
-export const NEO_MODEL = "Llama-3.2-1B-Instruct-q4f16_1-MLC";
+export const NEO_MODEL = "Qwen2.5-0.5B-Instruct-q4f16_1-MLC";
 const WEBLLM_URL = "https://esm.sh/@mlc-ai/web-llm@0.2.81";
 type Engine = {
   chat: {
@@ -28,7 +28,7 @@ let activeEngine: Promise<Engine> | undefined;
 let hasConsent = false;
 
 async function loadEngine(): Promise<Engine> {
-  if (typeof window === "undefined" || !navigator.gpu) {
+  if (typeof window === "undefined" || !(navigator as Navigator & { gpu?: unknown }).gpu) {
     throw new Error(
       "Tandi NEO Local requer WebGPU. Este aparelho ou navegador não oferece suporte; não há fallback CPU nesta versão.",
     );
