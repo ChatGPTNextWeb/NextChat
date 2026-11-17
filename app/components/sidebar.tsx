@@ -269,14 +269,7 @@ export function SideBar(props: { className?: string }) {
           <IconButton
             icon={<AddIcon />}
             text={shouldNarrow ? undefined : Locale.Home.NewChat}
-            onClick={() => {
-              if (config.dontShowMaskSplashScreen) {
-                chatStore.newSession();
-                navigate(Path.Chat);
-              } else {
-                navigate(Path.NewChat);
-              }
-            }}
+            onClick={() => { chatStore.newSession(); navigate(Path.Chat); }}
             shadow
           />
         }
