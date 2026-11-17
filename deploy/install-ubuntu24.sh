@@ -33,7 +33,7 @@ echo "Instalando dependências do sistema..."
 export DEBIAN_FRONTEND=noninteractive
 apt-get update
 apt-get install -y ca-certificates curl git gnupg nginx certbot python3-certbot-nginx
-if ! command -v node >/dev/null || [[ "$(node -p 'process.versions.node.split(\".\")[0]')" -lt 22 ]]; then
+if ! command -v node >/dev/null || [[ "$(node -p 'process.versions.node.split(".")[0]')" -lt 22 ]]; then
   curl -fsSL https://deb.nodesource.com/setup_22.x -o /tmp/tandi-nodesource-setup.sh
   # Revise o instalador NodeSource se sua política de segurança exigir.
   bash /tmp/tandi-nodesource-setup.sh
@@ -97,10 +97,10 @@ server {
   location / {
     proxy_pass http://127.0.0.1:$PORT;
     proxy_http_version 1.1;
-    proxy_set_header Host \$host;
-    proxy_set_header X-Real-IP \$remote_addr;
-    proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
-    proxy_set_header X-Forwarded-Proto \$scheme;
+    proxy_set_header Host \\$host;
+    proxy_set_header X-Real-IP \\$remote_addr;
+    proxy_set_header X-Forwarded-For \\$proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto \\$scheme;
     proxy_read_timeout 180s;
   }
 }
