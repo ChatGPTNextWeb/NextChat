@@ -64,7 +64,7 @@ export const DEFAULT_CONFIG = {
   models: DEFAULT_MODELS as any as LLMModel[],
 
   modelConfig: {
-    model: "Llama-3.2-1B-Instruct-q4f16_1-MLC" as ModelType,
+    model: "Qwen2.5-0.5B-Instruct-q4f16_1-MLC" as ModelType,
     providerName: ServiceProvider.TandiNEO,
     temperature: 0.5,
     top_p: 1,
