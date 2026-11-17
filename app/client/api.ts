@@ -12,6 +12,7 @@ import {
   useChatStore,
 } from "../store";
 import { ChatGPTApi, DalleRequestPayload } from "./platforms/openai";
+import { TandiNeoApi } from "./platforms/tandi-neo";
 import { GeminiProApi } from "./platforms/google";
 import { ClaudeApi } from "./platforms/anthropic";
 import { ErnieApi } from "./platforms/baidu";
@@ -138,6 +139,9 @@ export class ClientApi {
 
   constructor(provider: ModelProvider = ModelProvider.GPT) {
     switch (provider) {
+      case ModelProvider.TandiNEO:
+        this.llm = new TandiNeoApi();
+        break;
       case ModelProvider.GeminiPro:
         this.llm = new GeminiProApi();
         break;
@@ -367,6 +371,8 @@ export function getHeaders(ignoreHeaders: boolean = false) {
 
 export function getClientApi(provider: ServiceProvider): ClientApi {
   switch (provider) {
+    case ServiceProvider.TandiNEO:
+      return new ClientApi(ModelProvider.TandiNEO);
     case ServiceProvider.Google:
       return new ClientApi(ModelProvider.GeminiPro);
     case ServiceProvider.Anthropic:
