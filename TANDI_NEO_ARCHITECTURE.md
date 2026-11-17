@@ -32,7 +32,7 @@ Tandi.tech (NextChatBR modificado)
 
 - **Não houve teste end-to-end em navegador real ou build em VPS.**
 - A execução local exige WebGPU, RAM livre e compatibilidade com o modelo escolhido.
-- O modelo `Llama-3.2-1B-Instruct-q4f16_1-MLC` e a versão WebLLM estão provisoriamente fixados; compatibilidade e licença dos pesos devem ser verificadas antes de produção.
+- O modelo `Qwen2.5-0.5B-Instruct-q4f16_1-MLC` e a versão WebLLM estão provisoriamente fixados; compatibilidade e licença dos pesos devem ser verificadas antes de produção.
 - Dependência externa em `https://esm.sh` e hosts usados para downloads de pesos. Revisar e, idealmente, hospedar o runtime localmente após auditoria.
 - Gerar ou compreender imagens e gerar vídeos **ainda não está implementado**.
 - Fallback CPU, autenticação própria e sincronização **ainda não estão implementados**.
