@@ -747,7 +747,7 @@ const ai302Models = [
 let seq = 1000; // 内置的模型序号生成器从1000开始
 export const DEFAULT_MODELS = [
   {
-    name: "Llama-3.2-1B-Instruct-q4f16_1-MLC",
+    name: "Qwen2.5-0.5B-Instruct-q4f16_1-MLC",
     available: true,
     sorted: -1,
     provider: {
