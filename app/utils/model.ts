@@ -83,14 +83,18 @@ export function collectModelTable(
         m.startsWith("+") || m.startsWith("-") ? m.slice(1) : m;
       let [name, displayName] = nameConfig.split("=");
 
+      const [customModelName, customProviderName] = getModelProvider(name);
+
       // enable or disable all models
-      if (name === "all") {
-        Object.values(modelTable).forEach(
-          (model) => (model.available = available),
-        );
+      // supports optional @provider filter, e.g. "-all@azure" disables only Azure models
+      if (customModelName === "all") {
+        Object.values(modelTable).forEach((model) => {
+          if (!customProviderName || model.provider?.id === customProviderName) {
+            model.available = available;
+          }
+        });
       } else {
         // 1. find model by name, and set available value
-        const [customModelName, customProviderName] = getModelProvider(name);
         let count = 0;
         for (const fullName in modelTable) {
           const [modelName, providerName] = getModelProvider(fullName);
@@ -113,20 +117,18 @@ export function collectModelTable(
         }
         // 2. if model not exists, create new model with available value
         if (count === 0) {
-          let [customModelName, customProviderName] = getModelProvider(name);
-          const provider = customProvider(
-            customProviderName || customModelName,
-          );
+          let newModelName = customModelName;
+          const provider = customProvider(customProviderName || newModelName);
           // swap name and displayName for bytedance
           if (displayName && provider.providerName == "ByteDance") {
-            [customModelName, displayName] = [displayName, customModelName];
+            [newModelName, displayName] = [displayName, newModelName];
           }
-          modelTable[`${customModelName}@${provider?.id}`] = {
-            name: customModelName,
-            displayName: displayName || customModelName,
+          modelTable[`${newModelName}@${provider?.id}`] = {
+            name: newModelName,
+            displayName: displayName || newModelName,
             available,
-            provider, // Use optional chaining
-            sorted: CustomSeq.next(`${customModelName}@${provider?.id}`),
+            provider,
+            sorted: CustomSeq.next(`${newModelName}@${provider?.id}`),
           };
         }
       }
