@@ -53,7 +53,7 @@ async function handle(
       return siliconflowHandler(req, { params });
     case ApiPath.OpenAI:
       return openaiHandler(req, { params });
-    case ApiPath["302.AI"]:
+    case ApiPath.AI302:
       return ai302Handler(req, { params });
     default:
       return proxyHandler(req, { params });

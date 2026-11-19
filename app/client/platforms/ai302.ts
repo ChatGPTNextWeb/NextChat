@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  ApiPath,
-  AI302_BASE_URL,
-  DEFAULT_MODELS,
-  AI302,
-} from "@/app/constant";
+import { ApiPath, AI302_BASE_URL, DEFAULT_MODELS, AI302 } from "@/app/constant";
 import {
   useAccessStore,
   useAppConfig,
@@ -54,17 +49,14 @@ export class Ai302Api implements LLMApi {
 
     if (baseUrl.length === 0) {
       const isApp = !!getClientConfig()?.isApp;
-      const apiPath = ApiPath["302.AI"];
+      const apiPath = ApiPath.AI302;
       baseUrl = isApp ? AI302_BASE_URL : apiPath;
     }
 
     if (baseUrl.endsWith("/")) {
       baseUrl = baseUrl.slice(0, baseUrl.length - 1);
     }
-    if (
-      !baseUrl.startsWith("http") &&
-      !baseUrl.startsWith(ApiPath["302.AI"])
-    ) {
+    if (!baseUrl.startsWith("http") && !baseUrl.startsWith(ApiPath.AI302)) {
       baseUrl = "https://" + baseUrl;
     }
 

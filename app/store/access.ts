@@ -60,7 +60,7 @@ const DEFAULT_SILICONFLOW_URL = isApp
   ? SILICONFLOW_BASE_URL
   : ApiPath.SiliconFlow;
 
-const DEFAULT_AI302_URL = isApp ? AI302_BASE_URL : ApiPath["302.AI"];
+const DEFAULT_AI302_URL = isApp ? AI302_BASE_URL : ApiPath.AI302;
 
 const DEFAULT_ACCESS_STATE = {
   accessCode: "",
