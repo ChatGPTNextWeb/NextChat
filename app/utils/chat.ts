@@ -624,19 +624,13 @@ export function streamWithThink(
             if (!isInThinkingMode || isThinkingChanged) {
               // If this is a new thinking block or mode changed, add prefix
               isInThinkingMode = true;
-              if (remainText.length > 0) {
+              if (remainText.length > 0 && !remainText.endsWith("\n")) {
                 remainText += "\n";
               }
-              remainText += "> " + chunk.content;
-            } else {
-              // Handle newlines in thinking content
-              if (chunk.content.includes("\n\n")) {
-                const lines = chunk.content.split("\n\n");
-                remainText += lines.join("\n\n> ");
-              } else {
-                remainText += chunk.content;
-              }
+              remainText += "> ";
             }
+            // Append content, ensuring newlines are quoted
+            remainText += chunk.content.replace(/\n/g, "\n> ");
           } else {
             // If in normal mode
             if (isInThinkingMode || isThinkingChanged) {
