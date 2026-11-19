@@ -27,7 +27,7 @@ jobs:
         id: extract_branch
 
       - name: Hash branch name
-        uses: pplanel/hash-calculator-action@v1.3.1
+        uses: pplanel/hash-calculator-action@5acf376a9ed10e8ca4a540c5c180ef7ef3ba582e # v1.3.1
         id: hash_branch
         with:
           input: ${{ steps.extract_branch.outputs.branch }}

@@ -31,7 +31,7 @@ jobs:
         id: extract_branch
 
       - name: Hash branch name
-        uses: pplanel/hash-calculator-action@v1.3.1
+        uses: pplanel/hash-calculator-action@5acf376a9ed10e8ca4a540c5c180ef7ef3ba582e # v1.3.1
         id: hash_branch
         with:
           input: ${{ steps.extract_branch.outputs.branch }}
@@ -74,7 +74,7 @@ jobs:
           echo "New alias URL: ${ALIAS_URL}"
           echo "VERCEL_URL=${ALIAS_URL}" >> "$GITHUB_OUTPUT"
 
-      - uses: mshick/add-pr-comment@v2
+      - uses: mshick/add-pr-comment@b8f338c590a895d50bcbfa6c5859251edc8952fc # v2
         with:
           message: |
             Your build has completed!
