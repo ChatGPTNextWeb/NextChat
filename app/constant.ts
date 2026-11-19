@@ -36,6 +36,8 @@ export const CHATGLM_BASE_URL = "https://open.bigmodel.cn";
 
 export const SILICONFLOW_BASE_URL = "https://api.siliconflow.cn";
 
+export const MINIMAX_BASE_URL = "https://api.minimax.io";
+
 export const AI302_BASE_URL = "https://api.302.ai";
 
 export const CACHE_URL_PREFIX = "/api/cache";
@@ -74,6 +76,7 @@ export enum ApiPath {
   ChatGLM = "/api/chatglm",
   DeepSeek = "/api/deepseek",
   SiliconFlow = "/api/siliconflow",
+  MiniMax = "/api/minimax",
   "302.AI" = "/api/302ai",
 }
 
@@ -133,6 +136,7 @@ export enum ServiceProvider {
   ChatGLM = "ChatGLM",
   DeepSeek = "DeepSeek",
   SiliconFlow = "SiliconFlow",
+  MiniMax = "MiniMax",
   "302.AI" = "302.AI",
 }
 
@@ -160,6 +164,7 @@ export enum ModelProvider {
   ChatGLM = "ChatGLM",
   DeepSeek = "DeepSeek",
   SiliconFlow = "SiliconFlow",
+  MiniMax = "MiniMax",
   "302.AI" = "302.AI",
 }
 
@@ -263,6 +268,11 @@ export const ChatGLM = {
   ChatPath: "api/paas/v4/chat/completions",
   ImagePath: "api/paas/v4/images/generations",
   VideoPath: "api/paas/v4/videos/generations",
+};
+
+export const MiniMax = {
+  ExampleEndpoint: MINIMAX_BASE_URL,
+  ChatPath: "v1/chat/completions",
 };
 
 export const SiliconFlow = {
@@ -742,6 +752,15 @@ const ai302Models = [
   "gemini-2.5-pro",
 ];
 
+const minimaxModels = [
+  "MiniMax-M1",
+  "MiniMax-M1-80k",
+  "MiniMax-M2",
+  "MiniMax-M2-80k",
+  "MiniMax-M2.5",
+  "MiniMax-M2.5-80k",
+];
+
 let seq = 1000; // 内置的模型序号生成器从1000开始
 export const DEFAULT_MODELS = [
   ...openaiModels.map((name) => ({
@@ -887,6 +906,17 @@ export const DEFAULT_MODELS = [
       sorted: 13,
     },
   })),
+  ...minimaxModels.map((name) => ({
+    name,
+    available: true,
+    sorted: seq++,
+    provider: {
+      id: "minimax",
+      providerName: "MiniMax",
+      providerType: "minimax",
+      sorted: 14,
+    },
+  })),
   ...siliconflowModels.map((name) => ({
     name,
     available: true,
@@ -895,7 +925,7 @@ export const DEFAULT_MODELS = [
       id: "siliconflow",
       providerName: "SiliconFlow",
       providerType: "siliconflow",
-      sorted: 14,
+      sorted: 15,
     },
   })),
   ...ai302Models.map((name) => ({
@@ -906,7 +936,7 @@ export const DEFAULT_MODELS = [
       id: "ai302",
       providerName: "302.AI",
       providerType: "ai302",
-      sorted: 15,
+      sorted: 16,
     },
   })),
 ] as const;
