@@ -3,10 +3,9 @@ import { TTSConfig, TTSConfigValidator } from "../store";
 import Locale from "../locales";
 import { ListItem, Select } from "./ui-lib";
 import {
-  DEFAULT_TTS_ENGINE,
-  DEFAULT_TTS_ENGINES,
-  DEFAULT_TTS_MODELS,
-  DEFAULT_TTS_VOICES,
+    ServiceProvider,
+    TTS_CONFIGS,
+    TTSEngineType
 } from "../constant";
 import { InputRange } from "./input-range";
 
@@ -48,22 +47,33 @@ export function TTSConfigList(props: {
         <Select
           value={props.ttsConfig.engine}
           onChange={(e) => {
+            const newEngine = e.currentTarget.value as TTSEngineType;
             props.updateConfig(
-              (config) =>
-                (config.engine = TTSConfigValidator.engine(
-                  e.currentTarget.value,
-                )),
+              (config) => {
+                config.engine = TTSConfigValidator.engine(newEngine);
+                const engineConfig = TTS_CONFIGS[newEngine];
+                config.model = TTSConfigValidator.model(
+                    engineConfig.Model[0] || ""
+                );
+                config.voice = TTSConfigValidator.voice(
+                    engineConfig.Voices[0] || ""
+                );
+                config.modelProvider = TTSConfigValidator.modelProvider(
+                    engineConfig.ModelProvider
+                );
+              }
             );
           }}
         >
-          {DEFAULT_TTS_ENGINES.map((v, i) => (
+          {Object.keys(TTS_CONFIGS).map((v, i) => (
             <option value={v} key={i}>
-              {v}
+              {v}-TTS
             </option>
           ))}
         </Select>
       </ListItem>
-      {props.ttsConfig.engine === DEFAULT_TTS_ENGINE && (
+      {(props.ttsConfig.engine === ServiceProvider.OpenAI || 
+        props.ttsConfig.engine === ServiceProvider.Alibaba) && (
         <>
           <ListItem title={Locale.Settings.TTS.Model}>
             <Select
@@ -77,7 +87,7 @@ export function TTSConfigList(props: {
                 );
               }}
             >
-              {DEFAULT_TTS_MODELS.map((v, i) => (
+              {TTS_CONFIGS[props.ttsConfig.engine]!.Model.map((v, i) => (
                 <option value={v} key={i}>
                   {v}
                 </option>
@@ -99,7 +109,7 @@ export function TTSConfigList(props: {
                 );
               }}
             >
-              {DEFAULT_TTS_VOICES.map((v, i) => (
+              {TTS_CONFIGS[props.ttsConfig.engine]!.Voices.map((v, i) => (
                 <option value={v} key={i}>
                   {v}
                 </option>

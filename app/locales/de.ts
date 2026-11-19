@@ -73,6 +73,10 @@ const de: PartialLocaleType = {
         light: "Helles Thema",
         dark: "Dunkles Thema",
       },
+      NetWork: {
+        on: "Web-Suche aktivieren",
+        off: "Web-Suche deaktivieren",
+      },
       Prompt: "Schnellbefehle",
       Masks: "Alle Masken",
       Clear: "Chat löschen",

@@ -76,6 +76,10 @@ const ko: PartialLocaleType = {
         light: "라이트 모드",
         dark: "다크 모드",
       },
+      NetWork: {
+        on: "웹 검색 활성화",
+        off: "웹 검색 비활성화",
+      },
       Prompt: "빠른 명령",
       Masks: "모든 마스크",
       Clear: "채팅 지우기",

@@ -25,6 +25,7 @@ import { XAIApi } from "./platforms/xai";
 import { ChatGLMApi } from "./platforms/glm";
 import { SiliconflowApi } from "./platforms/siliconflow";
 import { Ai302Api } from "./platforms/ai302";
+import type { TTSPlayManager } from "../utils/audio";
 
 export const ROLES = ["system", "user", "assistant"] as const;
 export type MessageRole = (typeof ROLES)[number];
@@ -107,7 +108,11 @@ export interface LLMModelProvider {
 
 export abstract class LLMApi {
   abstract chat(options: ChatOptions): Promise<void>;
-  abstract speech(options: SpeechOptions): Promise<ArrayBuffer>;
+  abstract speech(options: SpeechOptions): Promise<ArrayBuffer | AudioBuffer>;
+  abstract streamSpeech?(
+    options: SpeechOptions,
+    audioManager?: TTSPlayManager,
+  ): AsyncGenerator<AudioBuffer>;
   abstract usage(): Promise<LLMUsage>;
   abstract models(): Promise<LLMModel[]>;
 }

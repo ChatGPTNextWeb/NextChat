@@ -74,6 +74,10 @@ const da: PartialLocaleType = {
         light: "Lyst tema",
         dark: "Mørkt tema",
       },
+      NetWork: {
+        on: "Aktivér web-søgning",
+        off: "Deaktivér web-søgning",
+      },
       Prompt: "Prompts",
       Masks: "Personaer",
       Clear: "Ryd kontekst",
