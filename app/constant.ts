@@ -38,6 +38,8 @@ export const SILICONFLOW_BASE_URL = "https://api.siliconflow.cn";
 
 export const AI302_BASE_URL = "https://api.302.ai";
 
+export const ANYAPI_BASE_URL = "https://api.anyapi.ai";
+
 export const CACHE_URL_PREFIX = "/api/cache";
 export const UPLOAD_URL = `${CACHE_URL_PREFIX}/upload`;
 
@@ -75,6 +77,7 @@ export enum ApiPath {
   DeepSeek = "/api/deepseek",
   SiliconFlow = "/api/siliconflow",
   "302.AI" = "/api/302ai",
+  AnyAPI = "/api/anyapi",
 }
 
 export enum SlotID {
@@ -134,6 +137,7 @@ export enum ServiceProvider {
   DeepSeek = "DeepSeek",
   SiliconFlow = "SiliconFlow",
   "302.AI" = "302.AI",
+  AnyAPI = "AnyAPI",
 }
 
 // Google API safety settings, see https://ai.google.dev/gemini-api/docs/safety-settings
@@ -161,6 +165,7 @@ export enum ModelProvider {
   DeepSeek = "DeepSeek",
   SiliconFlow = "SiliconFlow",
   "302.AI" = "302.AI",
+  AnyAPI = "AnyAPI",
 }
 
 export const Stability = {
@@ -276,6 +281,12 @@ export const AI302 = {
   ChatPath: "v1/chat/completions",
   EmbeddingsPath: "jina/v1/embeddings",
   ListModelPath: "v1/models?llm=1",
+};
+
+export const AnyAPI = {
+  ExampleEndpoint: ANYAPI_BASE_URL,
+  ChatPath: "v1/chat/completions",
+  ListModelPath: "v1/models",
 };
 
 export const DEFAULT_INPUT_TEMPLATE = `{{input}}`; // input / time / model / lang
@@ -742,6 +753,18 @@ const ai302Models = [
   "gemini-2.5-pro",
 ];
 
+const anyapiModels = [
+  "openai/gpt-4o",
+  "openai/gpt-4o-mini",
+  "anthropic/claude-sonnet-4-20250514",
+  "anthropic/claude-opus-4-20250514",
+  "google/gemini-2.5-pro",
+  "google/gemini-2.5-flash",
+  "meta/llama-4-maverick",
+  "deepseek/deepseek-v3",
+  "deepseek/deepseek-r1",
+];
+
 let seq = 1000; // 内置的模型序号生成器从1000开始
 export const DEFAULT_MODELS = [
   ...openaiModels.map((name) => ({
@@ -907,6 +930,17 @@ export const DEFAULT_MODELS = [
       providerName: "302.AI",
       providerType: "ai302",
       sorted: 15,
+    },
+  })),
+  ...anyapiModels.map((name) => ({
+    name,
+    available: true,
+    sorted: seq++,
+    provider: {
+      id: "anyapi",
+      providerName: "AnyAPI",
+      providerType: "anyapi",
+      sorted: 16,
     },
   })),
 ] as const;
