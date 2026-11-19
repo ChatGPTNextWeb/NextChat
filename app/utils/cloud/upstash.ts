@@ -5,6 +5,62 @@ import { chunks } from "../format";
 export type UpstashConfig = SyncStore["upstash"];
 export type UpStashClient = ReturnType<typeof createUpstashClient>;
 
+async function httpFetch(
+  url: string,
+  options?: RequestInit,
+): Promise<Response> {
+  if (window.__TAURI__) {
+    // 转换 RequestInit 格式为 Tauri 期望的格式
+    const method = options?.method || "GET";
+    const headers: Record<string, string> = {};
+
+    // 处理 headers
+    if (options?.headers) {
+      if (options.headers instanceof Headers) {
+        options.headers.forEach((value, key) => {
+          headers[key] = value;
+        });
+      } else if (Array.isArray(options.headers)) {
+        options.headers.forEach(([key, value]) => {
+          headers[key] = value;
+        });
+      } else {
+        Object.assign(headers, options.headers);
+      }
+    }
+
+    // 处理 body
+    let body: number[] = [];
+    if (options?.body) {
+      if (typeof options.body === "string") {
+        body = Array.from(new TextEncoder().encode(options.body));
+      } else if (options.body instanceof ArrayBuffer) {
+        body = Array.from(new Uint8Array(options.body));
+      } else if (options.body instanceof Uint8Array) {
+        body = Array.from(options.body);
+      } else {
+        // 其他类型转换为字符串
+        body = Array.from(new TextEncoder().encode(String(options.body)));
+      }
+    }
+
+    const response = await window.__TAURI__.invoke("http_fetch", {
+      method,
+      url,
+      headers,
+      body,
+    });
+
+    // 将 Tauri 响应转换为 Response 对象格式
+    return new Response(new Uint8Array(response.body), {
+      status: response.status,
+      statusText: response.status_text,
+      headers: new Headers(response.headers),
+    });
+  }
+  return fetch(url, options);
+}
+
 export function createUpstashClient(store: SyncStore) {
   const config = store.upstash;
   const storeKey = config.username.length === 0 ? STORAGE_KEY : config.username;
@@ -17,7 +73,7 @@ export function createUpstashClient(store: SyncStore) {
   return {
     async check() {
       try {
-        const res = await fetch(this.path(`get/${storeKey}`, proxyUrl), {
+        const res = await httpFetch(this.path(`get/${storeKey}`, proxyUrl), {
           method: "GET",
           headers: this.headers(),
         });
@@ -30,7 +86,7 @@ export function createUpstashClient(store: SyncStore) {
     },
 
     async redisGet(key: string) {
-      const res = await fetch(this.path(`get/${key}`, proxyUrl), {
+      const res = await httpFetch(this.path(`get/${key}`, proxyUrl), {
         method: "GET",
         headers: this.headers(),
       });
@@ -42,7 +98,7 @@ export function createUpstashClient(store: SyncStore) {
     },
 
     async redisSet(key: string, value: string) {
-      const res = await fetch(this.path(`set/${key}`, proxyUrl), {
+      const res = await httpFetch(this.path(`set/${key}`, proxyUrl), {
         method: "POST",
         headers: this.headers(),
         body: value,
@@ -81,6 +137,9 @@ export function createUpstashClient(store: SyncStore) {
       };
     },
     path(path: string, proxyUrl: string = "") {
+      if (window.__TAURI__) {
+        return config.endpoint + "/" + path;
+      }
       if (!path.endsWith("/")) {
         path += "/";
       }
@@ -96,7 +155,7 @@ export function createUpstashClient(store: SyncStore) {
       const pathPrefix = "/api/upstash/";
 
       try {
-        let u = new URL(proxyUrl + pathPrefix + path);
+        let u = new URL(proxyUrl + pathPrefix + path, window.location.origin);
         // add query params
         u.searchParams.append("endpoint", config.endpoint);
         url = u.toString();
