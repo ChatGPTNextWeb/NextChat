@@ -2,6 +2,17 @@
 // see src-tauri/src/stream.rs, and src-tauri/src/main.rs
 // 1. invoke('stream_fetch', {url, method, headers, body}), get response with headers.
 // 2. listen event: `stream-response` multi times to get body
+import { useAccessStore } from "../store/access";
+
+function getDesktopProxyUrl(): string | undefined {
+  const access = useAccessStore.getState();
+  if (access.proxyMode === "system") return undefined;
+  const host = access.proxyHost?.trim().replace(/^(https?|socks5):\/\//i, "");
+  const port = access.proxyPort?.trim() ?? "";
+  if (!host) return undefined;
+  const hp = host.includes(":") ? host : port ? `${host}:${port}` : host;
+  return `${access.proxyMode}://${hp}`;
+}
 
 type ResponseEvent = {
   id: number;
@@ -79,6 +90,7 @@ export function fetch(url: string, options?: RequestInit): Promise<Response> {
         method: method.toUpperCase(),
         url,
         headers,
+        proxy_url: getDesktopProxyUrl(),
         // TODO FormData
         body:
           typeof body === "string"

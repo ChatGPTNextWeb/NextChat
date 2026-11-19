@@ -6,7 +6,7 @@ use std::error::Error;
 use std::sync::atomic::{AtomicU32, Ordering};
 use std::collections::HashMap;
 use futures_util::{StreamExt};
-use reqwest::Client;
+use reqwest::{Client, Proxy};
 use reqwest::header::{HeaderName, HeaderMap};
 
 static REQUEST_COUNTER: AtomicU32 = AtomicU32::new(0);
@@ -38,6 +38,7 @@ pub async fn stream_fetch(
   url: String,
   headers: HashMap<String, String>,
   body: Vec<u8>,
+  proxy_url: Option<String>,
 ) -> Result<StreamResponse, String> {
 
   let event_name = "stream-response";
@@ -54,10 +55,21 @@ pub async fn stream_fetch(
   // println!("headers: {:?}", _headers);
 
   let method = method.parse::<reqwest::Method>().map_err(|err| format!("failed to parse method: {}", err))?;
-  let client = Client::builder()
+  let mut builder = Client::builder()
     .default_headers(_headers)
     .redirect(reqwest::redirect::Policy::limited(3))
-    .connect_timeout(Duration::new(3, 0))
+    .connect_timeout(Duration::new(3, 0));
+
+  if let Some(ref pu) = proxy_url {
+    let pu = pu.trim().to_string();
+    if !pu.is_empty() {
+      let proxy = Proxy::all(&pu)
+        .map_err(|err| format!("failed to parse proxy url: {}", err))?;
+      builder = builder.no_proxy().proxy(proxy);
+    }
+  }
+
+  let client = builder
     .build()
     .map_err(|err| format!("failed to generate client: {}", err))?;
 
