@@ -1869,7 +1869,7 @@ function _Chat() {
                             </div>
                             {!isUser && (
                               <div className={styles["chat-model-name"]}>
-                                {message.model}
+                                {message.modelDisplayName ?? message.model}
                               </div>
                             )}
 
