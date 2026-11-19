@@ -77,6 +77,7 @@ export const DEFAULT_CONFIG = {
     compressModel: "",
     compressProviderName: "",
     enableInjectSystemPrompts: true,
+    enableWebSearch: false,
     template: config?.template ?? DEFAULT_INPUT_TEMPLATE,
     size: "1024x1024" as ModelSize,
     quality: "standard" as DalleQuality,
@@ -195,7 +196,7 @@ export const useAppConfig = createPersistStore(
   }),
   {
     name: StoreKey.Config,
-    version: 4.1,
+    version: 4.2,
 
     merge(persistedState, currentState) {
       const state = persistedState as ChatConfig | undefined;
@@ -253,6 +254,11 @@ export const useAppConfig = createPersistStore(
           DEFAULT_CONFIG.modelConfig.compressModel;
         state.modelConfig.compressProviderName =
           DEFAULT_CONFIG.modelConfig.compressProviderName;
+      }
+
+      if (version < 4.2) {
+        state.modelConfig.enableWebSearch =
+          DEFAULT_CONFIG.modelConfig.enableWebSearch;
       }
 
       return state as any;

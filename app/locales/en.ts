@@ -555,6 +555,10 @@ const en: LocaleType = {
       },
     },
 
+    EnableWebSearch: {
+      Title: "Enable Web Search",
+      SubTitle: "Enable web search tool for this model (Gemini only)",
+    },
     Model: "Model",
     CompressModel: {
       Title: "Summary Model",

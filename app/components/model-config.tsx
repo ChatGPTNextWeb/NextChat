@@ -241,6 +241,23 @@ export function ModelConfigList(props: {
           }
         ></input>
       </ListItem>
+      {props.modelConfig?.providerName == ServiceProvider.Google && (
+        <ListItem
+          title={Locale.Settings.EnableWebSearch.Title}
+          subTitle={Locale.Settings.EnableWebSearch.SubTitle}
+        >
+          <input
+            aria-label={Locale.Settings.EnableWebSearch.Title}
+            type="checkbox"
+            checked={props.modelConfig.enableWebSearch}
+            onChange={(e) =>
+              props.updateConfig(
+                (config) => (config.enableWebSearch = e.currentTarget.checked),
+              )
+            }
+          ></input>
+        </ListItem>
+      )}
       <ListItem
         title={Locale.Settings.CompressModel.Title}
         subTitle={Locale.Settings.CompressModel.SubTitle}
