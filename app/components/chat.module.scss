@@ -321,6 +321,20 @@
   }
 }
 
+.chat-message-checkbox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 8px;
+  cursor: pointer;
+
+  input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+  }
+}
+
 .chat-message-user {
   display: flex;
   flex-direction: row-reverse;
@@ -566,6 +580,30 @@
     .chat-input-action {
       margin-bottom: 10px;
     }
+  }
+}
+
+.chat-selection-panel {
+  position: relative;
+  width: 100%;
+  padding: 16px 20px;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: var(--border-in-light);
+  box-shadow: var(--card-shadow);
+  background-color: var(--white);
+
+  .chat-selection-info {
+    font-size: 14px;
+    color: var(--black);
+    font-weight: 500;
+  }
+
+  .chat-selection-actions {
+    display: flex;
+    gap: 12px;
   }
 }
 

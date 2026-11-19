@@ -45,7 +45,9 @@ const en: LocaleType = {
     Actions: {
       ChatList: "Go To Chat List",
       CompressedHistory: "Compressed History Memory Prompt",
-      Export: "Export All Messages as Markdown",
+      Export: "Export All Messages",
+      ExportMarkdown: "Export as Markdown",
+      SelectionMode: "Selection Mode",
       Copy: "Copy",
       Stop: "Stop",
       Retry: "Retry",
@@ -59,6 +61,12 @@ const en: LocaleType = {
       RefreshToast: "Title refresh request sent",
       Speech: "Play",
       StopSpeech: "Stop",
+    },
+    Selection: {
+      SelectedCount: (count: number) => `${count} messages selected`,
+      Cancel: "Cancel",
+      ExportMarkdown: "Export Selected as Markdown",
+      NoSelection: "Please select messages first",
     },
     Commands: {
       new: "Start a new chat",
