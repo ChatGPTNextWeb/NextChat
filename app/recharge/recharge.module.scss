@@ -1,0 +1,21 @@
+.guide {
+  box-sizing: border-box;
+  max-width: 44rem;
+  max-height: 100dvh;
+  overflow-y: auto;
+  margin: 0 auto;
+  padding: clamp(1.5rem, 6vw, 4rem);
+  line-height: 1.65;
+
+  h1 {
+    margin-block: 1rem 1.5rem;
+  }
+
+  h2 {
+    margin-top: 1.5rem;
+  }
+
+  a {
+    color: var(--primary);
+  }
+}

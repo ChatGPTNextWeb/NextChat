@@ -7,12 +7,13 @@ import type { Metadata, Viewport } from "next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { GoogleTagManager, GoogleAnalytics } from "@next/third-parties/google";
 import { getServerSideConfig } from "./config/server";
+import { SITE_NAME } from "./config/site";
 
 export const metadata: Metadata = {
-  title: "NextChat",
-  description: "Your personal AI assistant.",
+  title: SITE_NAME,
+  description: "各有解 AI 对话与使用指南。",
   appleWebApp: {
-    title: "NextChat",
+    title: SITE_NAME,
     statusBarStyle: "default",
   },
 };

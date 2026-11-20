@@ -5,54 +5,7 @@
   height: 100%;
   width: 100%;
   flex-direction: column;
-  .top-banner {
-    position: relative;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 12px 64px;
-    box-sizing: border-box;
-    background: var(--second);
-    .top-banner-inner {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 14px;
-      line-height: 150%;
-      span {
-        gap: 8px;
-        a {
-          display: inline-flex;
-          align-items: center;
-          text-decoration: none;
-          margin-left: 8px;
-          color: var(--primary);
-        }
-      }
-    }
-    .top-banner-close {
-      cursor: pointer;
-      position: absolute;
-      top: 50%;
-      right: 48px;
-      transform: translateY(-50%);
-    }
-  }
-
-  @media (max-width: 600px) {
-    .top-banner {
-      padding: 12px 24px 12px 12px;
-      .top-banner-close {
-        right: 10px;
-      }
-      .top-banner-inner {
-        .top-banner-logo {
-          margin-right: 8px;
-        }
-      }
-    }
-  }
+  overflow-y: auto;
 
   .auth-header {
     display: flex;
@@ -87,10 +40,25 @@
     margin: 0 0 3vh 0;
   }
 
+  .auth-advanced {
+    margin-bottom: 1rem;
+    padding-inline: 1rem;
+
+    summary {
+      cursor: pointer;
+      text-align: center;
+    }
+  }
+
   .auth-actions {
     display: flex;
     justify-content: center;
     flex-direction: column;
+
+    a {
+      color: var(--primary);
+      text-align: center;
+    }
 
     button:not(:last-child) {
       margin-bottom: 10px;

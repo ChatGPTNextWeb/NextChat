@@ -25,8 +25,14 @@ import {
   Path,
   REPO_URL,
 } from "../constant";
+import {
+  RECHARGE_GUIDE_LABEL,
+  RECHARGE_GUIDE_PATH,
+  SITE_NAME,
+} from "../config/site";
 
 import { Link, useNavigate } from "react-router-dom";
+import NextLink from "next/link";
 import { isIOS, useMobileScreen } from "../utils";
 import dynamic from "next/dynamic";
 import { Selector, showConfirm } from "./ui-lib";
@@ -250,8 +256,10 @@ export function SideBar(props: { className?: string }) {
       {...props}
     >
       <SideBarHeader
-        title="NextChat"
-        subTitle="Build your own AI assistant."
+        title={SITE_NAME}
+        subTitle={
+          <NextLink href={RECHARGE_GUIDE_PATH}>{RECHARGE_GUIDE_LABEL}</NextLink>
+        }
         logo={<NextChatIcon />}
         shouldNarrow={shouldNarrow}
       >
