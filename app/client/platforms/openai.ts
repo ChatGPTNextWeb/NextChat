@@ -64,7 +64,7 @@ export interface RequestPayload {
   temperature: number;
   presence_penalty: number;
   frequency_penalty: number;
-  top_p: number;
+  top_p?: number;
   max_tokens?: number;
   max_completion_tokens?: number;
 }
@@ -240,6 +240,8 @@ export class ChatGPTApi implements LLMApi {
       };
 
       if (isGpt5) {
+        // GPT-5 models reject top_p
+        delete requestPayload.top_p;
   	// Remove max_tokens if present
   	delete requestPayload.max_tokens;
   	// Add max_completion_tokens (or max_completion_tokens if that's what you meant)
