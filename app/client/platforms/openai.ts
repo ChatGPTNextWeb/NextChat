@@ -84,6 +84,7 @@ export class ChatGPTApi implements LLMApi {
 
   path(path: string): string {
     const accessStore = useAccessStore.getState();
+    if (accessStore.pilotApiKey) return `${ApiPath.OpenAI}/${path}`;
 
     let baseUrl = "";
 
@@ -314,7 +315,7 @@ export class ChatGPTApi implements LLMApi {
         streamWithThink(
           chatPath,
           requestPayload,
-          getHeaders(),
+          getHeaders(false, chatPath),
           tools as any,
           funcs,
           controller,
@@ -407,7 +408,7 @@ export class ChatGPTApi implements LLMApi {
           method: "POST",
           body: JSON.stringify(requestPayload),
           signal: controller.signal,
-          headers: getHeaders(),
+          headers: getHeaders(false, chatPath),
         };
 
         // make a fetch request

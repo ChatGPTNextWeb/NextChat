@@ -1793,6 +1793,18 @@ export function Settings() {
             <Link href={RECHARGE_GUIDE_PATH}>查看指南</Link>
           </ListItem>
           {accessCodeComponent}
+          {accessStore.pilotApiKey && (
+            <ListItem title="专属试点卡" subTitle="当前对话使用专属卡额度">
+              <button
+                type="button"
+                onClick={() =>
+                  accessStore.update((access) => (access.pilotApiKey = ""))
+                }
+              >
+                退出专属卡
+              </button>
+            </ListItem>
+          )}
 
           {!accessStore.hideUserApiKey && (
             <>

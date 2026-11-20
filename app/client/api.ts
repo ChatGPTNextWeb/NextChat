@@ -1,7 +1,9 @@
 import { getClientConfig } from "../config/client";
 import {
   ACCESS_CODE_PREFIX,
+  ApiPath,
   ModelProvider,
+  OpenaiPath,
   ServiceProvider,
 } from "../constant";
 import {
@@ -241,7 +243,7 @@ export function validString(x: string): boolean {
   return x?.length > 0;
 }
 
-export function getHeaders(ignoreHeaders: boolean = false) {
+export function getHeaders(ignoreHeaders: boolean = false, target?: string) {
   const accessStore = useAccessStore.getState();
   const chatStore = useChatStore.getState();
   let headers: Record<string, string> = {};
@@ -250,6 +252,14 @@ export function getHeaders(ignoreHeaders: boolean = false) {
       "Content-Type": "application/json",
       Accept: "application/json",
     };
+  }
+
+  // A pilot card belongs to the site's own chat proxy, not provider adapters.
+  if (accessStore.pilotApiKey) {
+    if (target === `${ApiPath.OpenAI}/${OpenaiPath.ChatPath}`) {
+      headers.Authorization = getBearerToken(accessStore.pilotApiKey);
+    }
+    return headers;
   }
 
   const clientConfig = getClientConfig();

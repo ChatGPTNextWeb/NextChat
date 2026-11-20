@@ -19,14 +19,13 @@ import {
   SILICONFLOW_BASE_URL,
   AI302_BASE_URL,
 } from "../constant";
-import { getHeaders } from "../client/api";
 import { getClientConfig } from "../config/client";
 import { createPersistStore } from "../utils/store";
 import { ensure } from "../utils/clone";
 import { DEFAULT_CONFIG } from "./config";
 import { getModelProvider } from "../utils/model";
 
-let fetchState = 0; // 0 not fetch, 1 fetching, 2 done
+let configFetch: Promise<boolean> | undefined;
 
 const isApp = getClientConfig()?.buildMode === "export";
 
@@ -64,6 +63,7 @@ const DEFAULT_AI302_URL = isApp ? AI302_BASE_URL : ApiPath["302.AI"];
 
 const DEFAULT_ACCESS_STATE = {
   accessCode: "",
+  pilotApiKey: "",
   useCustomConfig: false,
 
   provider: ServiceProvider.OpenAI,
@@ -173,7 +173,7 @@ export const useAccessStore = createPersistStore(
     },
 
     isValidOpenAI() {
-      return ensure(get(), ["openaiApiKey"]);
+      return !!get().pilotApiKey || ensure(get(), ["openaiApiKey"]);
     },
 
     isValidAzure() {
@@ -250,16 +250,13 @@ export const useAccessStore = createPersistStore(
       );
     },
     fetch() {
-      if (fetchState > 0 || getClientConfig()?.buildMode === "export") return;
-      fetchState = 1;
-      fetch("/api/config", {
-        method: "post",
-        body: null,
-        headers: {
-          ...getHeaders(),
-        },
-      })
-        .then((res) => res.json())
+      if (getClientConfig()?.buildMode === "export") return;
+      if (configFetch) return configFetch;
+      configFetch = fetch("/api/config")
+        .then((res) => {
+          if (!res.ok) throw new Error("Could not load site configuration");
+          return res.json();
+        })
         .then((res) => {
           const defaultModel = res.defaultModel ?? "";
           if (defaultModel !== "") {
@@ -273,13 +270,14 @@ export const useAccessStore = createPersistStore(
         .then((res: DangerConfig) => {
           console.log("[Config] got config from server", res);
           set(() => ({ ...res }));
+          return true;
         })
         .catch(() => {
           console.error("[Config] failed to fetch config");
-        })
-        .finally(() => {
-          fetchState = 2;
+          configFetch = undefined;
+          return false;
         });
+      return configFetch;
     },
   }),
   {

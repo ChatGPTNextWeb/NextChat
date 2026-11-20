@@ -456,11 +456,14 @@ export const useChatStore = createPersistStore(
           ]);
         });
 
-        const api: ClientApi = getClientApi(modelConfig.providerName);
+        const providerName = useAccessStore.getState().pilotApiKey
+          ? ServiceProvider.OpenAI
+          : modelConfig.providerName;
+        const api: ClientApi = getClientApi(providerName);
         // make request
         api.llm.chat({
           messages: sendMessages,
-          config: { ...modelConfig, stream: true },
+          config: { ...modelConfig, providerName, stream: true },
           onUpdate(message) {
             botMessage.streaming = true;
             if (message) {
@@ -664,6 +667,7 @@ export const useChatStore = createPersistStore(
         refreshTitle: boolean = false,
         targetSession: ChatSession,
       ) {
+        if (useAccessStore.getState().pilotApiKey) return;
         const config = useAppConfig.getState();
         const session = targetSession;
         const modelConfig = session.mask.modelConfig;

@@ -15,19 +15,29 @@ export function useCommand(commands: Commands = {}) {
   const [searchParams, setSearchParams] = useSearchParams();
 
   useEffect(() => {
-    let shouldUpdate = false;
-    searchParams.forEach((param, name) => {
-      const commandName = name as keyof Commands;
-      if (typeof commands[commandName] === "function") {
-        commands[commandName]!(param);
-        searchParams.delete(name);
-        shouldUpdate = true;
+    const remaining = new URLSearchParams(searchParams);
+    const pending: Array<[Command, string]> = [];
+    for (const [name, param] of searchParams) {
+      const command = commands[name as keyof Commands];
+      if (!Object.hasOwn(commands, name) || !command || !remaining.has(name)) {
+        continue;
       }
-    });
-
-    if (shouldUpdate) {
-      setSearchParams(searchParams);
+      pending.push([command, param]);
+      remaining.delete(name);
     }
+    if (commands.settings) {
+      remaining.delete("key");
+      const url = new URL(window.location.href);
+      if (url.searchParams.has("settings") || url.searchParams.has("key")) {
+        url.searchParams.delete("settings");
+        url.searchParams.delete("key");
+        window.history.replaceState(window.history.state, "", url);
+      }
+    }
+    if (remaining.toString() !== searchParams.toString()) {
+      setSearchParams(remaining, { replace: true });
+    }
+    pending.forEach(([command, param]) => command(param));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams, commands]);
 }

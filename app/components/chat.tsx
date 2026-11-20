@@ -1456,37 +1456,55 @@ function _Chat() {
         }
       });
     },
-    settings: (text) => {
-      if (accessStore.disableFastLink) return;
-
+    settings: async (text) => {
+      let payload: { key?: unknown; url?: unknown } | null;
       try {
-        const payload = JSON.parse(text) as {
-          key?: string;
-          url?: string;
-        };
+        payload = JSON.parse(text);
+      } catch {
+        return;
+      }
+      if (!payload || typeof payload !== "object" || Array.isArray(payload)) {
+        return;
+      }
+      const key = typeof payload.key === "string" ? payload.key : "";
+      const url = typeof payload.url === "string" ? payload.url : "";
+      if (!key && !url) return;
 
-        console.log("[Command] got settings from url: ", payload);
+      const configFetch = useAccessStore.getState().fetch();
+      if (configFetch && !(await configFetch)) return;
+      const current = useAccessStore.getState();
+      if (current.disableFastLink || current.hideUserApiKey) return;
 
-        if (payload.key || payload.url) {
-          showConfirm(
-            Locale.URLCommand.Settings +
-              `\n${JSON.stringify(payload, null, 4)}`,
-          ).then((res) => {
-            if (!res) return;
-            if (payload.key) {
-              accessStore.update(
-                (access) => (access.openaiApiKey = payload.key!),
-              );
-            }
-            if (payload.url) {
-              accessStore.update((access) => (access.openaiUrl = payload.url!));
-            }
-            accessStore.update((access) => (access.useCustomConfig = true));
+      const pilotLink =
+        !!configFetch &&
+        !clientConfig?.isApp &&
+        Object.keys(payload).length === 1 &&
+        /^sk-[A-Za-z0-9_-]{20,128}$/.test(key);
+      const replacesExisting =
+        current.pilotApiKey && current.pilotApiKey !== key;
+      if (
+        (!pilotLink || replacesExisting) &&
+        !(await showConfirm(Locale.URLCommand.Settings))
+      )
+        return;
+
+      if (pilotLink) {
+        current.update((access) => (access.pilotApiKey = key));
+        if (current.defaultModel && session.messages.length === 0) {
+          const [model] = getModelProvider(current.defaultModel);
+          chatStore.updateTargetSession(session, (target) => {
+            target.mask.modelConfig.model = model;
+            target.mask.modelConfig.providerName = ServiceProvider.OpenAI;
           });
         }
-      } catch {
-        console.error("[Command] failed to get settings from url: ", text);
+        return;
       }
+      current.update((access) => {
+        access.pilotApiKey = "";
+        if (key) access.openaiApiKey = key;
+        if (url) access.openaiUrl = url;
+        access.useCustomConfig = true;
+      });
     },
   });
 
