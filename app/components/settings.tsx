@@ -1740,6 +1740,22 @@ export function Settings() {
               }
             ></input>
           </ListItem>
+          <ListItem
+            title={Locale.Settings.LoadModelImages.Title}
+            subTitle={Locale.Settings.LoadModelImages.SubTitle}
+          >
+            <input
+              aria-label={Locale.Settings.LoadModelImages.Title}
+              type="checkbox"
+              checked={config.loadModelImages}
+              onChange={(e) =>
+                updateConfig(
+                  (config) =>
+                    (config.loadModelImages = e.currentTarget.checked),
+                )
+              }
+            ></input>
+          </ListItem>
         </List>
 
         <SyncItems />

@@ -55,6 +55,8 @@ export const DEFAULT_CONFIG = {
 
   enableCodeFold: true, // code fold config
 
+  loadModelImages: false, // fetch images in model replies without a click
+
   disablePromptHint: false,
 
   dontShowMaskSplashScreen: false, // dont show splash screen when create chat

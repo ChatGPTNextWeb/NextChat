@@ -11,6 +11,7 @@ import mermaid from "mermaid";
 import Locale from "../locales";
 import LoadingIcon from "../icons/three-dots.svg";
 import ReloadButtonIcon from "../icons/reload.svg";
+import ImageIcon from "../icons/image.svg";
 import React from "react";
 import { useDebouncedCallback } from "use-debounce";
 import { showImageModal, FullScreen } from "./ui-lib";
@@ -228,6 +229,32 @@ function CustomCode(props: { children: any; className?: string }) {
   );
 }
 
+// Loading an image the model wrote sends a request to a URL it chose, which
+// can leak the conversation, so wait for a click unless the user opted in.
+function MarkdownImage(props: React.ImgHTMLAttributes<HTMLImageElement>) {
+  const config = useAppConfig();
+  const [load, setLoad] = useState(false);
+
+  if (config.loadModelImages || load) {
+    return <img {...props} alt={props.alt} />;
+  }
+
+  let host = "";
+  try {
+    host = new URL(props.src ?? "", window.location.href).hostname;
+  } catch {}
+
+  return (
+    <IconButton
+      icon={<ImageIcon />}
+      text={Locale.Settings.LoadModelImages.Load(host || props.alt || "")}
+      title={props.src}
+      bordered
+      onClick={() => setLoad(true)}
+    />
+  );
+}
+
 function escapeBrackets(text: string) {
   const pattern =
     /(```[\s\S]*?```|`.*?`)|\\\[([\s\S]*?[^\\])\\\]|\\\((.*?)\\\)/g;
@@ -289,6 +316,7 @@ function _MarkDownContent(props: { content: string }) {
         pre: PreCode,
         code: CustomCode,
         p: (pProps) => <p {...pProps} dir="auto" />,
+        img: ({ node, ...imgProps }) => <MarkdownImage {...imgProps} />,
         a: (aProps) => {
           const href = aProps.href || "";
           if (/\.(aac|mp3|opus|wav)$/.test(href)) {

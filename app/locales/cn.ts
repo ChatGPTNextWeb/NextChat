@@ -215,6 +215,11 @@ const cn = {
       Title: "预览气泡",
       SubTitle: "在预览气泡中预览 Markdown 内容",
     },
+    LoadModelImages: {
+      Title: "自动加载回复中的图片",
+      SubTitle: "模型输出的图片仅在点击后才会加载，开启后将自动加载",
+      Load: (host: string) => `加载来自 ${host} 的图片`,
+    },
     AutoGenerateTitle: {
       Title: "自动生成标题",
       SubTitle: "根据对话内容生成合适的标题",
