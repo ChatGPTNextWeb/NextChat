@@ -218,6 +218,12 @@ const en: LocaleType = {
       Title: "Send Preview Bubble",
       SubTitle: "Preview markdown in bubble",
     },
+    LoadModelImages: {
+      Title: "Load images in replies",
+      SubTitle:
+        "Images written by the model are only fetched after you click them. Turn on to load them automatically.",
+      Load: (host: string) => `Load image from ${host}`,
+    },
     AutoGenerateTitle: {
       Title: "Auto Generate Title",
       SubTitle: "Generate a suitable title based on the conversation content",
