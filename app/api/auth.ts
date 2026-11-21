@@ -1,7 +1,14 @@
 import { NextRequest } from "next/server";
 import { getServerSideConfig } from "../config/server";
 import md5 from "spark-md5";
-import { ACCESS_CODE_PREFIX, ModelProvider } from "../constant";
+import { ACCESS_CODE_PREFIX, ModelProvider, OpenaiPath } from "../constant";
+import {
+  AccountError,
+  refreshSession,
+  usesAccountRelay,
+  userInfo,
+} from "./account/new-api";
+import { readAccountSession, type AccountSession } from "./account/session";
 
 function getIP(req: NextRequest) {
   let ip = req.ip ?? req.headers.get("x-real-ip");
@@ -22,6 +29,50 @@ function parseApiKey(bearToken: string) {
     accessCode: isApiKey ? "" : token.slice(ACCESS_CODE_PREFIX.length),
     apiKey: isApiKey ? token : "",
   };
+}
+
+type OpenAIAuth =
+  | { error: true; msg: string; status: number; clearSession?: boolean }
+  | { error: false; refreshedSession?: AccountSession };
+
+export async function authOpenAI(
+  req: NextRequest,
+  subpath: string,
+): Promise<OpenAIAuth> {
+  const { apiKey } = parseApiKey(req.headers.get("Authorization") ?? "");
+  if (
+    !apiKey &&
+    (subpath === OpenaiPath.ChatPath || subpath === OpenaiPath.ListModelPath) &&
+    usesAccountRelay(getServerSideConfig().baseUrl)
+  ) {
+    const session = await readAccountSession(req);
+    if (session) {
+      try {
+        const active = await refreshSession(session);
+        const user = await userInfo(active.access);
+        if (user.id !== active.id)
+          throw new AccountError(401, "登录已过期，请重新登录。");
+        req.headers.set("Authorization", "Bearer " + active.chatKey);
+        return {
+          error: false,
+          refreshedSession: active === session ? undefined : active,
+        };
+      } catch (error) {
+        const status = error instanceof AccountError ? error.status : 502;
+        return {
+          error: true,
+          msg:
+            status === 401 ? "登录已过期，请重新登录。" : "暂时无法验证账号。",
+          status,
+          clearSession: status === 401,
+        };
+      }
+    }
+  }
+  const legacy = auth(req, ModelProvider.GPT);
+  return legacy.error
+    ? { error: true, msg: legacy.msg ?? "Unauthorized", status: 401 }
+    : { error: false };
 }
 
 export function auth(req: NextRequest, modelProvider: ModelProvider) {

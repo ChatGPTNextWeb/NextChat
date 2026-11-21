@@ -140,6 +140,7 @@ const DEFAULT_ACCESS_STATE = {
   ai302ApiKey: "",
 
   // server config
+  accountEnabled: false,
   needCode: true,
   hideUserApiKey: false,
   hideBalanceQuery: false,

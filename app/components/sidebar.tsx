@@ -38,6 +38,7 @@ import dynamic from "next/dynamic";
 import { Selector, showConfirm } from "./ui-lib";
 import clsx from "clsx";
 import { isMcpEnabled } from "../mcp/actions";
+import { AccountPanel } from "./account";
 
 const DISCOVERY = [
   { name: Locale.Plugin.Name, path: Path.Plugins },
@@ -322,6 +323,7 @@ export function SideBar(props: { className?: string }) {
       >
         <ChatList narrow={shouldNarrow} />
       </SideBarBody>
+      <AccountPanel narrow={shouldNarrow} />
       <SideBarTail
         primaryAction={
           <>

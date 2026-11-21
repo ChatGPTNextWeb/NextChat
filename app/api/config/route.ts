@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 
 import { getServerSideConfig } from "../../config/server";
+import { accountEnabled } from "../account/session";
+import { usesAccountRelay } from "../account/new-api";
 
 const serverConfig = getServerSideConfig();
 
@@ -18,11 +20,14 @@ const DANGER_CONFIG = {
 };
 
 declare global {
-  type DangerConfig = typeof DANGER_CONFIG;
+  type DangerConfig = typeof DANGER_CONFIG & { accountEnabled: boolean };
 }
 
 async function handle() {
-  return NextResponse.json(DANGER_CONFIG);
+  return NextResponse.json({
+    ...DANGER_CONFIG,
+    accountEnabled: accountEnabled() && usesAccountRelay(serverConfig.baseUrl),
+  });
 }
 
 export const GET = handle;

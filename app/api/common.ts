@@ -3,6 +3,7 @@ import { getServerSideConfig } from "../config/server";
 import { OPENAI_BASE_URL, ServiceProvider } from "../constant";
 import { cloudflareAIGatewayUrl } from "../utils/cloudflare";
 import { getModelProvider, isModelNotavailableInServer } from "../utils/model";
+import { usesAccountRelay } from "./account/new-api";
 
 const serverConfig = getServerSideConfig();
 
@@ -38,6 +39,10 @@ export async function requestOpenai(req: NextRequest) {
 
   if (baseUrl.endsWith("/")) {
     baseUrl = baseUrl.slice(0, -1);
+  }
+
+  if (!isAzure && usesAccountRelay(baseUrl)) {
+    baseUrl = new URL(baseUrl).origin;
   }
 
   console.log("[Proxy] ", path);

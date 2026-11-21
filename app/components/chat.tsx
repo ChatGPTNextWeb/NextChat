@@ -122,6 +122,7 @@ import { MsEdgeTTS, OUTPUT_FORMAT } from "../utils/ms_edge_tts";
 
 import { isEmpty } from "lodash-es";
 import { getModelProvider } from "../utils/model";
+import { useAccountStore } from "../store/account";
 import { RealtimeChat } from "@/app/components/realtime-chat";
 import clsx from "clsx";
 import { getAvailableClientsCount, isMcpEnabled } from "../mcp/actions";
@@ -1340,7 +1341,7 @@ function _Chat() {
     session.messages.at(0)?.content !== BOT_HELLO.content
   ) {
     const copiedHello = Object.assign({}, BOT_HELLO);
-    if (!accessStore.isAuthorized()) {
+    if (!accessStore.isAuthorized() && !useAccountStore.getState().user) {
       copiedHello.content = Locale.Error.Unauthorized;
     }
     context.push(copiedHello);
@@ -1449,61 +1450,10 @@ function _Chat() {
     },
     code: (text) => {
       if (accessStore.disableFastLink) return;
-      console.log("[Command] got code from url: ", text);
       showConfirm(Locale.URLCommand.Code + `code = ${text}`).then((res) => {
         if (res) {
           accessStore.update((access) => (access.accessCode = text));
         }
-      });
-    },
-    settings: async (text) => {
-      let payload: { key?: unknown; url?: unknown } | null;
-      try {
-        payload = JSON.parse(text);
-      } catch {
-        return;
-      }
-      if (!payload || typeof payload !== "object" || Array.isArray(payload)) {
-        return;
-      }
-      const key = typeof payload.key === "string" ? payload.key : "";
-      const url = typeof payload.url === "string" ? payload.url : "";
-      if (!key && !url) return;
-
-      const configFetch = useAccessStore.getState().fetch();
-      if (configFetch && !(await configFetch)) return;
-      const current = useAccessStore.getState();
-      if (current.disableFastLink || current.hideUserApiKey) return;
-
-      const pilotLink =
-        !!configFetch &&
-        !clientConfig?.isApp &&
-        Object.keys(payload).length === 1 &&
-        /^sk-[A-Za-z0-9_-]{20,128}$/.test(key);
-      const replacesExisting =
-        current.pilotApiKey && current.pilotApiKey !== key;
-      if (
-        (!pilotLink || replacesExisting) &&
-        !(await showConfirm(Locale.URLCommand.Settings))
-      )
-        return;
-
-      if (pilotLink) {
-        current.update((access) => (access.pilotApiKey = key));
-        if (current.defaultModel && session.messages.length === 0) {
-          const [model] = getModelProvider(current.defaultModel);
-          chatStore.updateTargetSession(session, (target) => {
-            target.mask.modelConfig.model = model;
-            target.mask.modelConfig.providerName = ServiceProvider.OpenAI;
-          });
-        }
-        return;
-      }
-      current.update((access) => {
-        access.pilotApiKey = "";
-        if (key) access.openaiApiKey = key;
-        if (url) access.openaiUrl = url;
-        access.useCustomConfig = true;
       });
     },
   });

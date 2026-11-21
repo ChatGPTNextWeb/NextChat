@@ -1,10 +1,11 @@
 import { type OpenAIListModelResponse } from "@/app/client/platforms/openai";
 import { getServerSideConfig } from "@/app/config/server";
-import { ModelProvider, OpenaiPath } from "@/app/constant";
+import { OpenaiPath } from "@/app/constant";
 import { prettyObject } from "@/app/utils/format";
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "./auth";
+import { authOpenAI } from "./auth";
 import { requestOpenai } from "./common";
+import { writeAccountSession } from "./account/session";
 
 const ALLOWED_PATH = new Set(Object.values(OpenaiPath));
 
@@ -51,11 +52,29 @@ export async function handle(
     );
   }
 
-  const authResult = auth(req, ModelProvider.GPT);
+  const authResult = await authOpenAI(req, subpath);
   if (authResult.error) {
-    return NextResponse.json(authResult, {
-      status: 401,
+    const response = NextResponse.json(
+      { error: true, msg: authResult.msg },
+      {
+        status: authResult.status,
+      },
+    );
+    return authResult.clearSession
+      ? writeAccountSession(response, null)
+      : response;
+  }
+
+  const { refreshedSession } = authResult;
+  function withSession(response: Response) {
+    if (!refreshedSession) return response;
+    const wrapped = new NextResponse(response.body, {
+      status: response.status,
+      statusText: response.statusText,
+      headers: response.headers,
     });
+    wrapped.headers.set("Cache-Control", "private, no-store");
+    return writeAccountSession(wrapped, refreshedSession);
   }
 
   try {
@@ -65,14 +84,16 @@ export async function handle(
     if (subpath === OpenaiPath.ListModelPath && response.status === 200) {
       const resJson = (await response.json()) as OpenAIListModelResponse;
       const availableModels = getModels(resJson);
-      return NextResponse.json(availableModels, {
-        status: response.status,
-      });
+      return withSession(
+        NextResponse.json(availableModels, {
+          status: response.status,
+        }),
+      );
     }
 
-    return response;
+    return withSession(response);
   } catch (e) {
     console.error("[OpenAI] ", e);
-    return NextResponse.json(prettyObject(e));
+    return withSession(NextResponse.json(prettyObject(e)));
   }
 }

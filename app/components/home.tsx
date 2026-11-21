@@ -21,6 +21,7 @@ import {
   Route,
   Routes,
   useLocation,
+  useSearchParams,
 } from "react-router-dom";
 import { SideBar } from "./sidebar";
 import { useAppConfig } from "../store/config";
@@ -30,6 +31,10 @@ import { type ClientApi, getClientApi } from "../client/api";
 import { useAccessStore } from "../store";
 import clsx from "clsx";
 import { initializeMcpSystem, isMcpEnabled } from "../mcp/actions";
+import { useAccountStore } from "../store/account";
+import { AccountEntry } from "./account";
+import { useCommand } from "../command";
+import { applyFastConnection } from "./fast-connection";
 
 export function Loading(props: { noLogo?: boolean }) {
   return (
@@ -160,6 +165,41 @@ export function WindowContent(props: { children: React.ReactNode }) {
 function Screen() {
   const config = useAppConfig();
   const location = useLocation();
+  const [query] = useSearchParams();
+  const access = useAccessStore();
+  const { user, ready, error, refresh } = useAccountStore();
+  const [configReady, setConfigReady] = useState(false);
+  const [fastPending, setFastPending] = useState(false);
+  const accountEnabled = configReady && access.accountEnabled;
+  const hasConnectionCommand = query.has("settings") || fastPending;
+  const legacy = !!(
+    access.accessCode ||
+    access.pilotApiKey ||
+    access.openaiApiKey ||
+    query.has("code")
+  );
+
+  useCommand({
+    settings: (text) => {
+      setFastPending(true);
+      void applyFastConnection(text).finally(() => setFastPending(false));
+    },
+  });
+
+  useEffect(() => {
+    void Promise.resolve(useAccessStore.getState().fetch()).then(() =>
+      setConfigReady(true),
+    );
+  }, []);
+
+  useEffect(() => {
+    if (!accountEnabled) return;
+    const update = () => void refresh();
+    update();
+    window.addEventListener("focus", update);
+    return () => window.removeEventListener("focus", update);
+  }, [accountEnabled, refresh]);
+
   const isArtifact = location.pathname.includes(Path.Artifacts);
   const isHome = location.pathname === Path.Home;
   const isAuth = location.pathname === Path.Auth;
@@ -182,6 +222,18 @@ function Screen() {
     );
   }
   const renderContent = () => {
+    if (!configReady || hasConnectionCommand) return <Loading noLogo />;
+    if (accountEnabled && !legacy && !ready) return <Loading noLogo />;
+    if (accountEnabled && !legacy && !user && error) {
+      return (
+        <WindowContent>
+          <p role="alert">暂时无法确认登录状态。</p>
+          <button onClick={() => void refresh()}>重试</button>
+        </WindowContent>
+      );
+    }
+    if (accountEnabled && (isAuth || (!user && !legacy)))
+      return <AccountEntry />;
     if (isAuth) return <AuthPage />;
     if (isSd) return <Sd />;
     if (isSdNew) return <Sd />;

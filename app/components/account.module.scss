@@ -1,0 +1,168 @@
+.entry {
+  display: grid;
+  place-items: start center;
+  padding: clamp(20px, 6vh, 62px) 20px;
+  box-sizing: border-box;
+  width: 100%;
+  overflow: auto;
+  background: var(--second);
+}
+
+.card,
+.dialog {
+  width: min(100%, 390px);
+  box-sizing: border-box;
+  padding: clamp(20px, 5vw, 34px);
+  border: var(--border-in-light);
+  border-radius: 20px;
+  box-shadow: var(--shadow);
+  background: var(--white);
+  color: var(--black);
+}
+
+.brand,
+.row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.brand svg {
+  width: 42px;
+  height: 42px;
+}
+
+.brand h1 {
+  margin: 0;
+  font-size: 26px;
+}
+
+.tabs {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 5px;
+  padding: 4px;
+  margin: 22px 0 18px;
+  border-radius: 12px;
+  background: var(--second);
+}
+
+.entry button,
+.panel button,
+.accountLogin {
+  cursor: pointer;
+  border: var(--border-in-light);
+  border-radius: 9px;
+  background: var(--white);
+  color: var(--black);
+  padding: 8px 10px;
+  white-space: nowrap;
+}
+
+.entry button:disabled,
+.panel button:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+
+.tabs button[aria-pressed="true"] {
+  background: var(--white);
+  box-shadow: var(--shadow);
+  font-weight: 650;
+}
+
+.tabs button[aria-pressed="false"] {
+  background: transparent;
+  border-color: transparent;
+}
+
+.entry .primary,
+.panel .primary {
+  background: #176c57;
+  color: white;
+  border-color: transparent;
+  font-weight: 650;
+}
+
+.form {
+  display: grid;
+  gap: 10px;
+
+  label {
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  input {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    background: var(--white);
+    color: var(--black);
+    border: var(--border-in-light);
+    border-radius: 8px;
+    padding: 9px 10px;
+    font-size: 16px;
+  }
+
+  input:focus-visible {
+    outline: 2px solid #319a7c;
+    outline-offset: 1px;
+  }
+}
+
+.legacy {
+  margin: 18px 0 12px;
+  padding-top: 14px;
+  border-top: var(--border-in-light);
+  font-size: 13px;
+
+  summary {
+    cursor: pointer;
+  }
+}
+
+.card > a {
+  font-size: 13px;
+  text-decoration: underline;
+}
+
+.panel {
+  display: grid;
+  gap: 6px;
+  margin: 0 0 10px;
+  padding: 8px 0;
+  font-size: 13px;
+  text-align: start;
+
+  strong {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+.dialog {
+  max-width: calc(100vw - 28px);
+
+  h2 {
+    margin: 0 0 10px;
+  }
+
+  &::backdrop {
+    background: rgb(0 0 0 / 45%);
+  }
+}
+
+.error,
+.notice {
+  margin: 0;
+  font-size: 13px;
+}
+
+.error {
+  color: #c44d4d;
+}
+
+.notice {
+  color: var(--black);
+}

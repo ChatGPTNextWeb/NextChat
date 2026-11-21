@@ -56,7 +56,7 @@ if (mode !== "export") {
   nextConfig.headers = async () => {
     return [
       {
-        source: "/api/:path*",
+        source: "/api/:path((?!account(?:/|$)).*)",
         headers: CorsHeaders,
       },
     ];
