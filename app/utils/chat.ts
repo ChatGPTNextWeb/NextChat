@@ -172,6 +172,16 @@ export function removeImage(imageUrl: string) {
   });
 }
 
+function readStreamError(data: string) {
+  try {
+    const event = JSON.parse(data);
+    const error = event?.error;
+    return typeof error === "string" || error?.message ? event : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
 export function stream(
   chatPath: string,
   requestPayload: any,
@@ -365,6 +375,12 @@ export function stream(
         // Skip empty messages
         if (!text || text.trim().length === 0) {
           return;
+        }
+        // A provider can report a failure as an `error` event after part of the answer was streamed.
+        const streamError = readStreamError(text);
+        if (streamError) {
+          remainText += "\n\n" + prettyObject(streamError);
+          return finish();
         }
         try {
           const chunk = parseSSE(text, runTools);
@@ -591,6 +607,12 @@ export function streamWithThink(
         // Skip empty messages
         if (!text || text.trim().length === 0) {
           return;
+        }
+        // A provider can report a failure as an `error` event after part of the answer was streamed.
+        const streamError = readStreamError(text);
+        if (streamError) {
+          remainText += "\n\n" + prettyObject(streamError);
+          return finish();
         }
         try {
           const chunk = parseSSE(text, runTools);
