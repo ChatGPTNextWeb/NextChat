@@ -29,6 +29,7 @@ export const MOONSHOT_BASE_URL = "https://api.moonshot.ai";
 export const IFLYTEK_BASE_URL = "https://spark-api-open.xf-yun.com";
 
 export const DEEPSEEK_BASE_URL = "https://api.deepseek.com";
+export const CROWLLM_BASE_URL = "https://crowllm.com/v1";
 
 export const XAI_BASE_URL = "https://api.x.ai";
 
@@ -73,6 +74,7 @@ export enum ApiPath {
   XAI = "/api/xai",
   ChatGLM = "/api/chatglm",
   DeepSeek = "/api/deepseek",
+  CrowLLM = "/api/crowllm",
   SiliconFlow = "/api/siliconflow",
   "302.AI" = "/api/302ai",
 }
@@ -132,6 +134,7 @@ export enum ServiceProvider {
   XAI = "XAI",
   ChatGLM = "ChatGLM",
   DeepSeek = "DeepSeek",
+  CrowLLM = "CrowLLM",
   SiliconFlow = "SiliconFlow",
   "302.AI" = "302.AI",
 }
@@ -159,6 +162,7 @@ export enum ModelProvider {
   XAI = "XAI",
   ChatGLM = "ChatGLM",
   DeepSeek = "DeepSeek",
+  CrowLLM = "CrowLLM",
   SiliconFlow = "SiliconFlow",
   "302.AI" = "302.AI",
 }
@@ -250,6 +254,11 @@ export const Iflytek = {
 
 export const DeepSeek = {
   ExampleEndpoint: DEEPSEEK_BASE_URL,
+  ChatPath: "chat/completions",
+};
+
+export const CrowLLM = {
+  ExampleEndpoint: CROWLLM_BASE_URL,
   ChatPath: "chat/completions",
 };
 

@@ -472,6 +472,17 @@ const cn = {
           SubTitle: "样例：",
         },
       },
+      CrowLLM: {
+        ApiKey: {
+          Title: "CrowLLM API Key",
+          SubTitle: "使用自定义 CrowLLM API Key",
+          Placeholder: "CrowLLM API Key",
+        },
+        Endpoint: {
+          Title: "接口地址",
+          SubTitle: "示例: ",
+        },
+      },
       XAI: {
         ApiKey: {
           Title: "接口密钥",

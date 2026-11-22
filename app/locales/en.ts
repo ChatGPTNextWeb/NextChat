@@ -457,6 +457,17 @@ const en: LocaleType = {
           SubTitle: "Example: ",
         },
       },
+      CrowLLM: {
+        ApiKey: {
+          Title: "CrowLLM API Key",
+          SubTitle: "Use a custom CrowLLM API Key",
+          Placeholder: "CrowLLM API Key",
+        },
+        Endpoint: {
+          Title: "Endpoint Address",
+          SubTitle: "Example: ",
+        },
+      },
       XAI: {
         ApiKey: {
           Title: "XAI API Key",

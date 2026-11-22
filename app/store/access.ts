@@ -14,6 +14,7 @@ import {
   STABILITY_BASE_URL,
   IFLYTEK_BASE_URL,
   DEEPSEEK_BASE_URL,
+  CROWLLM_BASE_URL,
   XAI_BASE_URL,
   CHATGLM_BASE_URL,
   SILICONFLOW_BASE_URL,
@@ -51,6 +52,7 @@ const DEFAULT_STABILITY_URL = isApp ? STABILITY_BASE_URL : ApiPath.Stability;
 const DEFAULT_IFLYTEK_URL = isApp ? IFLYTEK_BASE_URL : ApiPath.Iflytek;
 
 const DEFAULT_DEEPSEEK_URL = isApp ? DEEPSEEK_BASE_URL : ApiPath.DeepSeek;
+const DEFAULT_CROWLLM_URL = isApp ? CROWLLM_BASE_URL : ApiPath.CrowLLM;
 
 const DEFAULT_XAI_URL = isApp ? XAI_BASE_URL : ApiPath.XAI;
 
@@ -122,6 +124,8 @@ const DEFAULT_ACCESS_STATE = {
   // deepseek
   deepseekUrl: DEFAULT_DEEPSEEK_URL,
   deepseekApiKey: "",
+  crowllmUrl: DEFAULT_CROWLLM_URL,
+  crowllmApiKey: "",
 
   // xai
   xaiUrl: DEFAULT_XAI_URL,
@@ -214,6 +218,10 @@ export const useAccessStore = createPersistStore(
       return ensure(get(), ["deepseekApiKey"]);
     },
 
+    isValidCrowLLM() {
+      return ensure(get(), ["crowllmApiKey"]);
+    },
+
     isValidXAI() {
       return ensure(get(), ["xaiApiKey"]);
     },
@@ -242,6 +250,7 @@ export const useAccessStore = createPersistStore(
         this.isValidMoonshot() ||
         this.isValidIflytek() ||
         this.isValidDeepSeek() ||
+        this.isValidCrowLLM() ||
         this.isValidXAI() ||
         this.isValidChatGLM() ||
         this.isValidSiliconFlow() ||
