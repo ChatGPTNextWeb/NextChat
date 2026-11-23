@@ -660,6 +660,14 @@ const iflytekModels = [
 ];
 
 const deepseekModels = ["deepseek-chat", "deepseek-coder", "deepseek-reasoner"];
+const crowllmModels = [
+  "glm-5.3",
+  "deepseek-v4-flash",
+  "kimi-k3",
+  "claude-opus-4-7",
+  "gemini-3.7-flash",
+  "grok-4.7:free",
+];
 
 const xAIModes = [
   "grok-beta",
@@ -894,6 +902,17 @@ export const DEFAULT_MODELS = [
       providerName: "DeepSeek",
       providerType: "deepseek",
       sorted: 13,
+    },
+  })),
+  ...crowllmModels.map((name) => ({
+    name,
+    available: true,
+    sorted: seq++,
+    provider: {
+      id: "crowllm",
+      providerName: "CrowLLM",
+      providerType: "crowllm",
+      sorted: 16,
     },
   })),
   ...siliconflowModels.map((name) => ({
