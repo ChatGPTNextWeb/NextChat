@@ -74,6 +74,7 @@ import {
   SAAS_CHAT_URL,
   ChatGLM,
   DeepSeek,
+  CrowLLM,
   SiliconFlow,
   AI302,
 } from "../constant";
@@ -1241,6 +1242,47 @@ export function Settings() {
     </>
   );
 
+  const crowllmConfigComponent = accessStore.provider ===
+    ServiceProvider.CrowLLM && (
+    <>
+      <ListItem
+        title={Locale.Settings.Access.CrowLLM.Endpoint.Title}
+        subTitle={
+          Locale.Settings.Access.CrowLLM.Endpoint.SubTitle +
+          CrowLLM.ExampleEndpoint
+        }
+      >
+        <input
+          aria-label={Locale.Settings.Access.CrowLLM.Endpoint.Title}
+          type="text"
+          value={accessStore.crowllmUrl}
+          placeholder={CrowLLM.ExampleEndpoint}
+          onChange={(e) =>
+            accessStore.update(
+              (access) => (access.crowllmUrl = e.currentTarget.value),
+            )
+          }
+        ></input>
+      </ListItem>
+      <ListItem
+        title={Locale.Settings.Access.CrowLLM.ApiKey.Title}
+        subTitle={Locale.Settings.Access.CrowLLM.ApiKey.SubTitle}
+      >
+        <PasswordInput
+          aria-label={Locale.Settings.Access.CrowLLM.ApiKey.Title}
+          value={accessStore.crowllmApiKey}
+          type="text"
+          placeholder={Locale.Settings.Access.CrowLLM.ApiKey.Placeholder}
+          onChange={(e) => {
+            accessStore.update(
+              (access) => (access.crowllmApiKey = e.currentTarget.value),
+            );
+          }}
+        />
+      </ListItem>
+    </>
+  );
+
   const XAIConfigComponent = accessStore.provider === ServiceProvider.XAI && (
     <>
       <ListItem
@@ -1459,44 +1501,44 @@ export function Settings() {
     </>
   );
 
-  const ai302ConfigComponent = accessStore.provider === ServiceProvider["302.AI"] && (
+  const ai302ConfigComponent = accessStore.provider ===
+    ServiceProvider["302.AI"] && (
     <>
       <ListItem
-          title={Locale.Settings.Access.AI302.Endpoint.Title}
-          subTitle={
-            Locale.Settings.Access.AI302.Endpoint.SubTitle +
-            AI302.ExampleEndpoint
+        title={Locale.Settings.Access.AI302.Endpoint.Title}
+        subTitle={
+          Locale.Settings.Access.AI302.Endpoint.SubTitle + AI302.ExampleEndpoint
+        }
+      >
+        <input
+          aria-label={Locale.Settings.Access.AI302.Endpoint.Title}
+          type="text"
+          value={accessStore.ai302Url}
+          placeholder={AI302.ExampleEndpoint}
+          onChange={(e) =>
+            accessStore.update(
+              (access) => (access.ai302Url = e.currentTarget.value),
+            )
           }
-        >
-          <input
-            aria-label={Locale.Settings.Access.AI302.Endpoint.Title}
-            type="text"
-            value={accessStore.ai302Url}
-            placeholder={AI302.ExampleEndpoint}
-            onChange={(e) =>
-              accessStore.update(
-                (access) => (access.ai302Url = e.currentTarget.value),
-              )
-            }
-          ></input>
-        </ListItem>
-        <ListItem
-          title={Locale.Settings.Access.AI302.ApiKey.Title}
-          subTitle={Locale.Settings.Access.AI302.ApiKey.SubTitle}
-        >
-          <PasswordInput
-            aria-label={Locale.Settings.Access.AI302.ApiKey.Title}
-            value={accessStore.ai302ApiKey}
-            type="text"
-            placeholder={Locale.Settings.Access.AI302.ApiKey.Placeholder}
-            onChange={(e) => {
-              accessStore.update(
-                (access) => (access.ai302ApiKey = e.currentTarget.value),
-              );
-            }}
-          />
-        </ListItem>
-      </>
+        ></input>
+      </ListItem>
+      <ListItem
+        title={Locale.Settings.Access.AI302.ApiKey.Title}
+        subTitle={Locale.Settings.Access.AI302.ApiKey.SubTitle}
+      >
+        <PasswordInput
+          aria-label={Locale.Settings.Access.AI302.ApiKey.Title}
+          value={accessStore.ai302ApiKey}
+          type="text"
+          placeholder={Locale.Settings.Access.AI302.ApiKey.Placeholder}
+          onChange={(e) => {
+            accessStore.update(
+              (access) => (access.ai302ApiKey = e.currentTarget.value),
+            );
+          }}
+        />
+      </ListItem>
+    </>
   );
 
   return (
@@ -1858,6 +1900,7 @@ export function Settings() {
                   {tencentConfigComponent}
                   {moonshotConfigComponent}
                   {deepseekConfigComponent}
+                  {crowllmConfigComponent}
                   {stabilityConfigComponent}
                   {lflytekConfigComponent}
                   {XAIConfigComponent}

@@ -75,6 +75,8 @@ declare global {
 
       DEEPSEEK_URL?: string;
       DEEPSEEK_API_KEY?: string;
+      CROWLLM_URL?: string;
+      CROWLLM_API_KEY?: string;
 
       // xai only
       XAI_URL?: string;
@@ -164,6 +166,7 @@ export const getServerSideConfig = () => {
   const isMoonshot = !!process.env.MOONSHOT_API_KEY;
   const isIflytek = !!process.env.IFLYTEK_API_KEY;
   const isDeepSeek = !!process.env.DEEPSEEK_API_KEY;
+  const isCrowLLM = !!process.env.CROWLLM_API_KEY;
   const isXAI = !!process.env.XAI_API_KEY;
   const isChatGLM = !!process.env.CHATGLM_API_KEY;
   const isSiliconFlow = !!process.env.SILICONFLOW_API_KEY;
@@ -233,6 +236,9 @@ export const getServerSideConfig = () => {
     isDeepSeek,
     deepseekUrl: process.env.DEEPSEEK_URL,
     deepseekApiKey: getApiKey(process.env.DEEPSEEK_API_KEY),
+    isCrowLLM,
+    crowllmUrl: process.env.CROWLLM_URL,
+    crowllmApiKey: getApiKey(process.env.CROWLLM_API_KEY),
 
     isXAI,
     xaiUrl: process.env.XAI_URL,

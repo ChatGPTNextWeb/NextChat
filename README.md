@@ -282,6 +282,14 @@ DeepSeek Api Key.
 
 DeepSeek Api Url.
 
+### `CROWLLM_API_KEY` (optional)
+
+CrowLLM API Key.
+
+### `CROWLLM_URL` (optional)
+
+CrowLLM API Url.
+
 ### `HIDE_USER_API_KEY` (optional)
 
 > Default: Empty

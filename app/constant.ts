@@ -29,6 +29,7 @@ export const MOONSHOT_BASE_URL = "https://api.moonshot.ai";
 export const IFLYTEK_BASE_URL = "https://spark-api-open.xf-yun.com";
 
 export const DEEPSEEK_BASE_URL = "https://api.deepseek.com";
+export const CROWLLM_BASE_URL = "https://crowllm.com/v1";
 
 export const XAI_BASE_URL = "https://api.x.ai";
 
@@ -73,6 +74,7 @@ export enum ApiPath {
   XAI = "/api/xai",
   ChatGLM = "/api/chatglm",
   DeepSeek = "/api/deepseek",
+  CrowLLM = "/api/crowllm",
   SiliconFlow = "/api/siliconflow",
   "302.AI" = "/api/302ai",
 }
@@ -132,6 +134,7 @@ export enum ServiceProvider {
   XAI = "XAI",
   ChatGLM = "ChatGLM",
   DeepSeek = "DeepSeek",
+  CrowLLM = "CrowLLM",
   SiliconFlow = "SiliconFlow",
   "302.AI" = "302.AI",
 }
@@ -159,6 +162,7 @@ export enum ModelProvider {
   XAI = "XAI",
   ChatGLM = "ChatGLM",
   DeepSeek = "DeepSeek",
+  CrowLLM = "CrowLLM",
   SiliconFlow = "SiliconFlow",
   "302.AI" = "302.AI",
 }
@@ -250,6 +254,11 @@ export const Iflytek = {
 
 export const DeepSeek = {
   ExampleEndpoint: DEEPSEEK_BASE_URL,
+  ChatPath: "chat/completions",
+};
+
+export const CrowLLM = {
+  ExampleEndpoint: CROWLLM_BASE_URL,
   ChatPath: "chat/completions",
 };
 
@@ -493,7 +502,7 @@ export const VISION_MODEL_REGEXES = [
   /o3/,
   /o4-mini/,
   /grok-4/i,
-  /gpt-5/
+  /gpt-5/,
 ];
 
 export const EXCLUDE_VISION_MODEL_REGEXES = [/claude-3-5-haiku-20241022/];
@@ -561,7 +570,7 @@ const googleModels = [
   "gemini-2.0-pro-exp",
   "gemini-2.0-pro-exp-02-05",
   "gemini-2.5-pro-preview-06-05",
-  "gemini-2.5-pro"
+  "gemini-2.5-pro",
 ];
 
 const anthropicModels = [
@@ -651,6 +660,14 @@ const iflytekModels = [
 ];
 
 const deepseekModels = ["deepseek-chat", "deepseek-coder", "deepseek-reasoner"];
+const crowllmModels = [
+  "glm-5.3",
+  "deepseek-v4-flash",
+  "kimi-k3",
+  "claude-opus-4-7",
+  "gemini-3.7-flash",
+  "grok-4.7:free",
+];
 
 const xAIModes = [
   "grok-beta",
@@ -885,6 +902,17 @@ export const DEFAULT_MODELS = [
       providerName: "DeepSeek",
       providerType: "deepseek",
       sorted: 13,
+    },
+  })),
+  ...crowllmModels.map((name) => ({
+    name,
+    available: true,
+    sorted: seq++,
+    provider: {
+      id: "crowllm",
+      providerName: "CrowLLM",
+      providerType: "crowllm",
+      sorted: 16,
     },
   })),
   ...siliconflowModels.map((name) => ({
