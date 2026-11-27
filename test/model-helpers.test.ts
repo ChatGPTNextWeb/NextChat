@@ -44,6 +44,12 @@ describe("showPlugins", () => {
     expect(showPlugins(ServiceProvider.ChatGLM, "glm-4")).toBe(true);
   });
 
+  test("is enabled for xAI, whose client forwards the selected plugins as tools", () => {
+    expect(showPlugins(ServiceProvider.XAI, "grok-2")).toBe(true);
+    expect(showPlugins(ServiceProvider.XAI, "grok-3")).toBe(true);
+    expect(showPlugins(ServiceProvider.XAI, "grok-4")).toBe(true);
+  });
+
   test("is enabled for Anthropic except claude-2 models", () => {
     expect(showPlugins(ServiceProvider.Anthropic, "claude-3-opus")).toBe(true);
     expect(showPlugins(ServiceProvider.Anthropic, "claude-2.1")).toBe(false);
