@@ -134,6 +134,7 @@ const DEFAULT_ACCESS_STATE = {
   // siliconflow
   siliconflowUrl: DEFAULT_SILICONFLOW_URL,
   siliconflowApiKey: "",
+  modelfoldApiKey: "",
 
   // 302.AI
   ai302Url: DEFAULT_AI302_URL,
@@ -245,6 +246,7 @@ export const useAccessStore = createPersistStore(
         this.isValidXAI() ||
         this.isValidChatGLM() ||
         this.isValidSiliconFlow() ||
+        ensure(get(), ["modelfoldApiKey"]) ||
         !this.enabledAccessControl() ||
         (this.enabledAccessControl() && ensure(get(), ["accessCode"]))
       );

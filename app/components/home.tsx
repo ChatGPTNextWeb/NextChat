@@ -11,7 +11,7 @@ import LoadingIcon from "../icons/three-dots.svg";
 import { getCSSVar, useMobileScreen } from "../utils";
 
 import dynamic from "next/dynamic";
-import { Path, SlotID } from "../constant";
+import { Path, ServiceProvider, SlotID } from "../constant";
 import { ErrorBoundary } from "./error";
 
 import { getISOLang, getLang } from "../locales";
@@ -228,8 +228,12 @@ export function useLoadData() {
   useEffect(() => {
     (async () => {
       const models = await api.llm.models();
-      config.mergeModels(models);
-    })();
+      const provider = config.modelConfig.providerName;
+      config.mergeModels(
+        models,
+        provider === ServiceProvider.ModelFold ? provider : undefined,
+      );
+    })().catch(() => console.warn("Could not refresh the model list."));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 }

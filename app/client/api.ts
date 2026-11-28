@@ -11,7 +11,11 @@ import {
   useAccessStore,
   useChatStore,
 } from "../store";
-import { ChatGPTApi, DalleRequestPayload } from "./platforms/openai";
+import {
+  ChatGPTApi,
+  DalleRequestPayload,
+  ModelFoldApi,
+} from "./platforms/openai";
 import { GeminiProApi } from "./platforms/google";
 import { ClaudeApi } from "./platforms/anthropic";
 import { ErnieApi } from "./platforms/baidu";
@@ -173,6 +177,9 @@ export class ClientApi {
         break;
       case ModelProvider.SiliconFlow:
         this.llm = new SiliconflowApi();
+        break;
+      case ModelProvider.ModelFold:
+        this.llm = new ModelFoldApi();
         break;
       case ModelProvider["302.AI"]:
         this.llm = new Ai302Api();
@@ -391,6 +398,8 @@ export function getClientApi(provider: ServiceProvider): ClientApi {
       return new ClientApi(ModelProvider.ChatGLM);
     case ServiceProvider.SiliconFlow:
       return new ClientApi(ModelProvider.SiliconFlow);
+    case ServiceProvider.ModelFold:
+      return new ClientApi(ModelProvider.ModelFold);
     case ServiceProvider["302.AI"]:
       return new ClientApi(ModelProvider["302.AI"]);
     default:

@@ -3,6 +3,8 @@
 import {
   ApiPath,
   OPENAI_BASE_URL,
+  ACCESS_CODE_PREFIX,
+  MODELFOLD_ORIGIN,
   DEFAULT_MODELS,
   OpenaiPath,
   Azure,
@@ -81,6 +83,10 @@ export interface DalleRequestPayload {
 
 export class ChatGPTApi implements LLMApi {
   private disableListModels = true;
+
+  protected chatHeaders() {
+    return getHeaders();
+  }
 
   path(path: string): string {
     const accessStore = useAccessStore.getState();
@@ -314,7 +320,7 @@ export class ChatGPTApi implements LLMApi {
         streamWithThink(
           chatPath,
           requestPayload,
-          getHeaders(),
+          this.chatHeaders(),
           tools as any,
           funcs,
           controller,
@@ -407,7 +413,7 @@ export class ChatGPTApi implements LLMApi {
           method: "POST",
           body: JSON.stringify(requestPayload),
           signal: controller.signal,
-          headers: getHeaders(),
+          headers: this.chatHeaders(),
         };
 
         // make a fetch request
@@ -531,4 +537,49 @@ export class ChatGPTApi implements LLMApi {
     }));
   }
 }
+export class ModelFoldApi extends ChatGPTApi {
+  path(path: string) {
+    if (path !== OpenaiPath.ChatPath && path !== OpenaiPath.ListModelPath) {
+      throw new Error(
+        "This ModelFold preset only supports chat and model discovery.",
+      );
+    }
+    return `${
+      getClientConfig()?.isApp ? MODELFOLD_ORIGIN : ApiPath.ModelFold
+    }/${path}`;
+  }
+
+  protected chatHeaders() {
+    const key = useAccessStore.getState().modelfoldApiKey.trim();
+    if (!key || key.startsWith(ACCESS_CODE_PREFIX)) {
+      throw new Error("Set a ModelFold API key in Settings.");
+    }
+    return {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${key}`,
+    };
+  }
+
+  async models(): Promise<LLMModel[]> {
+    const defaults = DEFAULT_MODELS.filter(
+      (model) => model.provider.providerName === ServiceProvider.ModelFold,
+    );
+    if (!useAccessStore.getState().modelfoldApiKey.trim()) return defaults;
+    const res = await fetch(this.path(OpenaiPath.ListModelPath), {
+      method: "GET",
+      headers: this.chatHeaders(),
+    });
+    if (!res.ok)
+      throw new Error(`ModelFold model discovery failed (${res.status}).`);
+    const { data } = (await res.json()) as OpenAIListModelResponse;
+    return data
+      .filter((model) => typeof model.id === "string" && model.id.length > 0)
+      .map(({ id }, index) => ({
+        ...defaults[0],
+        name: id,
+        sorted: defaults[0].sorted + index,
+      }));
+  }
+}
+
 export { OpenaiPath };
