@@ -36,6 +36,8 @@ export const CHATGLM_BASE_URL = "https://open.bigmodel.cn";
 
 export const SILICONFLOW_BASE_URL = "https://api.siliconflow.cn";
 
+export const MODELFOLD_ORIGIN = "https://modelfold.ai";
+
 export const AI302_BASE_URL = "https://api.302.ai";
 
 export const CACHE_URL_PREFIX = "/api/cache";
@@ -74,6 +76,7 @@ export enum ApiPath {
   ChatGLM = "/api/chatglm",
   DeepSeek = "/api/deepseek",
   SiliconFlow = "/api/siliconflow",
+  ModelFold = "/api/modelfold",
   "302.AI" = "/api/302ai",
 }
 
@@ -133,6 +136,7 @@ export enum ServiceProvider {
   ChatGLM = "ChatGLM",
   DeepSeek = "DeepSeek",
   SiliconFlow = "SiliconFlow",
+  ModelFold = "ModelFold",
   "302.AI" = "302.AI",
 }
 
@@ -160,6 +164,7 @@ export enum ModelProvider {
   ChatGLM = "ChatGLM",
   DeepSeek = "DeepSeek",
   SiliconFlow = "SiliconFlow",
+  ModelFold = "ModelFold",
   "302.AI" = "302.AI",
 }
 
@@ -909,6 +914,17 @@ export const DEFAULT_MODELS = [
       sorted: 15,
     },
   })),
+  {
+    name: "gpt-5-2",
+    available: true,
+    sorted: seq++,
+    provider: {
+      id: "modelfold",
+      providerName: ServiceProvider.ModelFold,
+      providerType: "modelfold",
+      sorted: 16,
+    },
+  },
 ] as const;
 
 export const CHAT_PAGE_SIZE = 15;

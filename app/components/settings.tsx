@@ -75,6 +75,7 @@ import {
   ChatGLM,
   DeepSeek,
   SiliconFlow,
+  MODELFOLD_ORIGIN,
   AI302,
 } from "../constant";
 import { Prompt, SearchService, usePromptStore } from "../store/prompt";
@@ -1863,6 +1864,32 @@ export function Settings() {
                   {XAIConfigComponent}
                   {chatglmConfigComponent}
                   {siliconflowConfigComponent}
+                  {accessStore.provider === ServiceProvider.ModelFold && (
+                    <ListItem
+                      title="ModelFold API Key"
+                      subTitle={
+                        <a
+                          href={`${MODELFOLD_ORIGIN}/docs/en/ai-agent/overview`}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          {MODELFOLD_ORIGIN}/v1
+                        </a>
+                      }
+                    >
+                      <PasswordInput
+                        aria-label="ModelFold API Key"
+                        type="text"
+                        value={accessStore.modelfoldApiKey}
+                        onChange={(e) =>
+                          accessStore.update(
+                            (access) =>
+                              (access.modelfoldApiKey = e.currentTarget.value),
+                          )
+                        }
+                      />
+                    </ListItem>
+                  )}
                   {ai302ConfigComponent}
                 </>
               )}
